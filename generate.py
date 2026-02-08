@@ -62,7 +62,9 @@ def make():
     clips=[]
     t=0
 
-    for line in LINES:
+    import random
+for line in random.sample(LINES,5):
+
         img=frame(line)
 
         c=ImageClip(img).set_start(t).set_duration(4.5)
