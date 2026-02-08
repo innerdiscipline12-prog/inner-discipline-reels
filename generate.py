@@ -41,13 +41,10 @@ def frame(text):
     x=(W-tw)//2
     y=SAFE_TOP+(SAFE_H-th)//2
 
-    # shadow
-    d.text((x+4,y+4),text,font=font,fill=(40,40,40))
-
-    # main text
-    d.text((x,y),text,font=font,fill=(255,255,255,255)
+    d.text((x,y), text, font=font, fill=(255,255,255,255))
 
     return np.array(img)
+
 
 def make():
     base=VideoFileClip(VIDEO).resize((W,H)).without_audio()
