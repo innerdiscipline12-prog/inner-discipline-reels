@@ -1,5 +1,8 @@
 import random
 import numpy as np
+import json
+import os
+
 from moviepy.editor import *
 from moviepy.video.fx.all import resize
 from PIL import Image, ImageDraw, ImageFont
@@ -16,6 +19,8 @@ SAFE_H = H - SAFE_TOP - SAFE_BOTTOM
 
 FONT_PATH = "Anton-Regular.ttf"
 FONT_SIZE = 95
+
+MEMORY_FILE = "memory.json"
 
 LINES = [
 "YOU WAIT FOR MOTIVATION",
@@ -35,6 +40,26 @@ LINES = [
 "THIS IS DISCIPLINE"
 ]
 
+# ---------- SCRIPT MEMORY ----------
+
+if os.path.exists(MEMORY_FILE):
+    with open(MEMORY_FILE,"r") as f:
+        used=json.load(f)
+else:
+    used=[]
+
+available=[l for l in LINES if l not in used]
+
+if len(available)<4:
+    used=[]
+    available=LINES.copy()
+
+chosen=random.sample(available,4)
+
+used+=chosen
+with open(MEMORY_FILE,"w") as f:
+    json.dump(used,f)
+
 # ---------- TEXT FRAME ----------
 
 def frame(text):
@@ -46,7 +71,6 @@ def frame(text):
 
     max_width = int(W*0.8)
 
-    # AUTO WRAP (max 2 lines)
     words = text.split()
     lines=[]
     current=""
@@ -67,7 +91,6 @@ def frame(text):
     if len(lines)>2:
         lines=[lines[0], " ".join(lines[1:])]
 
-    # CENTER IN SAFE ZONE
     heights=[]
     for l in lines:
         b=d.textbbox((0,0),l,font=font)
@@ -75,9 +98,8 @@ def frame(text):
 
     total_h=sum(heights)+20*(len(lines)-1)
 
-    y = SAFE_TOP + (SAFE_H-total_h)//2 + 40  # slightly lower center
+    y = SAFE_TOP + (SAFE_H-total_h)//2 + 40
 
-    # DRAW TEXT + SHADOW
     for i,l in enumerate(lines):
 
         b=d.textbbox((0,0),l,font=font)
@@ -86,9 +108,12 @@ def frame(text):
         x=(W-w)//2
 
         # shadow
-        d.text((x+3,y+3),l,font=font,fill=(0,0,0,160))
+        d.text((x+4,y+4),l,font=font,fill=(0,0,0,180))
 
-        # main text
+        # glow (soft)
+        d.text((x-2,y-2),l,font=font,fill=(255,255,255,60))
+
+        # main
         d.text((x,y),l,font=font,fill=(255,255,255,255))
 
         y+=heights[i]+20
@@ -99,11 +124,8 @@ def frame(text):
 
 def make():
 
-    chosen=random.sample(LINES,4)  # 4 lines ≈ 14s
-
     base=VideoFileClip(VIDEO).without_audio()
 
-    # cinematic slow zoom
     base=base.fx(resize, lambda t:1+0.015*t)
 
     base=base.resize(height=H)
@@ -137,6 +159,13 @@ def make():
 
     final=CompositeVideoClip([final,grain])
 
+    # ultra-loop fade
+    final=final.crossfadeout(0.5)
+
     final.write_videofile("reel.mp4",fps=30)
+
+    # captions export
+    with open("captions.txt","w") as f:
+        f.write("\n".join(chosen))
 
 make()
