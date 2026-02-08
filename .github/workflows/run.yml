@@ -16,7 +16,8 @@ jobs:
 
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
-      - run: pip install moviepy pillow numpy imageio imageio-ffmpeg
+      - run: pip install "moviepy==1.0.3" pillow numpy imageio imageio-ffmpeg
+
 
       - run: python generate.py
 
