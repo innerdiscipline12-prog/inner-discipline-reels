@@ -16,7 +16,8 @@ jobs:
 
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
-      - run: pip install "moviepy==1.0.3" "pillow<10" numpy imageio imageio-ffmpeg
+      - run: pip install -r requirements.txt
+
 
 
 
