@@ -63,6 +63,14 @@ def make():
 
     final=CompositeVideoClip([base]+clips).subclip(0,t)
 
+# film grain
+import numpy as np
+noise=np.random.randint(0,25,(H,W,3)).astype("uint8")
+grain=ImageClip(noise).set_duration(t).set_opacity(0.06)
+
+final=CompositeVideoClip([final,grain])
+
+
     final.write_videofile("reel.mp4",fps=30)
 
 make()
