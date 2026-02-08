@@ -30,21 +30,22 @@ LINES=[
 ]
 
 def frame(text):
-    img = Image.new("RGB",(W,H),(0,0,0))
+    img = Image.new("RGBA",(W,H),(0,0,0,0))
     d = ImageDraw.Draw(img)
 
     font = ImageFont.truetype("Anton-Regular.ttf",95)
 
     max_width = int(W*0.8)
 
-    # -------- WRAP TO 2 LINES --------
+    # -------- AUTO WRAP (2 lines max) --------
     words = text.split()
     lines=[]
     current=""
 
     for word in words:
         test = current+" "+word if current else word
-        w = d.textbbox((0,0),test,font=font)[2]
+        box = d.textbbox((0,0),test,font=font)
+        w = box[2]-box[0]
 
         if w <= max_width:
             current = test
@@ -57,28 +58,38 @@ def frame(text):
     if len(lines)>2:
         lines=[lines[0]," ".join(lines[1:])]
 
-    # -------- CENTER IN SAFE ZONE --------
-    total_h = sum(d.textbbox((0,0),l,font=font)[3] for l in lines)+20*(len(lines)-1)
+    # -------- MEASURE HEIGHT --------
+    line_heights=[]
+    for l in lines:
+        b=d.textbbox((0,0),l,font=font)
+        line_heights.append(b[3]-b[1])
 
-    y = SAFE_TOP + (SAFE_H-total_h)//2
+    total_h=sum(line_heights)+20*(len(lines)-1)
+    y=SAFE_TOP+(SAFE_H-total_h)//2
 
-    for line in lines:
-        box=d.textbbox((0,0),line,font=font)
-        tw,th=box[2]-box[0], box[3]-box[1]
-
+    # -------- DRAW TEXT --------
+    for i,l in enumerate(lines):
+        b=d.textbbox((0,0),l,font=font)
+        tw=b[2]-b[0]
         x=(W-tw)//2
 
-        # glow
-        for dx in [-2,-1,0,1,2]:
-            for dy in [-2,-1,0,1,2]:
-                d.text((x+dx,y+dy),line,font=font,fill=(255,255,255,40))
+        # SHADOW
+        d.text((x+4,y+4),l,font=font,fill=(0,0,0,160))
 
-        # main text
-        d.text((x,y),line,font=font,fill="white")
+        # SOFT GLOW
+        for g in range(1,6):
+            d.text((x-g,y),l,font=font,fill=(255,255,255,30))
+            d.text((x+g,y),l,font=font,fill=(255,255,255,30))
+            d.text((x,y-g),l,font=font,fill=(255,255,255,30))
+            d.text((x,y+g),l,font=font,fill=(255,255,255,30))
 
-        y+=th+20
+        # MAIN TEXT
+        d.text((x,y),l,font=font,fill=(255,255,255,255))
+
+        y+=line_heights[i]+20
 
     return np.array(img)
+
 
 
 
