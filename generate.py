@@ -1,159 +1,130 @@
-import random
-import json
-import os
+import random, json, os
 import numpy as np
-
 from moviepy.editor import *
 from moviepy.video.fx import all as vfx
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-from PIL import Image, ImageDraw, ImageFont
+VIDEO="bg.mp4"
+FONT_PATH="Anton-Regular.ttf"
 
-# ---------------- SETTINGS ----------------
+W,H=1080,1920
+SAFE_TOP=320
+SAFE_BOTTOM=520
+SAFE_H=H-SAFE_TOP-SAFE_BOTTOM
 
-VIDEO = "bg.mp4"
-FONT_PATH = "Anton-Regular.ttf"
-
-W, H = 1080, 1920
-
-SAFE_TOP = 300
-SAFE_BOTTOM = 500
-SAFE_H = H - SAFE_TOP - SAFE_BOTTOM
-
-LINES = [
+LINES=[
 "YOU WAIT FOR MOTIVATION",
 "YOU SAY YOU ARE TIRED",
-"YOU BLAME YOUR MOOD",
-"YOU WANT CHANGE WITHOUT PAIN",
 "COMFORT IS THE ENEMY",
 "NO ONE IS COMING",
 "DISCIPLINE DECIDES",
 "CONTROL YOURSELF",
-"YOUR HABITS SHOW",
 "PROVE IT QUIETLY",
-"YOUR ROUTINE EXPOSES YOU",
 "STOP NEGOTIATING",
 "DO THE HARD THING",
-"CONSISTENCY BUILDS POWER",
 "THIS IS DISCIPLINE"
 ]
 
-# ---------------- MEMORY SYSTEM ----------------
+# -------- MEMORY --------
+MEM="memory.json"
+used=json.load(open(MEM)) if os.path.exists(MEM) else []
 
-MEMORY_FILE = "memory.json"
+pool=[l for l in LINES if l not in used]
+if len(pool)<5:
+    used=[]
+    pool=LINES.copy()
 
-if os.path.exists(MEMORY_FILE):
-    used = json.load(open(MEMORY_FILE))
-else:
-    used = []
+chosen=random.sample(pool,5)
+json.dump(used+chosen,open(MEM,"w"))
 
-available = [l for l in LINES if l not in used]
-
-if len(available) < 5:
-    used = []
-    available = LINES.copy()
-
-chosen = random.sample(available, 5)
-
-json.dump(used + chosen, open(MEMORY_FILE, "w"))
-
-# ---------------- TEXT FRAME ----------------
-
+# -------- TEXT FRAME --------
 def frame(text):
+    img=Image.new("RGBA",(W,H),(0,0,0,0))
+    d=ImageDraw.Draw(img)
 
-    img = Image.new("RGBA", (W, H), (0,0,0,0))
-    d = ImageDraw.Draw(img)
+    font=ImageFont.truetype(FONT_PATH,110)
 
-    font = ImageFont.truetype(FONT_PATH, 95)
+    max_w=int(W*0.8)
 
-    max_width = int(W * 0.8)
-
-    words = text.split()
+    words=text.split()
     lines=[]
-    current=""
+    cur=""
 
-    # AUTO WRAP (2 lines max)
-    for word in words:
-        test = current + " " + word if current else word
-        box = d.textbbox((0,0), test, font=font)
-        w = box[2]-box[0]
-
-        if w <= max_width:
-            current = test
+    for w in words:
+        test=(cur+" "+w).strip()
+        box=d.textbbox((0,0),test,font=font)
+        if box[2]-box[0]<=max_w:
+            cur=test
         else:
-            lines.append(current)
-            current = word
+            lines.append(cur)
+            cur=w
+    lines.append(cur)
 
-    lines.append(current)
+    if len(lines)>2:
+        lines=[lines[0]," ".join(lines[1:])]
 
-    if len(lines) > 2:
-        lines = [lines[0], " ".join(lines[1:])]
-
-    # HEIGHT CENTERING
-    heights=[]
+    hs=[]
     for l in lines:
-        b = d.textbbox((0,0), l, font=font)
-        heights.append(b[3]-b[1])
+        b=d.textbbox((0,0),l,font=font)
+        hs.append(b[3]-b[1])
 
-    total_h = sum(heights) + 20*(len(lines)-1)
+    total=sum(hs)+20*(len(lines)-1)
+    y=SAFE_TOP+(SAFE_H-total)//2
 
-    y = SAFE_TOP + (SAFE_H - total_h)//2
-
-    # DRAW TEXT
     for i,l in enumerate(lines):
-        b = d.textbbox((0,0), l, font=font)
-        tw = b[2]-b[0]
+        b=d.textbbox((0,0),l,font=font)
+        tw=b[2]-b[0]
+        x=(W-tw)//2
 
-        x = (W - tw)//2
+        # glow
+        glow=Image.new("RGBA",(W,H),(0,0,0,0))
+        gd=ImageDraw.Draw(glow)
+        gd.text((x,y),l,font=font,fill=(255,255,255,180))
+        glow=glow.filter(ImageFilter.GaussianBlur(8))
+        img=Image.alpha_composite(img,glow)
 
-        d.text((x,y), l, font=font, fill="white")
-
-        y += heights[i] + 20
+        # main
+        d.text((x,y),l,font=font,fill=(255,255,255,255))
+        y+=hs[i]+20
 
     return np.array(img)
 
-# ---------------- MAIN GENERATOR ----------------
-
+# -------- GENERATOR --------
 def make():
+    base=VideoFileClip(VIDEO).without_audio()
+    base=base.resize(height=H)
 
-    base = VideoFileClip(VIDEO).without_audio()
+    if base.w<W:
+        base=base.resize(width=W)
 
-    # slow cinematic zoom
-    base = base.fx(vfx.resize, lambda t: 1 + 0.04*t)
-    base = base.set_position("center").resize((W,H))
+    base=base.crop(x_center=base.w/2,y_center=base.h/2,width=W,height=H)
+
+    # cinematic zoom
+    base=base.fx(vfx.resize,lambda t:1+0.03*t)
 
     clips=[]
     t=0
 
-    # WORD BY WORD REVEAL
     for line in chosen:
+        img=frame(line)
 
-        words = line.split()
+        c=ImageClip(img)\
+            .set_start(t)\
+            .set_duration(4.2)\
+            .fadein(0.4)\
+            .fadeout(0.4)
 
-        for i in range(len(words)):
-            img = frame(" ".join(words[:i+1]))
+        clips.append(c)
+        t+=4.2
 
-            c = ImageClip(img)\
-                .set_start(t + i*0.35)\
-                .set_duration(2)
+    final=CompositeVideoClip([base]+clips).subclip(0,t)
 
-            clips.append(c)
+    # grain
+    noise=np.random.randint(0,25,(H,W,3)).astype("uint8")
+    grain=ImageClip(noise).set_duration(final.duration).set_opacity(0.05)
 
-        t += len(words)*0.35 + 1.5
+    final=CompositeVideoClip([final,grain])
 
-    final = CompositeVideoClip([base] + clips).subclip(0,t)
-
-    # FILM GRAIN
-    noise = np.random.randint(0,25,(H,W,3)).astype("uint8")
-    grain = ImageClip(noise)\
-        .set_duration(final.duration)\
-        .set_opacity(0.06)
-
-    final = CompositeVideoClip([final, grain])
-
-    # LOOP ENDING
-    loop = final.subclip(final.duration-1, final.duration)
-    final = concatenate_videoclips([final, loop])
-
-    final.write_videofile("reel.mp4", fps=30)
+    final.write_videofile("reel.mp4",fps=30)
 
 make()
