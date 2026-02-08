@@ -23,7 +23,8 @@ def frame(text):
     img=Image.new("RGB",(W,H),(0,0,0))
     d=ImageDraw.Draw(img)
 
-    font=ImageFont.truetype("DejaVuSans-Bold.ttf",90)
+    font=ImageFont.truetype("DejaVuSans-Bold.ttf",120)
+
 
     box=d.textbbox((0,0),text,font=font)
     tw,th=box[2]-box[0],box[3]-box[1]
