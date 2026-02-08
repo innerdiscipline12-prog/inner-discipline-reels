@@ -33,15 +33,52 @@ def frame(text):
     img = Image.new("RGBA",(W,H),(0,0,0,0))
     d = ImageDraw.Draw(img)
 
-    font = ImageFont.truetype("DejaVuSans-Bold.ttf",90)
+    font_size = 90
+    font = ImageFont.truetype("DejaVuSans-Bold.ttf", font_size)
 
-    box = d.textbbox((0,0),text,font=font)
-    tw,th = box[2]-box[0], box[3]-box[1]
+    max_width = int(W*0.8)  # safe horizontal area
 
-    x=(W-tw)//2
-    y=SAFE_TOP+(SAFE_H-th)//2
+    # AUTO WRAP
+    words = text.split()
+    lines=[]
+    current=""
 
-    d.text((x,y), text, font=font, fill=(255,255,255,255))
+    for word in words:
+        test = current + " " + word if current else word
+        w = d.textbbox((0,0), test, font=font)[2]
+
+        if w <= max_width:
+            current = test
+        else:
+            lines.append(current)
+            current = word
+
+    lines.append(current)
+
+    # limit to 2 lines
+    if len(lines)>2:
+        lines = [lines[0], " ".join(lines[1:])]
+
+    # measure height
+    line_heights=[]
+    line_widths=[]
+    for line in lines:
+        box=d.textbbox((0,0),line,font=font)
+        line_widths.append(box[2]-box[0])
+        line_heights.append(box[3]-box[1])
+
+    total_h = sum(line_heights) + 20*(len(lines)-1)
+
+    y = SAFE_TOP + (SAFE_H-total_h)//2
+
+    for i,line in enumerate(lines):
+        w=line_widths[i]
+        h=line_heights[i]
+
+        x=(W-w)//2
+
+        d.text((x,y), line, font=font, fill=(255,255,255,255))
+        y += h + 20
 
     return np.array(img)
 
