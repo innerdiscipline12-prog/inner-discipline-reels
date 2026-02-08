@@ -1,3 +1,4 @@
+import random
 import numpy as np
 from moviepy.editor import *
 from PIL import Image, ImageDraw, ImageFont
@@ -28,31 +29,23 @@ LINES=[
 "THIS IS DISCIPLINE"
 ]
 
-
 def frame(text):
-    img=Image.new("RGB",(W,H),(0,0,0))
-    d=ImageDraw.Draw(img)
+    img = Image.new("RGB",(W,H),(0,0,0))
+    d = ImageDraw.Draw(img)
 
-    font=ImageFont.truetype("DejaVuSans-Bold.ttf",120)
+    font = ImageFont.truetype("DejaVuSans-Bold.ttf",90)
 
-
-    box=d.textbbox((0,0),text,font=font)
-    tw,th=box[2]-box[0],box[3]-box[1]
+    box = d.textbbox((0,0),text,font=font)
+    tw,th = box[2]-box[0], box[3]-box[1]
 
     x=(W-tw)//2
     y=SAFE_TOP+(SAFE_H-th)//2
 
     # shadow
-d.text((x+4,y+4),text,font=font,fill=(30,30,30))
+    d.text((x+4,y+4),text,font=font,fill=(40,40,40))
 
-# main text
-d.text((x,y),text,font=font,fill="white")
-
-# glow effect
-from PIL import ImageFilter
-glow = img.filter(ImageFilter.GaussianBlur(8))
-img = Image.blend(glow, img, 0.85)
-
+    # main text
+    d.text((x,y),text,font=font,fill="white")
 
     return np.array(img)
 
@@ -62,12 +55,10 @@ def make():
     clips=[]
     t=0
 
-    import random
-for line in random.sample(LINES,5):
-
+    for line in random.sample(LINES,5):
         img=frame(line)
 
-        c=ImageClip(img).set_start(t).set_duration(4.5)
+        c=ImageClip(img).set_start(t).set_duration(3)
         c=c.fadein(0.5).fadeout(0.5)
 
         clips.append(c)
@@ -75,13 +66,11 @@ for line in random.sample(LINES,5):
 
     final=CompositeVideoClip([base]+clips).subclip(0,t)
 
-# film grain
-import numpy as np
-noise=np.random.randint(0,25,(H,W,3)).astype("uint8")
-grain=ImageClip(noise).set_duration(t).set_opacity(0.06)
+    # film grain
+    noise=np.random.randint(0,25,(H,W,3)).astype("uint8")
+    grain=ImageClip(noise).set_duration(t).set_opacity(0.06)
 
-final=CompositeVideoClip([final,grain])
-
+    final=CompositeVideoClip([final,grain])
 
     final.write_videofile("reel.mp4",fps=30)
 
