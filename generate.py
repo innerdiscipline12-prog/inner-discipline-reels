@@ -32,7 +32,17 @@ def frame(text):
     x=(W-tw)//2
     y=SAFE_TOP+(SAFE_H-th)//2
 
-    d.text((x,y),text,font=font,fill="white")
+    # shadow
+d.text((x+4,y+4),text,font=font,fill=(30,30,30))
+
+# main text
+d.text((x,y),text,font=font,fill="white")
+
+# glow effect
+from PIL import ImageFilter
+glow = img.filter(ImageFilter.GaussianBlur(8))
+img = Image.blend(glow, img, 0.85)
+
 
     return np.array(img)
 
