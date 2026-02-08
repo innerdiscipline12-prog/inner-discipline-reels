@@ -44,7 +44,7 @@ def make():
     for line in LINES:
         img=frame(line)
 
-        c=ImageClip(img).set_start(t).set_duration(3)
+        c=ImageClip(img).set_start(t).set_duration(4.5)
         c=c.fadein(0.5).fadeout(0.5)
 
         clips.append(c)
