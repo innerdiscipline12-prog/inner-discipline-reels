@@ -30,7 +30,7 @@ LINES=[
 ]
 
 def frame(text):
-    img = Image.new("RGB",(W,H),(0,0,0))
+    img = Image.new("RGBA",(W,H),(0,0,0,0))
     d = ImageDraw.Draw(img)
 
     font = ImageFont.truetype("DejaVuSans-Bold.ttf",90)
@@ -45,7 +45,7 @@ def frame(text):
     d.text((x+4,y+4),text,font=font,fill=(40,40,40))
 
     # main text
-    d.text((x,y),text,font=font,fill="white")
+    d.text((x,y),text,font=font,fill=(255,255,255,255)
 
     return np.array(img)
 
