@@ -182,8 +182,9 @@ def make():
         communicate=edge_tts.Communicate(
             line,
             voice="en-US-ChristopherNeural",
-            rate="-35%",
-            pitch="-20Hz"
+rate="-55%",
+pitch="-35Hz"
+
         )
         await communicate.save(file)
 
