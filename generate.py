@@ -235,25 +235,24 @@ def make():
 
     # ---------- AUTO DUCK AUDIO MIX ----------
 
-voice_mix = CompositeAudioClip(audio_clips).volumex(2.0)
+voice_mix = CompositeAudioClip(audio_clips).volumex(2.2)
 
 music = (
     AudioFileClip(MUSIC)
-    .volumex(0.25)  # base level before duck
+    .volumex(0.25)
     .audio_fadein(1.5)
     .audio_fadeout(1.5)
     .subclip(0,t)
 )
 
-# AUTO DUCK FUNCTION
-def duck(vol):
-    def f(get_frame, tt):
-        # lower music when voice is active
-        return get_frame(tt) * (0.25 if any(
-            (tt >= a.start and tt <= a.end)
-            for a in audio_clips
-        ) else 1.0)
-    return f
+# AUTO DUCK
+def duck(get_frame, tt):
+    speaking = any(
+        (tt >= a.start and tt <= a.end)
+        for a in audio_clips
+    )
+    factor = 0.25 if speaking else 1.0
+    return get_frame(tt) * factor
 
 music = music.fl(duck)
 
@@ -264,11 +263,6 @@ final = final.set_audio(
     ])
 )
 
-    CompositeAudioClip([
-        music,
-        voice_mix
-    ])
-)
 
     # exports
     make_thumbnail(chosen[0])
