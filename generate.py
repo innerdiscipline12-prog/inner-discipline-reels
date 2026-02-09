@@ -173,12 +173,27 @@ def frame(text):
 # DUCKING
 # ==============================
 
-def apply_duck(music,windows):
-    def duck(get_frame,t):
-        speaking=any(s<=t<=e for s,e in windows)
-        factor=MUSIC_DUCK if speaking else 1.0
-        return get_frame(t)*factor
+def apply_duck(music, windows):
+
+    def duck(get_frame, t):
+
+        # ensure t is a float (not numpy array)
+        try:
+            tt = float(t)
+        except:
+            tt = t[0]
+
+        speaking = False
+        for s,e in windows:
+            if s <= tt <= e:
+                speaking = True
+                break
+
+        factor = MUSIC_DUCK if speaking else 1.0
+        return get_frame(t) * factor
+
     return music.fl(duck)
+
 
 # ==============================
 # VIDEO BUILD
