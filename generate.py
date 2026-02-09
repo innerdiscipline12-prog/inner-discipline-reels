@@ -233,19 +233,37 @@ def make():
     grain=ImageClip(noise).set_duration(t).set_opacity(0.03)
     final=CompositeVideoClip([final,grain])
 
-    # ---------- CINEMATIC AUDIO MIX ----------
+    # ---------- AUTO DUCK AUDIO MIX ----------
 
 voice_mix = CompositeAudioClip(audio_clips).volumex(2.0)
 
 music = (
     AudioFileClip(MUSIC)
-    .volumex(0.05)        # much lower music
+    .volumex(0.25)  # base level before duck
     .audio_fadein(1.5)
     .audio_fadeout(1.5)
     .subclip(0,t)
 )
 
+# AUTO DUCK FUNCTION
+def duck(vol):
+    def f(get_frame, tt):
+        # lower music when voice is active
+        return get_frame(tt) * (0.25 if any(
+            (tt >= a.start and tt <= a.end)
+            for a in audio_clips
+        ) else 1.0)
+    return f
+
+music = music.fl(duck)
+
 final = final.set_audio(
+    CompositeAudioClip([
+        music.volumex(0.6),
+        voice_mix
+    ])
+)
+
     CompositeAudioClip([
         music,
         voice_mix
