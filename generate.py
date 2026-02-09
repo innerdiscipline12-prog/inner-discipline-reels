@@ -410,24 +410,23 @@ def make():
 
         final = final.set_audio(final_audio)
 
-        # ---------- EXPORTS ----------
+            # ---------- EXPORTS ----------
 
-import os
+    OUTDIR = "outputs"
+    os.makedirs(OUTDIR, exist_ok=True)
 
-OUTDIR = "outputs"
-os.makedirs(OUTDIR, exist_ok=True)
+    # video
+    out_video = os.path.join(OUTDIR, "reel.mp4")
+    final.write_videofile(out_video, fps=30, audio_codec="aac")
 
-# video
-out_video = os.path.join(OUTDIR, "reel.mp4")
-final.write_videofile(out_video, fps=30, audio_codec="aac")
+    # thumbnail
+    thumb_path = os.path.join(OUTDIR, "thumbnail.jpg")
+    make_thumbnail(chosen[0], thumb_path)
 
-# thumbnail
-thumb_path = os.path.join(OUTDIR, "thumbnail.jpg")
-make_thumbnail(chosen[0], thumb_path)
+    # caption
+    cap_path = os.path.join(OUTDIR, "caption.txt")
+    make_caption(chosen, cap_path)
 
-# caption
-cap_path = os.path.join(OUTDIR, "caption.txt")
-make_caption(chosen, cap_path)
 
 
 if __name__ == "__main__":
