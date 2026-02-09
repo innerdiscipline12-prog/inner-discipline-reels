@@ -233,10 +233,24 @@ def make():
     grain=ImageClip(noise).set_duration(t).set_opacity(0.03)
     final=CompositeVideoClip([final,grain])
 
-    music=AudioFileClip(MUSIC).volumex(0.15).subclip(0,t)
-    final_audio=CompositeAudioClip([music]+audio_clips)
+    # ---------- CINEMATIC AUDIO MIX ----------
 
-    final=final.set_audio(final_audio)
+voice_mix = CompositeAudioClip(audio_clips).volumex(1.8)
+
+music = (
+    AudioFileClip(MUSIC)
+    .volumex(0.05)        # much lower music
+    .audio_fadein(1.5)
+    .audio_fadeout(1.5)
+    .subclip(0,t)
+)
+
+final = final.set_audio(
+    CompositeAudioClip([
+        music,
+        voice_mix
+    ])
+)
 
     # exports
     make_thumbnail(chosen[0])
