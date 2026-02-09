@@ -149,26 +149,39 @@ def frame(text):
 
 # ---------- THUMBNAIL (2-WORD HOOK) ----------
 
-def make_thumbnail(hook):
+def make_thumbnail(text):
 
-    words=hook.split()[:2]
-    text=" ".join(words)
+    words = text.split()[:2]
+    text = " ".join(words)
 
-    img=Image.new("RGB",(1080,1920),(0,0,0))
-    d=ImageDraw.Draw(img)
-    font=ImageFont.truetype(FONT_PATH,180)
+    img = Image.new("RGB",(1080,1920),(0,0,0))
+    d = ImageDraw.Draw(img)
 
-    box=d.textbbox((0,0),text,font=font)
-    w=box[2]-box[0]
-    h=box[3]-box[1]
+    font = ImageFont.truetype(FONT_PATH,180)
 
-    x=(1080-w)//2
-    y=900-h//2
+    MAX_W = int(1080*0.85)
 
-    d.text((x+8,y+8),text,font=font,fill=(0,0,0))
+    # auto fit size
+    while True:
+        box = d.textbbox((0,0),text,font=font)
+        w = box[2]-box[0]
+        h = box[3]-box[1]
+
+        if w <= MAX_W:
+            break
+        font = ImageFont.truetype(FONT_PATH,font.size-5)
+
+    x = (1080-w)//2
+    y = (1920-h)//2
+
+    # shadow
+    d.text((x+10,y+10),text,font=font,fill=(0,0,0))
+
+    # main text
     d.text((x,y),text,font=font,fill="white")
 
     img.save("thumbnail.jpg")
+
 
 # ---------- CAPTION ----------
 
