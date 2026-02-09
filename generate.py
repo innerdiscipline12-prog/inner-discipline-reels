@@ -23,21 +23,70 @@ LINES=[
 "CONTROL YOURSELF",
 "PROVE IT QUIETLY",
 "STOP NEGOTIATING",
-"DO THE HARD THING"
+"DO THE HARD THING",
+"YOU KNOW THE STANDARD",
+"EXECUTE ANYWAY",
+"YOUR HABITS EXPOSE YOU",
+"YOUR ROUTINE TELLS THE TRUTH",
+"WEAKNESS NEGOTIATES",
+"STANDARDS DON'T",
+"DISCIPLINE IS A CHOICE",
+"CONSISTENCY BUILDS POWER",
+"SHOW UP AGAIN",
+"DO IT WITHOUT MOOD",
+"FOCUS IS A DECISION",
+"COMFORT LIES",
+"PAIN TEACHES",
+"SILENCE BUILDS STRENGTH",
+"YOU NEED STRUCTURE",
+"YOU NEED CONTROL",
+"YOU NEED ORDER",
+"YOUR FUTURE IS EARNED",
+"NOTHING CHANGES BY TALKING",
+"EXECUTION WINS",
+"STOP SEEKING EASY",
+"HARD BUILDS YOU",
+"REPEAT THE STANDARD",
+"HABITS SHAPE YOU",
+"YOU SEE THE TRUTH",
+"YOU KNOW WHAT TO DO",
+"DO IT ANYWAY",
+"DISCIPLINE IS IDENTITY",
+"SELF CONTROL IS POWER",
+"SHOW UP QUIETLY",
+"RESULTS NEED STANDARDS",
+"WORK WITHOUT MOOD",
+"STOP DELAYING",
+"START FINISHING",
+"DECIDE AND MOVE",
+"PROVE IT DAILY",
+"THIS IS DISCIPLINE"
 ]
+
 
 # ---------- MEMORY ----------
 
 MEM="memory.json"
-used=json.load(open(MEM)) if os.path.exists(MEM) else []
 
-pool=[l for l in LINES if l not in used]
-if len(pool)<4:
+if os.path.exists(MEM):
+    used=json.load(open(MEM))
+else:
     used=[]
-    pool=LINES.copy()
 
-chosen=random.sample(pool,4)
-json.dump(used+chosen,open(MEM,"w"))
+# remove used lines
+available=[l for l in LINES if l not in used]
+
+# reset ONLY when all used
+if len(available)<4:
+    used=[]
+    available=LINES.copy()
+
+chosen=random.sample(available,4)
+
+# update memory
+used+=chosen
+json.dump(used,open(MEM,"w"))
+
 
 # ---------- TEXT ----------
 
