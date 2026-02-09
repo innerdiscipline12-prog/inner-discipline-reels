@@ -72,21 +72,36 @@ async def make_voice(text,path):
 # ================= TEXT FRAME =================
 
 def frame(text):
-    img=Image.new("RGBA",(W,H),(0,0,0,0))
-    d=ImageDraw.Draw(img)
-    font=ImageFont.truetype(FONT_PATH,120)
+    img = Image.new("RGBA",(W,H),(0,0,0,0))
+    d = ImageDraw.Draw(img)
 
-    box=d.textbbox((0,0),text,font=font)
-    w=box[2]-box[0]
-    h=box[3]-box[1]
+    margin = 80
+    max_w = W - margin*2
+    max_h = H - margin*2
 
-    x=(W-w)//2
-    y=(H-h)//2
+    size = 160
 
+    while size > 40:
+        font = ImageFont.truetype(FONT_PATH,size)
+        box = d.textbbox((0,0),text,font=font)
+        tw = box[2]-box[0]
+        th = box[3]-box[1]
+
+        if tw <= max_w and th <= max_h:
+            break
+        size -= 4
+
+    x = (W - tw)//2
+    y = (H - th)//2
+
+    # shadow
     d.text((x+6,y+6),text,font=font,fill=(0,0,0,180))
+
+    # main
     d.text((x,y),text,font=font,fill="white")
 
     return np.array(img)
+
 
 # ================= THUMBNAIL =================
 
@@ -95,19 +110,32 @@ def make_thumbnail(text,path):
 
     img=Image.new("RGB",(1080,1920),(0,0,0))
     d=ImageDraw.Draw(img)
-    font=ImageFont.truetype(FONT_PATH,180)
 
-    box=d.textbbox((0,0),words,font=font)
-    w=box[2]-box[0]
-    h=box[3]-box[1]
+    margin = 100
+    max_w = 1080 - margin*2
+    max_h = 1920 - margin*2
 
-    x=(1080-w)//2
-    y=(1920-h)//2
+    size = 200
+
+    while size > 60:
+        font=ImageFont.truetype(FONT_PATH,size)
+        box=d.textbbox((0,0),words,font=font)
+
+        tw=box[2]-box[0]
+        th=box[3]-box[1]
+
+        if tw<=max_w and th<=max_h:
+            break
+        size-=4
+
+    x=(1080-tw)//2
+    y=(1920-th)//2
 
     d.text((x+8,y+8),words,font=font,fill=(0,0,0))
     d.text((x,y),words,font=font,fill="white")
 
     img.save(path)
+
 
 # ================= CAPTION =================
 
