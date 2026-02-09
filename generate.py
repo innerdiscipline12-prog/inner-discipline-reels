@@ -5,28 +5,28 @@ from moviepy.video.fx.all import resize
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
-# ---------- SETTINGS ----------
+# ================= SETTINGS =================
 
 VIDEO="bg.mp4"
 MUSIC="music.mp3"
 FONT_PATH="Anton-Regular.ttf"
 
 W,H=1080,1920
+MAX_SECONDS=14
+REELS_PER_RUN=5
 
 VOICE="en-US-ChristopherNeural"
 VOICE_RATE="-35%"
 VOICE_PITCH="-20Hz"
 
-REELS_PER_RUN=5
-MAX_SECONDS=14
-
 HASHTAGS=[
 "#discipline","#selfcontrol","#focus",
-"#mindset","#innerdiscipline","#consistency",
-"#growth","#success","#motivation"
+"#mindset","#innerdiscipline",
+"#consistency","#growth","#stoic"
 ]
 
-# ---------- VIRAL WEIGHTED LINES ----------
+# ================= HOOK MODE =================
+# Higher number = more likely to be hook
 
 LINES={
 "NO ONE IS COMING":5,
@@ -41,22 +41,24 @@ LINES={
 "RESULTS NEED STANDARDS":3,
 "EXECUTE DAILY":2,
 "FOCUS BUILDS POWER":2,
-"SMALL WINS MATTER":2,
 "REMOVE EXCUSES":2,
 "STAY CONSISTENT":2,
-"SELF CONTROL WINS":2,
 "WORK IN SILENCE":2,
 "BE RELENTLESS":2
 }
 
 ALL_LINES=list(LINES.keys())
 
-# ---------- MEMORY ----------
+# ================= MEMORY =================
 
 MEM="memory.json"
 used=json.load(open(MEM)) if os.path.exists(MEM) else []
 
-# ---------- VOICE ----------
+# ================= OUTPUT ROOT =================
+
+os.makedirs("outputs",exist_ok=True)
+
+# ================= VOICE =================
 
 async def make_voice(text,path):
     tts=edge_tts.Communicate(
@@ -67,7 +69,7 @@ async def make_voice(text,path):
     )
     await tts.save(path)
 
-# ---------- TEXT FRAME ----------
+# ================= TEXT FRAME =================
 
 def frame(text):
     img=Image.new("RGBA",(W,H),(0,0,0,0))
@@ -86,7 +88,7 @@ def frame(text):
 
     return np.array(img)
 
-# ---------- THUMBNAIL ----------
+# ================= THUMBNAIL =================
 
 def make_thumbnail(text,path):
     words=" ".join(text.split()[:2])
@@ -107,26 +109,26 @@ def make_thumbnail(text,path):
 
     img.save(path)
 
-# ---------- CAPTION ----------
+# ================= CAPTION =================
 
 def make_caption(lines,path):
-    cap=" ".join(lines[:2]).title()
+    cap=" • ".join(lines[:2]).title()
     tags=" ".join(random.sample(HASHTAGS,4))
 
     with open(path,"w") as f:
         f.write(cap+"\n\n"+tags)
 
-# ---------- SMART PICK ----------
+# ================= SMART PICK (HOOK MODE) =================
 
 def pick_lines():
     global used
 
     pool=[l for l in ALL_LINES if l not in used]
+
     if len(pool)<4:
         used=[]
         pool=ALL_LINES.copy()
 
-    # weighted hook
     weights=[LINES[l] for l in pool]
     hook=random.choices(pool,weights=weights,k=1)[0]
 
@@ -138,7 +140,7 @@ def pick_lines():
 
     return chosen
 
-# ---------- REEL ----------
+# ================= LOOP MODE BUILD =================
 
 def make_reel(idx):
 
@@ -147,7 +149,8 @@ def make_reel(idx):
 
     chosen=pick_lines()
 
-    text="... ".join(chosen)
+    # loop psychology pause
+    text="... ".join(chosen)+"..."
 
     voice_path=f"{folder}/voice.mp3"
     asyncio.run(make_voice(text,voice_path))
@@ -158,43 +161,59 @@ def make_reel(idx):
     if base.w<W:
         base=base.resize(width=W)
 
-    base=base.crop(x_center=base.w/2,y_center=base.h/2,width=W,height=H)
+    base=base.crop(
+        x_center=base.w/2,
+        y_center=base.h/2,
+        width=W,height=H
+    )
 
     clips=[]
     t=0
 
     for line in chosen:
         img=frame(line)
+
         c=(ImageClip(img)
            .set_start(t)
            .set_duration(3.5)
            .fadein(0.25)
            .fadeout(0.25))
+
         clips.append(c)
         t+=3.5
 
     final=CompositeVideoClip([base]+clips).subclip(0,MAX_SECONDS)
 
+    # LOOP MODE ending
+    final=final.fx(vfx.freeze,
+                   t=final.duration-0.4,
+                   freeze_duration=0.4)
+
+    final=final.fadeout(0.6)
+
     voice=AudioFileClip(voice_path)
 
     if os.path.exists(MUSIC):
         music=AudioFileClip(MUSIC).volumex(0.08).subclip(0,MAX_SECONDS)
-        final=final.set_audio(CompositeAudioClip([music,voice]))
+        final=final.set_audio(
+            CompositeAudioClip([music,voice])
+        )
     else:
         final=final.set_audio(voice)
 
     final.write_videofile(f"{folder}/reel.mp4",fps=30)
 
-    make_thumbnail(chosen[0],f"{folder}/thumbnail.jpg")
-    make_caption(chosen,f"{folder}/caption.txt")
+    make_thumbnail(chosen[0],
+                   f"{folder}/thumbnail.jpg")
 
-# ---------- RUN ----------
+    make_caption(chosen,
+                 f"{folder}/caption.txt")
 
-os.makedirs("outputs",exist_ok=True)
+# ================= RUN =================
 
 for i in range(1,REELS_PER_RUN+1):
     make_reel(i)
 
 json.dump(used,open(MEM,"w"))
 
-print("✅ PRO V3.5 batch ready.")
+print("🔥 HOOK + LOOP MODE COMPLETE")
