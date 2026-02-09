@@ -298,11 +298,28 @@ async def tts_line_to_file(text, outpath):
 # AUTO DUCK MUSIC WHEN VOICE SPEAKS
 # =========================
 def apply_duck(music_clip, speaking_windows):
+
     def duck(get_frame, t):
-        speaking = any((t >= s and t <= e) for (s, e) in speaking_windows)
+
+        # convert numpy time to float safely
+        try:
+            tt = float(t)
+        except:
+            tt = float(np.mean(t))
+
+        speaking = False
+
+        for s, e in speaking_windows:
+            if tt >= s and tt <= e:
+                speaking = True
+                break
+
         factor = DUCK_FACTOR if speaking else 1.0
+
         return get_frame(t) * factor
+
     return music_clip.fl(duck)
+
 
 # =========================
 # MAIN GENERATOR
