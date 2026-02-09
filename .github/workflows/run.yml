@@ -18,16 +18,12 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-
-
-
       - run: python generate.py
 
       - uses: actions/upload-artifact@v4
-  with:
-    name: outputs
-    path: |
-      reel.mp4
-      thumbnail.jpg
-      caption.txt
-
+        with:
+          name: outputs
+          path: |
+            reel.mp4
+            thumbnail.jpg
+            caption.txt
