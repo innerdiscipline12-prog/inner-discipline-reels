@@ -410,14 +410,25 @@ def make():
 
         final = final.set_audio(final_audio)
 
-        # exports
-        make_thumbnail(chosen[0])     # 2-word hook from hook line
-        make_caption(chosen)
+        # ---------- EXPORTS ----------
 
-        out_video = os.path.join(OUTDIR, "reel.mp4")
-        final.write_videofile(out_video, fps=30, audio_codec="aac")
+import os
 
-        break
+OUTDIR = "outputs"
+os.makedirs(OUTDIR, exist_ok=True)
+
+# video
+out_video = os.path.join(OUTDIR, "reel.mp4")
+final.write_videofile(out_video, fps=30, audio_codec="aac")
+
+# thumbnail
+thumb_path = os.path.join(OUTDIR, "thumbnail.jpg")
+make_thumbnail(chosen[0], thumb_path)
+
+# caption
+cap_path = os.path.join(OUTDIR, "caption.txt")
+make_caption(chosen, cap_path)
+
 
 if __name__ == "__main__":
     make()
