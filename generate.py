@@ -12,7 +12,7 @@ MUSIC="music.mp3"
 FONT_PATH="Anton-Regular.ttf"
 
 W,H=1080,1920
-MAX_SECONDS=14
+MAX_SECONDS=9          # optimal retention
 REELS_PER_RUN=5
 
 VOICE="en-US-ChristopherNeural"
@@ -22,11 +22,10 @@ VOICE_PITCH="-20Hz"
 HASHTAGS=[
 "#discipline","#selfcontrol","#focus",
 "#mindset","#innerdiscipline",
-"#consistency","#growth","#stoic"
+"#consistency","#stoic","#growth"
 ]
 
 # ================= HOOK MODE =================
-# Higher number = more likely to be hook
 
 LINES={
 "NO ONE IS COMING":5,
@@ -40,7 +39,6 @@ LINES={
 "BUILD SILENT HABITS":3,
 "RESULTS NEED STANDARDS":3,
 "EXECUTE DAILY":2,
-"FOCUS BUILDS POWER":2,
 "REMOVE EXCUSES":2,
 "STAY CONSISTENT":2,
 "WORK IN SILENCE":2,
@@ -53,10 +51,6 @@ ALL_LINES=list(LINES.keys())
 
 MEM="memory.json"
 used=json.load(open(MEM)) if os.path.exists(MEM) else []
-
-# ================= OUTPUT ROOT =================
-
-os.makedirs("outputs",exist_ok=True)
 
 # ================= VOICE =================
 
@@ -75,77 +69,46 @@ def frame(text):
     img = Image.new("RGBA",(W,H),(0,0,0,0))
     d = ImageDraw.Draw(img)
 
-    # --- TEXT MODE SPLIT ---
-    words = text.split()
+    words=text.split()
+    if len(words)>=2:
+        mid=len(words)//2
+        text=" ".join(words[:mid])+"\n"+" ".join(words[mid:])
 
-    if len(words) >= 2:
-        mid = len(words)//2
-        line1 = " ".join(words[:mid])
-        line2 = " ".join(words[mid:])
-        text = line1 + "\n" + line2
+    margin=100
+    max_w=W-margin*2
+    max_h=H-margin*2
 
-    margin = 80
-    max_w = W - margin*2
-    max_h = H - margin*2
+    size=160
 
-    size = 160
+    while size>40:
+        font=ImageFont.truetype(FONT_PATH,size)
+        box=d.multiline_textbbox((0,0),text,font=font,spacing=20)
 
-    # --- AUTO FIT ---
-    while size > 40:
-        font = ImageFont.truetype(FONT_PATH,size)
-        box = d.multiline_textbbox((0,0),text,font=font,spacing=20)
+        tw=box[2]-box[0]
+        th=box[3]-box[1]
 
-        tw = box[2]-box[0]
-        th = box[3]-box[1]
-
-        if tw <= max_w and th <= max_h:
+        if tw<=max_w and th<=max_h:
             break
-        size -= 4
+        size-=4
 
-    x = (W - tw)//2
-    y = (H - th)//2
+    x=(W-tw)//2
+    y=int(H*0.55 - th/2)   # discipline safe zone
 
-    # shadow
-    d.multiline_text(
-        (x+6,y+6),
-        text,
-        font=font,
-        fill=(0,0,0,180),
-        align="center",
-        spacing=20
-    )
-
-    # main
-    d.multiline_text(
-        (x,y),
-        text,
-        font=font,
-        fill="white",
-        align="center",
-        spacing=20
-    )
+    d.multiline_text((x+6,y+6),text,font=font,fill=(0,0,0,180),align="center",spacing=20)
+    d.multiline_text((x,y),text,font=font,fill="white",align="center",spacing=20)
 
     return np.array(img)
-
-
 
 # ================= THUMBNAIL =================
 
 def make_thumbnail(text,path):
     words=text.split()
-
     if len(words)>=2:
         mid=len(words)//2
         text=" ".join(words[:mid])+"\n"+" ".join(words[mid:])
-    else:
-        text=words[0]
 
     img=Image.new("RGB",(1080,1920),(0,0,0))
     d=ImageDraw.Draw(img)
-
-    margin=120
-    max_w=1080-margin*2
-    max_h=1920-margin*2
 
     size=200
 
@@ -156,19 +119,17 @@ def make_thumbnail(text,path):
         tw=box[2]-box[0]
         th=box[3]-box[1]
 
-        if tw<=max_w and th<=max_h:
+        if tw<900 and th<1600:
             break
         size-=4
 
     x=(1080-tw)//2
     y=(1920-th)//2
 
-    d.multiline_text((x+10,y+10),text,font=font,fill=(0,0,0),align="center",spacing=30)
+    d.multiline_text((x+8,y+8),text,font=font,fill=(0,0,0),align="center",spacing=30)
     d.multiline_text((x,y),text,font=font,fill="white",align="center",spacing=30)
 
     img.save(path)
-
-
 
 # ================= CAPTION =================
 
@@ -179,7 +140,7 @@ def make_caption(lines,path):
     with open(path,"w") as f:
         f.write(cap+"\n\n"+tags)
 
-# ================= SMART PICK (HOOK MODE) =================
+# ================= SMART PICK =================
 
 def pick_lines():
     global used
@@ -194,14 +155,14 @@ def pick_lines():
     hook=random.choices(pool,weights=weights,k=1)[0]
 
     remaining=[l for l in pool if l!=hook]
-    others=random.sample(remaining,3)
+    others=random.sample(remaining,2)
 
     chosen=[hook]+others
     used+=chosen
 
     return chosen
 
-# ================= LOOP MODE BUILD =================
+# ================= REEL BUILD =================
 
 def make_reel(idx):
 
@@ -210,23 +171,20 @@ def make_reel(idx):
 
     chosen=pick_lines()
 
-    # loop psychology pause
-    text="... ".join(chosen)+"..."
+    text="... ".join(chosen)+"..."  # loop psychology
 
     voice_path=f"{folder}/voice.mp3"
     asyncio.run(make_voice(text,voice_path))
 
     base=VideoFileClip(VIDEO).without_audio()
-    base=base.fx(resize,lambda t:1+0.02*t).resize(height=H)
+
+    # cinematic slow zoom
+    base=base.fx(resize,lambda t:1+0.008*t).resize(height=H)
 
     if base.w<W:
         base=base.resize(width=W)
 
-    base=base.crop(
-        x_center=base.w/2,
-        y_center=base.h/2,
-        width=W,height=H
-    )
+    base=base.crop(x_center=base.w/2,y_center=base.h/2,width=W,height=H)
 
     clips=[]
     t=0
@@ -236,45 +194,39 @@ def make_reel(idx):
 
         c=(ImageClip(img)
            .set_start(t)
-           .set_duration(3.5)
-           .fadein(0.25)
-           .fadeout(0.25))
+           .set_duration(1.6)
+           .fadein(0.3)
+           .fadeout(0.3))
 
         clips.append(c)
-        t+=3.5
+        t+=1.6
 
     final=CompositeVideoClip([base]+clips).subclip(0,MAX_SECONDS)
 
-    # LOOP MODE ending
-    final=final.fx(vfx.freeze,
-                   t=final.duration-0.4,
-                   freeze_duration=0.4)
-
+    # LOOP MODE ENDING
+    final=final.fx(vfx.freeze,t=final.duration-0.4,freeze_duration=0.4)
     final=final.fadeout(0.6)
 
     voice=AudioFileClip(voice_path)
 
     if os.path.exists(MUSIC):
-        music=AudioFileClip(MUSIC).volumex(0.08).subclip(0,MAX_SECONDS)
-        final=final.set_audio(
-            CompositeAudioClip([music,voice])
-        )
+        music=AudioFileClip(MUSIC).volumex(0.1).subclip(0,MAX_SECONDS)
+        final=final.set_audio(CompositeAudioClip([music,voice]))
     else:
         final=final.set_audio(voice)
 
     final.write_videofile(f"{folder}/reel.mp4",fps=30)
 
-    make_thumbnail(chosen[0],
-                   f"{folder}/thumbnail.jpg")
-
-    make_caption(chosen,
-                 f"{folder}/caption.txt")
+    make_thumbnail(chosen[0],f"{folder}/thumbnail.jpg")
+    make_caption(chosen,f"{folder}/caption.txt")
 
 # ================= RUN =================
+
+os.makedirs("outputs",exist_ok=True)
 
 for i in range(1,REELS_PER_RUN+1):
     make_reel(i)
 
 json.dump(used,open(MEM,"w"))
 
-print("🔥 HOOK + LOOP MODE COMPLETE")
+print("🔥 DISCIPLINE MASTER SCRIPT COMPLETE")
