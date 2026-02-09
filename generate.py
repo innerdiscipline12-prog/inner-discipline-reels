@@ -45,22 +45,23 @@ import asyncio
 
 async def make_voice():
 
-    # Add pauses between lines
+    # EXACT SAME lines as video
     text = ""
 
     for line in chosen:
-        text += line + "... <break time='900ms'/> "
+        text += line + "... "
 
-    tts = edge_tts.Communicate(
+    communicate = edge_tts.Communicate(
         text,
         voice="en-US-ChristopherNeural",
-        rate="-45%",   # slow calm pace
-        pitch="-30Hz"  # deeper tone
+        rate="-35%",
+        pitch="-20Hz"
     )
 
-    await tts.save("voice.mp3")
+    await communicate.save("voice.mp3")
 
 asyncio.run(make_voice())
+
 
 
 
