@@ -235,7 +235,7 @@ def make():
 
     # ---------- CINEMATIC AUDIO MIX ----------
 
-voice_mix = CompositeAudioClip(audio_clips).volumex(1.8)
+voice_mix = CompositeAudioClip(audio_clips).volumex(2.0)
 
 music = (
     AudioFileClip(MUSIC)
