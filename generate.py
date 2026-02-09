@@ -75,15 +75,26 @@ def frame(text):
     img = Image.new("RGBA",(W,H),(0,0,0,0))
     d = ImageDraw.Draw(img)
 
+    # --- TEXT MODE SPLIT ---
+    words = text.split()
+
+    if len(words) >= 2:
+        mid = len(words)//2
+        line1 = " ".join(words[:mid])
+        line2 = " ".join(words[mid:])
+        text = line1 + "\n" + line2
+
     margin = 80
     max_w = W - margin*2
     max_h = H - margin*2
 
     size = 160
 
+    # --- AUTO FIT ---
     while size > 40:
         font = ImageFont.truetype(FONT_PATH,size)
-        box = d.textbbox((0,0),text,font=font)
+        box = d.multiline_textbbox((0,0),text,font=font,spacing=20)
+
         tw = box[2]-box[0]
         th = box[3]-box[1]
 
@@ -95,31 +106,52 @@ def frame(text):
     y = (H - th)//2
 
     # shadow
-    d.text((x+6,y+6),text,font=font,fill=(0,0,0,180))
+    d.multiline_text(
+        (x+6,y+6),
+        text,
+        font=font,
+        fill=(0,0,0,180),
+        align="center",
+        spacing=20
+    )
 
     # main
-    d.text((x,y),text,font=font,fill="white")
+    d.multiline_text(
+        (x,y),
+        text,
+        font=font,
+        fill="white",
+        align="center",
+        spacing=20
+    )
 
     return np.array(img)
+
 
 
 # ================= THUMBNAIL =================
 
 def make_thumbnail(text,path):
-    words=" ".join(text.split()[:2])
+    words=text.split()
+
+    if len(words)>=2:
+        mid=len(words)//2
+        text=" ".join(words[:mid])+"\n"+" ".join(words[mid:])
+    else:
+        text=words[0]
 
     img=Image.new("RGB",(1080,1920),(0,0,0))
     d=ImageDraw.Draw(img)
 
-    margin = 100
-    max_w = 1080 - margin*2
-    max_h = 1920 - margin*2
+    margin=120
+    max_w=1080-margin*2
+    max_h=1920-margin*2
 
-    size = 200
+    size=200
 
-    while size > 60:
+    while size>60:
         font=ImageFont.truetype(FONT_PATH,size)
-        box=d.textbbox((0,0),words,font=font)
+        box=d.multiline_textbbox((0,0),text,font=font,spacing=30)
 
         tw=box[2]-box[0]
         th=box[3]-box[1]
@@ -131,10 +163,11 @@ def make_thumbnail(text,path):
     x=(1080-tw)//2
     y=(1920-th)//2
 
-    d.text((x+8,y+8),words,font=font,fill=(0,0,0))
-    d.text((x,y),words,font=font,fill="white")
+    d.multiline_text((x+10,y+10),text,font=font,fill=(0,0,0),align="center",spacing=30)
+    d.multiline_text((x,y),text,font=font,fill="white",align="center",spacing=30)
 
     img.save(path)
+
 
 
 # ================= CAPTION =================
