@@ -24,6 +24,10 @@ jobs:
       - run: python generate.py
 
       - uses: actions/upload-artifact@v4
-        with:
-          name: reel
-          path: reel.mp4
+  with:
+    name: outputs
+    path: |
+      reel.mp4
+      thumbnail.jpg
+      caption.txt
+
