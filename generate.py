@@ -39,33 +39,6 @@ if len(pool)<4:
 chosen=random.sample(pool,4)
 json.dump(used+chosen,open(MEM,"w"))
 
-# ---------- VOICE ----------
-import edge_tts
-import asyncio
-
-async def make_voice():
-
-    # EXACT SAME lines as video
-    text = ""
-
-    for line in chosen:
-        text += line + "... "
-
-    communicate = edge_tts.Communicate(
-        text,
-        voice="en-US-ChristopherNeural",
-        rate="-35%",
-        pitch="-20Hz"
-    )
-
-    await communicate.save("voice.mp3")
-
-asyncio.run(make_voice())
-
-
-
-
-
 # ---------- TEXT ----------
 
 def frame(text):
@@ -122,29 +95,53 @@ def make():
 
     base=base.crop(x_center=base.w/2,y_center=base.h/2,width=W,height=H)
 
-    clips=[]; t=0
+    clips=[]
+    audio_clips=[]
+    t=0
 
-    for line in chosen:
+    async def make_line_voice(line,file):
+        communicate=edge_tts.Communicate(
+            line,
+            voice="en-US-ChristopherNeural",
+            rate="-35%",
+            pitch="-20Hz"
+        )
+        await communicate.save(file)
+
+    for i,line in enumerate(chosen):
+
+        voice_file=f"v{i}.mp3"
+        asyncio.run(make_line_voice(line,voice_file))
+
+        audio=AudioFileClip(voice_file)
+        dur=audio.duration+0.5
+
         img=frame(line)
-        c=(ImageClip(img)
-           .set_start(t)
-           .set_duration(3.5)
-           .fadein(0.3)
-           .fadeout(0.3))
-        clips.append(c)
-        t+=3.5
 
-    final=CompositeVideoClip([base]+clips).subclip(0,14)
+        clip=(ImageClip(img)
+              .set_start(t)
+              .set_duration(dur)
+              .fadein(0.3)
+              .fadeout(0.3))
 
+        clips.append(clip)
+        audio_clips.append(audio.set_start(t))
+
+        t+=dur
+
+    final=CompositeVideoClip([base]+clips).subclip(0,t)
+
+    # grain
     noise=np.random.randint(0,15,(H,W,3)).astype("uint8")
-    grain=ImageClip(noise).set_duration(14).set_opacity(0.03)
-
+    grain=ImageClip(noise).set_duration(t).set_opacity(0.03)
     final=CompositeVideoClip([final,grain])
 
-    voice=AudioFileClip("voice.mp3")
-    music=AudioFileClip(MUSIC).volumex(0.15).subclip(0,14)
+    # music + voice mix
+    music=AudioFileClip(MUSIC).volumex(0.15).subclip(0,t)
 
-    final=final.set_audio(CompositeAudioClip([music,voice]))
+    final_audio=CompositeAudioClip([music]+audio_clips)
+
+    final=final.set_audio(final_audio)
 
     final.write_videofile("reel.mp4",fps=30)
 
