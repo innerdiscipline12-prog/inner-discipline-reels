@@ -265,10 +265,16 @@ final = final.set_audio(
 )
 
 
-    # exports
+        # ---------- EXPORTS ----------
     make_thumbnail(chosen[0])
     make_caption(chosen)
 
-    final.write_videofile("reel.mp4",fps=30)
+    final.write_videofile(
+        "reel.mp4",
+        fps=30,
+        codec="libx264",
+        audio_codec="aac"
+    )
 
 make()
+
