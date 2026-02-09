@@ -5,6 +5,8 @@ from moviepy.video.fx.all import resize
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
+# ---------- SETTINGS ----------
+
 VIDEO="bg.mp4"
 MUSIC="music.mp3"
 FONT_PATH="Anton-Regular.ttf"
@@ -14,6 +16,8 @@ W,H=1080,1920
 SAFE_TOP=350
 SAFE_BOTTOM=450
 SAFE_H=H-SAFE_TOP-SAFE_BOTTOM
+
+# ---------- SCRIPT BANK ----------
 
 LINES=[
 "YOU WAIT FOR MOTIVATION",
@@ -63,8 +67,34 @@ LINES=[
 "THIS IS DISCIPLINE"
 ]
 
+# ---------- HOOKS ----------
 
-# ---------- MEMORY ----------
+HOOKS=[
+"NO ONE IS COMING",
+"YOU ALREADY KNOW THE TRUTH",
+"MOST QUIT BY DAY 7",
+"YOUR COMFORT IS COSTING YOU",
+"THIS IS WHY YOU'RE STUCK",
+"YOU'RE NOT TIRED YOU'RE UNDISCIPLINED"
+]
+
+# ---------- WEIGHTS ----------
+
+weights={
+"DISCIPLINE DECIDES":3,
+"CONTROL YOURSELF":3,
+"PROVE IT QUIETLY":3,
+"COMFORT IS THE ENEMY":2,
+"STOP NEGOTIATING":2,
+"DO THE HARD THING":2
+}
+
+# ---------- WEIGHTED MEMORY ----------
+
+weighted_pool=[]
+for line in LINES:
+    w=weights.get(line,1)
+    weighted_pool.extend([line]*w)
 
 MEM="memory.json"
 
@@ -73,24 +103,24 @@ if os.path.exists(MEM):
 else:
     used=[]
 
-# remove used lines
-available=[l for l in LINES if l not in used]
+available=[l for l in weighted_pool if l not in used]
 
-# reset ONLY when all used
 if len(available)<4:
     used=[]
-    available=LINES.copy()
+    available=weighted_pool.copy()
 
 chosen=random.sample(available,4)
 
-# update memory
+# Force strong hook as first line
+chosen[0]=random.choice(HOOKS)
+
 used+=chosen
 json.dump(used,open(MEM,"w"))
 
-
-# ---------- TEXT ----------
+# ---------- TEXT RENDER ----------
 
 def frame(text):
+
     img=Image.new("RGBA",(W,H),(0,0,0,0))
     d=ImageDraw.Draw(img)
     font=ImageFont.truetype(FONT_PATH,120)
@@ -131,7 +161,7 @@ def frame(text):
 
     return np.array(img)
 
-# ---------- VIDEO ----------
+# ---------- VIDEO GENERATOR ----------
 
 def make():
 
@@ -185,9 +215,8 @@ def make():
     grain=ImageClip(noise).set_duration(t).set_opacity(0.03)
     final=CompositeVideoClip([final,grain])
 
-    # music + voice mix
+    # music + voice
     music=AudioFileClip(MUSIC).volumex(0.15).subclip(0,t)
-
     final_audio=CompositeAudioClip([music]+audio_clips)
 
     final=final.set_audio(final_audio)
