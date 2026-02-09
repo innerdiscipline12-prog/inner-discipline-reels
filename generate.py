@@ -168,12 +168,20 @@ def make_caption(lines,path):
 
 # ============== AUTO DUCK ==============
 
-def apply_duck(music,windows):
-    def duck(get_frame,t):
-        speaking=any(s<=t<=e for s,e in windows)
-        factor=0.25 if speaking else 1.0
-        return get_frame(t)*factor
+def apply_duck(music, windows):
+
+    def duck(get_frame, t):
+        # convert t to float (fix)
+        if isinstance(t, np.ndarray):
+            t = float(t[0])
+
+        speaking = any(s <= t <= e for s, e in windows)
+
+        factor = 0.25 if speaking else 1.0
+        return get_frame(t) * factor
+
     return music.fl(duck)
+
 
 # ============== MAIN ==============
 
