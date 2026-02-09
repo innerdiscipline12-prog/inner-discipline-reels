@@ -1,35 +1,45 @@
-import os, json, random, asyncio, math
+import os, json, random, asyncio
 import numpy as np
+
 from moviepy.editor import (
     VideoFileClip, ImageClip, CompositeVideoClip,
     AudioFileClip, CompositeAudioClip
 )
 from moviepy.video.fx.all import resize
+
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
-# ================= SETTINGS =================
+# ==============================
+# SETTINGS
+# ==============================
 
 VIDEO = "bg.mp4"
 MUSIC = "music.mp3"
 FONT_PATH = "Anton-Regular.ttf"
 
-W, H = 1080, 1920
+W,H = 1080,1920
 
 SAFE_TOP = 350
 SAFE_BOTTOM = 450
-SAFE_H = H - SAFE_TOP - SAFE_BOTTOM
+SAFE_H = H-SAFE_TOP-SAFE_BOTTOM
 
 MAX_SECONDS = 14.0
 
 VOICE = "en-US-ChristopherNeural"
 VOICE_RATE = "-35%"
 VOICE_PITCH = "-20Hz"
+VOICE_VOLUME = 2.0
 
 MUSIC_BASE = 0.25
-MUSIC_FINAL = 0.6
+MUSIC_DUCK = 0.25
+MUSIC_FINAL = 0.7
 
-# ============== SCRIPT POOL ==============
+OUTROOT = "outputs"
+
+# ==============================
+# SCRIPT POOL
+# ==============================
 
 LINES = [
 "YOU WAIT FOR MOTIVATION",
@@ -40,72 +50,98 @@ LINES = [
 "PROVE IT QUIETLY",
 "STOP NEGOTIATING",
 "DO THE HARD THING",
-"FEELINGS ARE LIARS",
-"STANDARDS WIN",
+"FEELINGS ARE TEMPORARY",
+"STANDARDS STAY",
+"RESULTS REQUIRE CONTROL",
+"NO EXCUSES LEFT",
+"BUILD SILENT POWER",
+"WIN THE MORNING",
+"CONTROL YOUR HABITS",
+"FOCUS BUILDS DISCIPLINE",
+"CONSISTENCY WINS",
 "SHOW UP ANYWAY",
-"CONSISTENCY BUILDS POWER",
-"FOCUS BUILDS CONTROL",
-"RESULTS FOLLOW DISCIPLINE",
-"EXCUSES KILL PROGRESS",
-"YOUR HABITS DECIDE",
-"SILENCE BUILDS STRENGTH",
-"CONTROL YOUR INPUTS",
-"STRUCTURE CREATES FREEDOM",
-"REPEAT THE HARD THING",
+"STOP WAITING",
+"EXECUTE DAILY"
 ]
 
 HASHTAGS = [
-"#discipline","#mindset","#selfcontrol",
+"#discipline","#selfcontrol","#mindset",
 "#consistency","#innerdiscipline",
-"#focus","#growth","#mentaltoughness"
+"#focus","#growth","#standards"
 ]
 
-# ============== MEMORY (NO REPEATS) ==============
+# ==============================
+# MEMORY (NO REPEATS)
+# ==============================
 
-MEM = "memory.json"
-used = json.load(open(MEM)) if os.path.exists(MEM) else []
+MEM="memory.json"
+used=json.load(open(MEM)) if os.path.exists(MEM) else []
 
-pool = [l for l in LINES if l not in used]
+pool=[l for l in LINES if l not in used]
 
-if len(pool) < 4:
-    used = []
-    pool = LINES.copy()
+if len(pool)<4:
+    used=[]
+    pool=LINES.copy()
 
-chosen = random.sample(pool, 4)
-json.dump(used + chosen, open(MEM,"w"))
+chosen=random.sample(pool,4)
+json.dump(used+chosen,open(MEM,"w"))
 
-# ============== AUTO FOLDER NUMBERING ==============
+# ==============================
+# OUTPUT FOLDER AUTO NUMBER
+# ==============================
 
-BASE_OUT = "outputs"
-os.makedirs(BASE_OUT, exist_ok=True)
+os.makedirs(OUTROOT,exist_ok=True)
 
-existing = [int(x) for x in os.listdir(BASE_OUT) if x.isdigit()]
-next_id = str(max(existing)+1 if existing else 1).zfill(3)
+n=1
+while os.path.exists(f"{OUTROOT}/{n}"):
+    n+=1
 
-OUTDIR = os.path.join(BASE_OUT, next_id)
+OUTDIR=f"{OUTROOT}/{n}"
 os.makedirs(OUTDIR)
 
-# ============== VOICE ==============
+# ==============================
+# VOICE
+# ==============================
 
-async def make_voice(line, file):
-    tts = edge_tts.Communicate(
-        line,
-        voice=VOICE,
-        rate=VOICE_RATE,
-        pitch=VOICE_PITCH
-    )
-    await tts.save(file)
+async def make_voice(lines):
+    files=[]
+    windows=[]
+    t=0
 
-# ============== TEXT FRAME ==============
+    for i,line in enumerate(lines):
+        file=f"{OUTDIR}/v{i}.mp3"
+
+        tts=edge_tts.Communicate(
+            line,
+            voice=VOICE,
+            rate=VOICE_RATE,
+            pitch=VOICE_PITCH
+        )
+        await tts.save(file)
+
+        a=AudioFileClip(file)
+        dur=a.duration+0.4
+
+        windows.append((t,t+dur))
+        t+=dur
+        files.append((file,dur))
+
+    return files,windows,t
+
+voice_files,speaking_windows,final_len = asyncio.run(make_voice(chosen))
+
+# ==============================
+# TEXT FRAME
+# ==============================
 
 def frame(text):
-    img = Image.new("RGBA",(W,H),(0,0,0,0))
-    d = ImageDraw.Draw(img)
-    font = ImageFont.truetype(FONT_PATH,120)
+    img=Image.new("RGBA",(W,H),(0,0,0,0))
+    d=ImageDraw.Draw(img)
+    font=ImageFont.truetype(FONT_PATH,120)
 
-    max_w = int(W*0.75)
+    max_w=int(W*0.75)
 
-    words = text.split()
+    words=text.split()
     lines=[]; cur=""
 
     for w in words:
@@ -117,73 +153,36 @@ def frame(text):
             lines.append(cur); cur=w
     lines.append(cur)
 
-    hs=[]
-    for l in lines:
-        b=d.textbbox((0,0),l,font=font)
-        hs.append(b[3]-b[1])
-
+    hs=[d.textbbox((0,0),l,font=font)[3] for l in lines]
     total=sum(hs)+25*(len(lines)-1)
+
     y=SAFE_TOP+(SAFE_H-total)//2
 
     for i,l in enumerate(lines):
-        b=d.textbbox((0,0),l,font=font)
-        x=(W-(b[2]-b[0]))//2
+        box=d.textbbox((0,0),l,font=font)
+        x=(W-(box[2]-box[0]))//2
 
-        d.text((x+4,y+4),l,font=font,fill=(0,0,0,200))
+        d.text((x+4,y+4),l,font=font,fill=(0,0,0,180))
         d.text((x,y),l,font=font,fill="white")
 
         y+=hs[i]+25
 
     return np.array(img)
 
-# ============== THUMBNAIL (PERFECT CENTER) ==============
+# ==============================
+# DUCKING
+# ==============================
 
-def make_thumbnail(line,path):
-    text=" ".join(line.split()[:2])
-
-    img=Image.new("RGB",(1080,1920),"black")
-    d=ImageDraw.Draw(img)
-    font=ImageFont.truetype(FONT_PATH,200)
-
-    box=d.textbbox((0,0),text,font=font)
-    w=box[2]-box[0]
-    h=box[3]-box[1]
-
-    x=(1080-w)//2
-    y=(1920-h)//2
-
-    d.text((x+6,y+6),text,font=font,fill="black")
-    d.text((x,y),text,font=font,fill="white")
-
-    img.save(path)
-
-# ============== CAPTION ==============
-
-def make_caption(lines,path):
-    cap=" ".join(lines[:2]).title()
-    tags=" ".join(random.sample(HASHTAGS,4))
-
-    with open(path,"w") as f:
-        f.write(cap+"\n\n"+tags)
-
-# ============== AUTO DUCK ==============
-
-def apply_duck(music, windows):
-
-    def duck(get_frame, t):
-        # convert t to float (fix)
-        if isinstance(t, np.ndarray):
-            t = float(t[0])
-
-        speaking = any(s <= t <= e for s, e in windows)
-
-        factor = 0.25 if speaking else 1.0
-        return get_frame(t) * factor
-
+def apply_duck(music,windows):
+    def duck(get_frame,t):
+        speaking=any(s<=t<=e for s,e in windows)
+        factor=MUSIC_DUCK if speaking else 1.0
+        return get_frame(t)*factor
     return music.fl(duck)
 
-
-# ============== MAIN ==============
+# ==============================
+# VIDEO BUILD
+# ==============================
 
 def make():
 
@@ -194,72 +193,98 @@ def make():
     if base.w<W:
         base=base.resize(width=W)
 
-    base=base.crop(
-        x_center=base.w/2,
-        y_center=base.h/2,
-        width=W,height=H
-    )
+    base=base.crop(x_center=base.w/2,y_center=base.h/2,width=W,height=H)
 
     clips=[]
     audio_clips=[]
-    speaking_windows=[]
-
     t=0
 
-    for i,line in enumerate(chosen):
-
-        vf=f"v{i}.mp3"
-        asyncio.run(make_voice(line,vf))
-
-        audio=AudioFileClip(vf)
-        dur=audio.duration+0.4
-
-        speaking_windows.append((t,t+audio.duration))
-
-        img=frame(line)
+    for i,(file,dur) in enumerate(voice_files):
+        img=frame(chosen[i])
 
         clip=(ImageClip(img)
               .set_start(t)
               .set_duration(dur)
-              .fadein(0.4)
-              .fadeout(0.4))
+              .fadein(0.3)
+              .fadeout(0.3))
 
         clips.append(clip)
-        audio_clips.append(audio.set_start(t))
+
+        a=AudioFileClip(file).set_start(t)
+        audio_clips.append(a)
 
         t+=dur
 
     final=CompositeVideoClip([base]+clips).subclip(0,min(t,MAX_SECONDS))
 
-    voice_mix=CompositeAudioClip(audio_clips).volumex(2.0)
+    # grain
+    noise=np.random.randint(0,15,(H,W,3)).astype("uint8")
+    grain=ImageClip(noise).set_duration(final.duration).set_opacity(0.03)
+    final=CompositeVideoClip([final,grain])
+
+    # audio
+    voice_mix=CompositeAudioClip(audio_clips).volumex(VOICE_VOLUME)
 
     if os.path.exists(MUSIC):
+
         music=(AudioFileClip(MUSIC)
                .volumex(MUSIC_BASE)
-               .audio_fadein(1.2)
-               .audio_fadeout(1.2)
+               .audio_fadein(1.5)
+               .audio_fadeout(1.5)
                .subclip(0,final.duration))
 
         music=apply_duck(music,speaking_windows).volumex(MUSIC_FINAL)
 
         final_audio=CompositeAudioClip([music,voice_mix])
+
     else:
         final_audio=voice_mix
 
     final=final.set_audio(final_audio)
 
-    # ===== EXPORTS =====
+    # export video
+    final.write_videofile(f"{OUTDIR}/reel.mp4",fps=30,audio_codec="aac")
 
-    out_video=os.path.join(OUTDIR,"reel.mp4")
-    final.write_videofile(out_video,fps=30,audio_codec="aac")
+    # thumbnail
+    make_thumbnail(chosen[0],f"{OUTDIR}/thumbnail.jpg")
 
-    make_thumbnail(chosen[0],
-                   os.path.join(OUTDIR,"thumbnail.jpg"))
+    # caption
+    make_caption(chosen,f"{OUTDIR}/caption.txt")
 
-    make_caption(chosen,
-                 os.path.join(OUTDIR,"caption.txt"))
+# ==============================
+# THUMBNAIL
+# ==============================
 
-# ============== RUN ==============
+def make_thumbnail(line,path):
+    text=" ".join(line.split()[:2])
+
+    img=Image.new("RGB",(1080,1920),(0,0,0))
+    d=ImageDraw.Draw(img)
+    font=ImageFont.truetype(FONT_PATH,200)
+
+    box=d.textbbox((0,0),text,font=font)
+    x=(1080-(box[2]-box[0]))//2
+    y=(1920-(box[3]-box[1]))//2
+
+    d.text((x+6,y+6),text,font=font,fill=(0,0,0))
+    d.text((x,y),text,font=font,fill="white")
+
+    img.save(path)
+
+# ==============================
+# CAPTION
+# ==============================
+
+def make_caption(lines,path):
+    cap=" • ".join(lines[:2]).title()
+    tags=" ".join(random.sample(HASHTAGS,4))
+
+    with open(path,"w") as f:
+        f.write(cap+"\n\n"+tags)
+
+# ==============================
+# RUN
+# ==============================
 
 if __name__=="__main__":
     make()
