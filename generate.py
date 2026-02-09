@@ -40,13 +40,37 @@ chosen=random.sample(pool,4)
 json.dump(used+chosen,open(MEM,"w"))
 
 # ---------- VOICE ----------
-
 async def make_voice():
-    text=". ".join(chosen)
-    tts=edge_tts.Communicate(text,"en-US-GuyNeural")
+
+    TEXT = """
+
+    You wait for motivation...
+
+    You say you are tired...
+
+    You blame your mood...
+
+    Comfort is the enemy...
+
+    No one is coming...
+
+    Discipline decides...
+
+    This is discipline.
+
+    """
+
+    tts = edge_tts.Communicate(
+        TEXT,
+        voice="en-US-GuyNeural",
+        rate="-30%",
+        pitch="-10Hz"
+    )
+
     await tts.save("voice.mp3")
 
 asyncio.run(make_voice())
+
 
 # ---------- TEXT ----------
 
