@@ -28,54 +28,40 @@ LINES=[
 "PROVE IT QUIETLY",
 "STOP NEGOTIATING",
 "DO THE HARD THING",
-"YOU KNOW THE STANDARD",
 "EXECUTE ANYWAY",
-"YOUR HABITS EXPOSE YOU",
-"YOUR ROUTINE TELLS THE TRUTH",
-"WEAKNESS NEGOTIATES",
-"STANDARDS DON'T",
-"DISCIPLINE IS A CHOICE",
 "CONSISTENCY BUILDS POWER",
 "SHOW UP AGAIN",
-"DO IT WITHOUT MOOD",
 "FOCUS IS A DECISION",
 "COMFORT LIES",
 "PAIN TEACHES",
 "SILENCE BUILDS STRENGTH",
-"YOU NEED STRUCTURE",
-"YOU NEED CONTROL",
-"YOU NEED ORDER",
-"YOUR FUTURE IS EARNED",
-"NOTHING CHANGES BY TALKING",
 "EXECUTION WINS",
-"STOP SEEKING EASY",
 "HARD BUILDS YOU",
-"REPEAT THE STANDARD",
-"HABITS SHAPE YOU",
-"YOU SEE THE TRUTH",
-"YOU KNOW WHAT TO DO",
-"DO IT ANYWAY",
 "DISCIPLINE IS IDENTITY",
 "SELF CONTROL IS POWER",
-"SHOW UP QUIETLY",
 "RESULTS NEED STANDARDS",
 "WORK WITHOUT MOOD",
-"STOP DELAYING",
-"START FINISHING",
-"DECIDE AND MOVE",
 "PROVE IT DAILY",
 "THIS IS DISCIPLINE"
 ]
 
-# ---------- HOOKS ----------
-
 HOOKS=[
 "NO ONE IS COMING",
-"YOU ALREADY KNOW THE TRUTH",
-"MOST QUIT BY DAY 7",
-"YOUR COMFORT IS COSTING YOU",
-"THIS IS WHY YOU'RE STUCK",
-"YOU'RE NOT TIRED YOU'RE UNDISCIPLINED"
+"MOST QUIT EARLY",
+"YOUR COMFORT COSTS",
+"YOU KNOW THE TRUTH",
+"THIS IS DISCIPLINE"
+]
+
+HASHTAGS=[
+"#discipline",
+"#selfcontrol",
+"#consistency",
+"#innerdiscipline",
+"#mentaltoughness",
+"#focus",
+"#successmindset",
+"#personaldevelopment"
 ]
 
 # ---------- WEIGHTS ----------
@@ -89,7 +75,7 @@ weights={
 "DO THE HARD THING":2
 }
 
-# ---------- WEIGHTED MEMORY ----------
+# ---------- MEMORY ----------
 
 weighted_pool=[]
 for line in LINES:
@@ -111,7 +97,7 @@ if len(available)<4:
 
 chosen=random.sample(available,4)
 
-# Force strong hook as first line
+# force strong hook
 chosen[0]=random.choice(HOOKS)
 
 used+=chosen
@@ -161,7 +147,40 @@ def frame(text):
 
     return np.array(img)
 
-# ---------- VIDEO GENERATOR ----------
+# ---------- THUMBNAIL (2-WORD HOOK) ----------
+
+def make_thumbnail(hook):
+
+    words=hook.split()[:2]
+    text=" ".join(words)
+
+    img=Image.new("RGB",(1080,1920),(0,0,0))
+    d=ImageDraw.Draw(img)
+    font=ImageFont.truetype(FONT_PATH,180)
+
+    box=d.textbbox((0,0),text,font=font)
+    w=box[2]-box[0]
+    h=box[3]-box[1]
+
+    x=(1080-w)//2
+    y=900-h//2
+
+    d.text((x+8,y+8),text,font=font,fill=(0,0,0))
+    d.text((x,y),text,font=font,fill="white")
+
+    img.save("thumbnail.jpg")
+
+# ---------- CAPTION ----------
+
+def make_caption(lines):
+
+    cap=" ".join(lines[:2]).title()+". Stay disciplined."
+    tags=" ".join(random.sample(HASHTAGS,4))
+
+    with open("caption.txt","w") as f:
+        f.write(cap+"\n\n"+tags)
+
+# ---------- VIDEO ----------
 
 def make():
 
@@ -182,18 +201,17 @@ def make():
         communicate=edge_tts.Communicate(
             line,
             voice="en-US-ChristopherNeural",
-rate="-55%",
-pitch="-35Hz"
-
+            rate="-35%",
+            pitch="-20Hz"
         )
         await communicate.save(file)
 
     for i,line in enumerate(chosen):
 
-        voice_file=f"v{i}.mp3"
-        asyncio.run(make_line_voice(line,voice_file))
+        vf=f"v{i}.mp3"
+        asyncio.run(make_line_voice(line,vf))
 
-        audio=AudioFileClip(voice_file)
+        audio=AudioFileClip(vf)
         dur=audio.duration+0.5
 
         img=frame(line)
@@ -211,16 +229,18 @@ pitch="-35Hz"
 
     final=CompositeVideoClip([base]+clips).subclip(0,t)
 
-    # grain
     noise=np.random.randint(0,15,(H,W,3)).astype("uint8")
     grain=ImageClip(noise).set_duration(t).set_opacity(0.03)
     final=CompositeVideoClip([final,grain])
 
-    # music + voice
     music=AudioFileClip(MUSIC).volumex(0.15).subclip(0,t)
     final_audio=CompositeAudioClip([music]+audio_clips)
 
     final=final.set_audio(final_audio)
+
+    # exports
+    make_thumbnail(chosen[0])
+    make_caption(chosen)
 
     final.write_videofile("reel.mp4",fps=30)
 
