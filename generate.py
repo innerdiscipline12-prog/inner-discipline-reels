@@ -355,7 +355,8 @@ def make_reel(idx):
     final=final.fx(vfx.freeze,t=final.duration-0.4,freeze_duration=0.4)
     final=final.fadeout(0.6)
 
-    voice=AudioFileClip(voice_path)
+    voice=AudioFileClip(voice_path).set_start(0.4)
+
 
     if os.path.exists(MUSIC):
         music=AudioFileClip(MUSIC).volumex(0.1).subclip(0,MAX_SECONDS)
