@@ -369,34 +369,35 @@ idx = 0
     # --------- BUILD TIMELINE ---------
     while t < target_len:
 
-        line = random.choice(lines)
+    line = random.choice(lines)
 
-        vp=f"outputs/long_{idx}.mp3"
-        asyncio.run(make_voice(line, vp))
+    vp=f"outputs/long_{idx}.mp3"
+    asyncio.run(make_voice(line, vp))
 
-        a=AudioFileClip(vp)
+    a=AudioFileClip(vp)
 
-        dur=max(6, a.duration+1.2)
+    dur=max(6, a.duration+1.2)
 
-        timestamps.append(
-            f"{int(t//60)}:{int(t%60):02d} {line.title()}"
-        )
+    timestamps.append(
+        f"{int(t//60)}:{int(t%60):02d} {line.title()}"
+    )
 
-        img=frame(line)
+    img=frame(line)
 
-        txt=(
-            ImageClip(img)
-            .set_start(t)
-            .set_duration(dur)
-            .fadein(0.8)
-            .fadeout(0.8)
-        )
+    txt=(
+        ImageClip(img)
+        .set_start(t)
+        .set_duration(dur)
+        .fadein(0.8)
+        .fadeout(0.8)
+    )
 
-        clips.append(txt)
-        audio.append(a.set_start(t+0.4))
+    clips.append(txt)
+    audio.append(a.set_start(t+0.4))
 
-        t+=dur
-        idx+=1
+    t+=dur
+    idx+=1
+
 
     final=CompositeVideoClip([base]+clips).subclip(0,t)
 
