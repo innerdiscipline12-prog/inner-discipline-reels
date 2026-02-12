@@ -297,49 +297,49 @@ def make_long_video():
     lines = random.sample(ALL_LINES, 20)
 
     base = VideoFileClip(VIDEO).without_audio()
-    base = base.fx(resize, lambda t: 1+0.004*t).resize(height=H)
+    base = base.fx(resize, lambda t:1+0.004*t).resize(height=H)
 
     if base.w < W:
         base = base.resize(width=W)
 
-    base = base.crop(x_center=base.w/2,
-                     y_center=base.h/2,
-                     width=W,
-                     height=H)
+    base = base.crop(
+        x_center=base.w/2,
+        y_center=base.h/2,
+        width=W,
+        height=H
+    )
 
     clips=[]
-    audio=[]
+    audio_clips=[]
     t=0
 
-    for i,line in enumerate(lines):
+    for line in lines:
 
-        vp=f"outputs/long_{i}.mp3"
-        asyncio.run(make_voice(line,vp))
+        voice_path=f"temp_long.mp3"
+        asyncio.run(make_voice(line,voice_path))
 
-        a=AudioFileClip(vp)
-        dur=a.duration+1.0
+        a=AudioFileClip(voice_path)
+        dur=a.duration+1.5
 
         img=frame(line)
 
         txt=(ImageClip(img)
-            .set_start(t)
-            .set_duration(dur)
-            .fadein(0.5)
-            .fadeout(0.5))
+             .set_start(t)
+             .set_duration(dur)
+             .fadein(0.5)
+             .fadeout(0.5))
 
         clips.append(txt)
-        audio.append(a.set_start(t+0.3))
+        audio_clips.append(a.set_start(t+0.3))
 
         t+=dur
 
     final=CompositeVideoClip([base]+clips).subclip(0,t)
 
-    voice_mix=CompositeAudioClip(audio)
+    voice_mix=CompositeAudioClip(audio_clips)
 
     if os.path.exists(MUSIC):
-        music=(AudioFileClip(MUSIC)
-               .audio_loop(duration=t)
-               .volumex(0.08))
+        music=AudioFileClip(MUSIC).audio_loop(duration=t).volumex(0.08)
         final=final.set_audio(CompositeAudioClip([music,voice_mix]))
     else:
         final=final.set_audio(voice_mix)
