@@ -288,6 +288,65 @@ def make_reel(idx):
 
     make_thumbnail(chosen[0],f"{folder}/thumbnail.jpg")
     make_caption(chosen,f"{folder}/caption.txt")
+    
+# ================= LONG VIDEO =================
+def make_long_video():
+
+    print("Generating 10-minute deep talk...")
+
+    lines = random.sample(ALL_LINES, 20)
+
+    base = VideoFileClip(VIDEO).without_audio()
+    base = base.fx(resize, lambda t: 1+0.004*t).resize(height=H)
+
+    if base.w < W:
+        base = base.resize(width=W)
+
+    base = base.crop(x_center=base.w/2,
+                     y_center=base.h/2,
+                     width=W,
+                     height=H)
+
+    clips=[]
+    audio=[]
+    t=0
+
+    for i,line in enumerate(lines):
+
+        vp=f"outputs/long_{i}.mp3"
+        asyncio.run(make_voice(line,vp))
+
+        a=AudioFileClip(vp)
+        dur=a.duration+1.0
+
+        img=frame(line)
+
+        txt=(ImageClip(img)
+            .set_start(t)
+            .set_duration(dur)
+            .fadein(0.5)
+            .fadeout(0.5))
+
+        clips.append(txt)
+        audio.append(a.set_start(t+0.3))
+
+        t+=dur
+
+    final=CompositeVideoClip([base]+clips).subclip(0,t)
+
+    voice_mix=CompositeAudioClip(audio)
+
+    if os.path.exists(MUSIC):
+        music=(AudioFileClip(MUSIC)
+               .audio_loop(duration=t)
+               .volumex(0.08))
+        final=final.set_audio(CompositeAudioClip([music,voice_mix]))
+    else:
+        final=final.set_audio(voice_mix)
+
+    final.write_videofile("outputs/long_video.mp4",fps=30)
+
+    print("10-minute video done.")
 
 # ================= RUN =================
 
@@ -295,6 +354,8 @@ os.makedirs("outputs",exist_ok=True)
 
 for i in range(1,REELS_PER_RUN+1):
     make_reel(i)
+    
+make_long_video()
 
 json.dump(used,open(MEM,"w"))
 
