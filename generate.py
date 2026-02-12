@@ -1,5 +1,4 @@
-import glob
-import os, json, random, asyncio
+import os, json, random, asyncio import glob
 import numpy as np
 from moviepy.editor import *
 from moviepy.video.fx.all import resize
@@ -8,7 +7,20 @@ import edge_tts
 
 # ================= SETTINGS =================
 
-VIDEO="bg.mp4"
+# ===== AUTO DETECT BACKGROUNDS =====
+
+REEL_BACKGROUNDS = glob.glob("bg*.mp4")
+LONG_BACKGROUNDS = glob.glob("bg_long*.mp4")
+
+if not REEL_BACKGROUNDS:
+    raise Exception("No reel backgrounds found (bg*.mp4)")
+
+if not LONG_BACKGROUNDS:
+    raise Exception("No long backgrounds found (bg_long*.mp4)")
+
+VIDEO = random.choice(REEL_BACKGROUNDS)
+LONG_VIDEO = random.choice(LONG_BACKGROUNDS)
+
 MUSIC="music.mp3"   # optional
 FONT_PATH="Anton-Regular.ttf"
 
