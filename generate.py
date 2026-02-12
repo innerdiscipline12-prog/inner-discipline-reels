@@ -359,7 +359,7 @@ base = base.crop(
 )
 
 
-    clips = []
+clips = []
 audio = []
 timestamps = []
 t = 0
