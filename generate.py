@@ -329,7 +329,7 @@ def make_long_video():
     )
 
     # --------- BASE VIDEO ---------
-    base = VideoFileClip(VIDEO).without_audio()
+    base = VideoFileClip("bg_long.mp4").without_audio()
     # ===== LONG VIDEO LANDSCAPE SIZE =====
 LW, LH = 1280, 720
 
