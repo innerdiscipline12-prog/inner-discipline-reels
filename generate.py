@@ -330,17 +330,21 @@ def make_long_video():
 
     # --------- BASE VIDEO ---------
     base = VideoFileClip(VIDEO).without_audio()
-    base = base.fx(resize, lambda t:1+0.002*t).resize(height=H)
+    # ===== LONG VIDEO LANDSCAPE SIZE =====
+LW, LH = 1280, 720
 
-    if base.w < W:
-        base = base.resize(width=W)
+base = base.fx(resize, lambda t:1+0.002*t).resize(height=LH)
 
-    base = base.crop(
-        x_center=base.w/2,
-        y_center=base.h/2,
-        width=W,
-        height=H
-    )
+if base.w < LW:
+    base = base.resize(width=LW)
+
+base = base.crop(
+    x_center=base.w/2,
+    y_center=base.h/2,
+    width=LW,
+    height=LH
+)
+
 
     clips=[]
     audio=[]
