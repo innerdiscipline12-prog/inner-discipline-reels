@@ -1,4 +1,4 @@
-import os, json, random, asyncio import glob
+import os, json, random, asyncio, glob
 import numpy as np
 from moviepy.editor import *
 from moviepy.video.fx.all import resize
