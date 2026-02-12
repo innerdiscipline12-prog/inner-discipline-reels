@@ -289,15 +289,48 @@ def make_reel(idx):
     make_thumbnail(chosen[0],f"{folder}/thumbnail.jpg")
     make_caption(chosen,f"{folder}/caption.txt")
     
-# ================= LONG VIDEO =================
+# ================= SMART FLOW MASTER LONG VIDEO =================
+
 def make_long_video():
 
-    print("Generating 10-minute deep talk...")
+    print("🔥 SMART FLOW — Generating 10-minute deep talk...")
 
-    lines = random.sample(ALL_LINES, 20)
+    os.makedirs("outputs", exist_ok=True)
 
+    target_len = 600  # 10 minutes
+
+    # --------- SMART FLOW CATEGORIES ---------
+    pain = [l for l in ALL_LINES if "PAIN" in l or "HARD" in l or "STRUGGLE" in l]
+    control = [l for l in ALL_LINES if "CONTROL" in l]
+    focus = [l for l in ALL_LINES if "FOCUS" in l]
+    discipline = [l for l in ALL_LINES if "DISCIPLINE" in l]
+    identity = [l for l in ALL_LINES if "IDENTITY" in l or "SELF" in l]
+
+    def pick(pool, n):
+        if len(pool) >= n:
+            return random.sample(pool, n)
+        return random.sample(ALL_LINES, n)
+
+    # --------- SCRIPT FLOW ---------
+    hook = random.choice([
+        "Discipline is doing what you avoid.",
+        "Your comfort is costing your future.",
+        "No one is coming to save you.",
+        "Your habits decide your life."
+    ])
+
+    lines = (
+        [hook] +
+        pick(pain,5) +
+        pick(focus,5) +
+        pick(control,5) +
+        pick(discipline,5) +
+        pick(identity,5)
+    )
+
+    # --------- BASE VIDEO ---------
     base = VideoFileClip(VIDEO).without_audio()
-    base = base.fx(resize, lambda t:1+0.004*t).resize(height=H)
+    base = base.fx(resize, lambda t:1+0.002*t).resize(height=H)
 
     if base.w < W:
         base = base.resize(width=W)
@@ -310,43 +343,124 @@ def make_long_video():
     )
 
     clips=[]
-    audio_clips=[]
+    audio=[]
+    timestamps=[]
     t=0
+    idx=0
 
-    for line in lines:
+    # --------- BUILD TIMELINE ---------
+    while t < target_len:
 
-        voice_path=f"temp_long.mp3"
-        asyncio.run(make_voice(line,voice_path))
+        line = random.choice(lines)
 
-        a=AudioFileClip(voice_path)
-        dur=a.duration+1.5
+        vp=f"outputs/long_{idx}.mp3"
+        asyncio.run(make_voice(line, vp))
+
+        a=AudioFileClip(vp)
+
+        dur=max(6, a.duration+1.2)
+
+        timestamps.append(
+            f"{int(t//60)}:{int(t%60):02d} {line.title()}"
+        )
 
         img=frame(line)
 
-        txt=(ImageClip(img)
-             .set_start(t)
-             .set_duration(dur)
-             .fadein(0.5)
-             .fadeout(0.5))
+        txt=(
+            ImageClip(img)
+            .set_start(t)
+            .set_duration(dur)
+            .fadein(0.8)
+            .fadeout(0.8)
+        )
 
         clips.append(txt)
-        audio_clips.append(a.set_start(t+0.3))
+        audio.append(a.set_start(t+0.4))
 
         t+=dur
+        idx+=1
 
     final=CompositeVideoClip([base]+clips).subclip(0,t)
 
-    voice_mix=CompositeAudioClip(audio_clips)
+    voice_mix=CompositeAudioClip(audio)
 
+    # --------- MUSIC ---------
     if os.path.exists(MUSIC):
-        music=AudioFileClip(MUSIC).audio_loop(duration=t).volumex(0.08)
-        final=final.set_audio(CompositeAudioClip([music,voice_mix]))
+        music=(
+            AudioFileClip(MUSIC)
+            .audio_loop(duration=t)
+            .volumex(0.05)
+            .audio_fadeout(3)
+        )
+        final=final.set_audio(
+            CompositeAudioClip([music,voice_mix])
+        )
     else:
         final=final.set_audio(voice_mix)
 
-    final.write_videofile("outputs/long_video.mp4",fps=30)
+    # --------- EXPORT VIDEO ---------
+    final.write_videofile(
+        "outputs/long_video.mp4",
+        fps=30
+    )
 
-    print("10-minute video done.")
+    # --------- SEO TITLE ---------
+    title=random.choice([
+        "10 Minutes to Build Discipline",
+        "Deep Discipline Talk for Focus",
+        "Control Your Mind — Discipline Talk",
+        "Build Self-Control & Focus (10 Min)"
+    ])
+
+    open("outputs/long_title.txt","w").write(title)
+
+    # --------- SEO DESCRIPTION ---------
+    desc=f"""
+Build discipline, self-control and focus.
+
+This deep 10-minute talk trains your mindset
+to develop structure, habits and standards.
+
+Discipline is built daily.
+
+CHAPTERS:
+{chr(10).join(timestamps)}
+
+#discipline #selfcontrol #focus #mindset
+"""
+
+    open("outputs/long_description.txt","w").write(desc)
+
+    # --------- YOUTUBE THUMBNAIL ---------
+    thumb=Image.new("RGB",(1280,720),(0,0,0))
+    d=ImageDraw.Draw(thumb)
+
+    text=random.choice([
+        "DISCIPLINE\nBUILDS YOU",
+        "CONTROL\nYOURSELF",
+        "NO EXCUSES\nONLY WORK",
+        "BUILD\nSELF CONTROL"
+    ])
+
+    font=ImageFont.truetype(FONT_PATH,120)
+
+    box=d.multiline_textbbox((0,0),text,font=font,spacing=20)
+
+    x=(1280-(box[2]-box[0]))//2
+    y=(720-(box[3]-box[1]))//2
+
+    d.multiline_text(
+        (x,y),
+        text,
+        font=font,
+        fill="white",
+        align="center",
+        spacing=20
+    )
+
+    thumb.save("outputs/long_thumbnail.jpg")
+
+    print("✅ SMART FLOW LONG VIDEO COMPLETE")
 
 # ================= RUN =================
 
