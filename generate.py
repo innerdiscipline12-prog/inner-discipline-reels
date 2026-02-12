@@ -359,11 +359,12 @@ base = base.crop(
 )
 
 
-    clips=[]
-    audio=[]
-    timestamps=[]
-    t=0
-    idx=0
+    clips = []
+audio = []
+timestamps = []
+t = 0
+idx = 0
+
 
     # --------- BUILD TIMELINE ---------
     while t < target_len:
