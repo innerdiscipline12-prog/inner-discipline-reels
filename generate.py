@@ -38,7 +38,7 @@ HASHTAGS=[
 
 # ================= LINES =================
 
-ALL_LINES=[
+ALL_LINES=
 HOOK = [
 "NO ONE COMING",
 "START NOW",
