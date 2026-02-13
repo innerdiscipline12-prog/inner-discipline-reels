@@ -138,7 +138,6 @@ LINES={
 "YOU BREAK ROUTINE":3,
 "DISCIPLINE BUILDS EDGE":3,
 "YOU CHOOSE DISTRACTION":3
-
 }
 
 ALL_LINES=list(LINES.keys())
@@ -181,6 +180,30 @@ def frame(text):
 
     d.multiline_text((x+6,y+6),text,font=font,fill=(0,0,0,180),align="center",spacing=20)
     d.multiline_text((x,y),text,font=font,fill="white",align="center",spacing=20)
+
+    return np.array(img)
+
+# ===== LONG VIDEO FRAME (16:9) =====
+def frame_long(text, LW, LH):
+    img=Image.new("RGBA",(LW,LH),(0,0,0,0))
+    d=ImageDraw.Draw(img)
+
+    words=text.split()
+    if len(words)>=3:
+        mid=len(words)//2
+        text=" ".join(words[:mid])+"\n"+" ".join(words[mid:])
+
+    font=ImageFont.truetype(FONT_PATH,90)
+
+    box=d.multiline_textbbox((0,0),text,font=font,spacing=18)
+    tw=box[2]-box[0]
+    th=box[3]-box[1]
+
+    x=(LW-tw)//2
+    y=int(LH*0.58 - th/2)
+
+    d.multiline_text((x+4,y+4),text,font=font,fill=(0,0,0,170),align="center",spacing=18)
+    d.multiline_text((x,y),text,font=font,fill="white",align="center",spacing=18)
 
     return np.array(img)
 
@@ -301,7 +324,7 @@ def make_reel(idx):
 
     make_thumbnail(chosen[0],f"{folder}/thumbnail.jpg")
     make_caption(chosen,f"{folder}/caption.txt")
-    
+
 # ================= SMART FLOW MASTER LONG VIDEO =================
 
 def make_long_video():
@@ -343,79 +366,80 @@ def make_long_video():
 
     # --------- BASE VIDEO ---------
     base = VideoFileClip(LONG_VIDEO).without_audio()
+
     # ===== LONG VIDEO LANDSCAPE SIZE =====
-LW, LH = 1280, 720
+    LW, LH = 1280, 720
 
-base = base.fx(resize, lambda t:1+0.002*t).resize(height=LH)
+    # Make sure background can cover full 10 minutes
+    base = base.fx(vfx.loop, duration=target_len)
 
-if base.w < LW:
-    base = base.resize(width=LW)
+    base = base.fx(resize, lambda t:1+0.002*t).resize(height=LH)
 
-base = base.crop(
-    x_center=base.w/2,
-    y_center=base.h/2,
-    width=LW,
-    height=LH
-)
+    if base.w < LW:
+        base = base.resize(width=LW)
 
+    base = base.crop(
+        x_center=base.w/2,
+        y_center=base.h/2,
+        width=LW,
+        height=LH
+    )
 
-clips = []
-audio = []
-timestamps = []
-t = 0
-idx = 0
-
+    clips = []
+    audio = []
+    timestamps = []
+    t = 0
+    idx = 0
 
     # --------- BUILD TIMELINE ---------
     while t < target_len:
 
-    line = random.choice(lines)
+        line = random.choice(lines)
 
-    vp=f"outputs/long_{idx}.mp3"
-    asyncio.run(make_voice(line, vp))
+        vp = f"outputs/long_{idx}.mp3"
+        asyncio.run(make_voice(line, vp))
 
-    a=AudioFileClip(vp)
+        a = AudioFileClip(vp)
 
-    dur=max(6, a.duration+1.2)
+        dur = max(6, a.duration + 1.2)
 
-    timestamps.append(
-        f"{int(t//60)}:{int(t%60):02d} {line.title()}"
-    )
+        timestamps.append(
+            f"{int(t//60)}:{int(t%60):02d} {line.title()}"
+        )
 
-    img=frame(line)
+        img = frame_long(line, LW, LH)
 
-    txt=(
-        ImageClip(img)
-        .set_start(t)
-        .set_duration(dur)
-        .fadein(0.8)
-        .fadeout(0.8)
-    )
+        txt = (
+            ImageClip(img)
+            .set_start(t)
+            .set_duration(dur)
+            .fadein(0.8)
+            .fadeout(0.8)
+        )
 
-    clips.append(txt)
-    audio.append(a.set_start(t+0.4))
+        clips.append(txt)
+        audio.append(a.set_start(t + 0.4))
 
-    t+=dur
-    idx+=1
+        t += dur
+        idx += 1
 
+    final = CompositeVideoClip([base] + clips).subclip(0, t)
 
-    final=CompositeVideoClip([base]+clips).subclip(0,t)
-
-    voice_mix=CompositeAudioClip(audio)
+    voice_mix = CompositeAudioClip(audio)
 
     # --------- MUSIC ---------
     if os.path.exists(MUSIC):
-        music=(
+        music = (
             AudioFileClip(MUSIC)
             .audio_loop(duration=t)
             .volumex(0.05)
             .audio_fadeout(3)
         )
-        final=final.set_audio(
-            CompositeAudioClip([music,voice_mix])
+        final = final.set_audio(
+            CompositeAudioClip([music, voice_mix])
         )
     else:
-        final=final.set_audio(voice_mix)
+        final = final.set_audio(voice_mix)
 
     # --------- EXPORT VIDEO ---------
     final.write_videofile(
@@ -424,7 +448,7 @@ idx = 0
     )
 
     # --------- SEO TITLE ---------
-    title=random.choice([
+    title = random.choice([
         "10 Minutes to Build Discipline",
         "Deep Discipline Talk for Focus",
         "Control Your Mind — Discipline Talk",
@@ -434,7 +458,7 @@ idx = 0
     open("outputs/long_title.txt","w").write(title)
 
     # --------- SEO DESCRIPTION ---------
-    desc=f"""
+    desc = f"""
 Build discipline, self-control and focus.
 
 This deep 10-minute talk trains your mindset
@@ -447,26 +471,25 @@ CHAPTERS:
 
 #discipline #selfcontrol #focus #mindset
 """
-
     open("outputs/long_description.txt","w").write(desc)
 
-    # --------- YOUTUBE THUMBNAIL ---------
-    thumb=Image.new("RGB",(1280,720),(0,0,0))
-    d=ImageDraw.Draw(thumb)
+    # --------- YOUTUBE THUMBNAIL (16:9) ---------
+    thumb = Image.new("RGB",(1280,720),(0,0,0))
+    d = ImageDraw.Draw(thumb)
 
-    text=random.choice([
+    text = random.choice([
         "DISCIPLINE\nBUILDS YOU",
         "CONTROL\nYOURSELF",
         "NO EXCUSES\nONLY WORK",
         "BUILD\nSELF CONTROL"
     ])
 
-    font=ImageFont.truetype(FONT_PATH,120)
+    font = ImageFont.truetype(FONT_PATH,120)
 
-    box=d.multiline_textbbox((0,0),text,font=font,spacing=20)
+    box = d.multiline_textbbox((0,0),text,font=font,spacing=20)
 
-    x=(1280-(box[2]-box[0]))//2
-    y=(720-(box[3]-box[1]))//2
+    x = (1280-(box[2]-box[0]))//2
+    y = (720-(box[3]-box[1]))//2
 
     d.multiline_text(
         (x,y),
@@ -487,7 +510,7 @@ os.makedirs("outputs",exist_ok=True)
 
 for i in range(1,REELS_PER_RUN+1):
     make_reel(i)
-    
+
 make_long_video()
 
 json.dump(used,open(MEM,"w"))
