@@ -67,7 +67,7 @@ CHALLENGE = [
     "Still here?"
 ]
 
-ALL_LINES = HOOK + REALITY + STRUGGLE + IDENTITY + RESOLUTION
+ALL_LINES = HOOK + AUTHORITY + RELATABLE + CHALLENGE
 # ================= MEMORY =================
 
 MEM="memory.json"
