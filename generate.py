@@ -132,7 +132,7 @@ def make_caption(lines,path):
 
 def pick_lines():
 
-    hook = random.choice(HOOKS)
+    hook = random.choice(HOOK)
 
     story = [
         hook,
