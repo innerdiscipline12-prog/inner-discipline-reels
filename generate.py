@@ -37,7 +37,7 @@ HASHTAGS=[
 ]
 
 # ================= LINES =================
-HOOKS = [
+HOOK = [
     "You're not tired. You're undisciplined.",
     "Comfort is ruining your future.",
     "Your habits expose you.",
