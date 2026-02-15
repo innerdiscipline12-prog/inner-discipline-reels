@@ -201,6 +201,10 @@ def make_reel(idx):
         a = AudioFileClip(vp)
         dur = a.duration + 0.4
 
+       # DELETE temp voice file
+       os.remove(vp)
+
+
         img = frame(line, W, H, 120)
 
         txt = (
@@ -272,6 +276,10 @@ def make_long_video():
 
         a = AudioFileClip(vp)
         dur = max(6, a.duration + 1.2)
+
+        # DELETE temp voice file
+        os.remove(vp)
+
 
         timestamps.append(f"{int(t//60)}:{int(t%60):02d} {line.title()}")
 
