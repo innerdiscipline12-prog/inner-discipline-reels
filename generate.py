@@ -174,36 +174,43 @@ def pick_lines():
 # ================= BUILD REEL =================
 
 def make_reel(idx):
+
     folder = f"outputs/{idx:02d}"
     os.makedirs(folder, exist_ok=True)
 
     chosen = pick_lines()
 
-    # Pick a DIFFERENT background per reel
-    VIDEO = random.choice(REEL_BACKGROUNDS)
+    # pick different background each reel
+    video = random.choice(REEL_BACKGROUNDS)
 
-    base = VideoFileClip(VIDEO).without_audio()
-    base = base.fx(resize, lambda t: 1 + 0.008 * t).resize(height=H)
+    base = VideoFileClip(video).without_audio()
+    base = base.fx(resize, lambda t: 1 + 0.008*t).resize(height=H)
 
     if base.w < W:
         base = base.resize(width=W)
 
-    base = base.crop(x_center=base.w / 2, y_center=base.h / 2, width=W, height=H)
+    base = base.crop(
+        x_center=base.w/2,
+        y_center=base.h/2,
+        width=W,
+        height=H
+    )
 
     clips = []
     audio = []
     t = 0
 
     for i, line in enumerate(chosen):
+
         vp = f"{folder}/line{i}.mp3"
-        run_tts(line, vp)
+
+        asyncio.run(make_voice(line, vp))
 
         a = AudioFileClip(vp)
         dur = a.duration + 0.4
 
-       # DELETE temp voice file
-       os.remove(vp)
-
+        # delete temp voice file AFTER loading
+        os.remove(vp)
 
         img = frame(line, W, H, 120)
 
@@ -217,14 +224,18 @@ def make_reel(idx):
 
         clips.append(txt)
         audio.append(a.set_start(t + 0.25))
+
         t += dur
 
     final = CompositeVideoClip([base] + clips).subclip(0, t)
+
     voice_mix = CompositeAudioClip(audio)
 
     if os.path.exists(MUSIC):
-        music = AudioFileClip(MUSIC).audio_loop(duration=t).volumex(0.1).audio_fadeout(1.0)
-        final = final.set_audio(CompositeAudioClip([music, voice_mix]))
+        music = AudioFileClip(MUSIC).audio_loop(duration=t).volumex(0.1)
+        final = final.set_audio(
+            CompositeAudioClip([music, voice_mix])
+        )
     else:
         final = final.set_audio(voice_mix)
 
@@ -232,6 +243,7 @@ def make_reel(idx):
 
     make_thumbnail(chosen[0], f"{folder}/thumbnail.jpg")
     make_caption(chosen, f"{folder}/caption.txt")
+
 
 # ================= SMART FLOW LONG VIDEO =================
 
