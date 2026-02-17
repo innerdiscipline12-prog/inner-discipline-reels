@@ -387,7 +387,7 @@ def make_reel(idx):
 
         a = AudioFileClip(tmp)
         pause = punctuation_pause(line)
-        dur = a.duration + pause
+        dur = 2.8
 
         # text overlay (safe margins)
         overlay = fit_text_image(line, W, H, FONT_PATH, max_size=130, min_size=70, margin_px=140, shadow=True)
