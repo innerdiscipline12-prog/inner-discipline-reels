@@ -386,16 +386,21 @@ def make_reel(idx):
         run_tts(line, tmp)
 
         a = AudioFileClip(tmp)
-        pause = punctuation_pause(line)
-        dur = 2.8
+        if i == 0:
+    dur = 2.8   # hook
+elif i == len(script) - 1:
+    dur = 3.0   # punch/question
+else:
+    dur = 2.4   # truth
+
 
         # text overlay (safe margins)
         overlay = fit_text_image(line, W, H, FONT_PATH, max_size=130, min_size=70, margin_px=140, shadow=True)
         txt = (ImageClip(overlay, ismask=False)
                .set_start(t)
                .set_duration(dur)
-               .fadein(0.18)
-               .fadeout(0.18))
+               .fadein(0.12)
+               .fadeout(0.12)
 
         text_clips.append(txt)
         audio_clips.append(a.set_start(t + 0.15))
