@@ -134,16 +134,16 @@ RELATABLE = [
 
 # ===== CHALLENGE (ENGAGEMENT TRIGGERS) =====
 CHALLENGE = [
-"Day 7. Still disciplined?",
-"Still here?",
-"Will you finish what you start?",
-"Day 1 or Day 100?",
-"Can you stay consistent?",
-"Will you keep your word?",
-"Are you serious?",
-"Do you really want change?",
-"Still choosing comfort?",
-"Will you execute today?"
+"Day 7... Still disciplined...?",
+"Still here...?",
+"Will you finish... what you start...?",
+"Day 1... or Day 100...?",
+"Can you stay consistent...?",
+"Will you keep your word...?",
+"Are you serious...?",
+"Do you really want change...?",
+"Still choosing comfort...?",
+"Will you execute today...?"
 ]
 
 # ===== CTA ROTATION (COMMENT DRIVERS) =====
