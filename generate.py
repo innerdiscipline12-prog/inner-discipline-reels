@@ -5,89 +5,133 @@ import numpy as np
 import edge_tts
 
 # ===== SETTINGS =====
-LW,LH=1280,720
-FONT_PATH="Anton-Regular.ttf"
+LW,LH = 1280,720
+FONT="Anton-Regular.ttf"
 MUSIC="music.mp3"
 
 VOICE="en-US-ChristopherNeural"
-VOICE_RATE="-25%"
-VOICE_PITCH="-5Hz"
 
-LONG_BACKGROUNDS=glob.glob("bg_long*.mp4")
+BACKGROUNDS = glob.glob("bg_long*.mp4")
 
-TARGET=600
+TARGET_LEN = 600  # 10 minutes
 
-# ===== COPY =====
-LINES=[
-"Discipline is built in silence.",
-"You become what you repeat.",
+# ===== COPY BANK =====
+LINES = [
+"Discipline is built daily.",
 "Comfort delays your future.",
+"You already know what to do.",
+"Consistency creates identity.",
 "Control your inputs.",
+"Focus is a skill.",
 "Your habits decide your life.",
-"Small wins build identity.",
-"Consistency beats intensity.",
-"Focus creates freedom.",
-"Standards create strength.",
-"You already know what to do."
+"Standards create discipline.",
+"Still here?",
+"Day 7. Still disciplined?",
 ]
 
 # ===== TTS =====
-async def tts(t,p):
-    c=edge_tts.Communicate(t,voice=VOICE,rate=VOICE_RATE,pitch=VOICE_PITCH)
-    await c.save(p)
+async def tts(text,path):
+    c=edge_tts.Communicate(text,voice=VOICE)
+    await c.save(path)
 
-def run_tts(t,p): asyncio.run(tts(t,p))
+def run_tts(t,p):
+    asyncio.run(tts(t,p))
 
-# ===== TEXT IMAGE =====
-def txtimg(text):
+# ===== TEXT FRAME =====
+def frame(text):
     img=Image.new("RGB",(LW,LH),(0,0,0))
     d=ImageDraw.Draw(img)
-    font=ImageFont.truetype(FONT_PATH,70)
 
-    box=d.textbbox((0,0),text,font=font)
+    font=ImageFont.truetype(FONT,70)
+
+    words=text.split()
+    mid=len(words)//2
+    text=" ".join(words[:mid])+"\n"+" ".join(words[mid:])
+
+    box=d.multiline_textbbox((0,0),text,font=font,spacing=10)
+
     x=(LW-(box[2]-box[0]))//2
     y=(LH-(box[3]-box[1]))//2
 
-    d.text((x,y),text,font=font,fill="white")
+    d.multiline_text((x,y),text,font=font,fill="white",
+                     align="center",spacing=10)
+
     return np.array(img)
 
-# ===== BUILD =====
-bg=random.choice(LONG_BACKGROUNDS)
-base=VideoFileClip(bg).without_audio().fx(vfx.loop,duration=TARGET).resize((LW,LH))
+# ===== RANDOM BG LOOP =====
+def random_bg(duration):
+    bg=random.choice(BACKGROUNDS)
+    clip=VideoFileClip(bg).without_audio()
 
-clips=[]
-aud=[]
-t=0
-i=0
+    if clip.duration < duration:
+        clip=clip.loop(duration=duration)
+    else:
+        start=random.uniform(0,clip.duration-duration)
+        clip=clip.subclip(start,start+duration)
 
-while t<TARGET:
-    line=random.choice(LINES)
-    tmp=f"long{i}.mp3"
-    run_tts(line,tmp)
+    clip=clip.resize(height=LH)
 
-    a=AudioFileClip(tmp)
+    return clip.crop(width=LW,height=LH)
 
-    dur=6.0
-    img=txtimg(line)
+# ===== BUILD LONG VIDEO =====
+def build():
 
-    txt=ImageClip(img).set_start(t).set_duration(dur).fadein(.5).fadeout(.5)
+    os.makedirs("outputs",exist_ok=True)
 
-    clips.append(txt)
-    aud.append(a.set_start(t+.3))
-    t+=dur
-    i+=1
-    os.remove(tmp)
+    audio=[]
+    visuals=[]
 
-final=CompositeVideoClip([base]+clips).subclip(0,TARGET)
+    t=0
+    i=0
 
-voice=CompositeAudioClip(aud)
+    while t < TARGET_LEN:
 
-if os.path.exists(MUSIC):
-    m=AudioFileClip(MUSIC).audio_loop(duration=TARGET).volumex(.05)
-    final=final.set_audio(CompositeAudioClip([m,voice]))
-else:
-    final=final.set_audio(voice)
+        line=random.choice(LINES)
 
-final.write_videofile("long_video.mp4",fps=30)
+        tmp=f"tmp{i}.mp3"
+        run_tts(line,tmp)
 
-print("✅ 10-minute hybrid done")
+        a=AudioFileClip(tmp)
+
+        # question pause feels like a question
+        if "?" in line:
+            dur=a.duration+1.2
+        else:
+            dur=a.duration+0.6
+
+        img=frame(line)
+
+        txt=(ImageClip(img)
+            .set_start(t)
+            .set_duration(dur)
+            .fadein(.5)
+            .fadeout(.5))
+
+        visuals.append(txt)
+        audio.append(a.set_start(t+.2))
+
+        t+=dur
+        os.remove(tmp)
+        i+=1
+
+    base=random_bg(TARGET_LEN)
+
+    final=CompositeVideoClip([base]+visuals).subclip(0,TARGET_LEN)
+
+    voice=CompositeAudioClip(audio)
+
+    if os.path.exists(MUSIC):
+        m=AudioFileClip(MUSIC).audio_loop(duration=TARGET_LEN).volumex(.05)
+        final=final.set_audio(CompositeAudioClip([m,voice]))
+    else:
+        final=final.set_audio(voice)
+
+    final.write_videofile(
+        "outputs/long_video.mp4",
+        fps=24,
+        preset="ultrafast"
+    )
+
+build()
+
+print("✅ LONG VIDEO DONE")
