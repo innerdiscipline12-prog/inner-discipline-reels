@@ -386,12 +386,15 @@ def make_reel(idx):
         run_tts(line, tmp)
 
         a = AudioFileClip(tmp)
-        if i == 0:
-    dur = 2.8   # hook
+
+# --- TIMING ENGINE (V12 RETENTION PACING) ---
+if i == 0:
+    dur = 2.8  # hook
 elif i == len(script) - 1:
-    dur = 3.0   # punch/question
+    dur = 3.0  # punch/question
 else:
-    dur = 2.4   # truth
+    dur = 2.4  # middle truths
+
 
 
         # text overlay (safe margins)
