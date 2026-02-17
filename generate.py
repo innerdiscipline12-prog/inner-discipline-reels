@@ -397,8 +397,15 @@ else:
 
 
 
-        # text overlay (safe margins)
-        overlay = fit_text_image(line, W, H, FONT_PATH, max_size=130, min_size=70, margin_px=140, shadow=True)
+                # text overlay (safe margins)
+        overlay = fit_text_image(
+            line, W, H, FONT_PATH,
+            max_size=130,
+            min_size=70,
+            margin_px=140,
+            shadow=True
+        )
+
         txt = (ImageClip(overlay, ismask=False)
                .set_start(t)
                .set_duration(dur)
