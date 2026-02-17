@@ -5,118 +5,89 @@ import numpy as np
 import edge_tts
 
 # ===== SETTINGS =====
-W,H = 1080,1920
+LW,LH=1280,720
 FONT_PATH="Anton-Regular.ttf"
 MUSIC="music.mp3"
 
 VOICE="en-US-ChristopherNeural"
-VOICE_RATE="-30%"
-VOICE_PITCH="-10Hz"
+VOICE_RATE="-25%"
+VOICE_PITCH="-5Hz"
 
-REEL_BACKGROUNDS = glob.glob("bg*.mp4")
-REELS_PER_RUN = 5
+LONG_BACKGROUNDS=glob.glob("bg_long*.mp4")
 
-REEL_MIN_SEC=7
-REEL_MAX_SEC=12
+TARGET=600
 
-# ===== COPY BANK =====
-HOOK = [
-"You’re not tired. You’re undisciplined.",
-"Comfort is ruining your future.",
-"No one is coming to save you.",
-"You don’t lack time. You lack control.",
-"Your habits expose you."
-]
-
-TRUTHS = [
-"Comfort is expensive.",
-"Discipline decides outcomes.",
-"Control beats motivation.",
-"Consistency builds identity.",
-"Weak habits create hard lives."
-]
-
-CTA = [
-"Still here?",
-"Day 7. Still disciplined?",
-"Comment DISCIPLINE.",
-"Day 1 or Day 100?"
+# ===== COPY =====
+LINES=[
+"Discipline is built in silence.",
+"You become what you repeat.",
+"Comfort delays your future.",
+"Control your inputs.",
+"Your habits decide your life.",
+"Small wins build identity.",
+"Consistency beats intensity.",
+"Focus creates freedom.",
+"Standards create strength.",
+"You already know what to do."
 ]
 
 # ===== TTS =====
-async def tts(text, path):
-    c=edge_tts.Communicate(text,voice=VOICE,rate=VOICE_RATE,pitch=VOICE_PITCH)
-    await c.save(path)
+async def tts(t,p):
+    c=edge_tts.Communicate(t,voice=VOICE,rate=VOICE_RATE,pitch=VOICE_PITCH)
+    await c.save(p)
 
 def run_tts(t,p): asyncio.run(tts(t,p))
 
-# ===== TEXT IMAGE FIT =====
-def text_img(text):
-    img=Image.new("RGB",(W,H),(0,0,0))
+# ===== TEXT IMAGE =====
+def txtimg(text):
+    img=Image.new("RGB",(LW,LH),(0,0,0))
     d=ImageDraw.Draw(img)
+    font=ImageFont.truetype(FONT_PATH,70)
 
-    size=110
-    font=ImageFont.truetype(FONT_PATH,size)
+    box=d.textbbox((0,0),text,font=font)
+    x=(LW-(box[2]-box[0]))//2
+    y=(LH-(box[3]-box[1]))//2
 
-    words=text.split()
-    text="\n".join([" ".join(words[:len(words)//2]),
-                    " ".join(words[len(words)//2:])])
-
-    box=d.multiline_textbbox((0,0),text,font=font,spacing=10)
-    x=(W-(box[2]-box[0]))//2
-    y=(H-(box[3]-box[1]))//2
-
-    d.multiline_text((x,y),text,font=font,fill="white",align="center",spacing=10)
+    d.text((x,y),text,font=font,fill="white")
     return np.array(img)
 
 # ===== BUILD =====
-def build_script():
-    return [
-        random.choice(HOOK),
-        random.choice(TRUTHS),
-        random.choice(CTA)
-    ]
+bg=random.choice(LONG_BACKGROUNDS)
+base=VideoFileClip(bg).without_audio().fx(vfx.loop,duration=TARGET).resize((LW,LH))
 
-def make_reel(i):
-    os.makedirs("outputs",exist_ok=True)
-    script=build_script()
+clips=[]
+aud=[]
+t=0
+i=0
 
-    bg=random.choice(REEL_BACKGROUNDS)
-    base=VideoFileClip(bg).without_audio().resize(height=H).crop(width=W,height=H)
+while t<TARGET:
+    line=random.choice(LINES)
+    tmp=f"long{i}.mp3"
+    run_tts(line,tmp)
 
-    clips=[]
-    aud=[]
-    t=0
+    a=AudioFileClip(tmp)
 
-    for n,line in enumerate(script):
-        tmp=f"tmp{n}.mp3"
-        run_tts(line,tmp)
+    dur=6.0
+    img=txtimg(line)
 
-        a=AudioFileClip(tmp)
+    txt=ImageClip(img).set_start(t).set_duration(dur).fadein(.5).fadeout(.5)
 
-        dur = 2.6 if n==0 else 2.2
-        if n==2: dur=3.0
+    clips.append(txt)
+    aud.append(a.set_start(t+.3))
+    t+=dur
+    i+=1
+    os.remove(tmp)
 
-        img=text_img(line)
-        txt=ImageClip(img).set_start(t).set_duration(dur).fadein(.15).fadeout(.15)
+final=CompositeVideoClip([base]+clips).subclip(0,TARGET)
 
-        clips.append(txt)
-        aud.append(a.set_start(t+.1))
-        t+=dur
-        os.remove(tmp)
+voice=CompositeAudioClip(aud)
 
-    final=CompositeVideoClip([base]+clips).subclip(0,t)
+if os.path.exists(MUSIC):
+    m=AudioFileClip(MUSIC).audio_loop(duration=TARGET).volumex(.05)
+    final=final.set_audio(CompositeAudioClip([m,voice]))
+else:
+    final=final.set_audio(voice)
 
-    voice=CompositeAudioClip(aud)
-    if os.path.exists(MUSIC):
-        m=AudioFileClip(MUSIC).audio_loop(duration=t).volumex(.1)
-        final=final.set_audio(CompositeAudioClip([m,voice]))
-    else:
-        final=final.set_audio(voice)
+final.write_videofile("long_video.mp4",fps=30)
 
-    final.write_videofile(f"outputs/reel_{i}.mp4",fps=30)
-
-for i in range(REELS_PER_RUN):
-    make_reel(i)
-
-print("✅ Reels done")
+print("✅ 10-minute hybrid done")
