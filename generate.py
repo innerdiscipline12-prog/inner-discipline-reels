@@ -58,47 +58,109 @@ HASHTAGS = [
     "#consistency","#stoic","#growth"
 ]
 
-# ================= COPY BANK =================
+# ================= COPY BANK (ALGORITHM OPTIMIZED) =================
 
+# ===== HOOKS (SCROLL STOPPERS) =====
 HOOK = [
-    "You're not tired. You're undisciplined.",
-    "Comfort is ruining your future.",
-    "Your habits expose you.",
-    "You don't lack time. You lack control.",
-    "No one is coming to save you.",
+"You’re not tired. You’re undisciplined.",
+"Comfort is ruining your future.",
+"Nobody is coming to save you.",
+"Your habits are exposing you.",
+"You don’t lack time. You lack control.",
+"You’re choosing easy over growth.",
+"Weak standards create hard lives.",
+"You know better. You just don’t do better.",
+"Your comfort zone is expensive.",
+"You break promises to yourself.",
+"You quit when it gets boring.",
+"You delay what could change you.",
+"You negotiate with weakness daily.",
+"Results hate comfort.",
+"Your future is watching your habits.",
+"You want change without sacrifice.",
+"Self-control is your real problem.",
+"You avoid what would change you.",
+"You’re addicted to comfort.",
+"Discipline is your missing skill."
 ]
 
+# ===== AUTHORITY (COLD TRUTHS) =====
 AUTHORITY = [
-    "Comfort is expensive.",
-    "Discipline decides outcomes.",
-    "Weak habits create hard lives.",
-    "Control beats motivation.",
-    "Consistency is a skill.",
+"Discipline is a daily decision.",
+"Control beats emotion.",
+"Standards create results.",
+"Consistency builds identity.",
+"Structure creates freedom.",
+"Repetition builds power.",
+"Discipline compounds quietly.",
+"Focus is trained.",
+"Self-control is a skill.",
+"Hard choices build easy lives.",
+"Discipline outlasts motivation.",
+"Routine builds strength.",
+"Delayed gratification wins.",
+"Discipline builds respect.",
+"Control creates peace.",
+"Standards change outcomes.",
+"Effort builds confidence.",
+"Action creates clarity.",
+"Pain teaches control.",
+"Standards decide your future."
 ]
 
+# ===== RELATABLE (HUMAN TRUTHS) =====
 RELATABLE = [
-    "Some days you don't feel like it.",
-    "You get distracted easily.",
-    "You delay what matters.",
-    "You know what to do.",
-    "Your phone owns your attention.",
+"Some days you don’t feel like it.",
+"You get distracted easily.",
+"You delay what matters.",
+"You know what to do.",
+"Your phone owns your attention.",
+"You scroll instead of executing.",
+"You wait for motivation.",
+"You start but don’t finish.",
+"You break your own rules.",
+"You choose comfort at night.",
+"You lose focus quickly.",
+"You avoid boring work.",
+"You want fast results.",
+"You rely on feelings.",
+"You skip the hard part.",
+"You quit quietly.",
+"You avoid discipline.",
+"You want easy progress.",
+"You protect bad habits.",
+"You wait for the perfect time."
 ]
 
+# ===== CHALLENGE (ENGAGEMENT TRIGGERS) =====
 CHALLENGE = [
-    "Day 7. Still disciplined?",
-    "Still here?",
-    "Will you finish what you start?",
-    "Day 1 or Day 100?",
+"Day 7. Still disciplined?",
+"Still here?",
+"Will you finish what you start?",
+"Day 1 or Day 100?",
+"Can you stay consistent?",
+"Will you keep your word?",
+"Are you serious?",
+"Do you really want change?",
+"Still choosing comfort?",
+"Will you execute today?"
 ]
 
+# ===== CTA ROTATION (COMMENT DRIVERS) =====
 CTA_ROTATE = [
-    "Comment DISCIPLINE.",
-    "Still here?",
-    "Day 1 or Day 100?",
-    "Comment DISCIPLINE if you're serious.",
+"Comment DISCIPLINE.",
+"Comment DISCIPLINE if you're serious.",
+"Choose discipline.",
+"Start today.",
+"Do the hard thing.",
+"Stay consistent.",
+"Hold your standard.",
+"Execute quietly.",
+"Prove it to yourself.",
+"Stay sharp."
 ]
 
-# Micro-story reels (begin → struggle → control → resolve → question/cta)
+# ===== MICRO-STORY ARCS (HIGH RETENTION) =====
 STORY_ARCS = [
     [
         "You said you wanted change.",
@@ -116,10 +178,17 @@ STORY_ARCS = [
     ],
     [
         "You want results.",
-        "But you protect bad habits.",
+        "But protect bad habits.",
         "Remove the easy option.",
         "Discipline stays.",
         "Comment DISCIPLINE.",
+    ],
+    [
+        "You know what to do.",
+        "But you delay.",
+        "Discipline is doing it anyway.",
+        "Standards stay.",
+        "Still here?",
     ],
 ]
 
