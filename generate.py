@@ -382,41 +382,42 @@ def make_reel(idx):
     # create background after we know final t (or at least target_len)
     # first pass: build audio + overlays
     for i, line in enumerate(script):
-        tmp = f"{folder}/tmp_{i}.mp3"
-        run_tts(line, tmp)
 
-        a = AudioFileClip(tmp)
+    tmp = f"{folder}/tmp_{i}.mp3"
+    run_tts(line, tmp)
 
-# --- TIMING ENGINE (V12 RETENTION PACING) ---
-if i == 0:
-    dur = 2.8  # hook
-elif i == len(script) - 1:
-    dur = 3.0  # punch/question
-else:
-    dur = 2.4  # middle truths
+    a = AudioFileClip(tmp)
 
+    # timing logic
+    if i == 0:
+        dur = 2.8
+    elif i == len(script) - 1:
+        dur = 3.0
+    else:
+        dur = 2.4
 
+    # TEXT OVERLAY (aligned with 'a =' above)
+    overlay = fit_text_image(
+        line, W, H, FONT_PATH,
+        max_size=130,
+        min_size=70,
+        margin_px=140,
+        shadow=True
+    )
 
-                # text overlay (safe margins)
-        overlay = fit_text_image(
-            line, W, H, FONT_PATH,
-            max_size=130,
-            min_size=70,
-            margin_px=140,
-            shadow=True
-        )
+    txt = (
+        ImageClip(overlay, ismask=False)
+        .set_start(t)
+        .set_duration(dur)
+        .fadein(0.12)
+        .fadeout(0.12)
+    )
 
-        txt = (ImageClip(overlay, ismask=False)
-               .set_start(t)
-               .set_duration(dur)
-               .fadein(0.12)
-               .fadeout(0.12)
+    text_clips.append(txt)
+    audio_clips.append(a.set_start(t + 0.15))
 
-        text_clips.append(txt)
-        audio_clips.append(a.set_start(t + 0.15))
-
-        t += dur
-        safe_remove(tmp)
+    t += dur
+    safe_remove(tmp)
 
     # if too long, tighten by trimming end pauses a bit (simple + stable)
     final_len = max(6.0, min(t, 15.0))
