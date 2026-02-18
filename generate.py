@@ -9,8 +9,11 @@ import edge_tts
 W, H = 1080, 1920
 FPS = 30
 
-VOICE = "en-US-GuyNeural"  # deep male
-RATE = "-10%"
+VOICE = "en-US-ChristopherNeural"
+
+RATE = "-15%"
+PITCH = "-10Hz"
+VOLUME = "+0%"
 
 os.makedirs("outputs", exist_ok=True)
 
@@ -90,7 +93,13 @@ def make_text(text):
 # ---------------- TTS ----------------
 
 async def tts(text,file):
-    com=edge_tts.Communicate(text,VOICE,rate=RATE)
+    com=edge_tts.Communicate(
+        text,
+        VOICE,
+        rate=RATE,
+        pitch=PITCH,
+        volume=VOLUME
+    )
     await com.save(file)
 
 def make_voice(text,file):
