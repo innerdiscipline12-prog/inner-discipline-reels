@@ -1,4 +1,6 @@
-moviepy
-Pillow
+moviepy==1.0.3
 numpy
-pyttsx3
+Pillow
+edge-tts
+imageio
+imageio-ffmpeg
