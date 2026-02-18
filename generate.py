@@ -17,38 +17,83 @@ VOLUME = "+0%"
 
 os.makedirs("outputs", exist_ok=True)
 
-# ---------------- CONTENT BANK ----------------
+# ================= V4 VIRAL BANK =================
 
 HOOKS=[
-"You're not tired. You're undisciplined.",
-"Comfort is ruining your future.",
-"You don't lack time. You lack control.",
-"No one is coming to save you.",
-"Your habits expose you.",
-"Discipline is chosen.",
-"Your future is built daily.",
-"Comfort is the enemy.",
+"You’re not tired. You’re avoiding effort.",
+"Your comfort is lying to you.",
+"Nobody ruined your life. You did.",
+"You know the answer. You avoid it.",
+"Your future is watching you waste time.",
+"Comfort is killing your potential.",
+"You don’t need motivation. You need rules.",
+"You’re not busy. You’re distracted.",
+"Your excuses are well practiced.",
+"Most people choose easy. Daily.",
+"Your habits expose your priorities.",
+"You want change without sacrifice.",
+"You fear discipline more than failure.",
+"Your comfort zone owns you.",
+"You delay what could change your life.",
+"You already know what to fix.",
+"You waste energy on avoidance.",
+"You want results without structure.",
+"You’re addicted to easy dopamine.",
+"You’re negotiating with weakness.",
 ]
 
 TRUTHS=[
-"Control beats motivation.",
-"Consistency builds identity.",
-"Discipline decides outcomes.",
-"Standards shape your life.",
-"Small actions define you.",
-"Routine builds power.",
+"Discipline is a decision.",
+"Control creates freedom.",
+"Structure beats emotion.",
+"Action builds clarity.",
+"Habits shape identity.",
+"Consistency builds power.",
+"Standards define outcomes.",
+"Focus is trained.",
+"Effort reveals truth.",
+"Repetition builds strength.",
+"Execution builds confidence.",
+"Order removes chaos.",
+"Discipline compounds.",
+"Control is a skill.",
+"Momentum is earned.",
+"Structure protects focus.",
+"Daily effort wins.",
+"Routine creates results.",
+"Self-control builds respect.",
+"Action ends doubt.",
 ]
 
 QUESTIONS=[
+"Still choosing easy?",
+"Still delaying?",
+"Still distracted?",
+"Still comfortable?",
+"Still avoiding effort?",
+"Still restarting?",
+"Still negotiating?",
+"Still scrolling?",
+"Still unfocused?",
+"Still inconsistent?",
+"Still waiting?",
+"Still escaping?",
+"Still blaming mood?",
+"Still weak on standards?",
 "Still here?",
-"Day 1 or Day 100?",
-"Will you finish?",
-"Are you serious?",
 ]
 
 CTAS=[
 "Comment discipline.",
 "Type discipline.",
+"Only disciplined comment.",
+"Discipline or regret. Choose.",
+"Prove discipline. Comment.",
+"Show commitment. Comment discipline.",
+"Serious? Comment discipline.",
+"Earn it. Comment discipline.",
+"Discipline starts now. Comment.",
+"Standards begin here. Comment discipline.",
 ]
 
 # ---------------- TEXT RENDER ----------------
