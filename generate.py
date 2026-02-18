@@ -1,4 +1,3 @@
-```python
 # ============================
 # V6 MASTER — REEL GENERATOR (7–12s)
 # INNER DISCIPLINE • CLEAN BUILD • RANDOM BACKGROUNDS • NO OVERLAP • SAFE TEXT
