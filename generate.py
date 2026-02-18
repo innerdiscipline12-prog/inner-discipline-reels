@@ -1,149 +1,164 @@
-import os, random, asyncio, glob
+import os, random, glob
 from moviepy.editor import *
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
-import edge_tts
 
-# ===== SETTINGS =====
+# ========= SETTINGS =========
+
 W,H = 1080,1920
 FONT_PATH="Anton-Regular.ttf"
-MUSIC="music.mp3"
 
-VOICE="en-US-ChristopherNeural"
-VOICE_RATE="-25%"
-VOICE_PITCH="-5Hz"
+HOOK_DUR=2.8
+MID_DUR=2.2
+END_DUR=2.8
 
-REEL_BACKGROUNDS = glob.glob("bg*.mp4")
-REELS_PER_RUN = 5
+FADE=0.15
 
-# ===== COPY BANK =====
-HOOK = [
-"You’re not tired. You’re undisciplined.",
-"No one is coming to save you.",
-"You don’t lack time. You lack control.",
+# ========= CONTENT BANK =========
+
+HOOKS=[
+"You're not tired. You're undisciplined.",
 "Comfort is ruining your future.",
-"Your habits expose you."
+"Your habits expose you.",
+"You don't lack time. You lack control.",
+"No one is coming to save you.",
+"You are negotiating with weakness.",
 ]
 
-TRUTH = [
+TRUTHS=[
+"Comfort is expensive.",
 "Discipline decides outcomes.",
 "Control beats motivation.",
 "Consistency builds identity.",
-"Comfort is expensive.",
-"Weak habits create hard lives."
+"Action creates clarity.",
 ]
 
-CTA = [
+RELATABLE=[
+"You get distracted easily.",
+"You delay what matters.",
+"You know what to do.",
+"You just don't do it.",
+]
+
+QUESTIONS=[
 "Still here?",
-"Day 7. Still disciplined?",
-"Comment DISCIPLINE.",
-"Day 1 or Day 100?"
+"Day 1 or Day 100?",
+"Will you finish?",
+"Can you stay consistent?",
 ]
 
-# ===== TTS =====
-async def tts(text,path):
-    c=edge_tts.Communicate(text,voice=VOICE,rate=VOICE_RATE,pitch=VOICE_PITCH)
-    await c.save(path)
+CTAS=[
+"Comment DISCIPLINE.",
+"Type DISCIPLINE.",
+]
 
-def run_tts(t,p):
-    asyncio.run(tts(t,p))
+# ========= BACKGROUNDS =========
 
-# ===== TEXT IMAGE =====
-def text_img(text):
-    img=Image.new("RGB",(W,H),(0,0,0))
+BG_VIDEOS=glob.glob("bg*.mp4")
+
+def pick_bg(total_len):
+    vid=VideoFileClip(random.choice(BG_VIDEOS)).without_audio()
+    
+    if vid.duration<=total_len:
+        clip=vid.loop(duration=total_len)
+    else:
+        start=random.uniform(0,vid.duration-total_len)
+        clip=vid.subclip(start,start+total_len)
+        
+    # cinematic slow zoom
+    clip=clip.resize((W,H)).fx(vfx.resize, lambda t:1+0.04*t)
+    
+    return clip
+
+# ========= TEXT IMAGE =========
+
+def text_img(txt):
+    img=Image.new("RGBA",(W,H),(0,0,0,0))
     d=ImageDraw.Draw(img)
 
-    size=110
-    font=ImageFont.truetype(FONT_PATH,size)
+    font_size=110
+    font=ImageFont.truetype(FONT_PATH,font_size)
 
-    words=text.split()
-    mid=len(words)//2
-    text=" ".join(words[:mid])+"\n"+" ".join(words[mid:])
+    # wrap
+    words=txt.split()
+    lines=[]
+    cur=""
+    for w in words:
+        if len(cur+w)<18:
+            cur+=w+" "
+        else:
+            lines.append(cur)
+            cur=w+" "
+    lines.append(cur)
 
-    box=d.multiline_textbbox((0,0),text,font=font,spacing=12)
-    x=(W-(box[2]-box[0]))//2
-    y=(H-(box[3]-box[1]))//2
+    text="\n".join(lines)
 
-    d.multiline_text((x,y),text,font=font,fill="white",align="center",spacing=12)
+    box=d.multiline_textbbox((0,0),text,font=font,spacing=10)
+    tw,th=box[2]-box[0],box[3]-box[1]
+
+    x=(W-tw)//2
+    y=int(H*0.62)
+
+    # shadow
+    d.multiline_text((x+4,y+4),text,font=font,fill=(0,0,0,200),align="center")
+    d.multiline_text((x,y),text,font=font,fill="white",align="center")
 
     return np.array(img)
 
-# ===== SCRIPT BUILDER =====
-def build_script():
-    return [
-        random.choice(HOOK),
-        random.choice(TRUTH),
-        random.choice(CTA)
+# ========= SCRIPT BUILDER =========
+
+def build_script(idx):
+    
+    script=[
+        random.choice(HOOKS),
+        random.choice(RELATABLE),
+        random.choice(TRUTHS),
     ]
-
-# ===== RANDOM BACKGROUND SEGMENT =====
-def random_bg(duration):
-    bg=random.choice(REEL_BACKGROUNDS)
-    clip=VideoFileClip(bg).without_audio()
-
-    if clip.duration > duration+1:
-        start=random.uniform(0, clip.duration-duration-0.5)
+    
+    # 2 of 5 reels get CTA
+    if idx%5 in [0,1]:
+        script.append(random.choice(CTAS))
     else:
-        start=0
+        script.append(random.choice(QUESTIONS))
+        
+    return script
 
-    clip=clip.subclip(start,start+duration)
-    clip=clip.resize(height=H).crop(width=W,height=H)
+# ========= MAIN =========
 
-    return clip
+os.makedirs("outputs",exist_ok=True)
 
-# ===== BUILD REEL =====
-def make_reel(i):
-
-    os.makedirs("outputs",exist_ok=True)
-
-    script=build_script()
-
-    audio=[]
-    text_clips=[]
+for idx in range(1,6):
+    
+    lines=build_script(idx)
+    
     t=0
-
-    # ---- FIRST PASS: AUDIO + TEXT ----
-    for n,line in enumerate(script):
-
-        tmp=f"tmp{n}.mp3"
-        run_tts(line,tmp)
-
-        a=AudioFileClip(tmp)
-
-        dur=a.duration+0.4   # <<< KEY FIX
-
+    clips=[]
+    
+    for i,line in enumerate(lines):
+        
+        if i==0: dur=HOOK_DUR
+        elif i==len(lines)-1: dur=END_DUR
+        else: dur=MID_DUR
+        
         img=text_img(line)
-
+        
         txt=(ImageClip(img)
              .set_start(t)
              .set_duration(dur)
-             .fadein(.15)
-             .fadeout(.15))
-
-        text_clips.append(txt)
-        audio.append(a.set_start(t+.1))
-
+             .fadein(FADE)
+             .fadeout(FADE))
+             
+        clips.append(txt)
         t+=dur
-        os.remove(tmp)
+    
+    bg=pick_bg(t)
+    
+    final=CompositeVideoClip([bg]+clips,size=(W,H))
+    
+    final.write_videofile(
+        f"outputs/reel_{idx}.mp4",
+        fps=30,
+        codec="libx264"
+    )
 
-    final_len=max(7,min(t,12))  # keep 7–12s
-
-    base=random_bg(final_len)
-
-    final=CompositeVideoClip([base]+text_clips).subclip(0,final_len)
-
-    voice=CompositeAudioClip(audio)
-
-    if os.path.exists(MUSIC):
-        m=AudioFileClip(MUSIC).audio_loop(duration=final_len).volumex(.08)
-        final=final.set_audio(CompositeAudioClip([m,voice]))
-    else:
-        final=final.set_audio(voice)
-
-    final.write_videofile(f"outputs/reel_{i}.mp4",fps=30)
-
-# ===== RUN =====
-for i in range(REELS_PER_RUN):
-    make_reel(i)
-
-print("✅ REEL MASTER COMPLETE")
+print("DONE.")
