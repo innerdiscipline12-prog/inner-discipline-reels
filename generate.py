@@ -1,12 +1,20 @@
 import os, random, glob, asyncio
+import numpy as np
 from moviepy.editor import *
+from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
-W,H = 1080,1920
+# ---------------- SETTINGS ----------------
+
+W, H = 1080, 1920
+FPS = 30
+
+VOICE = "en-US-GuyNeural"  # deep male
+RATE = "-10%"
 
 os.makedirs("outputs", exist_ok=True)
 
-# -------- CONTENT BANK --------
+# ---------------- CONTENT BANK ----------------
 
 HOOKS=[
 "You're not tired. You're undisciplined.",
@@ -15,6 +23,8 @@ HOOKS=[
 "No one is coming to save you.",
 "Your habits expose you.",
 "Discipline is chosen.",
+"Your future is built daily.",
+"Comfort is the enemy.",
 ]
 
 TRUTHS=[
@@ -22,12 +32,15 @@ TRUTHS=[
 "Consistency builds identity.",
 "Discipline decides outcomes.",
 "Standards shape your life.",
+"Small actions define you.",
+"Routine builds power.",
 ]
 
 QUESTIONS=[
 "Still here?",
 "Day 1 or Day 100?",
 "Will you finish?",
+"Are you serious?",
 ]
 
 CTAS=[
@@ -35,78 +48,111 @@ CTAS=[
 "Type discipline.",
 ]
 
-# -------- VOICE --------
+# ---------------- TEXT RENDER ----------------
+
+def make_text(text):
+    img = Image.new("RGBA",(W,H),(0,0,0,0))
+    draw = ImageDraw.Draw(img)
+
+    font = ImageFont.truetype("Anton-Regular.ttf", 90)
+
+    words=text.split()
+    lines=[]
+    cur=""
+
+    for w in words:
+        test=cur+" "+w
+        if draw.textlength(test,font=font)<900:
+            cur=test
+        else:
+            lines.append(cur)
+            cur=w
+    lines.append(cur)
+
+    y=H//2 - 100*len(lines)//2
+
+    for line in lines:
+        tw=draw.textlength(line,font=font)
+        x=(W-tw)//2
+
+        draw.text(
+            (x,y),
+            line,
+            font=font,
+            fill="white",
+            stroke_width=4,
+            stroke_fill="black"
+        )
+        y+=110
+
+    return np.array(img)
+
+# ---------------- TTS ----------------
 
 async def tts(text,file):
-    com=edge_tts.Communicate(
-        text,
-        voice="en-US-GuyNeural",
-        rate="-10%",
-        pitch="-5Hz"
-
-    )
+    com=edge_tts.Communicate(text,VOICE,rate=RATE)
     await com.save(file)
 
-def speak(text,file):
+def make_voice(text,file):
     asyncio.run(tts(text,file))
 
-# -------- BACKGROUNDS --------
+# ---------------- BUILD REEL ----------------
 
-BGS=glob.glob("bg*.mp4")
-
-def make_script():
-    return [
+def build_script(with_cta=True):
+    script=[
         random.choice(HOOKS),
         random.choice(TRUTHS),
-        random.choice(QUESTIONS if random.random()<0.6 else CTAS)
     ]
+    if with_cta:
+        script.append(random.choice(CTAS))
+    else:
+        script.append(random.choice(QUESTIONS))
+    return script
 
-for r in range(5):
+def make_reel(idx,with_cta):
+    script=build_script(with_cta)
 
-    lines=make_script()
-    bg=random.choice(BGS)
+    bg=random.choice(glob.glob("bg*.mp4"))
+    base=VideoFileClip(bg).resize(height=H).crop(x_center=540,y_center=960,width=W,height=H)
 
     clips=[]
-    sounds=[]
+    audios=[]
     t=0
 
-    for i,line in enumerate(lines):
+    for i,line in enumerate(script):
+        mp3=f"tmp_{idx}_{i}.mp3"
+        make_voice(line,mp3)
 
-        audio=f"tmp{i}.mp3"
-        speak(line,audio)
+        a=AudioFileClip(mp3)
+        dur=max(2.5,a.duration+0.4)
 
-        a=AudioFileClip(audio)
+        img=make_text(line)
 
-        dur=min(3,a.duration+0.4)
-
-        txt=TextClip(
-            line,
-            fontsize=80,
-            color="white",
-            size=(900,None),
-            method="caption"
-        ).set_position(("center","center"))\
-         .set_start(t)\
-         .set_duration(dur)
+        txt=(ImageClip(img)
+             .set_start(t)
+             .set_duration(dur)
+             .fadein(0.2)
+             .fadeout(0.2))
 
         clips.append(txt)
-        sounds.append(a.set_start(t))
+        audios.append(a.set_start(t))
 
         t+=dur
 
-    total=max(7,min(t,11))
+    video=CompositeVideoClip([base]+clips).set_duration(t)
+    audio=CompositeAudioClip(audios)
 
-    bgclip=VideoFileClip(bg)\
-        .subclip(0,total)\
-        .resize(height=1920)\
-        .set_position("center")
-
-    final=CompositeVideoClip([bgclip]+clips)\
-        .set_audio(CompositeAudioClip(sounds))
-
+    final=video.set_audio(audio)
     final.write_videofile(
-        f"outputs/reel_{r}.mp4",
-        fps=30,
+        f"outputs/reel_{idx}.mp4",
+        fps=FPS,
         codec="libx264",
         audio_codec="aac"
     )
+
+# ---------------- RUN ----------------
+
+for i in range(5):
+    make_reel(i,with_cta=(i<2))
+
+print("DONE")
