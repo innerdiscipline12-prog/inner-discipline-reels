@@ -42,7 +42,8 @@ async def tts(text,file):
         text,
         voice="en-US-GuyNeural",
         rate="-10%",
-        pitch="-5%"
+        pitch="-5Hz"
+
     )
     await com.save(file)
 
