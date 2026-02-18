@@ -27,37 +27,108 @@ def tts(text,filename):
     engine.save_to_file(text,filename)
     engine.runAndWait()
 
-# ========= CONTENT BANK =========
+# ================= ELITE CONTENT BANK =================
 
 HOOKS=[
-"You're not tired. You're undisciplined.",
+"You’re not tired. You’re undisciplined.",
 "Comfort is ruining your future.",
-"You don't lack time. You lack control.",
+"You don’t lack time. You lack control.",
 "No one is coming to save you.",
+"You said you wanted change.",
+"Your excuses sound convincing to you.",
+"Motivation didn’t leave. You did.",
+"Your comfort zone is expensive.",
+"Discipline feels hard. Regret feels harder.",
+"You know what to do already.",
+"You keep negotiating with weakness.",
+"You want results without structure.",
+"Your future is watching your habits.",
+"Self-control is a rare skill now.",
+"Most people quit quietly.",
+"Your phone stole your focus.",
+"You delay the life you want.",
+"Comfort is a slow trap.",
+"You’re capable. Just inconsistent.",
+"Your habits reveal your standards.",
 ]
 
 TRUTHS=[
 "Discipline decides outcomes.",
 "Control beats motivation.",
 "Consistency builds identity.",
+"Weak habits create hard lives.",
+"Structure creates freedom.",
+"Effort exposes limits.",
+"Standards shape results.",
+"Repetition builds power.",
+"Small wins build control.",
+"Focus is trained.",
+"Self-control is a muscle.",
+"Your inputs shape your life.",
+"Daily actions reveal priorities.",
+"Order creates momentum.",
+"Discipline compounds quietly.",
+"Your routine predicts your future.",
+"Habits are louder than goals.",
+"Control creates confidence.",
+"Execution builds clarity.",
+"Standards protect your future.",
 ]
 
 RELATABLE=[
 "You get distracted easily.",
 "You delay what matters.",
 "You know what to do.",
+"You start strong then fade.",
+"You scroll instead of act.",
+"You wait to feel ready.",
+"You plan more than execute.",
+"You restart too often.",
+"You chase motivation.",
+"You avoid discomfort.",
+"You overthink simple tasks.",
+"You break promises to yourself.",
+"You lose focus fast.",
+"You rely on mood.",
+"You stop when it’s boring.",
+"You hesitate too much.",
+"You choose easy first.",
+"You quit quietly.",
+"You drift without structure.",
+"You want change but delay action.",
 ]
 
 QUESTIONS=[
 "Still here?",
 "Day 1 or Day 100?",
 "Will you finish?",
+"Or will you reset again?",
+"Still making excuses?",
+"Still distracted?",
+"Still delaying?",
+"Still choosing easy?",
+"Still negotiating?",
+"Still scrolling?",
+"Still waiting?",
+"Still starting over?",
+"Still comfortable?",
+"Still unfocused?",
+"Still inconsistent?",
 ]
 
 CTAS=[
 "Comment discipline.",
 "Type discipline.",
+"Comment discipline if serious.",
+"Discipline or comfort. Choose.",
+"Prove it. Comment discipline.",
+"Only the disciplined comment.",
+"Serious about change? Comment discipline.",
+"Discipline starts now. Comment.",
+"Show commitment. Comment discipline.",
+"Earn your future. Comment discipline.",
 ]
+
 
 # ========= BACKGROUNDS =========
 
