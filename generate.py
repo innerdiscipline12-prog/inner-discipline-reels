@@ -9,7 +9,7 @@ import edge_tts
 
 W, H = 1080, 1920
 FPS = 30
-MAX_REEL_LENGTH = 9.5   # elite retention cap
+MAX_REEL_LENGTH = 9.5
 
 VOICE = "en-US-GuyNeural"
 RATE = "-35%"
@@ -29,7 +29,7 @@ if os.path.exists(HOOK_MEMORY_FILE):
 else:
     used_hooks = []
 
-# ---------------- CONTENT BANK ----------------
+# ---------------- CONTENT ----------------
 
 HOOKS = [
 "You’re not tired. You’re avoiding effort.",
@@ -74,7 +74,7 @@ CTAS = [
 "Standards begin now. Comment discipline.",
 ]
 
-# ---------------- TEXT RENDER ----------------
+# ---------------- TEXT ----------------
 
 def make_text(text):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -131,7 +131,7 @@ async def tts_async(text, filename):
 def generate_voice(text, filename):
     asyncio.run(tts_async(text, filename))
 
-# ---------------- HOOK ROTATION ----------------
+# ---------------- SCRIPT ----------------
 
 def get_hook():
     global used_hooks
@@ -143,33 +143,15 @@ def get_hook():
 
     hook = random.choice(available)
     used_hooks.append(hook)
-
     return hook
-
-# ---------------- SCRIPT BUILDER ----------------
 
 def build_script(with_cta=True):
     hook = get_hook()
-
-    script = [
-        hook,
-        random.choice(TRUTHS),
-    ]
-
-    if with_cta:
-        script.append(random.choice(CTAS))
-    else:
-        script.append(random.choice(QUESTIONS))
-
+    script = [hook, random.choice(TRUTHS)]
+    script.append(random.choice(CTAS if with_cta else QUESTIONS))
     return script
 
-# ---------------- VIGNETTE OVERLAY ----------------
-
-def add_vignette(clip):
-    overlay = ColorClip((W, H), color=(0, 0, 0)).set_opacity(0.35)
-    return CompositeVideoClip([clip, overlay])
-
-# ---------------- REEL BUILDER ----------------
+# ---------------- REEL ----------------
 
 def make_reel(index, with_cta):
 
@@ -182,8 +164,6 @@ def make_reel(index, with_cta):
     bg_path = random.choice(backgrounds)
     base = VideoFileClip(bg_path).without_audio()
 
-    # Cinematic slow zoom
-    base = base.fx(resize, lambda t: 1 + 0.015 * t)
     base = base.resize(height=H)
 
     if base.w < W:
@@ -217,12 +197,10 @@ def make_reel(index, with_cta):
 
         text_img = make_text(line)
 
-        # Hook emphasis (slight scale)
         text_clip = (
             ImageClip(text_img)
             .set_start(timeline)
             .set_duration(duration)
-            .resize(lambda t: 1.02 if i == 0 else 1)
             .fadein(0.25)
             .fadeout(0.25)
         )
@@ -232,11 +210,10 @@ def make_reel(index, with_cta):
 
         timeline += duration
 
-    # Retention limiter
     timeline = min(timeline, MAX_REEL_LENGTH)
 
-    final_video = CompositeVideoClip([base] + clips).set_duration(timeline)
-    final_video = add_vignette(final_video)
+    final_video = CompositeVideoClip([base] + clips)
+    final_video = final_video.set_duration(timeline)  # 🔥 FIX
     final_video = final_video.fadeout(0.3)
 
     final_audio = CompositeAudioClip(audio_clips)
@@ -253,8 +230,6 @@ def make_reel(index, with_cta):
         threads=4
     )
 
-    # --- SEO Assets ---
-
     title = f"{script[0]} | INNER DISCIPLINE"
     caption = script[0] + "\n\nDiscipline builds identity.\n\n#discipline #selfcontrol #focus #mindset"
 
@@ -268,4 +243,4 @@ for i in range(REELS_PER_RUN):
 
 json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
 
-print("🔥 REEL ELITE ENGINE COMPLETE")
+print("🔥 REEL ELITE ENGINE FIXED")
