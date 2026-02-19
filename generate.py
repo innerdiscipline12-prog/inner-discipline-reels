@@ -1,6 +1,7 @@
 import os, random, glob, asyncio, json
 import numpy as np
 from moviepy.editor import *
+from moviepy.video.fx.all import resize
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
@@ -8,19 +9,19 @@ import edge_tts
 
 W, H = 1080, 1920
 FPS = 30
+MAX_REEL_LENGTH = 9.5   # elite retention cap
 
-VOICE = "en-US-ChristopherNeural"
-RATE = "-20%"
-PITCH = "-25Hz"
+VOICE = "en-US-GuyNeural"
+RATE = "-35%"
+PITCH = "-40Hz"
 VOLUME = "+0%"
 
 FONT_PATH = "Anton-Regular.ttf"
-
 REELS_PER_RUN = 5
 
 os.makedirs("outputs", exist_ok=True)
 
-# ---------------- MONETIZATION MEMORY ----------------
+# ---------------- MEMORY ----------------
 
 HOOK_MEMORY_FILE = "hook_memory.json"
 if os.path.exists(HOOK_MEMORY_FILE):
@@ -79,7 +80,7 @@ def make_text(text):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    font_size = 95
+    font_size = 92
     font = ImageFont.truetype(FONT_PATH, font_size)
 
     max_width = W - 240
@@ -96,7 +97,7 @@ def make_text(text):
             current = word
     lines.append(current)
 
-    total_height = len(lines) * (font_size + 15)
+    total_height = len(lines) * (font_size + 22)
     y = (H - total_height) // 2
 
     for line in lines:
@@ -111,7 +112,7 @@ def make_text(text):
             stroke_width=5,
             stroke_fill="black"
         )
-        y += font_size + 15
+        y += font_size + 22
 
     return np.array(img)
 
@@ -153,7 +154,6 @@ def build_script(with_cta=True):
     script = [
         hook,
         random.choice(TRUTHS),
-        random.choice(TRUTHS),
     ]
 
     if with_cta:
@@ -163,16 +163,11 @@ def build_script(with_cta=True):
 
     return script
 
-# ---------------- SEO ENGINE ----------------
+# ---------------- VIGNETTE OVERLAY ----------------
 
-def generate_title(hook):
-    return f"{hook} | INNER DISCIPLINE"
-
-def generate_caption(script):
-    caption = script[0] + "\n\n"
-    caption += "Discipline builds identity.\n\n"
-    caption += "#discipline #selfcontrol #focus #mindset"
-    return caption
+def add_vignette(clip):
+    overlay = ColorClip((W, H), color=(0, 0, 0)).set_opacity(0.35)
+    return CompositeVideoClip([clip, overlay])
 
 # ---------------- REEL BUILDER ----------------
 
@@ -187,6 +182,8 @@ def make_reel(index, with_cta):
     bg_path = random.choice(backgrounds)
     base = VideoFileClip(bg_path).without_audio()
 
+    # Cinematic slow zoom
+    base = base.fx(resize, lambda t: 1 + 0.015 * t)
     base = base.resize(height=H)
 
     if base.w < W:
@@ -209,30 +206,39 @@ def make_reel(index, with_cta):
         generate_voice(line, voice_file)
 
         audio = AudioFileClip(voice_file)
+        voice_duration = audio.duration
 
-        if i == 0:
-            duration = 2.4
-        elif i == len(script) - 1:
-            duration = 2.4
+        if line.endswith("?"):
+            duration = voice_duration + 1.0
+        elif line in CTAS:
+            duration = voice_duration + 1.2
         else:
-            duration = 2.1
+            duration = voice_duration + 0.6
 
         text_img = make_text(line)
 
+        # Hook emphasis (slight scale)
         text_clip = (
             ImageClip(text_img)
             .set_start(timeline)
             .set_duration(duration)
+            .resize(lambda t: 1.02 if i == 0 else 1)
             .fadein(0.25)
             .fadeout(0.25)
         )
 
         clips.append(text_clip)
-        audio_clips.append(audio.set_start(timeline + 0.15))
+        audio_clips.append(audio.set_start(timeline + 0.1))
 
         timeline += duration
 
+    # Retention limiter
+    timeline = min(timeline, MAX_REEL_LENGTH)
+
     final_video = CompositeVideoClip([base] + clips).set_duration(timeline)
+    final_video = add_vignette(final_video)
+    final_video = final_video.fadeout(0.3)
+
     final_audio = CompositeAudioClip(audio_clips)
 
     final = final_video.set_audio(final_audio)
@@ -247,10 +253,10 @@ def make_reel(index, with_cta):
         threads=4
     )
 
-    # --- Save Monetization Assets ---
+    # --- SEO Assets ---
 
-    title = generate_title(script[0])
-    caption = generate_caption(script)
+    title = f"{script[0]} | INNER DISCIPLINE"
+    caption = script[0] + "\n\nDiscipline builds identity.\n\n#discipline #selfcontrol #focus #mindset"
 
     open(f"outputs/reel_{index+1}_title.txt", "w").write(title)
     open(f"outputs/reel_{index+1}_caption.txt", "w").write(caption)
@@ -262,4 +268,4 @@ for i in range(REELS_PER_RUN):
 
 json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
 
-print("🔥 V13 MONETIZATION ENGINE COMPLETE")
+print("🔥 REEL ELITE ENGINE COMPLETE")
