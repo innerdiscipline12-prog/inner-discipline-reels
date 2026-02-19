@@ -256,7 +256,7 @@ def make_reel(index, with_cta):
 
     video_path = f"outputs/reel_{index+1}.mp4"
 
-        final.write_videofile(
+    final.write_videofile(
         video_path,
         fps=FPS,
         codec="libx264",
