@@ -256,7 +256,7 @@ def make_reel(index, with_cta):
 
     video_path = f"outputs/reel_{index+1}.mp4"
 
-    final.write_videofile(
+        final.write_videofile(
         video_path,
         fps=FPS,
         codec="libx264",
@@ -266,24 +266,24 @@ def make_reel(index, with_cta):
 
     # --------- MONETIZATION ENGINE ---------
 
-title = f"{script[0]} | INNER DISCIPLINE"
+    title = f"{script[0]} | INNER DISCIPLINE"
 
-caption_lines = []
-caption_lines.append(script[0])
-caption_lines.append("")
-caption_lines.append(script[1])
-caption_lines.append("")
-caption_lines.append("Discipline builds identity.")
-caption_lines.append("")
-caption_lines.append("#discipline #selfcontrol #focus #consistency #mindset #innerdiscipline")
+    caption_lines = []
+    caption_lines.append(script[0])
+    caption_lines.append("")
+    caption_lines.append(script[1])
+    caption_lines.append("")
+    caption_lines.append("Discipline builds identity.")
+    caption_lines.append("")
+    caption_lines.append("#discipline #selfcontrol #focus #consistency #mindset #innerdiscipline")
 
-caption = "\n".join(caption_lines)
+    caption = "\n".join(caption_lines)
 
-with open(f"outputs/reel_{index+1}_title.txt", "w") as f:
-    f.write(title)
+    with open(f"outputs/reel_{index+1}_title.txt", "w") as f:
+        f.write(title)
 
-with open(f"outputs/reel_{index+1}_caption.txt", "w") as f:
-    f.write(caption)
+    with open(f"outputs/reel_{index+1}_caption.txt", "w") as f:
+        f.write(caption)
 
 # ---------------- RUN ----------------
 
