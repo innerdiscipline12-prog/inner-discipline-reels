@@ -2,6 +2,7 @@ import os, random, glob, asyncio, json
 import numpy as np
 from moviepy.editor import *
 from moviepy.video.fx.all import resize
+from moviepy.audio.fx import all as afx
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
@@ -12,8 +13,8 @@ FPS = 30
 MAX_REEL_LENGTH = 9.5
 
 VOICE = "en-US-GuyNeural"
-RATE = "-35%"
-PITCH = "-40Hz"
+RATE = "-40%"
+PITCH = "-45Hz"
 VOLUME = "+0%"
 
 FONT_PATH = "Anton-Regular.ttf"
@@ -37,20 +38,10 @@ HOOKS = [
 "You’re training weakness.",
 "Your habits are voting.",
 "You’re avoiding your potential.",
-"You want easy results.",
-"You’re loyal to comfort.",
 "Your future sees this.",
 "You’re feeding distraction.",
-"You protect bad habits.",
-"You’re choosing delay.",
-"You’re practicing excuses.",
-"You’re building regret.",
-"You fear structure.",
-"You escape effort.",
+"Your excuses are well practiced.",
 "You waste focus.",
-"You avoid discipline.",
-"You chase comfort.",
-"You repeat mistakes.",
 "You know better.",
 ]
 
@@ -63,18 +54,8 @@ TRUTHS=[
 "Habits decide outcomes.",
 "Effort compounds daily.",
 "Standards shape life.",
-"Repetition builds power.",
-"Order beats chaos.",
-"Action removes doubt.",
 "Execution builds identity.",
-"Self-control scales success.",
 "Routine builds strength.",
-"Momentum grows slowly.",
-"Pressure creates discipline.",
-"Control beats emotion.",
-"Clarity follows action.",
-"Rules protect focus.",
-"Discipline builds respect.",
 ]
 
 QUESTIONS=[
@@ -83,15 +64,6 @@ QUESTIONS=[
 "Still distracted?",
 "Still escaping?",
 "Still negotiating?",
-"Still waiting?",
-"Still unfocused?",
-"Still inconsistent?",
-"Still choosing easy?",
-"Still scrolling?",
-"Still weak on standards?",
-"Still blaming mood?",
-"Still avoiding?",
-"Still restarting?",
 "Still here?",
 ]
 
@@ -99,13 +71,8 @@ CTAS=[
 "Comment discipline.",
 "Type discipline.",
 "Only disciplined comment.",
-"Discipline or regret.",
 "Choose discipline.",
-"Prove discipline. Comment.",
-"Serious? Comment discipline.",
-"Standards start now. Comment.",
 "Commit now. Comment discipline.",
-"Earn it. Comment discipline.",
 ]
 
 # ---------------- TEXT ----------------
@@ -170,11 +137,9 @@ def generate_voice(text, filename):
 def get_hook():
     global used_hooks
     available = [h for h in HOOKS if h not in used_hooks]
-
     if not available:
         used_hooks = []
         available = HOOKS.copy()
-
     hook = random.choice(available)
     used_hooks.append(hook)
     return hook
@@ -210,9 +175,12 @@ def make_reel(index, with_cta):
         height=H
     )
 
+    # 🔥 Cinematic subtle zoom ramp
+    base = base.fx(vfx.resize, lambda t: 1 + 0.015*t)
+
     clips = []
     audio_clips = []
-    timeline = 0
+    timeline = 0.6   # 🔥 Dramatic silence before hook
 
     for i, line in enumerate(script):
 
@@ -223,11 +191,11 @@ def make_reel(index, with_cta):
         voice_duration = audio.duration
 
         if line.endswith("?"):
-            duration = voice_duration + 1.0
-        elif line in CTAS:
             duration = voice_duration + 1.2
+        elif line in CTAS:
+            duration = voice_duration + 1.4
         else:
-            duration = voice_duration + 0.6
+            duration = voice_duration + 0.8
 
         text_img = make_text(line)
 
@@ -236,21 +204,42 @@ def make_reel(index, with_cta):
             .set_start(timeline)
             .set_duration(duration)
             .fadein(0.25)
-            .fadeout(0.25)
+            .fadeout(0.35)
         )
 
         clips.append(text_clip)
-        audio_clips.append(audio.set_start(timeline + 0.1))
+
+        # 🔥 Stronger hook impact
+        if i == 0:
+            audio = audio.volumex(1.25)
+
+        audio_clips.append(audio.set_start(timeline))
 
         timeline += duration
 
     timeline = min(timeline, MAX_REEL_LENGTH)
 
     final_video = CompositeVideoClip([base] + clips)
-    final_video = final_video.set_duration(timeline)  # 🔥 FIX
-    final_video = final_video.fadeout(0.3)
+    final_video = final_video.set_duration(timeline)
+    final_video = final_video.fadeout(0.4)
 
     final_audio = CompositeAudioClip(audio_clips)
+
+    # 🔥 CINEMATIC MUSIC ENGINE
+
+    if os.path.exists("music.mp3"):
+
+        music = AudioFileClip("music.mp3")
+        music = afx.audio_loop(music, duration=timeline)
+
+        music = music.audio_fadein(1.2)
+        music = music.volumex(0.16)
+
+        # 🔥 Strong ducking under voice
+        voice_boost = final_audio.volumex(1.15)
+
+        final_audio = CompositeAudioClip([music, voice_boost])
+        final_audio = final_audio.audio_fadeout(0.6)
 
     final = final_video.set_audio(final_audio)
 
@@ -292,4 +281,4 @@ for i in range(REELS_PER_RUN):
 
 json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
 
-print("🔥 REEL ELITE ENGINE FIXED")
+print("🔥 REEL GOD MODE ACTIVE")
