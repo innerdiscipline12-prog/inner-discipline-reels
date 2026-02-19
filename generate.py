@@ -264,11 +264,26 @@ def make_reel(index, with_cta):
         threads=4
     )
 
-    title = f"{script[0]} | INNER DISCIPLINE"
-    caption = script[0] + "\n\nDiscipline builds identity.\n\n#discipline #selfcontrol #focus #mindset"
+    # --------- MONETIZATION ENGINE ---------
 
-    open(f"outputs/reel_{index+1}_title.txt", "w").write(title)
-    open(f"outputs/reel_{index+1}_caption.txt", "w").write(caption)
+title = f"{script[0]} | INNER DISCIPLINE"
+
+caption_lines = []
+caption_lines.append(script[0])
+caption_lines.append("")
+caption_lines.append(script[1])
+caption_lines.append("")
+caption_lines.append("Discipline builds identity.")
+caption_lines.append("")
+caption_lines.append("#discipline #selfcontrol #focus #consistency #mindset #innerdiscipline")
+
+caption = "\n".join(caption_lines)
+
+with open(f"outputs/reel_{index+1}_title.txt", "w") as f:
+    f.write(title)
+
+with open(f"outputs/reel_{index+1}_caption.txt", "w") as f:
+    f.write(caption)
 
 # ---------------- RUN ----------------
 
