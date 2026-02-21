@@ -10,7 +10,7 @@ import edge_tts
 
 W, H = 1080, 1920
 FPS = 30
-MAX_REEL_LENGTH = 9.5
+MAX_REEL_LENGTH = 14.5   # upgraded for 4-step structure
 
 VOICE = "en-US-GuyNeural"
 RATE = "-40%"
@@ -164,7 +164,7 @@ CTAS = [
 "Discipline or comfort?"
 ]
 
-# ---------------- TEXT ----------------
+# ---------------- TEXT ENGINE ----------------
 
 def make_text(text):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -221,7 +221,7 @@ async def tts_async(text, filename):
 def generate_voice(text, filename):
     asyncio.run(tts_async(text, filename))
 
-# ---------------- SCRIPT ----------------
+# ---------------- SCRIPT BUILDER (UPGRADED FORMULA) ----------------
 
 def get_hook():
     global used_hooks
@@ -233,17 +233,19 @@ def get_hook():
     used_hooks.append(hook)
     return hook
 
-def build_script(with_cta=True):
+def build_script():
     hook = get_hook()
-    script = [hook, random.choice(TRUTHS)]
-    script.append(random.choice(CTAS if with_cta else QUESTIONS))
-    return script
+    truth = random.choice(TRUTHS)
+    question = random.choice(QUESTIONS)
+    cta = random.choice(CTAS)
 
-# ---------------- REEL ----------------
+    return [hook, truth, question, cta]
 
-def make_reel(index, with_cta):
+# ---------------- REEL ENGINE ----------------
 
-    script = build_script(with_cta)
+def make_reel(index):
+
+    script = build_script()
 
     backgrounds = glob.glob("bg*.mp4")
     if not backgrounds:
@@ -264,12 +266,13 @@ def make_reel(index, with_cta):
         height=H
     )
 
-    # 🔥 Cinematic subtle zoom ramp
+    # Cinematic zoom ramp
     base = base.fx(vfx.resize, lambda t: 1 + 0.015*t)
 
     clips = []
     audio_clips = []
-    timeline = 0.6   # 🔥 Dramatic silence before hook
+
+    timeline = 0.9  # elite dramatic silence before hook
 
     for i, line in enumerate(script):
 
@@ -279,12 +282,17 @@ def make_reel(index, with_cta):
         audio = AudioFileClip(voice_file)
         voice_duration = audio.duration
 
-        if line.endswith("?"):
-            duration = voice_duration + 1.2
-        elif line in CTAS:
-            duration = voice_duration + 1.4
-        else:
-            duration = voice_duration + 0.8
+        if i == 0:  # Hook emphasis
+            audio = audio.volumex(1.25)
+            duration = voice_duration + 0.9
+
+        elif line.endswith("?"):  # Question tension hold
+            audio = audio.volumex(1.1)
+            duration = voice_duration + 1.3
+
+        else:  # Truth + CTA weight
+            audio = audio.volumex(1.15)
+            duration = voice_duration + 1.1
 
         text_img = make_text(line)
 
@@ -297,11 +305,6 @@ def make_reel(index, with_cta):
         )
 
         clips.append(text_clip)
-
-        # 🔥 Stronger hook impact
-        if i == 0:
-            audio = audio.volumex(1.25)
-
         audio_clips.append(audio.set_start(timeline))
 
         timeline += duration
@@ -312,23 +315,21 @@ def make_reel(index, with_cta):
     final_video = final_video.set_duration(timeline)
     final_video = final_video.fadeout(0.4)
 
-    final_audio = CompositeAudioClip(audio_clips)
+    final_voice = CompositeAudioClip(audio_clips)
 
-    # 🔥 CINEMATIC MUSIC ENGINE
+    # --------- CINEMATIC MUSIC ENGINE ---------
 
     if os.path.exists("music.mp3"):
-
         music = AudioFileClip("music.mp3")
         music = afx.audio_loop(music, duration=timeline)
-
         music = music.audio_fadein(1.2)
         music = music.volumex(0.16)
 
-        # 🔥 Strong ducking under voice
-        voice_boost = final_audio.volumex(1.15)
-
+        voice_boost = final_voice.volumex(1.15)
         final_audio = CompositeAudioClip([music, voice_boost])
         final_audio = final_audio.audio_fadeout(0.6)
+    else:
+        final_audio = final_voice
 
     final = final_video.set_audio(final_audio)
 
@@ -342,20 +343,21 @@ def make_reel(index, with_cta):
         threads=4
     )
 
-    # --------- MONETIZATION ENGINE ---------
+    # --------- TITLE + CAPTION ENGINE ---------
 
     title = f"{script[0]} | INNER DISCIPLINE"
 
-    caption_lines = []
-    caption_lines.append(script[0])
-    caption_lines.append("")
-    caption_lines.append(script[1])
-    caption_lines.append("")
-    caption_lines.append("Discipline builds identity.")
-    caption_lines.append("")
-    caption_lines.append("#discipline #selfcontrol #focus #consistency #mindset #innerdiscipline")
-
-    caption = "\n".join(caption_lines)
+    caption = "\n".join([
+        script[0],
+        "",
+        script[1],
+        "",
+        script[2],
+        "",
+        script[3],
+        "",
+        "#discipline #selfcontrol #focus #consistency #mindset #innerdiscipline"
+    ])
 
     with open(f"outputs/reel_{index+1}_title.txt", "w") as f:
         f.write(title)
@@ -366,8 +368,8 @@ def make_reel(index, with_cta):
 # ---------------- RUN ----------------
 
 for i in range(REELS_PER_RUN):
-    make_reel(i, with_cta=(i < 2))
+    make_reel(i)
 
 json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
 
-print("🔥 REEL GOD MODE ACTIVE")
+print("🔥 INNER DISCIPLINE ENGINE ACTIVE")
