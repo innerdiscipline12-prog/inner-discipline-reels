@@ -10,7 +10,7 @@ import edge_tts
 
 W, H = 1080, 1920
 FPS = 30
-MAX_REEL_LENGTH = 11.8   # HARD RETENTION CAP MODE
+MAX_REEL_LENGTH = 11.8
 
 VOICE = "en-US-GuyNeural"
 RATE = "-38%"
@@ -148,7 +148,7 @@ async def tts_async(text, filename):
 def generate_voice(text, filename):
     asyncio.run(tts_async(text, filename))
 
-# ---------------- SCRIPT BUILDER (ESCALATION LINKED) ----------------
+# ---------------- SCRIPT BUILDER ----------------
 
 def get_next_category():
     global last_category
@@ -180,6 +180,7 @@ def make_reel(index):
     bg_path = random.choice(backgrounds)
     base = VideoFileClip(bg_path).without_audio()
     base = base.resize(height=H)
+
     if base.w < W:
         base = base.resize(width=W)
 
@@ -190,14 +191,13 @@ def make_reel(index):
         height=H
     )
 
-    # FIRST FRAME PATTERN INTERRUPT
     base = base.fx(vfx.colorx, 1.05)
     base = base.fx(vfx.resize, lambda t: 1 + 0.02*t)
 
     clips = []
     audio_clips = []
 
-    timeline = 0.25  # reduced silence for retention
+    timeline = 0.25
 
     for i, line in enumerate(script):
 
@@ -231,15 +231,14 @@ def make_reel(index):
 
         timeline += duration
 
-# HARD CAP TRIM (Composite Safe Version)
-if timeline > MAX_REEL_LENGTH:
-    timeline = MAX_REEL_LENGTH
+    if timeline > MAX_REEL_LENGTH:
+        timeline = MAX_REEL_LENGTH
 
-final_video = CompositeVideoClip([base] + clips)
-final_video = final_video.set_duration(timeline)
-final_video = final_video.fadeout(0.25)
+    final_video = CompositeVideoClip([base] + clips)
+    final_video = final_video.set_duration(timeline)
+    final_video = final_video.fadeout(0.25)
 
-final_voice = CompositeAudioClip(audio_clips).subclip(0, timeline)
+    final_voice = CompositeAudioClip(audio_clips).subclip(0, timeline)
 
     if os.path.exists("music.mp3"):
         music = AudioFileClip("music.mp3")
@@ -265,14 +264,7 @@ final_voice = CompositeAudioClip(audio_clips).subclip(0, timeline)
     title = f"{script[0]} | INNER DISCIPLINE"
 
     caption = "\n".join([
-        script[0],
-        "",
-        script[1],
-        "",
-        script[2],
-        "",
-        script[3],
-        "",
+        script[0], "", script[1], "", script[2], "", script[3], "",
         "#discipline #selfcontrol #focus #consistency #mindset #innerdiscipline"
     ])
 
