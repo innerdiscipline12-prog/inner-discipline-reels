@@ -1,7 +1,7 @@
 import os, random, glob, asyncio, json
 import numpy as np
 from moviepy.editor import *
-from moviepy.video.fx.all import resize
+from moviepy.video.fx import all as vfx
 from moviepy.audio.fx import all as afx
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
@@ -10,10 +10,10 @@ import edge_tts
 
 W, H = 1080, 1920
 FPS = 30
-MAX_REEL_LENGTH = 14.5   # upgraded for 4-step structure
+MAX_REEL_LENGTH = 11.8   # HARD RETENTION CAP MODE
 
 VOICE = "en-US-GuyNeural"
-RATE = "-40%"
+RATE = "-38%"
 PITCH = "-45Hz"
 VOLUME = "+0%"
 
@@ -25,143 +25,73 @@ os.makedirs("outputs", exist_ok=True)
 # ---------------- MEMORY ----------------
 
 HOOK_MEMORY_FILE = "hook_memory.json"
+CATEGORY_MEMORY_FILE = "category_memory.json"
+
 if os.path.exists(HOOK_MEMORY_FILE):
     used_hooks = json.load(open(HOOK_MEMORY_FILE))
 else:
     used_hooks = []
 
+if os.path.exists(CATEGORY_MEMORY_FILE):
+    last_category = json.load(open(CATEGORY_MEMORY_FILE))
+else:
+    last_category = None
+
 # ---------------- CONTENT ----------------
 
-HOOKS = [
-"You are not tired. You are undisciplined.",
-"Comfort is killing your potential.",
-"No one is coming.",
-"You are the reason.",
-"Weakness feels like relief.",
-"Your standards are low.",
-"Discipline isn’t your problem. Comfort is.",
-"You don’t lack time. You lack control.",
-"You’re negotiating with weakness.",
-"You’re addicted to easy.",
-"Your excuses are polished.",
-"You fear structure.",
-"You’re choosing distraction.",
-"You’re leaking focus.",
-"Comfort owns you.",
-"You say soon. You mean never.",
-"You’re rehearsing failure.",
-"You crave results. Avoid process.",
-"You’re soft where it matters.",
-"You break promises to yourself.",
-"You don’t need motivation.",
-"You need restraint.",
-"You want change without pressure.",
-"You’re escaping effort.",
-"Weak habits feel normal now.",
-"You’re loyal to comfort.",
-"You quit silently.",
-"You hide behind busy.",
-"You know exactly what to fix.",
-"And you’re still not fixing it."
-]
+HOOKS = {
+    "accusation": [
+        "You are not tired. You are undisciplined.",
+        "You’re addicted to easy.",
+        "Your excuses are polished.",
+        "You’re negotiating with weakness.",
+        "You break promises to yourself."
+    ],
+    "authority": [
+        "Discipline is not optional.",
+        "Control decides outcomes.",
+        "Structure creates power.",
+        "Standards expose character.",
+        "Routine builds dominance."
+    ],
+    "paradox": [
+        "Comfort feels safe. It destroys you.",
+        "Relief today. Regret tomorrow.",
+        "Easy now. Expensive later.",
+        "Soft habits. Hard life.",
+        "Avoid pressure. Lose progress."
+    ],
+    "consequence": [
+        "Weakness compounds daily.",
+        "Small lapses become identity.",
+        "Delay becomes decay.",
+        "Comfort owns you slowly.",
+        "Inconsistency erases potential."
+    ]
+}
 
 TRUTHS = [
-"Discipline is identity.",
-"Control is trained daily.",
-"Weakness grows in silence.",
-"Comfort compounds regret.",
-"Structure removes chaos.",
-"Focus is self respect.",
-"Standards expose character.",
-"Excuses protect ego.",
-"Effort rewires the mind.",
-"Repetition builds power.",
-"Routine kills weakness.",
-"Restraint builds dominance.",
-"Consistency creates separation.",
-"Small lapses become patterns.",
-"Discomfort purifies.",
-"Control is a decision.",
-"Discipline is private.",
-"Strength is built quietly.",
-"Execution reveals truth.",
-"Structure creates power.",
-"Focus is warfare.",
-"Your habits confess daily.",
-"Comfort is expensive.",
-"Weakness negotiates.",
-"Discipline decides outcomes.",
-"Identity follows action.",
-"Standards filter everything.",
-"Pressure creates clarity.",
-"Routine creates dominance.",
-"Control is chosen."
+    "That is why progress feels heavy.",
+    "That is why nothing changes.",
+    "That is the pattern.",
+    "That is the real problem.",
+    "That is the cost."
 ]
 
 QUESTIONS = [
-"Still negotiating?",
-"Still soft?",
-"Still comfortable?",
-"Still distracted?",
-"Still escaping?",
-"Still delaying?",
-"Still blaming?",
-"Still scrolling?",
-"Still talking?",
-"Still planning?",
-"Still starting Monday?",
-"Still making excuses?",
-"Still doubting?",
-"Still quitting early?",
-"Still inconsistent?",
-"Still hiding?",
-"Still waiting?",
-"Still unfocused?",
-"Still average?",
-"Still undisciplined?",
-"Still weak under pressure?",
-"Still choosing easy?",
-"Still breaking promises?",
-"Still tolerating less?",
-"Still wasting time?",
-"Still leaking energy?",
-"Still avoiding effort?",
-"Still fragile?",
-"Still playing small?",
-"Or done?"
+    "Still choosing comfort?",
+    "Still negotiating?",
+    "Still soft?",
+    "Still delaying?",
+    "Still escaping?"
 ]
 
 CTAS = [
-"Comment discipline.",
-"Type DISCIPLINE.",
-"Only disciplined comment.",
-"Choose discipline.",
-"Commit now.",
-"Say I commit.",
-"Earn it. Comment discipline.",
-"Prove it.",
-"Stand up in the comments.",
-"No excuses. Comment discipline.",
-"Claim control.",
-"Show up.",
-"Separate yourself.",
-"Decide publicly.",
-"Enter the disciplined.",
-"No weak comments.",
-"Discipline only.",
-"Declare it.",
-"Choose strength.",
-"Join the disciplined.",
-"Say less. Execute more.",
-"If you are serious comment.",
-"Identity check.",
-"Commitment check.",
-"Decide here.",
-"Lock in.",
-"This is your line.",
-"Cross it.",
-"Earn your standard.",
-"Discipline or comfort?"
+    "Comment discipline.",
+    "Choose discipline.",
+    "Prove it. Comment discipline.",
+    "Decide now.",
+    "Lock in."
 ]
 
 # ---------------- TEXT ENGINE ----------------
@@ -169,10 +99,8 @@ CTAS = [
 def make_text(text):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
-
     font_size = 92
     font = ImageFont.truetype(FONT_PATH, font_size)
-
     max_width = W - 240
     lines = []
     words = text.split()
@@ -193,7 +121,6 @@ def make_text(text):
     for line in lines:
         text_width = draw.textlength(line, font=font)
         x = (W - text_width) // 2
-
         draw.text(
             (x, y),
             line,
@@ -221,24 +148,23 @@ async def tts_async(text, filename):
 def generate_voice(text, filename):
     asyncio.run(tts_async(text, filename))
 
-# ---------------- SCRIPT BUILDER (UPGRADED FORMULA) ----------------
+# ---------------- SCRIPT BUILDER (ESCALATION LINKED) ----------------
 
-def get_hook():
-    global used_hooks
-    available = [h for h in HOOKS if h not in used_hooks]
-    if not available:
-        used_hooks = []
-        available = HOOKS.copy()
-    hook = random.choice(available)
-    used_hooks.append(hook)
-    return hook
+def get_next_category():
+    global last_category
+    categories = list(HOOKS.keys())
+    if last_category in categories:
+        categories.remove(last_category)
+    category = random.choice(categories)
+    last_category = category
+    return category
 
 def build_script():
-    hook = get_hook()
+    category = get_next_category()
+    hook = random.choice(HOOKS[category])
     truth = random.choice(TRUTHS)
     question = random.choice(QUESTIONS)
     cta = random.choice(CTAS)
-
     return [hook, truth, question, cta]
 
 # ---------------- REEL ENGINE ----------------
@@ -253,9 +179,7 @@ def make_reel(index):
 
     bg_path = random.choice(backgrounds)
     base = VideoFileClip(bg_path).without_audio()
-
     base = base.resize(height=H)
-
     if base.w < W:
         base = base.resize(width=W)
 
@@ -266,13 +190,14 @@ def make_reel(index):
         height=H
     )
 
-    # Cinematic zoom ramp
-    base = base.fx(vfx.resize, lambda t: 1 + 0.015*t)
+    # FIRST FRAME PATTERN INTERRUPT
+    base = base.fx(vfx.colorx, 1.05)
+    base = base.fx(vfx.resize, lambda t: 1 + 0.02*t)
 
     clips = []
     audio_clips = []
 
-    timeline = 0.9  # elite dramatic silence before hook
+    timeline = 0.25  # reduced silence for retention
 
     for i, line in enumerate(script):
 
@@ -282,17 +207,14 @@ def make_reel(index):
         audio = AudioFileClip(voice_file)
         voice_duration = audio.duration
 
-        if i == 0:  # Hook emphasis
-            audio = audio.volumex(1.25)
-            duration = voice_duration + 0.9
-
-        elif line.endswith("?"):  # Question tension hold
-            audio = audio.volumex(1.1)
-            duration = voice_duration + 1.3
-
-        else:  # Truth + CTA weight
-            audio = audio.volumex(1.15)
-            duration = voice_duration + 1.1
+        if i == 0:
+            duration = voice_duration + 0.6
+        elif i == 1:
+            duration = voice_duration + 0.5
+        elif i == 2:
+            duration = voice_duration + 0.6
+        else:
+            duration = voice_duration + 0.5
 
         text_img = make_text(line)
 
@@ -300,8 +222,8 @@ def make_reel(index):
             ImageClip(text_img)
             .set_start(timeline)
             .set_duration(duration)
-            .fadein(0.25)
-            .fadeout(0.35)
+            .fadein(0.15)
+            .fadeout(0.2)
         )
 
         clips.append(text_clip)
@@ -309,25 +231,24 @@ def make_reel(index):
 
         timeline += duration
 
-    timeline = min(timeline, MAX_REEL_LENGTH)
+    # HARD CAP COMPRESSION
+    if timeline > MAX_REEL_LENGTH:
+        compression_ratio = MAX_REEL_LENGTH / timeline
+        audio_clips = [a.fx(afx.speedx, compression_ratio) for a in audio_clips]
+        timeline = MAX_REEL_LENGTH
 
     final_video = CompositeVideoClip([base] + clips)
     final_video = final_video.set_duration(timeline)
-    final_video = final_video.fadeout(0.4)
+    final_video = final_video.fadeout(0.25)
 
     final_voice = CompositeAudioClip(audio_clips)
-
-    # --------- CINEMATIC MUSIC ENGINE ---------
 
     if os.path.exists("music.mp3"):
         music = AudioFileClip("music.mp3")
         music = afx.audio_loop(music, duration=timeline)
-        music = music.audio_fadein(1.2)
-        music = music.volumex(0.16)
-
-        voice_boost = final_voice.volumex(1.15)
-        final_audio = CompositeAudioClip([music, voice_boost])
-        final_audio = final_audio.audio_fadeout(0.6)
+        music = music.audio_fadein(0.8)
+        music = music.volumex(0.14)
+        final_audio = CompositeAudioClip([music, final_voice.volumex(1.12)])
     else:
         final_audio = final_voice
 
@@ -342,8 +263,6 @@ def make_reel(index):
         audio_codec="aac",
         threads=4
     )
-
-    # --------- TITLE + CAPTION ENGINE ---------
 
     title = f"{script[0]} | INNER DISCIPLINE"
 
@@ -371,5 +290,6 @@ for i in range(REELS_PER_RUN):
     make_reel(i)
 
 json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
+json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
 
-print("🔥 INNER DISCIPLINE ENGINE ACTIVE")
+print("🔥 INNER DISCIPLINE RETENTION MODE ACTIVE")
