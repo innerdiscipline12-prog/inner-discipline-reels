@@ -232,10 +232,10 @@ def make_reel(index):
         timeline += duration
 
     # HARD CAP COMPRESSION
-    if timeline > MAX_REEL_LENGTH:
-        compression_ratio = MAX_REEL_LENGTH / timeline
-        audio_clips = [a.speedx(compression_ratio) for a in audio_clips]
-        timeline = MAX_REEL_LENGTH
+    # HARD CAP TRIM (Stable Version)
+if timeline > MAX_REEL_LENGTH:
+    timeline = MAX_REEL_LENGTH
+    audio_clips = [a.subclip(0, min(a.duration, MAX_REEL_LENGTH)) for a in audio_clips]
 
     final_video = CompositeVideoClip([base] + clips)
     final_video = final_video.set_duration(timeline)
