@@ -231,17 +231,15 @@ def make_reel(index):
 
         timeline += duration
 
-    # HARD CAP COMPRESSION
-    # HARD CAP TRIM (Stable Version)
+# HARD CAP TRIM (Composite Safe Version)
 if timeline > MAX_REEL_LENGTH:
     timeline = MAX_REEL_LENGTH
-    audio_clips = [a.subclip(0, min(a.duration, MAX_REEL_LENGTH)) for a in audio_clips]
 
-    final_video = CompositeVideoClip([base] + clips)
-    final_video = final_video.set_duration(timeline)
-    final_video = final_video.fadeout(0.25)
+final_video = CompositeVideoClip([base] + clips)
+final_video = final_video.set_duration(timeline)
+final_video = final_video.fadeout(0.25)
 
-    final_voice = CompositeAudioClip(audio_clips)
+final_voice = CompositeAudioClip(audio_clips).subclip(0, timeline)
 
     if os.path.exists("music.mp3"):
         music = AudioFileClip("music.mp3")
