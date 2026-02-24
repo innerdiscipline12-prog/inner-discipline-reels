@@ -41,57 +41,98 @@ else:
 
 HOOKS = {
     "accusation": [
-        "You are not tired. You are undisciplined.",
-        "You’re addicted to easy.",
-        "Your excuses are polished.",
-        "You’re negotiating with weakness.",
-        "You break promises to yourself."
+        "You don’t lack potential. You lack discipline.",
+        "You are comfortable. That is the problem.",
+        "You keep choosing easy.",
+        "You break promises quietly.",
+        "You tolerate your own weakness.",
+        "You say you want more. But act average.",
+        "You’re not stuck. You’re undisciplined.",
+        "You know what to fix. You don’t fix it."
     ],
+
     "authority": [
-        "Discipline is not optional.",
-        "Control decides outcomes.",
-        "Structure creates power.",
-        "Standards expose character.",
-        "Routine builds dominance."
+        "Discipline separates you.",
+        "Control is earned daily.",
+        "Standards define outcomes.",
+        "Structure builds identity.",
+        "Execution reveals character.",
+        "Restraint creates power.",
+        "Routine creates dominance.",
+        "Focus is self respect."
     ],
+
     "paradox": [
-        "Comfort feels safe. It destroys you.",
-        "Relief today. Regret tomorrow.",
-        "Easy now. Expensive later.",
-        "Soft habits. Hard life.",
-        "Avoid pressure. Lose progress."
+        "Comfort feels safe. It makes you weak.",
+        "Relief now. Regret later.",
+        "Avoid pressure. Stay average.",
+        "Soft habits create hard lives.",
+        "Easy days build fragile minds.",
+        "No structure. No progress.",
+        "Motivation fades. Discipline remains.",
+        "Silence grows weakness."
     ],
+
     "consequence": [
-        "Weakness compounds daily.",
+        "Every delay compounds.",
         "Small lapses become identity.",
-        "Delay becomes decay.",
-        "Comfort owns you slowly.",
-        "Inconsistency erases potential."
+        "Weak habits stack quietly.",
+        "Inconsistency erases momentum.",
+        "Comfort slowly owns you.",
+        "Distraction drains power.",
+        "Excuses shape your future.",
+        "Avoidance builds regret."
+    ],
+
+    "identity": [
+        "Who are you becoming?",
+        "This is your pattern.",
+        "This is your standard.",
+        "This is your identity.",
+        "This is your ceiling.",
+        "This is your limit.",
+        "This is the truth.",
+        "This is the line."
     ]
 }
 
 TRUTHS = [
-    "That is why progress feels heavy.",
     "That is why nothing changes.",
-    "That is the pattern.",
-    "That is the real problem.",
-    "That is the cost."
+    "That is why progress feels slow.",
+    "That is the real cost.",
+    "That is the pattern repeating.",
+    "That is the hidden weakness.",
+    "That is what separates you.",
+    "That is what exposes you.",
+    "That is why you stay average.",
+    "That is the decision you make daily.",
+    "That is the identity you build."
 ]
 
 QUESTIONS = [
     "Still choosing comfort?",
     "Still negotiating?",
+    "Still undisciplined?",
     "Still soft?",
     "Still delaying?",
-    "Still escaping?"
+    "Still escaping effort?",
+    "Still blaming circumstances?",
+    "Still waiting for motivation?",
+    "Still breaking promises?",
+    "Or done?"
 ]
 
 CTAS = [
     "Comment discipline.",
-    "Choose discipline.",
+    "Type DISCIPLINE.",
     "Prove it. Comment discipline.",
+    "Choose discipline.",
     "Decide now.",
-    "Lock in."
+    "Lock in.",
+    "No weak comments.",
+    "Stand up in the comments.",
+    "Commit publicly.",
+    "Separate yourself."
 ]
 
 # ---------------- TEXT ENGINE ----------------
