@@ -18,7 +18,7 @@ PITCH = "-45Hz"
 VOLUME = "+0%"
 
 FONT_PATH = "Anton-Regular.ttf"
-REELS_PER_RUN = 5
+REELS_PER_RUN = 3  # ✅ switched to 3 reels per run (one psychological set)
 
 os.makedirs("outputs", exist_ok=True)
 
@@ -26,6 +26,7 @@ os.makedirs("outputs", exist_ok=True)
 
 HOOK_MEMORY_FILE = "hook_memory.json"
 CATEGORY_MEMORY_FILE = "category_memory.json"
+SET_STEP_FILE = "set_step.json"
 
 if os.path.exists(HOOK_MEMORY_FILE):
     used_hooks = json.load(open(HOOK_MEMORY_FILE))
@@ -37,87 +38,60 @@ if os.path.exists(CATEGORY_MEMORY_FILE):
 else:
     last_category = None
 
+if os.path.exists(SET_STEP_FILE):
+    set_step = json.load(open(SET_STEP_FILE))
+    if not isinstance(set_step, int):
+        set_step = 0
+else:
+    set_step = 0
+
 # ---------------- CONTENT ----------------
 
 HOOKS = {
-    "accusation": [
-        "You don’t lack potential. You lack discipline.",
-        "You are comfortable. That is the problem.",
-        "You keep choosing easy.",
-        "You break promises quietly.",
-        "You tolerate your own weakness.",
-        "You say you want more. But act average.",
-        "You’re not stuck. You’re undisciplined.",
-        "You know what to fix. You don’t fix it."
-    ],
-
-    "authority": [
-        "Discipline separates you.",
-        "Control is earned daily.",
-        "Standards define outcomes.",
-        "Structure builds identity.",
-        "Execution reveals character.",
-        "Restraint creates power.",
-        "Routine creates dominance.",
-        "Focus is self respect."
-    ],
-
-    "paradox": [
-        "Comfort feels safe. It makes you weak.",
-        "Relief now. Regret later.",
-        "Avoid pressure. Stay average.",
-        "Soft habits create hard lives.",
-        "Easy days build fragile minds.",
-        "No structure. No progress.",
-        "Motivation fades. Discipline remains.",
-        "Silence grows weakness."
-    ],
-
-    "consequence": [
-        "Every delay compounds.",
-        "Small lapses become identity.",
-        "Weak habits stack quietly.",
-        "Inconsistency erases momentum.",
-        "Comfort slowly owns you.",
-        "Distraction drains power.",
-        "Excuses shape your future.",
-        "Avoidance builds regret."
-    ],
-
     "identity": [
-        "Who are you becoming?",
-        "This is your pattern.",
-        "This is your standard.",
-        "This is your identity.",
-        "This is your ceiling.",
-        "This is your limit.",
-        "This is the truth.",
-        "This is the line."
+        "Broken promises are your real habit.",
+        "You keep breaking promises to yourself.",
+        "Your word to yourself means nothing.",
+        "You’re not stuck. You’re inconsistent.",
+        "You know what to do. You don’t do it.",
+        "You keep saying tomorrow.",
+        "You keep choosing comfort over identity.",
+        "You trained yourself to quit quietly."
+    ],
+    "comfort": [
+        "Comfort kills momentum.",
+        "Relief is weakness.",
+        "You chose relief again.",
+        "Easy now. Expensive later.",
+        "Comfort feels safe. It destroys you.",
+        "Soft habits create hard lives.",
+        "Comfort owns you slowly.",
+        "You keep feeding the weakness."
+    ],
+    "time": [
+        "Soon is never.",
+        "You say soon. You mean never.",
+        "Tomorrow never arrives.",
+        "Delay becomes decay.",
+        "Time does not care.",
+        "Days are counting.",
+        "You are running out of chances.",
+        "Every delay compounds."
     ]
 }
 
 TRUTHS = [
     "That is why nothing changes.",
-    "That is why progress feels slow.",
-    "That is the real cost.",
     "That is the pattern repeating.",
-    "That is the hidden weakness.",
-    "That is what separates you.",
-    "That is what exposes you.",
-    "That is why you stay average.",
-    "That is the decision you make daily.",
-    "That is the identity you build."
+    "That is the real cost.",
+    "That is why progress feels heavy.",
+    "That is the decision you make daily."
 ]
 
 QUESTIONS = [
     "Still choosing comfort?",
     "Still negotiating?",
-    "Still undisciplined?",
-    "Still soft?",
     "Still delaying?",
-    "Still escaping effort?",
-    "Still blaming circumstances?",
-    "Still waiting for motivation?",
     "Still breaking promises?",
     "Or done?"
 ]
@@ -126,13 +100,8 @@ CTAS = [
     "Comment discipline.",
     "Type DISCIPLINE.",
     "Prove it. Comment discipline.",
-    "Choose discipline.",
     "Decide now.",
-    "Lock in.",
-    "No weak comments.",
-    "Stand up in the comments.",
-    "Commit publicly.",
-    "Separate yourself."
+    "Lock in."
 ]
 
 # ---------------- TEXT ENGINE ----------------
@@ -143,6 +112,7 @@ def make_text(text):
     font_size = 92
     font = ImageFont.truetype(FONT_PATH, font_size)
     max_width = W - 240
+
     lines = []
     words = text.split()
     current = ""
@@ -189,20 +159,34 @@ async def tts_async(text, filename):
 def generate_voice(text, filename):
     asyncio.run(tts_async(text, filename))
 
-# ---------------- SCRIPT BUILDER ----------------
+# ---------------- SCRIPT BUILDER (SET OF 3 LOOP) ----------------
 
-def get_next_category():
-    global last_category
-    categories = list(HOOKS.keys())
-    if last_category in categories:
-        categories.remove(last_category)
-    category = random.choice(categories)
-    last_category = category
-    return category
+SET_ORDER = ["identity", "comfort", "time"]
+
+def get_set_category():
+    global set_step
+    cat = SET_ORDER[set_step % len(SET_ORDER)]
+    set_step += 1
+    return cat
+
+def get_hook_from_category(category):
+    global used_hooks
+    pool = HOOKS.get(category, [])
+    if not pool:
+        pool = sum(HOOKS.values(), [])
+
+    available = [h for h in pool if h not in used_hooks]
+    if not available:
+        used_hooks = []
+        available = pool.copy()
+
+    hook = random.choice(available)
+    used_hooks.append(hook)
+    return hook
 
 def build_script():
-    category = get_next_category()
-    hook = random.choice(HOOKS[category])
+    category = get_set_category()
+    hook = get_hook_from_category(category)
     truth = random.choice(TRUTHS)
     question = random.choice(QUESTIONS)
     cta = random.choice(CTAS)
@@ -226,14 +210,14 @@ def make_reel(index):
         base = base.resize(width=W)
 
     base = base.crop(
-        x_center=base.w/2,
-        y_center=base.h/2,
+        x_center=base.w / 2,
+        y_center=base.h / 2,
         width=W,
         height=H
     )
 
     base = base.fx(vfx.colorx, 1.05)
-    base = base.fx(vfx.resize, lambda t: 1 + 0.02*t)
+    base = base.fx(vfx.resize, lambda t: 1 + 0.02 * t)
 
     clips = []
     audio_clips = []
@@ -305,7 +289,10 @@ def make_reel(index):
     title = f"{script[0]} | INNER DISCIPLINE"
 
     caption = "\n".join([
-        script[0], "", script[1], "", script[2], "", script[3], "",
+        script[0], "",
+        script[1], "",
+        script[2], "",
+        script[3], "",
         "#discipline #selfcontrol #focus #consistency #mindset #innerdiscipline"
     ])
 
@@ -322,5 +309,6 @@ for i in range(REELS_PER_RUN):
 
 json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
 json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
+json.dump(set_step, open(SET_STEP_FILE, "w"))
 
-print("🔥 INNER DISCIPLINE RETENTION MODE ACTIVE")
+print("🔥 INNER DISCIPLINE SET-OF-3 MODE ACTIVE")
