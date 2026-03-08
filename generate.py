@@ -49,59 +49,88 @@ else:
 
 HOOKS = {
     "identity": [
-        "Broken promises are your real habit.",
-        "You keep breaking promises to yourself.",
-        "Your word to yourself means nothing.",
-        "You’re not stuck. You’re inconsistent.",
-        "You know what to do. You don’t do it.",
-        "You keep saying tomorrow.",
-        "You keep choosing comfort over identity.",
-        "You trained yourself to quit quietly."
+        "You keep lying to yourself.",
+        "Your standards are the real problem.",
+        "You trained yourself to quit.",
+        "You know the truth. You ignore it.",
+        "Your habits expose you.",
+        "You broke the promise again.",
+        "You keep choosing the weaker version of yourself.",
+        "You don’t trust your own word anymore.",
+        "Your discipline is optional to you.",
+        "You keep lowering your own standards.",
+        "You know exactly where you’re weak.",
+        "You avoid the work you respect."
     ],
+
     "comfort": [
-        "Comfort kills momentum.",
-        "Relief is weakness.",
-        "You chose relief again.",
-        "Easy now. Expensive later.",
-        "Comfort feels safe. It destroys you.",
-        "Soft habits create hard lives.",
-        "Comfort owns you slowly.",
-        "You keep feeding the weakness."
+        "Comfort is stealing your future.",
+        "Relief is why you stay average.",
+        "Easy choices are expensive later.",
+        "Comfort feeds weakness.",
+        "You keep choosing relief.",
+        "Soft decisions create hard lives.",
+        "Comfort is your real addiction.",
+        "Easy habits destroy discipline.",
+        "Comfort slowly owns you.",
+        "You escape effort every day.",
+        "You reward weakness with comfort.",
+        "Relief is the trap."
     ],
+
     "time": [
-        "Soon is never.",
-        "You say soon. You mean never.",
-        "Tomorrow never arrives.",
-        "Delay becomes decay.",
-        "Time does not care.",
-        "Days are counting.",
-        "You are running out of chances.",
-        "Every delay compounds."
+        "Time is not waiting.",
+        "Soon becomes never.",
+        "Delay compounds regret.",
+        "Another day gone.",
+        "You keep postponing your life.",
+        "Days keep disappearing.",
+        "Time exposes discipline.",
+        "The clock keeps moving.",
+        "Delay becomes identity.",
+        "You waste time quietly.",
+        "You keep waiting for the right moment.",
+        "Time punishes hesitation."
     ]
 }
 
 TRUTHS = [
-    "That is why nothing changes.",
-    "That is the pattern repeating.",
-    "That is the real cost.",
-    "That is why progress feels heavy.",
-    "That is the decision you make daily."
+    "That is why nothing improves.",
+    "That is the pattern you repeat.",
+    "That is the hidden cost.",
+    "That is the habit controlling you.",
+    "That is what holds you back.",
+    "That is the real weakness.",
+    "That is the discipline gap.",
+    "That is the identity you build daily.",
+    "That is the truth you avoid.",
+    "That is why progress feels impossible."
 ]
 
 QUESTIONS = [
-    "Still choosing comfort?",
-    "Still negotiating?",
+    "Still choosing easy?",
     "Still delaying?",
+    "Still avoiding effort?",
+    "Still negotiating with weakness?",
+    "Still repeating the pattern?",
+    "Still comfortable?",
+    "Still escaping responsibility?",
     "Still breaking promises?",
+    "Still distracted?",
     "Or done?"
 ]
 
 CTAS = [
     "Comment discipline.",
     "Type DISCIPLINE.",
+    "Choose discipline.",
     "Prove it. Comment discipline.",
     "Decide now.",
-    "Lock in."
+    "Commit publicly.",
+    "No weak comments.",
+    "Stand up in the comments.",
+    "Lock in.",
+    "Discipline only."
 ]
 
 # ---------------- TEXT ENGINE ----------------
