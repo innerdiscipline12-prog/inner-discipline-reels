@@ -51,7 +51,7 @@ HOOKS = {
     "identity": [
         "You keep lying to yourself.",
         "Your standards are the real problem.",
-        "You trained yourself to quit.",
+        "You trained yourself to quit",
         "You know the truth. You ignore it.",
         "Your habits expose you.",
         "You broke the promise again.",
