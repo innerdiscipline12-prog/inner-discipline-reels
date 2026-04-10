@@ -45,132 +45,142 @@ if os.path.exists(SET_STEP_FILE):
 else:
     set_step = 0
 
-# ---------------- CONTENT ----------------
+# ---------------- CONTENT (UPGRADED PSYCHOLOGICAL SYSTEM) ----------------
 
 HOOKS = {
     "identity": [
-        "You already know the truth.",
-        "You keep lying to yourself.",
-        "Your discipline is optional.",
-        "Your habits expose you.",
-        "You keep breaking promises.",
-        "Your standards keep dropping.",
-        "You trained yourself to quit.",
-        "You know exactly what's wrong.",
-        "Your actions reveal the truth.",
-        "You tolerate your own excuses.",
-        "You keep choosing the weaker version.",
-        "You already know what to fix.",
-        "You keep quitting quietly.",
-        "Your identity is leaking.",
-        "You keep betraying yourself.",
-        "Your word means nothing now.",
-        "You avoid what builds you.",
-        "You protect your weakness.",
-        "Your standards decide everything.",
-        "You trained weakness daily."
+        "You became someone you don’t respect.",
+        "You don’t trust yourself anymore.",
+        "You hear yourself… and ignore it.",
+        "You know better. You don’t do better.",
+        "You lost control of yourself.",
+        "You keep proving you’re unreliable.",
+        "You don’t follow your own standards.",
+        "You’ve lowered the bar too many times.",
+        "You stopped taking yourself seriously.",
+        "You’re watching yourself fall off.",
+        "You don’t even resist anymore.",
+        "You gave up quietly.",
+        "You broke your own identity.",
+        "You’re not who you said you’d be.",
+        "You’ve normalized disappointment.",
+        "You’re okay with less now.",
+        "You let yourself slip again.",
+        "You don’t even fight it anymore.",
+        "You’re becoming predictable.",
+        "You made weakness routine."
     ],
 
     "comfort": [
-        "Comfort owns you slowly.",
-        "Easy is your addiction.",
-        "Relief ruins discipline.",
-        "Comfort feeds weakness.",
-        "You chose relief again.",
-        "Easy now. Expensive later.",
-        "Soft habits win again.",
-        "Comfort kills momentum.",
-        "Weakness feels comfortable.",
-        "You reward weakness daily.",
-        "Comfort steals your future.",
-        "Easy habits destroy progress.",
-        "Relief feels good today.",
-        "Comfort keeps you average.",
-        "You escape effort again.",
-        "Comfort collects payment later.",
-        "Weak habits feel normal.",
-        "You protect your comfort.",
-        "Relief delays real progress.",
-        "Easy choices compound."
+        "You chose easy again.",
+        "That felt good… didn’t it?",
+        "You took the softer option.",
+        "You avoided the hard part.",
+        "You stopped where it got uncomfortable.",
+        "You stayed where it’s safe.",
+        "You picked relief over growth.",
+        "You gave in early.",
+        "You protected comfort again.",
+        "You escaped right on time.",
+        "You didn’t push through.",
+        "You folded under pressure.",
+        "You let comfort decide.",
+        "You stayed weak on purpose.",
+        "You quit before it counted.",
+        "You avoided the real work.",
+        "You took the shortcut again.",
+        "You chose now over later.",
+        "You kept it easy.",
+        "You didn’t go far enough."
     ],
 
     "time": [
-        "Soon is never.",
-        "Tomorrow never arrives.",
-        "Time does not care.",
-        "Days keep disappearing.",
-        "Delay becomes identity.",
-        "The clock keeps moving.",
-        "Another day wasted.",
-        "Time exposes discipline.",
-        "Delay compounds regret.",
-        "You keep postponing life.",
-        "Days keep counting.",
-        "Time punishes hesitation.",
-        "Soon becomes never again.",
-        "Time reveals your habits.",
-        "Delay becomes decay.",
-        "You waste time quietly.",
-        "Time collects interest.",
-        "Every delay compounds.",
-        "Time keeps moving forward.",
-        "Another chance disappears."
+        "You lost another day.",
+        "That day is gone now.",
+        "You’ll never get that back.",
+        "You wasted it again.",
+        "It’s happening again.",
+        "Same day. Same pattern.",
+        "You’re running out quietly.",
+        "Time moved. You didn’t.",
+        "Another delay added.",
+        "You stayed stuck again.",
+        "You let the day slip.",
+        "Nothing changed today.",
+        "You paused your life again.",
+        "That was your chance.",
+        "You missed it again.",
+        "The gap is growing.",
+        "You’re falling behind slowly.",
+        "You’re still where you were.",
+        "Time kept going without you.",
+        "You did nothing again."
     ]
 }
 
 TRUTHS = [
-    "That is the pattern.",
-    "That is the real cost.",
-    "That is the problem.",
-    "That is why nothing changes.",
-    "That is the habit.",
-    "That is the weakness.",
-    "That is the discipline gap.",
-    "That is the truth.",
-    "That is the cycle.",
-    "That is why progress stalls.",
-    "That is the identity forming.",
-    "That is what holds you back.",
-    "That is the hidden pattern.",
-    "That is the real issue.",
-    "That is the daily choice."
+    "That’s who you are right now.",
+    "That’s your real standard.",
+    "That’s what you accept.",
+    "That’s your level.",
+    "That’s your pattern showing.",
+    "That’s why you don’t move forward.",
+    "That’s the version you feed.",
+    "That’s what’s holding you down.",
+    "That’s your daily decision.",
+    "That’s your comfort zone winning.",
+    "That’s your real discipline.",
+    "That’s your limit right now.",
+    "That’s your truth, not your excuse.",
+    "That’s what you repeat.",
+    "That’s your default setting."
 ]
 
 QUESTIONS = [
-    "Still choosing comfort?",
-    "Still negotiating?",
-    "Still delaying?",
-    "Still escaping effort?",
-    "Still breaking promises?",
-    "Still avoiding discipline?",
-    "Still distracted?",
-    "Still repeating the pattern?",
-    "Still comfortable?",
-    "Still choosing easy?",
-    "Still hiding?",
-    "Still wasting time?",
-    "Still waiting?",
-    "Still soft?",
-    "Or done?"
+    "Still doing this?",
+    "Still okay with that?",
+    "Still choosing that version?",
+    "Still letting it slide?",
+    "Still pretending it’s fine?",
+    "Still avoiding it?",
+    "Still stopping early?",
+    "Still playing safe?",
+    "Still lying to yourself?",
+    "Still comfortable with that?",
+    "Still not changing?",
+    "Still repeating it?",
+    "Still weak here?",
+    "Still the same?",
+    "Or are you done?"
 ]
 
 CTAS = [
-    "Comment discipline.",
-    "Type DISCIPLINE.",
-    "Choose discipline.",
-    "Prove it. Comment discipline.",
-    "Commit now.",
-    "Decide here.",
-    "Lock in.",
-    "Stand up in comments.",
-    "Discipline only.",
-    "No weak comments.",
-    "Claim discipline.",
-    "Declare discipline.",
-    "Show discipline.",
-    "Enter the disciplined.",
-    "Earn discipline."
+    "Prove it. Comment DISCIPLINE.",
+    "Type DISCIPLINE if you’re done.",
+    "Don’t scroll. Commit.",
+    "Say it publicly. DISCIPLINE.",
+    "Lock in or leave.",
+    "Decide right now.",
+    "This is where it changes.",
+    "Show me, don’t think.",
+    "No excuses. Type DISCIPLINE.",
+    "Stand on it. Comment DISCIPLINE.",
+    "If you mean it—prove it.",
+    "Choose your side.",
+    "Stay soft or speak up.",
+    "Draw the line here.",
+    "This is your moment."
 ]
+
+# ---------------- USAGE ----------------
+# Pick 1 HOOK + 1 TRUTH + 1 QUESTION + 1 CTA
+# Stack them in that order for maximum psychological impact.
+
+# Example:
+# You stopped where it got uncomfortable.
+# That’s your real standard.
+# Still okay with that?
+# Prove it. Comment DISCIPLINE.
 
 # ---------------- TEXT ENGINE ----------------
 
