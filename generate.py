@@ -18,19 +18,19 @@ PITCH = "-45Hz"
 VOLUME = "+0%"
 
 FONT_PATH = "Anton-Regular.ttf"
-LOGO_PATH = "logo.png"           # ✅ Your Inner Discipline logo file
-LOGO_OPACITY = 0.72              # ✅ Semi-transparent (0.0 = invisible, 1.0 = fully visible)
-LOGO_SIZE = 160                  # ✅ Logo width in pixels (height scales automatically)
-LOGO_BOTTOM_MARGIN = 90          # ✅ Distance from bottom of frame
+LOGO_PATH = "logo.png"           # âœ… Your Inner Discipline logo file
+LOGO_OPACITY = 0.72              # âœ… Semi-transparent (0.0 = invisible, 1.0 = fully visible)
+LOGO_SIZE = 160                  # âœ… Logo width in pixels (height scales automatically)
+LOGO_BOTTOM_MARGIN = 90          # âœ… Distance from bottom of frame
 
 REELS_PER_RUN = 3
 
 # ---------------- RETENTION SETTINGS ----------------
 
-STILL_FRAME_DURATION = 1.6      # ✅ Seconds of frozen first frame before video plays
-STILL_ZOOM_END = 1.06           # ✅ How far the slow zoom goes on the still frame (1.0 = none)
-MUSIC_DELAY = 2.0               # ✅ Seconds before music kicks in (no music = raw silence = attention)
-SUBTITLE_DELAY = 0.0            # ✅ Subtitles start AFTER the still frame pause (auto-calculated)
+STILL_FRAME_DURATION = 1.6      # âœ… Seconds of frozen first frame before video plays
+STILL_ZOOM_END = 1.06           # âœ… How far the slow zoom goes on the still frame (1.0 = none)
+MUSIC_DELAY = 2.0               # âœ… Seconds before music kicks in (no music = raw silence = attention)
+SUBTITLE_DELAY = 0.0            # âœ… Subtitles start AFTER the still frame pause (auto-calculated)
 
 os.makedirs("outputs", exist_ok=True)
 
@@ -63,7 +63,7 @@ HOOKS = {
     "identity": [
         "You became someone you don't respect.",
         "You don't trust yourself anymore.",
-        "You hear yourself… and ignore it.",
+        "You hear yourselfâ€¦ and ignore it.",
         "You know better. You don't do better.",
         "You lost control of yourself.",
         "You keep proving you're unreliable.",
@@ -84,7 +84,7 @@ HOOKS = {
     ],
     "comfort": [
         "You chose easy again.",
-        "That felt good… didn't it?",
+        "That felt goodâ€¦ didn't it?",
         "You took the softer option.",
         "You avoided the hard part.",
         "You stopped where it got uncomfortable.",
@@ -175,7 +175,7 @@ CTAS = [
     "Show me, don't think.",
     "No excuses. Type DISCIPLINE.",
     "Stand on it. Comment DISCIPLINE.",
-    "If you mean it—prove it.",
+    "If you mean itâ€”prove it.",
     "Choose your side.",
     "Stay soft or speak up.",
     "Draw the line here.",
@@ -191,7 +191,7 @@ def make_logo_overlay():
     Returns a numpy RGBA array ready for ImageClip.
     """
     if not os.path.exists(LOGO_PATH):
-        print(f"⚠️  Logo not found at '{LOGO_PATH}' — skipping logo overlay.")
+        print(f"âš ï¸  Logo not found at '{LOGO_PATH}' â€” skipping logo overlay.")
         return None
 
     logo = Image.open(LOGO_PATH).convert("RGBA")
@@ -285,7 +285,7 @@ def get_set_category():
     global set_step
     cat = SET_ORDER[set_step % len(SET_ORDER)]
     set_step += 1
-    last_category = cat  # ✅ Fixed: actually update last_category
+    last_category = cat  # âœ… Fixed: actually update last_category
     return cat
 
 def get_hook_from_category(category):
@@ -339,7 +339,7 @@ def make_reel(index):
 
         raw_video = raw_video.fx(vfx.colorx, 1.05)
 
-        # ✅ RETENTION UPGRADE 1: Still image / slow zoom for first STILL_FRAME_DURATION seconds
+        # âœ… RETENTION UPGRADE 1: Still image / slow zoom for first STILL_FRAME_DURATION seconds
         # Grab the very first frame and turn it into a zooming still
         first_frame = raw_video.get_frame(0)
         still_clip = (
@@ -362,14 +362,16 @@ def make_reel(index):
         # Stitch still + main video as base
         base = concatenate_videoclips([still_clip, main_video])
 
-        # ✅ Build logo overlay clip (persistent across full reel duration)
+        # âœ… Build logo overlay clip (persistent across full reel duration)
         logo_array = make_logo_overlay()
 
         clips = []
         audio_clips = []
 
-        # ✅ RETENTION UPGRADE 3: Subtitles start AFTER the still frame pause
+        # âœ… RETENTION UPGRADE 3: Subtitles start AFTER the still frame pause
         timeline = STILL_FRAME_DURATION + 0.1
+
+        is_last = lambda i: i == len(script) - 1
 
         for i, line in enumerate(script):
 
@@ -380,14 +382,16 @@ def make_reel(index):
             audio = AudioFileClip(voice_file)
             voice_duration = audio.duration
 
-            if i == 0:
+            # âœ… FIX: Last line text ends exactly when voice ends (no padding)
+            # Middle lines keep small padding for breathing room between lines
+            if is_last(i):
+                duration = voice_duration  # No extra padding â€” text dies with voice
+            elif i == 0:
                 duration = voice_duration + 0.6
             elif i == 1:
                 duration = voice_duration + 0.5
-            elif i == 2:
-                duration = voice_duration + 0.6
             else:
-                duration = voice_duration + 0.5
+                duration = voice_duration + 0.6
 
             text_img = make_text(line)
             text_clip = (
@@ -402,10 +406,19 @@ def make_reel(index):
             audio_clips.append(audio.set_start(timeline))
             timeline += duration
 
+        # âœ… FIX: Reel ends exactly when last voice + text ends â€” no silent dead frames
+        # MAX_REEL_LENGTH is a hard ceiling only, not a target
         if timeline > MAX_REEL_LENGTH:
             timeline = MAX_REEL_LENGTH
+            # Clamp last text clip so it doesn't outlive the hard ceiling
+            last_clip = clips[-1]
+            clamp_duration = MAX_REEL_LENGTH - last_clip.start
+            if clamp_duration > 0:
+                clips[-1] = last_clip.set_duration(clamp_duration)
+            else:
+                clips.pop()  # Remove last clip entirely if it starts past the ceiling
 
-        # ✅ Add logo as top layer — visible entire reel duration
+        # âœ… Add logo as top layer â€” visible entire reel duration
         all_layers = [base] + clips
         if logo_array is not None:
             logo_clip = (
@@ -422,7 +435,7 @@ def make_reel(index):
 
         final_voice = CompositeAudioClip(audio_clips).subclip(0, timeline)
 
-        # ✅ RETENTION UPGRADE 2: Music delayed by MUSIC_DELAY seconds
+        # âœ… RETENTION UPGRADE 2: Music delayed by MUSIC_DELAY seconds
         # First 2 seconds = silence = viewer leans in, algorithm sees watch time spike
         if os.path.exists("music.mp3"):
             music = AudioFileClip("music.mp3")
@@ -464,13 +477,13 @@ def make_reel(index):
         with open(f"outputs/reel_{index+1}_caption.txt", "w") as f:
             f.write(caption)
 
-        print(f"✅ Reel {index+1} complete → {video_path}")
+        print(f"âœ… Reel {index+1} complete â†’ {video_path}")
 
     except Exception as e:
-        print(f"❌ Reel {index+1} failed: {e}")
+        print(f"âŒ Reel {index+1} failed: {e}")
 
     finally:
-        # ✅ Clean up voice temp files regardless of success/failure
+        # âœ… Clean up voice temp files regardless of success/failure
         for vf in voice_files:
             if os.path.exists(vf):
                 os.remove(vf)
@@ -480,9 +493,9 @@ def make_reel(index):
 for i in range(REELS_PER_RUN):
     make_reel(i)
 
-# ✅ Save memory state after all reels complete
+# âœ… Save memory state after all reels complete
 json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
 json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
 json.dump(set_step, open(SET_STEP_FILE, "w"))
 
-print("🔥 INNER DISCIPLINE SET-OF-3 COMPLETE")
+print("ðŸ”¥ INNER DISCIPLINE SET-OF-3 COMPLETE")
