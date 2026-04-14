@@ -382,24 +382,22 @@ def make_reel(index):
             audio = AudioFileClip(voice_file)
             voice_duration = audio.duration
 
-            # âœ… FIX: Last line text ends exactly when voice ends (no padding)
-            # Middle lines keep small padding for breathing room between lines
+            # âœ… FIX: Text duration = voice duration + fadeout buffer
+            # This guarantees text is FULLY visible while voice speaks,
+            # then fades out cleanly after the last word â€” never mid-word
+            FADE_OUT = 0.25
             if is_last(i):
-                duration = voice_duration  # No extra padding â€” text dies with voice
-            elif i == 0:
-                duration = voice_duration + 0.6
-            elif i == 1:
-                duration = voice_duration + 0.5
+                duration = voice_duration + FADE_OUT + 0.1  # voice + fade buffer only
             else:
-                duration = voice_duration + 0.6
+                duration = voice_duration + FADE_OUT + 0.4  # voice + fade + breathing gap
 
             text_img = make_text(line)
             text_clip = (
                 ImageClip(text_img)
                 .set_start(timeline)
                 .set_duration(duration)
-                .fadein(0.15)
-                .fadeout(0.2)
+                .fadein(0.12)
+                .fadeout(FADE_OUT)   # fadeout happens AFTER voice ends, not during
             )
 
             clips.append(text_clip)
