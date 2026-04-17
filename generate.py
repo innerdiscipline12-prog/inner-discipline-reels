@@ -10,7 +10,7 @@ import edge_tts
 
 W, H = 1080, 1920
 FPS = 30
-MAX_REEL_LENGTH = 11.8
+MAX_REEL_LENGTH = 14.5   # âœ… Hard safety ceiling â€” voice ALWAYS finishes before cut
 
 VOICE = "en-US-GuyNeural"
 RATE = "-38%"
@@ -414,17 +414,11 @@ def make_reel(index):
             audio_clips.append(audio.set_start(timeline))
             timeline += duration
 
-        # âœ… FIX: Reel ends exactly when last voice + text ends â€” no silent dead frames
-        # MAX_REEL_LENGTH is a hard ceiling only, not a target
+        # âœ… FIX: NEVER cut mid-voice. Timeline is set by actual content length.
+        # MAX_REEL_LENGTH is only a safety net â€” log a warning if exceeded, don't cut.
         if timeline > MAX_REEL_LENGTH:
-            timeline = MAX_REEL_LENGTH
-            # Clamp last text clip so it doesn't outlive the hard ceiling
-            last_clip = clips[-1]
-            clamp_duration = MAX_REEL_LENGTH - last_clip.start
-            if clamp_duration > 0:
-                clips[-1] = last_clip.set_duration(clamp_duration)
-            else:
-                clips.pop()  # Remove last clip entirely if it starts past the ceiling
+            print(f"âš ï¸  Reel {index+1} is {timeline:.1f}s â€” consider shorter scripts.")
+        # No clamping â€” voice and text always play fully
 
         # âœ… Add logo as top layer â€” visible entire reel duration
         all_layers = [base] + clips
@@ -441,7 +435,8 @@ def make_reel(index):
         final_video = final_video.set_duration(timeline)
         final_video = final_video.fadeout(0.25)
 
-        final_voice = CompositeAudioClip(audio_clips).subclip(0, timeline)
+        # âœ… Let voice play its full natural length â€” no subclip cut
+        final_voice = CompositeAudioClip(audio_clips)
 
         # âœ… RETENTION UPGRADE 2: Music delayed by MUSIC_DELAY seconds
         # First 2 seconds = silence = viewer leans in, algorithm sees watch time spike
