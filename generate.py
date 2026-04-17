@@ -63,7 +63,7 @@ HOOKS = {
     "identity": [
         "You became someone you don't respect.",
         "You don't trust yourself anymore.",
-        "You hear yourselfâ€¦ and ignore it.",
+        "You hear yourself... and ignore it.",
         "You know better. You don't do better.",
         "You lost control of yourself.",
         "You keep proving you're unreliable.",
@@ -84,7 +84,7 @@ HOOKS = {
     ],
     "comfort": [
         "You chose easy again.",
-        "That felt goodâ€¦ didn't it?",
+        "That felt good... didn't it?",
         "You took the softer option.",
         "You avoided the hard part.",
         "You stopped where it got uncomfortable.",
@@ -175,7 +175,7 @@ CTAS = [
     "Show me, don't think.",
     "No excuses. Type DISCIPLINE.",
     "Stand on it. Comment DISCIPLINE.",
-    "If you mean itâ€”prove it.",
+    "If you mean it - prove it.",
     "Choose your side.",
     "Stay soft or speak up.",
     "Draw the line here.",
@@ -218,7 +218,12 @@ def make_logo_overlay():
 # ---------------- TEXT ENGINE ----------------
 
 def make_text(text):
-    text = text.upper()  # âœ… FIX: Always ALL CAPS â€” matches Inner Discipline brand
+    # âœ… FIX: Strip special chars that break Anton font (em dash, smart quotes etc)
+    text = text.replace("\u2014", "-").replace("\u2013", "-")
+    text = text.replace("\u2018", "'").replace("\u2019", "'")
+    text = text.replace("\u201c", '"').replace("\u201d", '"')
+    text = text.replace("\u2026", "...")
+    text = text.upper()  # ALL CAPS â€” Inner Discipline brand
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
@@ -392,14 +397,12 @@ def make_reel(index):
             audio = AudioFileClip(voice_file)
             voice_duration = audio.duration
 
-            # âœ… FIX: Text duration = voice duration + fadeout buffer
-            # This guarantees text is FULLY visible while voice speaks,
-            # then fades out cleanly after the last word â€” never mid-word
-            FADE_OUT = 0.25
+            # âœ… Tightened gaps â€” keeps reels under 15s
+            FADE_OUT = 0.2
             if is_last(i):
-                duration = voice_duration + FADE_OUT + 0.1  # voice + fade buffer only
+                duration = voice_duration + FADE_OUT + 0.1   # ends cleanly after voice
             else:
-                duration = voice_duration + FADE_OUT + 0.4  # voice + fade + breathing gap
+                duration = voice_duration + FADE_OUT + 0.2   # tight gap between lines
 
             text_img = make_text(line)
             text_clip = (
