@@ -218,6 +218,7 @@ def make_logo_overlay():
 # ---------------- TEXT ENGINE ----------------
 
 def make_text(text):
+    text = text.upper()  # âœ… FIX: Always ALL CAPS â€” matches Inner Discipline brand
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
@@ -325,11 +326,20 @@ def make_reel(index):
 
         bg_path = random.choice(backgrounds)
         raw_video = VideoFileClip(bg_path).without_audio()
-        raw_video = raw_video.resize(height=H)
 
-        if raw_video.w < W:
+        # âœ… FIX: Scale to FILL full 1080x1920 â€” no black bars
+        # Strategy: scale so BOTH dimensions meet or exceed W x H, then crop center
+        clip_ratio = raw_video.w / raw_video.h
+        target_ratio = W / H
+
+        if clip_ratio > target_ratio:
+            # Video is wider than target â€” fit height, crop sides
+            raw_video = raw_video.resize(height=H)
+        else:
+            # Video is taller/narrower than target â€” fit width, crop top/bottom
             raw_video = raw_video.resize(width=W)
 
+        # Crop to exact frame â€” always center
         raw_video = raw_video.crop(
             x_center=raw_video.w / 2,
             y_center=raw_video.h / 2,
