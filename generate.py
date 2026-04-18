@@ -10,10 +10,10 @@ import edge_tts
 
 W, H = 1080, 1920
 FPS = 30
-MAX_REEL_LENGTH = 14.5   # âœ… Hard safety ceiling â€” voice ALWAYS finishes before cut
+MAX_REEL_LENGTH = 15.0   # Hard ceiling â€” never exceed this
 
 VOICE = "en-US-GuyNeural"
-RATE = "-38%"
+RATE = "-10%"    # âœ… Much faster â€” was -38% which added 4-6s per reel
 PITCH = "-45Hz"
 VOLUME = "+0%"
 
@@ -27,10 +27,10 @@ REELS_PER_RUN = 3
 
 # ---------------- RETENTION SETTINGS ----------------
 
-STILL_FRAME_DURATION = 1.6      # âœ… Seconds of frozen first frame before video plays
-STILL_ZOOM_END = 1.06           # âœ… How far the slow zoom goes on the still frame (1.0 = none)
-MUSIC_DELAY = 2.0               # âœ… Seconds before music kicks in (no music = raw silence = attention)
-SUBTITLE_DELAY = 0.0            # âœ… Subtitles start AFTER the still frame pause (auto-calculated)
+STILL_FRAME_DURATION = 1.0      # âœ… Tightened from 1.6s â€” saves 0.6s per reel
+STILL_ZOOM_END = 1.06
+MUSIC_DELAY = 1.5               # âœ… Tightened from 2.0s
+SUBTITLE_DELAY = 0.0
 
 os.makedirs("outputs", exist_ok=True)
 
@@ -397,12 +397,12 @@ def make_reel(index):
             audio = AudioFileClip(voice_file)
             voice_duration = audio.duration
 
-            # âœ… Tightened gaps â€” keeps reels under 15s
-            FADE_OUT = 0.2
+            # Tight gaps â€” every second counts
+            FADE_OUT = 0.15
             if is_last(i):
-                duration = voice_duration + FADE_OUT + 0.1   # ends cleanly after voice
+                duration = voice_duration + FADE_OUT        # ends right after voice
             else:
-                duration = voice_duration + FADE_OUT + 0.2   # tight gap between lines
+                duration = voice_duration + FADE_OUT + 0.1  # minimal gap between lines
 
             text_img = make_text(line)
             text_clip = (
