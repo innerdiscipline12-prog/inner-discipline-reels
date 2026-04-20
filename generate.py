@@ -490,36 +490,38 @@ def make_reel(index):
 
 # ---------------- HASHTAG POOLS (rotates to avoid repetition) ----------------
 
-HASHTAG_POOL = [
-    # Core brand
-    "#innerdiscipline", "#discipline", "#selfmastery", "#selfcontrol",
-    # Mindset
-    "#mindset", "#growthmindset", "#mentalstrength", "#mentalhealth",
-    "#mindsetmatters", "#mindsetshift", "#strongmind", "#disciplinedmind",
-    # Motivation
-    "#motivation", "#motivationalquotes", "#motivationaldaily",
-    "#dailymotivation", "#morningmotivation", "#stayÐ¼Ð¾Ñ‚Ð¸Ð²ated",
-    # Lifestyle
-    "#focus", "#consistency", "#hardwork", "#nevergiveup",
-    "#grind", "#success", "#winning", "#levelup",
-    # Fitness crossover
-    "#gym", "#gymlife", "#gymquotes", "#fitnessmotivation",
-    "#fitness", "#workout", "#bodybuilding",
-    # Niche
-    "#selfimprovement", "#personaldevelopment", "#selfgrowth",
-    "#habits", "#dailyhabits", "#accountability", "#noeXcuses",
-    # Reels reach
-    "#reels", "#reelsviral", "#reelsfb", "#reelsinstagram",
-    "#explore", "#explorepage", "#viral", "#trending",
-]
+HASHTAG_POOL = {
+    "big": [        # 1M+ posts â€” broad reach
+        "#discipline", "#motivation", "#mindset", "#fitness",
+        "#success", "#selfimprovement", "#gym", "#hardwork",
+    ],
+    "medium": [     # 100Kâ€“1M posts â€” targeted reach
+        "#selfmastery", "#selfcontrol", "#mentalstrength",
+        "#consistency", "#dailymotivation", "#growthmindset",
+        "#personaldevelopment", "#focus",
+    ],
+    "niche": [      # Under 100K â€” high relevance, low competition
+        "#innerdiscipline", "#disciplinedmind", "#selfgrowth",
+        "#dailyhabits", "#noexcuses", "#accountability",
+        "#mindsetshift", "#innerwork",
+    ],
+}
 
-def pick_hashtags(n=18):
-    """Pick n unique hashtags â€” always include brand tags, rotate the rest."""
-    must_have = ["#innerdiscipline", "#discipline", "#mindset", "#reels", "#explorepage"]
-    pool = [h for h in HASHTAG_POOL if h not in must_have]
-    random.shuffle(pool)
-    selected = must_have + pool[:n - len(must_have)]
-    random.shuffle(selected)  # Mix so brand tags don't always appear first
+def pick_hashtags():
+    """
+    Safe 10-tag strategy:
+    - 1 brand tag (always)
+    - 3 big tags
+    - 3 medium tags
+    - 3 niche tags
+    Total: 10 â€” relevant, varied, not spammy
+    """
+    brand = ["#innerdiscipline"]
+    big = random.sample(HASHTAG_POOL["big"], 3)
+    medium = random.sample(HASHTAG_POOL["medium"], 3)
+    niche = random.sample([h for h in HASHTAG_POOL["niche"] if h != "#innerdiscipline"], 3)
+    selected = brand + big + medium + niche
+    random.shuffle(selected)
     return " ".join(selected)
 
 # ---------------- CAPTION TEMPLATES (rotates for variety) ----------------
@@ -551,7 +553,7 @@ CAPTION_CLOSERS = [
 def build_caption(script):
     opener = random.choice(CAPTION_OPENERS)
     closer = random.choice(CAPTION_CLOSERS)
-    hashtags = pick_hashtags(18)
+    hashtags = pick_hashtags()
 
     caption = "\n".join([
         opener,
