@@ -469,13 +469,7 @@ def make_reel(index):
         )
 
         title = f"{script[0]} | INNER DISCIPLINE"
-        caption = "\n".join([
-            script[0], "",
-            script[1], "",
-            script[2], "",
-            script[3], "",
-            "#discipline #selfcontrol #focus #consistency #mindset #innerdiscipline"
-        ])
+        caption = build_caption(script)
 
         with open(f"outputs/reel_{index+1}_title.txt", "w") as f:
             f.write(title)
@@ -494,7 +488,86 @@ def make_reel(index):
             if os.path.exists(vf):
                 os.remove(vf)
 
-# ---------------- RUN ----------------
+# ---------------- HASHTAG POOLS (rotates to avoid repetition) ----------------
+
+HASHTAG_POOL = [
+    # Core brand
+    "#innerdiscipline", "#discipline", "#selfmastery", "#selfcontrol",
+    # Mindset
+    "#mindset", "#growthmindset", "#mentalstrength", "#mentalhealth",
+    "#mindsetmatters", "#mindsetshift", "#strongmind", "#disciplinedmind",
+    # Motivation
+    "#motivation", "#motivationalquotes", "#motivationaldaily",
+    "#dailymotivation", "#morningmotivation", "#stayÐ¼Ð¾Ñ‚Ð¸Ð²ated",
+    # Lifestyle
+    "#focus", "#consistency", "#hardwork", "#nevergiveup",
+    "#grind", "#success", "#winning", "#levelup",
+    # Fitness crossover
+    "#gym", "#gymlife", "#gymquotes", "#fitnessmotivation",
+    "#fitness", "#workout", "#bodybuilding",
+    # Niche
+    "#selfimprovement", "#personaldevelopment", "#selfgrowth",
+    "#habits", "#dailyhabits", "#accountability", "#noeXcuses",
+    # Reels reach
+    "#reels", "#reelsviral", "#reelsfb", "#reelsinstagram",
+    "#explore", "#explorepage", "#viral", "#trending",
+]
+
+def pick_hashtags(n=18):
+    """Pick n unique hashtags â€” always include brand tags, rotate the rest."""
+    must_have = ["#innerdiscipline", "#discipline", "#mindset", "#reels", "#explorepage"]
+    pool = [h for h in HASHTAG_POOL if h not in must_have]
+    random.shuffle(pool)
+    selected = must_have + pool[:n - len(must_have)]
+    random.shuffle(selected)  # Mix so brand tags don't always appear first
+    return " ".join(selected)
+
+# ---------------- CAPTION TEMPLATES (rotates for variety) ----------------
+
+CAPTION_OPENERS = [
+    "Most people won't admit this to themselves.",
+    "This is the part nobody talks about.",
+    "Read this slowly.",
+    "You needed to hear this today.",
+    "Stop scrolling. This is for you.",
+    "The truth nobody wants to say.",
+    "Save this. You'll need it again.",
+    "This is what separates them from you.",
+    "Be honest with yourself for 10 seconds.",
+    "The uncomfortable truth about discipline.",
+]
+
+CAPTION_CLOSERS = [
+    "Comment DISCIPLINE if you're locking in today.",
+    "Tag someone who needs to see this.",
+    "Save this for the next time you want to quit.",
+    "Follow for daily discipline content.",
+    "Drop a DISCIPLINE below if this hit.",
+    "Share this with someone who needs the push.",
+    "Follow @innerdiscipline for more.",
+    "This page is for the ones who are done making excuses.",
+]
+
+def build_caption(script):
+    opener = random.choice(CAPTION_OPENERS)
+    closer = random.choice(CAPTION_CLOSERS)
+    hashtags = pick_hashtags(18)
+
+    caption = "\n".join([
+        opener,
+        "",
+        f'"{script[0]}"',
+        "",
+        script[1],
+        "",
+        script[2],
+        "",
+        "â€”",
+        closer,
+        "",
+        hashtags,
+    ])
+    return caption
 
 for i in range(REELS_PER_RUN):
     make_reel(i)
