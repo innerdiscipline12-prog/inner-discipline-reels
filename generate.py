@@ -609,11 +609,16 @@ def make_reel(index, bg_path):
         if timeline > MAX_REEL_LENGTH:
             print(f"âš ï¸  Reel {index+1} is {timeline:.1f}s â€” consider shorter scripts.")
 
-        # âœ… Build animated base â€” every frame rendered with zoom + shake + rain
-        base = VideoClip(
-            lambda t: make_cinematic_frame(t, timeline),
-            duration=timeline
-        ).set_fps(FPS)
+        # âœ… Capture timeline value NOW â€” fixes lambda closure bug
+        # Lambda capturing a variable reference causes static frames
+        # Assigning to a local constant forces the correct value at render time
+        reel_duration = float(timeline)
+
+        def make_frame(t):
+            return make_cinematic_frame(t, reel_duration)
+
+        # âœ… Build animated base
+        base = VideoClip(make_frame, duration=reel_duration).set_fps(FPS)
 
         # âœ… Add logo as top layer â€” visible entire reel duration
         all_layers = [base] + clips
@@ -621,23 +626,22 @@ def make_reel(index, bg_path):
             logo_clip = (
                 ImageClip(logo_array)
                 .set_start(0)
-                .set_duration(timeline)
+                .set_duration(reel_duration)
                 .fadein(0.4)
             )
             all_layers.append(logo_clip)
 
         final_video = CompositeVideoClip(all_layers)
-        final_video = final_video.set_duration(timeline)
+        final_video = final_video.set_duration(reel_duration)
         final_video = final_video.fadeout(0.25)
 
         # âœ… Let voice play its full natural length â€” no subclip cut
         final_voice = CompositeAudioClip(audio_clips)
 
-        # âœ… RETENTION UPGRADE 2: Music delayed by MUSIC_DELAY seconds
-        # First 2 seconds = silence = viewer leans in, algorithm sees watch time spike
+        # âœ… Music delayed â€” first seconds silence draws attention
         if os.path.exists("music.mp3"):
             music = AudioFileClip("music.mp3")
-            music_duration = timeline - MUSIC_DELAY
+            music_duration = reel_duration - MUSIC_DELAY
             if music_duration > 0:
                 music = afx.audio_loop(music, duration=music_duration)
                 music = music.audio_fadein(0.8)
