@@ -4,3 +4,4 @@ Pillow==9.5.0
 edge-tts
 imageio
 imageio-ffmpeg
+opencv-python-headless
