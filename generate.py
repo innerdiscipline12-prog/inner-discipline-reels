@@ -388,20 +388,93 @@ def make_reel(index):
 
         bg_array = np.array(bg_img)
 
-        # âœ… RELIABLE KEN BURNS â€” built frame by frame using make_frame
-        # vfx.resize lambda is unreliable on ImageClip â€” this always works
-        ZOOM_START = 1.0
-        ZOOM_END = 1.08
+        # ================================================================
+        # âœ… CINEMATIC ANIMATION ENGINE
+        # Turns any still image into a living, breathing cinematic scene.
+        # Effects: Ken Burns zoom + camera shake + rain
+        # All generated frame by frame â€” no external tools needed.
+        # ================================================================
 
-        def make_zoomed_frame(t, total_duration):
-            """Returns a W x H numpy frame with smooth zoom at time t."""
+        ZOOM_START = 1.0
+        ZOOM_END   = 1.08
+
+        # --- Rain system ---
+        # Pre-generate rain drop positions for the full reel
+        # Each drop: [x, y, length, speed, opacity]
+        NUM_DROPS = 180
+        rng = np.random.default_rng(seed=42)
+        rain_x      = rng.integers(0, W,    size=NUM_DROPS).astype(float)
+        rain_y      = rng.integers(0, H,    size=NUM_DROPS).astype(float)
+        rain_len    = rng.integers(18, 55,  size=NUM_DROPS).astype(float)
+        rain_speed  = rng.uniform(18, 38,   size=NUM_DROPS)
+        rain_opacity= rng.uniform(55, 130,  size=NUM_DROPS).astype(int)
+        rain_angle  = 0.18   # slight diagonal slant (radians)
+
+        # --- Camera shake ---
+        # Pre-bake shake offsets for every frame â€” subtle, organic
+        def bake_shake(total_frames, intensity=3):
+            """Returns (dx, dy) arrays â€” low-frequency organic shake."""
+            t = np.linspace(0, total_frames / FPS, total_frames)
+            dx = (intensity * np.sin(2.3 * t + 0.5)
+                + intensity * 0.5 * np.sin(5.1 * t + 1.2)).astype(int)
+            dy = (intensity * np.sin(1.7 * t + 0.9)
+                + intensity * 0.4 * np.sin(4.3 * t + 2.1)).astype(int)
+            return dx, dy
+
+        def make_cinematic_frame(t, total_duration):
+            """
+            Returns one W x H RGB numpy frame at time t with:
+            - Smooth Ken Burns zoom
+            - Organic camera shake
+            - Animated rain streaks
+            """
+            frame_idx = int(t * FPS)
+            total_frames = max(int(total_duration * FPS), 1)
+
+            # â”€â”€ Ken Burns zoom â”€â”€
             scale = ZOOM_START + (ZOOM_END - ZOOM_START) * (t / max(total_duration, 0.001))
             new_w = int(W * scale)
             new_h = int(H * scale)
-            frame = Image.fromarray(bg_array).resize((new_w, new_h), Image.BILINEAR)
-            x = (new_w - W) // 2
-            y = (new_h - H) // 2
-            return np.array(frame.crop((x, y, x + W, y + H)))
+            zoomed = Image.fromarray(bg_array).resize((new_w, new_h), Image.BILINEAR)
+
+            # â”€â”€ Camera shake offset â”€â”€
+            shake_dx, shake_dy = bake_shake(total_frames + 10)
+            idx = min(frame_idx, len(shake_dx) - 1)
+            sx = int(shake_dx[idx])
+            sy = int(shake_dy[idx])
+
+            # Crop with shake offset â€” stay within bounds
+            cx = (new_w - W) // 2 + sx
+            cy = (new_h - H) // 2 + sy
+            cx = max(0, min(cx, new_w - W))
+            cy = max(0, min(cy, new_h - H))
+            frame = zoomed.crop((cx, cy, cx + W, cy + H))
+            frame_arr = np.array(frame, dtype=np.uint8)
+
+            # â”€â”€ Rain streaks â”€â”€
+            rain_layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            rain_draw  = ImageDraw.Draw(rain_layer)
+
+            for i in range(NUM_DROPS):
+                # Advance each drop by its speed Ã— time
+                y_pos = (rain_y[i] + rain_speed[i] * t * FPS * 0.5) % H
+                x_pos = rain_x[i] + y_pos * np.tan(rain_angle)
+                x_pos = x_pos % W
+
+                x_end = x_pos - rain_len[i] * np.sin(rain_angle)
+                y_end = y_pos - rain_len[i] * np.cos(rain_angle)
+
+                rain_draw.line(
+                    [(int(x_pos), int(y_pos)), (int(x_end), int(y_end))],
+                    fill=(200, 220, 255, int(rain_opacity[i])),
+                    width=1
+                )
+
+            # Composite rain onto frame
+            frame_pil = Image.fromarray(frame_arr).convert("RGBA")
+            frame_pil = Image.alpha_composite(frame_pil, rain_layer)
+
+            return np.array(frame_pil.convert("RGB"))
 
         # âœ… Build logo overlay clip (persistent across full reel duration)
         logo_array = make_logo_overlay()
@@ -447,9 +520,9 @@ def make_reel(index):
         if timeline > MAX_REEL_LENGTH:
             print(f"âš ï¸  Reel {index+1} is {timeline:.1f}s â€” consider shorter scripts.")
 
-        # âœ… Build ken burns base using VideoClip make_frame â€” reliable motion
+        # âœ… Build animated base â€” every frame rendered with zoom + shake + rain
         base = VideoClip(
-            lambda t: make_zoomed_frame(t, timeline),
+            lambda t: make_cinematic_frame(t, timeline),
             duration=timeline
         ).set_fps(FPS)
 
