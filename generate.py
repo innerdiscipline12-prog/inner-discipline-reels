@@ -362,35 +362,20 @@ def make_reel(index):
 
         bg_array = np.array(bg_img)
 
-        # âœ… FULL REEL = Ken Burns slow zoom on the image
-        # Zoom from 1.0 â†’ 1.08 smoothly across entire reel duration
-        # We build this as a function-based ImageClip â€” no video file needed
+        # âœ… RELIABLE KEN BURNS â€” built frame by frame using make_frame
+        # vfx.resize lambda is unreliable on ImageClip â€” this always works
         ZOOM_START = 1.0
         ZOOM_END = 1.08
 
         def make_zoomed_frame(t, total_duration):
-            scale = ZOOM_START + (ZOOM_END - ZOOM_START) * (t / max(total_duration, 1))
+            """Returns a W x H numpy frame with smooth zoom at time t."""
+            scale = ZOOM_START + (ZOOM_END - ZOOM_START) * (t / max(total_duration, 0.001))
             new_w = int(W * scale)
             new_h = int(H * scale)
-            # Resize up
-            frame = Image.fromarray(bg_array).resize((new_w, new_h), Image.LANCZOS)
-            # Center crop back to W x H
+            frame = Image.fromarray(bg_array).resize((new_w, new_h), Image.BILINEAR)
             x = (new_w - W) // 2
             y = (new_h - H) // 2
-            frame = frame.crop((x, y, x + W, y + H))
-            return np.array(frame)
-
-        # Placeholder base â€” real duration set after timeline is calculated
-        # We'll rebuild with correct duration after the script loop
-        raw_frame = bg_array  # static reference for still frame
-
-        # âœ… RETENTION: Still frame for first STILL_FRAME_DURATION seconds
-        still_clip = (
-            ImageClip(raw_frame)
-            .set_duration(STILL_FRAME_DURATION)
-            .fx(vfx.resize, lambda t: 1 + (STILL_ZOOM_END - 1) * (t / STILL_FRAME_DURATION))
-            .crop(x_center=W / 2, y_center=H / 2, width=W, height=H)
-        )
+            return np.array(frame.crop((x, y, x + W, y + H)))
 
         # âœ… Build logo overlay clip (persistent across full reel duration)
         logo_array = make_logo_overlay()
@@ -436,22 +421,11 @@ def make_reel(index):
         if timeline > MAX_REEL_LENGTH:
             print(f"âš ï¸  Reel {index+1} is {timeline:.1f}s â€” consider shorter scripts.")
 
-        # âœ… Build full ken burns base now that we know total duration
-        # Still frame (slow zoom in) â†’ main image (continuing zoom) across full reel
-        main_duration = timeline - STILL_FRAME_DURATION
-
-        main_clip = (
-            ImageClip(bg_array)
-            .set_duration(main_duration)
-            .set_start(STILL_FRAME_DURATION)
-            .fx(vfx.resize, lambda t: STILL_ZOOM_END + (ZOOM_END - STILL_ZOOM_END) * (t / max(main_duration, 1)))
-            .crop(x_center=W / 2, y_center=H / 2, width=W, height=H)
-        )
-
-        base = CompositeVideoClip([
-            still_clip.set_start(0),
-            main_clip
-        ]).set_duration(timeline)
+        # âœ… Build ken burns base using VideoClip make_frame â€” reliable motion
+        base = VideoClip(
+            lambda t: make_zoomed_frame(t, timeline),
+            duration=timeline
+        ).set_fps(FPS)
 
         # âœ… Add logo as top layer â€” visible entire reel duration
         all_layers = [base] + clips
