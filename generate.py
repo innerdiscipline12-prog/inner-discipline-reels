@@ -319,19 +319,13 @@ def build_script():
 
 # ---------------- REEL ENGINE ----------------
 
-def make_reel(index):
+def make_reel(index, bg_path):
 
     script = build_script()
     voice_files = []
 
     try:
-        # âœ… IMAGE BACKGROUNDS â€” scan for bg*.png and bg*.jpg
-        backgrounds = glob.glob("bg*.png") + glob.glob("bg*.jpg") + glob.glob("bg*.jpeg")
-        if not backgrounds:
-            raise Exception("No background images found. Add bg1.png, bg2.jpg etc to this folder.")
-
-        bg_path = random.choice(backgrounds)
-        print(f"ðŸ–¼ï¸  Using background: {bg_path}")
+        print(f"ðŸ–¼ï¸  Reel {index+1} using background: {bg_path}")
 
         # Load image and convert to RGB numpy array
         bg_img = Image.open(bg_path).convert("RGB")
@@ -394,26 +388,62 @@ def make_reel(index):
         # Effects: Ken Burns zoom + camera shake + rain
         # All generated frame by frame â€” no external tools needed.
         # ================================================================
+        # âœ… EFFECTS ENGINE â€” rotates per reel, per run
+        # Effects: rain, embers, dust, fog, lightning flash
+        # All stack on top of ken burns zoom + camera shake
+        # ================================================================
 
         ZOOM_START = 1.0
         ZOOM_END   = 1.08
 
-        # --- Rain system ---
-        # Pre-generate rain drop positions for the full reel
-        # Each drop: [x, y, length, speed, opacity]
-        NUM_DROPS = 180
-        rng = np.random.default_rng(seed=42)
-        rain_x      = rng.integers(0, W,    size=NUM_DROPS).astype(float)
-        rain_y      = rng.integers(0, H,    size=NUM_DROPS).astype(float)
-        rain_len    = rng.integers(18, 55,  size=NUM_DROPS).astype(float)
-        rain_speed  = rng.uniform(18, 38,   size=NUM_DROPS)
-        rain_opacity= rng.uniform(55, 130,  size=NUM_DROPS).astype(int)
-        rain_angle  = 0.18   # slight diagonal slant (radians)
+        # Pick a random effect for THIS reel
+        EFFECTS = ["rain", "embers", "dust", "fog", "lightning"]
+        chosen_effect = random.choice(EFFECTS)
+        print(f"âœ¨ Reel {index+1} effect: {chosen_effect}")
 
-        # --- Camera shake ---
-        # Pre-bake shake offsets for every frame â€” subtle, organic
+        rng = np.random.default_rng(seed=index * 7 + 13)  # unique seed per reel
+
+        # --- Pre-generate particles for chosen effect ---
+        NUM_PARTICLES = 160
+
+        # Rain
+        rain_x       = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
+        rain_y       = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
+        rain_len     = rng.integers(18, 55, size=NUM_PARTICLES).astype(float)
+        rain_speed   = rng.uniform(18, 38,  size=NUM_PARTICLES)
+        rain_opacity = rng.uniform(55, 130, size=NUM_PARTICLES).astype(int)
+        rain_angle   = 0.18
+
+        # Embers â€” small glowing sparks floating upward
+        ember_x      = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
+        ember_y      = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
+        ember_speed  = rng.uniform(0.4, 1.8, size=NUM_PARTICLES)
+        ember_drift  = rng.uniform(-0.3, 0.3, size=NUM_PARTICLES)
+        ember_size   = rng.integers(2, 5,   size=NUM_PARTICLES)
+        ember_opacity= rng.integers(120, 220, size=NUM_PARTICLES)
+
+        # Dust â€” horizontal drifting particles
+        dust_x       = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
+        dust_y       = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
+        dust_speed   = rng.uniform(0.2, 0.8, size=NUM_PARTICLES)
+        dust_size    = rng.integers(1, 4,   size=NUM_PARTICLES)
+        dust_opacity = rng.integers(30, 90, size=NUM_PARTICLES)
+
+        # Fog â€” slow horizontal bands
+        fog_y        = rng.integers(0, H,   size=40).astype(float)
+        fog_speed    = rng.uniform(0.05, 0.2, size=40)
+        fog_opacity  = rng.integers(15, 45, size=40)
+        fog_height   = rng.integers(60, 180, size=40)
+
+        # Lightning â€” random flash frames
+        total_frames_est = int(MAX_REEL_LENGTH * FPS)
+        lightning_frames = sorted(rng.integers(
+            int(FPS * 3), total_frames_est,
+            size=rng.integers(2, 5)
+        ).tolist())
+
+        # --- Camera shake (always on) ---
         def bake_shake(total_frames, intensity=3):
-            """Returns (dx, dy) arrays â€” low-frequency organic shake."""
             t = np.linspace(0, total_frames / FPS, total_frames)
             dx = (intensity * np.sin(2.3 * t + 0.5)
                 + intensity * 0.5 * np.sin(5.1 * t + 1.2)).astype(int)
@@ -422,13 +452,7 @@ def make_reel(index):
             return dx, dy
 
         def make_cinematic_frame(t, total_duration):
-            """
-            Returns one W x H RGB numpy frame at time t with:
-            - Smooth Ken Burns zoom
-            - Organic camera shake
-            - Animated rain streaks
-            """
-            frame_idx = int(t * FPS)
+            frame_idx    = int(t * FPS)
             total_frames = max(int(total_duration * FPS), 1)
 
             # â”€â”€ Ken Burns zoom â”€â”€
@@ -437,43 +461,73 @@ def make_reel(index):
             new_h = int(H * scale)
             zoomed = Image.fromarray(bg_array).resize((new_w, new_h), Image.BILINEAR)
 
-            # â”€â”€ Camera shake offset â”€â”€
+            # â”€â”€ Camera shake â”€â”€
             shake_dx, shake_dy = bake_shake(total_frames + 10)
             idx = min(frame_idx, len(shake_dx) - 1)
-            sx = int(shake_dx[idx])
-            sy = int(shake_dy[idx])
+            cx  = max(0, min((new_w - W) // 2 + int(shake_dx[idx]), new_w - W))
+            cy  = max(0, min((new_h - H) // 2 + int(shake_dy[idx]), new_h - H))
+            frame_arr = np.array(zoomed.crop((cx, cy, cx + W, cy + H)), dtype=np.uint8)
 
-            # Crop with shake offset â€” stay within bounds
-            cx = (new_w - W) // 2 + sx
-            cy = (new_h - H) // 2 + sy
-            cx = max(0, min(cx, new_w - W))
-            cy = max(0, min(cy, new_h - H))
-            frame = zoomed.crop((cx, cy, cx + W, cy + H))
-            frame_arr = np.array(frame, dtype=np.uint8)
+            # â”€â”€ Effect layer â”€â”€
+            fx_layer  = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            fx_draw   = ImageDraw.Draw(fx_layer)
 
-            # â”€â”€ Rain streaks â”€â”€
-            rain_layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-            rain_draw  = ImageDraw.Draw(rain_layer)
+            if chosen_effect == "rain":
+                for i in range(NUM_PARTICLES):
+                    yp = (rain_y[i] + rain_speed[i] * t * FPS * 0.5) % H
+                    xp = (rain_x[i] + yp * np.tan(rain_angle)) % W
+                    xe = xp - rain_len[i] * np.sin(rain_angle)
+                    ye = yp - rain_len[i] * np.cos(rain_angle)
+                    fx_draw.line(
+                        [(int(xp), int(yp)), (int(xe), int(ye))],
+                        fill=(200, 220, 255, int(rain_opacity[i])), width=1
+                    )
 
-            for i in range(NUM_DROPS):
-                # Advance each drop by its speed Ã— time
-                y_pos = (rain_y[i] + rain_speed[i] * t * FPS * 0.5) % H
-                x_pos = rain_x[i] + y_pos * np.tan(rain_angle)
-                x_pos = x_pos % W
+            elif chosen_effect == "embers":
+                for i in range(NUM_PARTICLES):
+                    # Float upward + slight horizontal drift
+                    yp = (ember_y[i] - ember_speed[i] * t * 60) % H
+                    xp = (ember_x[i] + ember_drift[i] * t * 60) % W
+                    r  = int(ember_size[i])
+                    # Orange/red glow
+                    fx_draw.ellipse(
+                        [(int(xp)-r, int(yp)-r), (int(xp)+r, int(yp)+r)],
+                        fill=(255, random.randint(80, 160), 20, int(ember_opacity[i]))
+                    )
 
-                x_end = x_pos - rain_len[i] * np.sin(rain_angle)
-                y_end = y_pos - rain_len[i] * np.cos(rain_angle)
+            elif chosen_effect == "dust":
+                for i in range(NUM_PARTICLES):
+                    # Drift horizontally â€” slow and heavy
+                    xp = (dust_x[i] + dust_speed[i] * t * 60) % W
+                    yp = dust_y[i]
+                    r  = int(dust_size[i])
+                    fx_draw.ellipse(
+                        [(int(xp)-r, int(yp)-r), (int(xp)+r, int(yp)+r)],
+                        fill=(210, 190, 150, int(dust_opacity[i]))
+                    )
 
-                rain_draw.line(
-                    [(int(x_pos), int(y_pos)), (int(x_end), int(y_end))],
-                    fill=(200, 220, 255, int(rain_opacity[i])),
-                    width=1
-                )
+            elif chosen_effect == "fog":
+                for i in range(40):
+                    # Slow horizontal fog bands
+                    xp = (-W + (fog_speed[i] * t * 60)) % (W * 2) - W
+                    yp = int(fog_y[i])
+                    fh = int(fog_height[i])
+                    fog_rect = Image.new("RGBA", (W * 2, fh),
+                        (200, 210, 220, int(fog_opacity[i])))
+                    fx_layer.paste(fog_rect, (int(xp), yp), fog_rect)
 
-            # Composite rain onto frame
+            elif chosen_effect == "lightning":
+                # Flash white on specific frames â€” brief intense burst
+                near = [f for f in lightning_frames if abs(frame_idx - f) <= 2]
+                if near:
+                    dist     = abs(frame_idx - near[0])
+                    strength = max(0, 60 - dist * 25)
+                    flash    = Image.new("RGBA", (W, H), (255, 255, 255, strength))
+                    fx_layer = Image.alpha_composite(fx_layer, flash)
+
+            # Composite effect onto frame
             frame_pil = Image.fromarray(frame_arr).convert("RGBA")
-            frame_pil = Image.alpha_composite(frame_pil, rain_layer)
-
+            frame_pil = Image.alpha_composite(frame_pil, fx_layer)
             return np.array(frame_pil.convert("RGB"))
 
         # ================================================================
@@ -709,8 +763,33 @@ def build_caption(script):
     ])
     return caption
 
+# ---------------- RUN ----------------
+
+# âœ… Pre-select unique backgrounds before run starts
+# Guarantees every reel gets a different image â€” no repeats
+all_backgrounds = glob.glob("bg*.png") + glob.glob("bg*.jpg") + glob.glob("bg*.jpeg")
+
+if not all_backgrounds:
+    raise Exception("No background images found. Add bg1.png, bg2.jpg etc to this folder.")
+
+if len(all_backgrounds) < REELS_PER_RUN:
+    print(f"âš ï¸  Only {len(all_backgrounds)} images found for {REELS_PER_RUN} reels.")
+    print(f"âš ï¸  Add more bg images to avoid repeats. Using what's available.")
+    # Allow repeats only if not enough images â€” shuffle to at least vary order
+    selected_backgrounds = random.sample(all_backgrounds, len(all_backgrounds))
+    # Cycle through if we need more than available
+    while len(selected_backgrounds) < REELS_PER_RUN:
+        selected_backgrounds.append(random.choice(all_backgrounds))
+else:
+    # Enough images â€” pick exactly REELS_PER_RUN unique ones
+    selected_backgrounds = random.sample(all_backgrounds, REELS_PER_RUN)
+
+print(f"ðŸŽ¬ Selected backgrounds for this run:")
+for idx, bg in enumerate(selected_backgrounds):
+    print(f"   Reel {idx+1} â†’ {bg}")
+
 for i in range(REELS_PER_RUN):
-    make_reel(i)
+    make_reel(i, selected_backgrounds[i])
 
 # âœ… Save memory state after all reels complete
 json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
