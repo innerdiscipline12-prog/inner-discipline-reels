@@ -13,23 +13,23 @@ FPS = 30
 MAX_REEL_LENGTH = 15.0   # Hard ceiling â€” never exceed this
 
 VOICE = "en-US-GuyNeural"
-RATE = "-10%"    # âœ… Much faster â€” was -38% which added 4-6s per reel
+RATE = "-10%"
 PITCH = "-45Hz"
 VOLUME = "+0%"
 
 FONT_PATH = "Anton-Regular.ttf"
-LOGO_PATH = "logo.png"           # âœ… Your Inner Discipline logo file
-LOGO_OPACITY = 0.38              # âœ… Barely visible â€” watermark feel, not ad feel
-LOGO_SIZE = 160                  # âœ… Logo width in pixels (height scales automatically)
-LOGO_BOTTOM_MARGIN = 90          # âœ… Distance from bottom of frame
+LOGO_PATH = "logo.png"
+LOGO_OPACITY = 0.38
+LOGO_SIZE = 160
+LOGO_BOTTOM_MARGIN = 90
 
 REELS_PER_RUN = 3
 
 # ---------------- RETENTION SETTINGS ----------------
 
-STILL_FRAME_DURATION = 1.0      # âœ… Tightened from 1.6s â€” saves 0.6s per reel
+STILL_FRAME_DURATION = 1.0
 STILL_ZOOM_END = 1.06
-MUSIC_DELAY = 1.5               # âœ… Tightened from 2.0s
+MUSIC_DELAY = 1.5
 SUBTITLE_DELAY = 0.0
 
 os.makedirs("outputs", exist_ok=True)
@@ -185,29 +185,21 @@ CTAS = [
 # ---------------- LOGO OVERLAY ----------------
 
 def make_logo_overlay():
-    """
-    Loads logo.png, resizes it, applies opacity, 
-    and positions it bottom-center on a transparent canvas.
-    Returns a numpy RGBA array ready for ImageClip.
-    """
     if not os.path.exists(LOGO_PATH):
         print(f"âš ï¸  Logo not found at '{LOGO_PATH}' â€” skipping logo overlay.")
         return None
 
     logo = Image.open(LOGO_PATH).convert("RGBA")
 
-    # Scale logo maintaining aspect ratio
     aspect = logo.height / logo.width
     new_w = LOGO_SIZE
     new_h = int(LOGO_SIZE * aspect)
     logo = logo.resize((new_w, new_h), Image.LANCZOS)
 
-    # Apply opacity to alpha channel only
     r, g, b, a = logo.split()
     a = a.point(lambda p: int(p * LOGO_OPACITY))
     logo = Image.merge("RGBA", (r, g, b, a))
 
-    # Composite onto full-frame transparent canvas
     canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     x = (W - new_w) // 2
     y = H - new_h - LOGO_BOTTOM_MARGIN
@@ -218,12 +210,11 @@ def make_logo_overlay():
 # ---------------- TEXT ENGINE ----------------
 
 def make_text(text):
-    # âœ… FIX: Strip special chars that break Anton font (em dash, smart quotes etc)
     text = text.replace("\u2014", "-").replace("\u2013", "-")
     text = text.replace("\u2018", "'").replace("\u2019", "'")
     text = text.replace("\u201c", '"').replace("\u201d", '"')
     text = text.replace("\u2026", "...")
-    text = text.upper()  # ALL CAPS â€” Inner Discipline brand
+    text = text.upper()
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
@@ -287,11 +278,12 @@ def generate_voice(text, filename):
 
 SET_ORDER = ["identity", "comfort", "time"]
 
+# âœ… BUG 1 FIX â€” last_category declared global so it actually saves
 def get_set_category():
-    global set_step
+    global set_step, last_category
     cat = SET_ORDER[set_step % len(SET_ORDER)]
     set_step += 1
-    last_category = cat  # âœ… Fixed: actually update last_category
+    last_category = cat  # âœ… Now updates the global, not a local variable
     return cat
 
 def get_hook_from_category(category):
@@ -315,98 +307,76 @@ def build_script():
     truth = random.choice(TRUTHS)
     question = random.choice(QUESTIONS)
     cta = random.choice(CTAS)
-    return [hook, truth, question, cta]
+    return [hook, truth, question, cta], category
 
 # ---------------- REEL ENGINE ----------------
 
 def make_reel(index, bg_path):
 
-    script = build_script()
+    script_data = build_script()
+    script, category = script_data
     voice_files = []
 
     try:
         print(f"ðŸ–¼ï¸  Reel {index+1} using background: {bg_path}")
 
-        # Load image and convert to RGB numpy array
         bg_img = Image.open(bg_path).convert("RGB")
 
-        # âœ… Scale to FILL full 1080x1920 â€” no black bars
         img_ratio = bg_img.width / bg_img.height
         target_ratio = W / H
 
         if img_ratio > target_ratio:
-            # Image is wider â€” fit height, crop sides
             new_h = H
             new_w = int(H * img_ratio)
         else:
-            # Image is taller/narrower â€” fit width, crop top/bottom
             new_w = W
             new_h = int(W / img_ratio)
 
         bg_img = bg_img.resize((new_w, new_h), Image.LANCZOS)
 
-        # Center crop to exact W x H
         left = (new_w - W) // 2
         top = (new_h - H) // 2
         bg_img = bg_img.crop((left, top, left + W, top + H))
 
         from PIL import ImageEnhance, ImageFilter
 
-        # âœ… CINEMATIC UPGRADE 1: Background blur â€” atmosphere not content
-        # Blur the full image first, then we'll sharpen subject area is too complex
-        # Simple approach: slight gaussian blur on full image
         bg_img = bg_img.filter(ImageFilter.GaussianBlur(radius=1.4))
-
-        # âœ… CINEMATIC UPGRADE 2: Push darker â€” near silhouette feel
-        # Drop brightness significantly, boost contrast to keep definition
         bg_img = ImageEnhance.Brightness(bg_img).enhance(0.72)
         bg_img = ImageEnhance.Contrast(bg_img).enhance(1.25)
 
-        # âœ… CINEMATIC UPGRADE 3: Top vignette pressure
-        # Dark gradient from top â†’ pushes eye downward toward text
         vignette = Image.new("RGB", (W, H), (0, 0, 0))
-        vignette_array = np.array(vignette, dtype=np.float32)
         bg_array_float = np.array(bg_img, dtype=np.float32)
 
-        # Build gradient mask: top 55% of frame fades from black to transparent
         gradient = np.ones((H, W), dtype=np.float32)
         vignette_height = int(H * 0.55)
         for row in range(vignette_height):
-            # 0 = full black at top, 1 = no effect at vignette_height
-            gradient[row, :] = (row / vignette_height) ** 1.6  # power curve = more pressure at top
+            gradient[row, :] = (row / vignette_height) ** 1.6
 
-        # Apply gradient: blend bg with black using gradient as alpha
         gradient_3ch = np.stack([gradient] * 3, axis=-1)
         bg_array_float = bg_array_float * gradient_3ch
         bg_img = Image.fromarray(np.clip(bg_array_float, 0, 255).astype(np.uint8))
 
         bg_array = np.array(bg_img)
 
-        # ================================================================
-        # âœ… CINEMATIC ANIMATION ENGINE
-        # Turns any still image into a living, breathing cinematic scene.
-        # Effects: Ken Burns zoom + camera shake + rain
-        # All generated frame by frame â€” no external tools needed.
-        # ================================================================
-        # âœ… EFFECTS ENGINE â€” rotates per reel, per run
-        # Effects: rain, embers, dust, fog, lightning flash
-        # All stack on top of ken burns zoom + camera shake
-        # ================================================================
-
         ZOOM_START = 1.0
         ZOOM_END   = 1.08
 
-        # Pick a random effect for THIS reel
         EFFECTS = ["rain", "embers", "dust", "fog", "lightning"]
-        chosen_effect = random.choice(EFFECTS)
-        print(f"âœ¨ Reel {index+1} effect: {chosen_effect}")
 
-        rng = np.random.default_rng(seed=index * 7 + 13)  # unique seed per reel
+        # âœ… EFFECT MATCHED TO CATEGORY â€” intentional, not random
+        CATEGORY_EFFECTS = {
+            "identity": ["embers", "lightning"],  # burning identity + harsh wake-up
+            "comfort":  ["fog", "rain"],           # hidden in comfort + being rained on
+            "time":     ["dust", "rain"],          # fading away + time slipping through
+        }
+        effect_pool = CATEGORY_EFFECTS.get(category, EFFECTS)
+        chosen_effect = random.choice(effect_pool)
+        print(f"âœ¨ Reel {index+1} | Category: {category} | Effect: {chosen_effect}")
 
-        # --- Pre-generate particles for chosen effect ---
+        rng = np.random.default_rng(seed=index * 7 + 13)
+
         NUM_PARTICLES = 160
 
-        # Rain
         rain_x       = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
         rain_y       = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
         rain_len     = rng.integers(18, 55, size=NUM_PARTICLES).astype(float)
@@ -414,7 +384,6 @@ def make_reel(index, bg_path):
         rain_opacity = rng.uniform(55, 130, size=NUM_PARTICLES).astype(int)
         rain_angle   = 0.18
 
-        # Embers â€” small glowing sparks floating upward
         ember_x      = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
         ember_y      = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
         ember_speed  = rng.uniform(0.4, 1.8, size=NUM_PARTICLES)
@@ -422,27 +391,24 @@ def make_reel(index, bg_path):
         ember_size   = rng.integers(2, 5,   size=NUM_PARTICLES)
         ember_opacity= rng.integers(120, 220, size=NUM_PARTICLES)
 
-        # Dust â€” horizontal drifting particles
         dust_x       = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
         dust_y       = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
         dust_speed   = rng.uniform(0.2, 0.8, size=NUM_PARTICLES)
         dust_size    = rng.integers(1, 4,   size=NUM_PARTICLES)
         dust_opacity = rng.integers(30, 90, size=NUM_PARTICLES)
 
-        # Fog â€” slow horizontal bands
         fog_y        = rng.integers(0, H,   size=40).astype(float)
         fog_speed    = rng.uniform(0.05, 0.2, size=40)
         fog_opacity  = rng.integers(15, 45, size=40)
         fog_height   = rng.integers(60, 180, size=40)
 
-        # Lightning â€” random flash frames
         total_frames_est = int(MAX_REEL_LENGTH * FPS)
         lightning_frames = sorted(rng.integers(
             int(FPS * 3), total_frames_est,
             size=rng.integers(2, 5)
         ).tolist())
 
-        # --- Camera shake (always on) ---
+        # âœ… BUG 3 FIX â€” bake_shake called ONCE here, not every frame
         def bake_shake(total_frames, intensity=3):
             t = np.linspace(0, total_frames / FPS, total_frames)
             dx = (intensity * np.sin(2.3 * t + 0.5)
@@ -451,24 +417,24 @@ def make_reel(index, bg_path):
                 + intensity * 0.4 * np.sin(4.3 * t + 2.1)).astype(int)
             return dx, dy
 
+        # âœ… Pre-baked once â€” referenced inside make_cinematic_frame by index
+        reel_total_frames = int(MAX_REEL_LENGTH * FPS) + 10
+        baked_dx, baked_dy = bake_shake(reel_total_frames)
+
         def make_cinematic_frame(t, total_duration):
             frame_idx    = int(t * FPS)
-            total_frames = max(int(total_duration * FPS), 1)
 
-            # â”€â”€ Ken Burns zoom â”€â”€
             scale = ZOOM_START + (ZOOM_END - ZOOM_START) * (t / max(total_duration, 0.001))
             new_w = int(W * scale)
             new_h = int(H * scale)
             zoomed = Image.fromarray(bg_array).resize((new_w, new_h), Image.BILINEAR)
 
-            # â”€â”€ Camera shake â”€â”€
-            shake_dx, shake_dy = bake_shake(total_frames + 10)
-            idx = min(frame_idx, len(shake_dx) - 1)
-            cx  = max(0, min((new_w - W) // 2 + int(shake_dx[idx]), new_w - W))
-            cy  = max(0, min((new_h - H) // 2 + int(shake_dy[idx]), new_h - H))
+            # âœ… Uses pre-baked arrays â€” no recalculation
+            idx = min(frame_idx, len(baked_dx) - 1)
+            cx  = max(0, min((new_w - W) // 2 + int(baked_dx[idx]), new_w - W))
+            cy  = max(0, min((new_h - H) // 2 + int(baked_dy[idx]), new_h - H))
             frame_arr = np.array(zoomed.crop((cx, cy, cx + W, cy + H)), dtype=np.uint8)
 
-            # â”€â”€ Effect layer â”€â”€
             fx_layer  = Image.new("RGBA", (W, H), (0, 0, 0, 0))
             fx_draw   = ImageDraw.Draw(fx_layer)
 
@@ -485,11 +451,9 @@ def make_reel(index, bg_path):
 
             elif chosen_effect == "embers":
                 for i in range(NUM_PARTICLES):
-                    # Float upward + slight horizontal drift
                     yp = (ember_y[i] - ember_speed[i] * t * 60) % H
                     xp = (ember_x[i] + ember_drift[i] * t * 60) % W
                     r  = int(ember_size[i])
-                    # Orange/red glow
                     fx_draw.ellipse(
                         [(int(xp)-r, int(yp)-r), (int(xp)+r, int(yp)+r)],
                         fill=(255, random.randint(80, 160), 20, int(ember_opacity[i]))
@@ -497,7 +461,6 @@ def make_reel(index, bg_path):
 
             elif chosen_effect == "dust":
                 for i in range(NUM_PARTICLES):
-                    # Drift horizontally â€” slow and heavy
                     xp = (dust_x[i] + dust_speed[i] * t * 60) % W
                     yp = dust_y[i]
                     r  = int(dust_size[i])
@@ -508,7 +471,6 @@ def make_reel(index, bg_path):
 
             elif chosen_effect == "fog":
                 for i in range(40):
-                    # Slow horizontal fog bands
                     xp = (-W + (fog_speed[i] * t * 60)) % (W * 2) - W
                     yp = int(fog_y[i])
                     fh = int(fog_height[i])
@@ -517,7 +479,6 @@ def make_reel(index, bg_path):
                     fx_layer.paste(fog_rect, (int(xp), yp), fog_rect)
 
             elif chosen_effect == "lightning":
-                # Flash white on specific frames â€” brief intense burst
                 near = [f for f in lightning_frames if abs(frame_idx - f) <= 2]
                 if near:
                     dist     = abs(frame_idx - near[0])
@@ -525,27 +486,22 @@ def make_reel(index, bg_path):
                     flash    = Image.new("RGBA", (W, H), (255, 255, 255, strength))
                     fx_layer = Image.alpha_composite(fx_layer, flash)
 
-            # Composite effect onto frame
             frame_pil = Image.fromarray(frame_arr).convert("RGBA")
             frame_pil = Image.alpha_composite(frame_pil, fx_layer)
             return np.array(frame_pil.convert("RGB"))
 
         # ================================================================
         # âœ… CHUNK TEXT ENGINE
-        # Splits each script line into 2-3 word chunks.
-        # Each chunk appears and fades in sequence, synced to voice duration.
-        # Cinematic â€” like Calmrift. Words land like punches.
         # ================================================================
 
         def split_into_chunks(line, chunk_size=3):
-            """Split a line into groups of chunk_size words."""
             words = line.split()
             chunks = []
             for i in range(0, len(words), chunk_size):
                 chunks.append(" ".join(words[i:i + chunk_size]))
             return chunks
 
-        # âœ… Build logo overlay clip (persistent across full reel duration)
+        # âœ… Build logo overlay
         logo_array = make_logo_overlay()
 
         clips = []
@@ -556,7 +512,7 @@ def make_reel(index, bg_path):
 
         is_last_line = lambda i: i == len(script) - 1
 
-        FADE_OUT = 0.15
+        FADE_OUT = 0.12  # âœ… Tightened â€” less overlap bleed
 
         for i, line in enumerate(script):
 
@@ -567,60 +523,50 @@ def make_reel(index, bg_path):
             audio = AudioFileClip(voice_file)
             voice_duration = audio.duration
 
-            # Split line into 2-3 word chunks
             chunks = split_into_chunks(line, chunk_size=3)
             num_chunks = len(chunks)
 
-            # Distribute voice duration evenly across chunks
-            # Each chunk gets an equal slice of the voice duration
+            # âœ… Exact even slice per chunk â€” no drift accumulation
             chunk_duration = voice_duration / num_chunks
 
-            # Place audio at start of this line
             audio_clips.append(audio.set_start(timeline))
 
-            # Place each chunk sequentially across the voice duration
+            # âœ… BUG 2 FIX â€” chunk positioning uses exact slice, no FADE_OUT padding
             for j, chunk in enumerate(chunks):
-                is_last_chunk = (j == num_chunks - 1) and is_last_line(i)
+                chunk_start = timeline + j * chunk_duration
 
-                if is_last_chunk:
-                    # Last chunk of last line â€” ends with voice
-                    text_duration = chunk_duration + FADE_OUT
+                # Last chunk of last line holds until voice ends
+                # All others get their exact slice â€” tight, no gap, no drift
+                if j == num_chunks - 1:
+                    text_duration = (voice_duration - j * chunk_duration) + FADE_OUT
                 else:
-                    # All other chunks â€” tight gap before next
-                    text_duration = chunk_duration + FADE_OUT
+                    text_duration = chunk_duration  # âœ… Exact â€” no overlap, no drift
 
                 text_img = make_text(chunk)
                 text_clip = (
                     ImageClip(text_img)
-                    .set_start(timeline + j * chunk_duration)
+                    .set_start(chunk_start)
                     .set_duration(text_duration)
-                    .fadein(0.10)
+                    .fadein(0.08)
                     .fadeout(FADE_OUT)
                 )
                 clips.append(text_clip)
 
-            # Advance timeline by full voice duration + small gap between lines
             if is_last_line(i):
                 timeline += voice_duration + FADE_OUT
             else:
                 timeline += voice_duration + FADE_OUT + 0.15
 
-        # âœ… FIX: NEVER cut mid-voice. Timeline is set by actual content length.
         if timeline > MAX_REEL_LENGTH:
             print(f"âš ï¸  Reel {index+1} is {timeline:.1f}s â€” consider shorter scripts.")
 
-        # âœ… Capture timeline value NOW â€” fixes lambda closure bug
-        # Lambda capturing a variable reference causes static frames
-        # Assigning to a local constant forces the correct value at render time
         reel_duration = float(timeline)
 
         def make_frame(t):
             return make_cinematic_frame(t, reel_duration)
 
-        # âœ… Build animated base
         base = VideoClip(make_frame, duration=reel_duration).set_fps(FPS)
 
-        # âœ… Add logo as top layer â€” visible entire reel duration
         all_layers = [base] + clips
         if logo_array is not None:
             logo_clip = (
@@ -635,10 +581,8 @@ def make_reel(index, bg_path):
         final_video = final_video.set_duration(reel_duration)
         final_video = final_video.fadeout(0.25)
 
-        # âœ… Let voice play its full natural length â€” no subclip cut
         final_voice = CompositeAudioClip(audio_clips)
 
-        # âœ… Music delayed â€” first seconds silence draws attention
         if os.path.exists("music.mp3"):
             music = AudioFileClip("music.mp3")
             music_duration = reel_duration - MUSIC_DELAY
@@ -679,24 +623,23 @@ def make_reel(index, bg_path):
         print(f"âŒ Reel {index+1} failed: {e}")
 
     finally:
-        # âœ… Clean up voice temp files regardless of success/failure
         for vf in voice_files:
             if os.path.exists(vf):
                 os.remove(vf)
 
-# ---------------- HASHTAG POOLS (rotates to avoid repetition) ----------------
+# ---------------- HASHTAG POOLS ----------------
 
 HASHTAG_POOL = {
-    "big": [        # 1M+ posts â€” broad reach
+    "big": [
         "#discipline", "#motivation", "#mindset", "#fitness",
         "#success", "#selfimprovement", "#gym", "#hardwork",
     ],
-    "medium": [     # 100Kâ€“1M posts â€” targeted reach
+    "medium": [
         "#selfmastery", "#selfcontrol", "#mentalstrength",
         "#consistency", "#dailymotivation", "#growthmindset",
         "#personaldevelopment", "#focus",
     ],
-    "niche": [      # Under 100K â€” high relevance, low competition
+    "niche": [
         "#innerdiscipline", "#disciplinedmind", "#selfgrowth",
         "#dailyhabits", "#noexcuses", "#accountability",
         "#mindsetshift", "#innerwork",
@@ -704,14 +647,6 @@ HASHTAG_POOL = {
 }
 
 def pick_hashtags():
-    """
-    Safe 10-tag strategy:
-    - 1 brand tag (always)
-    - 3 big tags
-    - 3 medium tags
-    - 3 niche tags
-    Total: 10 â€” relevant, varied, not spammy
-    """
     brand = ["#innerdiscipline"]
     big = random.sample(HASHTAG_POOL["big"], 3)
     medium = random.sample(HASHTAG_POOL["medium"], 3)
@@ -720,7 +655,7 @@ def pick_hashtags():
     random.shuffle(selected)
     return " ".join(selected)
 
-# ---------------- CAPTION TEMPLATES (rotates for variety) ----------------
+# ---------------- CAPTION TEMPLATES ----------------
 
 CAPTION_OPENERS = [
     "Most people won't admit this to themselves.",
@@ -769,8 +704,6 @@ def build_caption(script):
 
 # ---------------- RUN ----------------
 
-# âœ… Pre-select unique backgrounds before run starts
-# Guarantees every reel gets a different image â€” no repeats
 all_backgrounds = glob.glob("bg*.png") + glob.glob("bg*.jpg") + glob.glob("bg*.jpeg")
 
 if not all_backgrounds:
@@ -779,13 +712,10 @@ if not all_backgrounds:
 if len(all_backgrounds) < REELS_PER_RUN:
     print(f"âš ï¸  Only {len(all_backgrounds)} images found for {REELS_PER_RUN} reels.")
     print(f"âš ï¸  Add more bg images to avoid repeats. Using what's available.")
-    # Allow repeats only if not enough images â€” shuffle to at least vary order
     selected_backgrounds = random.sample(all_backgrounds, len(all_backgrounds))
-    # Cycle through if we need more than available
     while len(selected_backgrounds) < REELS_PER_RUN:
         selected_backgrounds.append(random.choice(all_backgrounds))
 else:
-    # Enough images â€” pick exactly REELS_PER_RUN unique ones
     selected_backgrounds = random.sample(all_backgrounds, REELS_PER_RUN)
 
 print(f"ðŸŽ¬ Selected backgrounds for this run:")
