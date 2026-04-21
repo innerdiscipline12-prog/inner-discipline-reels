@@ -19,7 +19,7 @@ VOLUME = "+0%"
 
 FONT_PATH = "Anton-Regular.ttf"
 LOGO_PATH = "logo.png"           # âœ… Your Inner Discipline logo file
-LOGO_OPACITY = 0.72              # âœ… Semi-transparent (0.0 = invisible, 1.0 = fully visible)
+LOGO_OPACITY = 0.38              # âœ… Barely visible â€” watermark feel, not ad feel
 LOGO_SIZE = 160                  # âœ… Logo width in pixels (height scales automatically)
 LOGO_BOTTOM_MARGIN = 90          # âœ… Distance from bottom of frame
 
@@ -356,9 +356,35 @@ def make_reel(index):
         top = (new_h - H) // 2
         bg_img = bg_img.crop((left, top, left + W, top + H))
 
-        # Slight brightness boost
-        from PIL import ImageEnhance
-        bg_img = ImageEnhance.Brightness(bg_img).enhance(1.05)
+        from PIL import ImageEnhance, ImageFilter
+
+        # âœ… CINEMATIC UPGRADE 1: Background blur â€” atmosphere not content
+        # Blur the full image first, then we'll sharpen subject area is too complex
+        # Simple approach: slight gaussian blur on full image
+        bg_img = bg_img.filter(ImageFilter.GaussianBlur(radius=1.4))
+
+        # âœ… CINEMATIC UPGRADE 2: Push darker â€” near silhouette feel
+        # Drop brightness significantly, boost contrast to keep definition
+        bg_img = ImageEnhance.Brightness(bg_img).enhance(0.72)
+        bg_img = ImageEnhance.Contrast(bg_img).enhance(1.25)
+
+        # âœ… CINEMATIC UPGRADE 3: Top vignette pressure
+        # Dark gradient from top â†’ pushes eye downward toward text
+        vignette = Image.new("RGB", (W, H), (0, 0, 0))
+        vignette_array = np.array(vignette, dtype=np.float32)
+        bg_array_float = np.array(bg_img, dtype=np.float32)
+
+        # Build gradient mask: top 55% of frame fades from black to transparent
+        gradient = np.ones((H, W), dtype=np.float32)
+        vignette_height = int(H * 0.55)
+        for row in range(vignette_height):
+            # 0 = full black at top, 1 = no effect at vignette_height
+            gradient[row, :] = (row / vignette_height) ** 1.6  # power curve = more pressure at top
+
+        # Apply gradient: blend bg with black using gradient as alpha
+        gradient_3ch = np.stack([gradient] * 3, axis=-1)
+        bg_array_float = bg_array_float * gradient_3ch
+        bg_img = Image.fromarray(np.clip(bg_array_float, 0, 255).astype(np.uint8))
 
         bg_array = np.array(bg_img)
 
