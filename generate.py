@@ -325,57 +325,72 @@ def make_reel(index):
     voice_files = []
 
     try:
-        backgrounds = glob.glob("bg*.mp4")
+        # âœ… IMAGE BACKGROUNDS â€” scan for bg*.png and bg*.jpg
+        backgrounds = glob.glob("bg*.png") + glob.glob("bg*.jpg") + glob.glob("bg*.jpeg")
         if not backgrounds:
-            raise Exception("No bg*.mp4 files found in current directory.")
+            raise Exception("No background images found. Add bg1.png, bg2.jpg etc to this folder.")
 
         bg_path = random.choice(backgrounds)
-        raw_video = VideoFileClip(bg_path).without_audio()
+        print(f"ðŸ–¼ï¸  Using background: {bg_path}")
 
-        # âœ… FIX: Scale to FILL full 1080x1920 â€” no black bars
-        # Strategy: scale so BOTH dimensions meet or exceed W x H, then crop center
-        clip_ratio = raw_video.w / raw_video.h
+        # Load image and convert to RGB numpy array
+        bg_img = Image.open(bg_path).convert("RGB")
+
+        # âœ… Scale to FILL full 1080x1920 â€” no black bars
+        img_ratio = bg_img.width / bg_img.height
         target_ratio = W / H
 
-        if clip_ratio > target_ratio:
-            # Video is wider than target â€” fit height, crop sides
-            raw_video = raw_video.resize(height=H)
+        if img_ratio > target_ratio:
+            # Image is wider â€” fit height, crop sides
+            new_h = H
+            new_w = int(H * img_ratio)
         else:
-            # Video is taller/narrower than target â€” fit width, crop top/bottom
-            raw_video = raw_video.resize(width=W)
+            # Image is taller/narrower â€” fit width, crop top/bottom
+            new_w = W
+            new_h = int(W / img_ratio)
 
-        # Crop to exact frame â€” always center
-        raw_video = raw_video.crop(
-            x_center=raw_video.w / 2,
-            y_center=raw_video.h / 2,
-            width=W,
-            height=H
-        )
+        bg_img = bg_img.resize((new_w, new_h), Image.LANCZOS)
 
-        raw_video = raw_video.fx(vfx.colorx, 1.05)
+        # Center crop to exact W x H
+        left = (new_w - W) // 2
+        top = (new_h - H) // 2
+        bg_img = bg_img.crop((left, top, left + W, top + H))
 
-        # âœ… RETENTION UPGRADE 1: Still image / slow zoom for first STILL_FRAME_DURATION seconds
-        # Grab the very first frame and turn it into a zooming still
-        first_frame = raw_video.get_frame(0)
+        # Slight brightness boost
+        from PIL import ImageEnhance
+        bg_img = ImageEnhance.Brightness(bg_img).enhance(1.05)
+
+        bg_array = np.array(bg_img)
+
+        # âœ… FULL REEL = Ken Burns slow zoom on the image
+        # Zoom from 1.0 â†’ 1.08 smoothly across entire reel duration
+        # We build this as a function-based ImageClip â€” no video file needed
+        ZOOM_START = 1.0
+        ZOOM_END = 1.08
+
+        def make_zoomed_frame(t, total_duration):
+            scale = ZOOM_START + (ZOOM_END - ZOOM_START) * (t / max(total_duration, 1))
+            new_w = int(W * scale)
+            new_h = int(H * scale)
+            # Resize up
+            frame = Image.fromarray(bg_array).resize((new_w, new_h), Image.LANCZOS)
+            # Center crop back to W x H
+            x = (new_w - W) // 2
+            y = (new_h - H) // 2
+            frame = frame.crop((x, y, x + W, y + H))
+            return np.array(frame)
+
+        # Placeholder base â€” real duration set after timeline is calculated
+        # We'll rebuild with correct duration after the script loop
+        raw_frame = bg_array  # static reference for still frame
+
+        # âœ… RETENTION: Still frame for first STILL_FRAME_DURATION seconds
         still_clip = (
-            ImageClip(first_frame)
+            ImageClip(raw_frame)
             .set_duration(STILL_FRAME_DURATION)
             .fx(vfx.resize, lambda t: 1 + (STILL_ZOOM_END - 1) * (t / STILL_FRAME_DURATION))
+            .crop(x_center=W / 2, y_center=H / 2, width=W, height=H)
         )
-        # Crop still_clip to keep it W x H during zoom
-        still_clip = still_clip.crop(
-            x_center=W / 2,
-            y_center=H / 2,
-            width=W,
-            height=H
-        )
-
-        # Main video plays after the still frame, with continuing slow zoom
-        main_video = raw_video.fx(vfx.resize, lambda t: STILL_ZOOM_END + 0.02 * t)
-        main_video = main_video.set_start(STILL_FRAME_DURATION)
-
-        # Stitch still + main video as base
-        base = concatenate_videoclips([still_clip, main_video])
 
         # âœ… Build logo overlay clip (persistent across full reel duration)
         logo_array = make_logo_overlay()
@@ -383,7 +398,7 @@ def make_reel(index):
         clips = []
         audio_clips = []
 
-        # âœ… RETENTION UPGRADE 3: Subtitles start AFTER the still frame pause
+        # âœ… Subtitles start AFTER the still frame pause
         timeline = STILL_FRAME_DURATION + 0.1
 
         is_last = lambda i: i == len(script) - 1
@@ -418,10 +433,25 @@ def make_reel(index):
             timeline += duration
 
         # âœ… FIX: NEVER cut mid-voice. Timeline is set by actual content length.
-        # MAX_REEL_LENGTH is only a safety net â€” log a warning if exceeded, don't cut.
         if timeline > MAX_REEL_LENGTH:
             print(f"âš ï¸  Reel {index+1} is {timeline:.1f}s â€” consider shorter scripts.")
-        # No clamping â€” voice and text always play fully
+
+        # âœ… Build full ken burns base now that we know total duration
+        # Still frame (slow zoom in) â†’ main image (continuing zoom) across full reel
+        main_duration = timeline - STILL_FRAME_DURATION
+
+        main_clip = (
+            ImageClip(bg_array)
+            .set_duration(main_duration)
+            .set_start(STILL_FRAME_DURATION)
+            .fx(vfx.resize, lambda t: STILL_ZOOM_END + (ZOOM_END - STILL_ZOOM_END) * (t / max(main_duration, 1)))
+            .crop(x_center=W / 2, y_center=H / 2, width=W, height=H)
+        )
+
+        base = CompositeVideoClip([
+            still_clip.set_start(0),
+            main_clip
+        ]).set_duration(timeline)
 
         # âœ… Add logo as top layer â€” visible entire reel duration
         all_layers = [base] + clips
