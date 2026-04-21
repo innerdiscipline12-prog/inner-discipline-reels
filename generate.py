@@ -476,16 +476,33 @@ def make_reel(index):
 
             return np.array(frame_pil.convert("RGB"))
 
+        # ================================================================
+        # âœ… CHUNK TEXT ENGINE
+        # Splits each script line into 2-3 word chunks.
+        # Each chunk appears and fades in sequence, synced to voice duration.
+        # Cinematic â€” like Calmrift. Words land like punches.
+        # ================================================================
+
+        def split_into_chunks(line, chunk_size=3):
+            """Split a line into groups of chunk_size words."""
+            words = line.split()
+            chunks = []
+            for i in range(0, len(words), chunk_size):
+                chunks.append(" ".join(words[i:i + chunk_size]))
+            return chunks
+
         # âœ… Build logo overlay clip (persistent across full reel duration)
         logo_array = make_logo_overlay()
 
         clips = []
         audio_clips = []
 
-        # âœ… Subtitles start AFTER the still frame pause
+        # Subtitles start AFTER the still frame pause
         timeline = STILL_FRAME_DURATION + 0.1
 
-        is_last = lambda i: i == len(script) - 1
+        is_last_line = lambda i: i == len(script) - 1
+
+        FADE_OUT = 0.15
 
         for i, line in enumerate(script):
 
@@ -496,25 +513,43 @@ def make_reel(index):
             audio = AudioFileClip(voice_file)
             voice_duration = audio.duration
 
-            # Tight gaps â€” every second counts
-            FADE_OUT = 0.15
-            if is_last(i):
-                duration = voice_duration + FADE_OUT        # ends right after voice
-            else:
-                duration = voice_duration + FADE_OUT + 0.1  # minimal gap between lines
+            # Split line into 2-3 word chunks
+            chunks = split_into_chunks(line, chunk_size=3)
+            num_chunks = len(chunks)
 
-            text_img = make_text(line)
-            text_clip = (
-                ImageClip(text_img)
-                .set_start(timeline)
-                .set_duration(duration)
-                .fadein(0.12)
-                .fadeout(FADE_OUT)   # fadeout happens AFTER voice ends, not during
-            )
+            # Distribute voice duration evenly across chunks
+            # Each chunk gets an equal slice of the voice duration
+            chunk_duration = voice_duration / num_chunks
 
-            clips.append(text_clip)
+            # Place audio at start of this line
             audio_clips.append(audio.set_start(timeline))
-            timeline += duration
+
+            # Place each chunk sequentially across the voice duration
+            for j, chunk in enumerate(chunks):
+                is_last_chunk = (j == num_chunks - 1) and is_last_line(i)
+
+                if is_last_chunk:
+                    # Last chunk of last line â€” ends with voice
+                    text_duration = chunk_duration + FADE_OUT
+                else:
+                    # All other chunks â€” tight gap before next
+                    text_duration = chunk_duration + FADE_OUT
+
+                text_img = make_text(chunk)
+                text_clip = (
+                    ImageClip(text_img)
+                    .set_start(timeline + j * chunk_duration)
+                    .set_duration(text_duration)
+                    .fadein(0.10)
+                    .fadeout(FADE_OUT)
+                )
+                clips.append(text_clip)
+
+            # Advance timeline by full voice duration + small gap between lines
+            if is_last_line(i):
+                timeline += voice_duration + FADE_OUT
+            else:
+                timeline += voice_duration + FADE_OUT + 0.15
 
         # âœ… FIX: NEVER cut mid-voice. Timeline is set by actual content length.
         if timeline > MAX_REEL_LENGTH:
