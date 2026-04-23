@@ -216,16 +216,16 @@ CTAS = [
 
 # âœ… NEW â€” CTAs that drive clicks to the paid Facebook group
 CHALLENGE_CTAS = [
-    "Join the Inner Discipline Challenge. DM DISCIPLINE.",
-    "30 days. Facebook group. Under $10. DM DISCIPLINE.",
-    "The group is open. DM DISCIPLINE.",
-    "Join 30 days of accountability. DM DISCIPLINE.",
-    "Stop doing it alone. DM DISCIPLINE.",
-    "Daily check-ins. Real accountability. DM DISCIPLINE.",
-    "Your 30-day standard starts here. DM DISCIPLINE.",
-    "The group won't wait. DM DISCIPLINE.",
-    "Lock in for 30 days. DM DISCIPLINE.",
-    "Join the challenge. DM DISCIPLINE.",
+    "Join the Inner Discipline Challenge. Link in bio.",
+    "30 days. Facebook group. Under $20. Link in bio.",
+    "The group is open. Link in bio.",
+    "Join 30 days of accountability. Link in bio.",
+    "Stop doing it alone. Link in bio.",
+    "Daily check-ins. Real accountability. Link in bio.",
+    "Your 30-day standard starts here. Link in bio.",
+    "The group won't wait. Link in bio.",
+    "Lock in for 30 days. Link in bio.",
+    "Join the challenge. Link in bio.",
 ]
 
 # ---------------- LOGO OVERLAY ----------------
@@ -500,10 +500,43 @@ def make_reel(index, bg_path):
         reel_total_frames = int(MAX_REEL_LENGTH * FPS) + 10
         baked_dx, baked_dy = bake_shake(reel_total_frames)
 
+        # ================================================================
+        # âœ… PUNCH ZOOM ENGINE
+        # punch_times built from chunk timeline BEFORE VideoClip is created.
+        # Each entry: (timestamp, peak_scale, attack_seconds)
+        #   Hook start     â†’ hardest punch  (1.14, 0.20s)
+        #   Each chunk     â†’ medium punch   (1.08, 0.25s)
+        #   Question line  â†’ sharp punch    (1.11, 0.18s)
+        #   CTA first word â†’ firm punch     (1.09, 0.22s)
+        # Between punches: smoothly drifts back to base 1.0 over 1.8s.
+        # ================================================================
+
+        punch_times = []  # âœ… Filled during chunk loop below, before VideoClip
+
+        def get_punch_scale(t, punches):
+            base  = 1.0
+            scale = base
+            for punch_t, peak, attack in punches:
+                delta = t - punch_t
+                if delta < 0:
+                    continue
+                elif delta < attack:
+                    # Fast snap up
+                    progress    = delta / attack
+                    punch_scale = base + (peak - base) * progress
+                else:
+                    # Slow drift back over 1.8s
+                    release_dur      = 1.8
+                    release_progress = max(0.0, 1.0 - (delta - attack) / release_dur)
+                    punch_scale      = base + (peak - base) * release_progress
+                scale = max(scale, punch_scale)
+            return scale
+
         def make_cinematic_frame(t, total_duration):
             frame_idx = int(t * FPS)
 
-            scale = ZOOM_START + (ZOOM_END - ZOOM_START) * (t / max(total_duration, 0.001))
+            # âœ… Punch zoom â€” keyframe driven, synced to word timestamps
+            scale = get_punch_scale(t, punch_times)
             new_w = int(W * scale)
             new_h = int(H * scale)
             zoomed = Image.fromarray(bg_array).resize((new_w, new_h), Image.BILINEAR)
@@ -590,6 +623,26 @@ def make_reel(index, bg_path):
 
         FADE_OUT = 0.12
 
+        # ================================================================
+        # âœ… PUNCH ZOOM TUNING
+        # Punch strength per script position:
+        #   line 0 = hook   â†’ hardest punch, viewer just arrived
+        #   line 1 = truth  â†’ medium, lands the weight
+        #   line 2 = question â†’ sharp, snaps attention back
+        #   line 3 = CTA    â†’ firm, drives action
+        # First chunk of each line always punches.
+        # Every subsequent chunk punches lighter to avoid fatigue.
+        # ================================================================
+
+        LINE_PUNCH = {
+            0: (1.14, 0.20),   # hook     â€” hardest
+            1: (1.08, 0.25),   # truth    â€” medium
+            2: (1.11, 0.18),   # question â€” sharp
+            3: (1.09, 0.22),   # CTA      â€” firm
+        }
+        CHUNK_PUNCH_SCALE = 1.06   # subsequent chunks within a line
+        CHUNK_PUNCH_ATTACK = 0.25
+
         for i, line in enumerate(script):
 
             voice_file = f"voice_{index}_{i}.mp3"
@@ -607,9 +660,24 @@ def make_reel(index, bg_path):
 
             audio_clips.append(audio.set_start(timeline))
 
-            # âœ… BUG 2 FIX â€” exact positioning, last chunk absorbs remainder
-            for j, chunk in enumerate(chunks):
+            # âœ… LINE LENGTH SAFETY CHECK
+            # Warns if any single voice clip risks blowing the 15s ceiling.
+            # Challenge hooks are the most likely offenders at 10-12 words.
+            LINE_NAMES = {0: "HOOK", 1: "TRUTH", 2: "QUESTION", 3: "CTA"}
+            if voice_duration > 4.0:
+                label = LINE_NAMES.get(i, f"LINE {i}")
+                print(f"âš ï¸  {label} is {voice_duration:.1f}s â€” consider shortening: \"{line[:50]}...\"")
+
                 chunk_start = timeline + j * chunk_duration
+
+                # âœ… Register punch for this chunk
+                if j == 0:
+                    # First chunk of line â€” use line-specific punch strength
+                    peak, attack = LINE_PUNCH.get(i, (1.08, 0.25))
+                else:
+                    # Subsequent chunks â€” lighter punch
+                    peak, attack = CHUNK_PUNCH_SCALE, CHUNK_PUNCH_ATTACK
+                punch_times.append((chunk_start, peak, attack))
 
                 if j == num_chunks - 1:
                     text_duration = (voice_duration - j * chunk_duration) + FADE_OUT
@@ -783,11 +851,11 @@ CAPTION_CLOSERS = [
 # âœ… Challenge closers â€” direct link conversion
 CHALLENGE_CLOSERS = [
     "Link in bio. Join the Inner Discipline Challenge today.",
-    "Under $10/month. DM DISCIPLINE. No excuses.",
-    "The group is open right now. DM DISCIPLINE.",
-    "30 days starts when you DM DISCIPLINE.",
-    "Join us. DM DISCIPLINE. Let's lock in together.",
-    "Daily check-ins. Real accountability. DM DISCIPLINE.",
+    "Under $20/month. Link in bio. No excuses.",
+    "The group is open right now. Link in bio.",
+    "30 days starts when you click the link in bio.",
+    "Join us. Link in bio. Let's lock in together.",
+    "Daily check-ins. Real accountability. Link in bio.",
 ]
 
 def build_caption(script, category=None):
