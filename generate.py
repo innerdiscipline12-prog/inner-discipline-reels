@@ -10,7 +10,7 @@ import edge_tts
 
 W, H = 1080, 1920
 FPS = 30
-MAX_REEL_LENGTH = 15.0   # Hard ceiling â€” never exceed this
+MAX_REEL_LENGTH = 15.0
 
 VOICE = "en-US-GuyNeural"
 RATE = "-10%"
@@ -23,14 +23,12 @@ LOGO_OPACITY = 0.38
 LOGO_SIZE = 160
 LOGO_BOTTOM_MARGIN = 90
 
-REELS_PER_RUN = 4  # âœ… Now 4 â€” one full rotation per run
+REELS_PER_RUN = 4
 
 # ---------------- RETENTION SETTINGS ----------------
 
 STILL_FRAME_DURATION = 1.0
-STILL_ZOOM_END = 1.06
 MUSIC_DELAY = 1.5
-SUBTITLE_DELAY = 0.0
 
 os.makedirs("outputs", exist_ok=True)
 
@@ -126,7 +124,6 @@ HOOKS = {
         "Time kept going without you.",
         "You did nothing again."
     ],
-    # âœ… NEW â€” every 4th reel sells the Inner Discipline Challenge group
     "challenge": [
         "You've been doing this alone.",
         "Discipline is easier with a room full of people doing it too.",
@@ -164,7 +161,6 @@ TRUTHS = [
     "That's your default setting."
 ]
 
-# âœ… NEW â€” truths specific to challenge reels
 CHALLENGE_TRUTHS = [
     "That's why the group exists.",
     "That's what 30 days of accountability builds.",
@@ -214,7 +210,6 @@ CTAS = [
     "This is your moment."
 ]
 
-# âœ… NEW â€” CTAs that drive clicks to the paid Facebook group
 CHALLENGE_CTAS = [
     "Join the Inner Discipline Challenge. Link in bio.",
     "30 days. Facebook group. Under $20. Link in bio.",
@@ -236,7 +231,6 @@ def make_logo_overlay():
         return None
 
     logo = Image.open(LOGO_PATH).convert("RGBA")
-
     aspect = logo.height / logo.width
     new_w = LOGO_SIZE
     new_h = int(LOGO_SIZE * aspect)
@@ -250,7 +244,6 @@ def make_logo_overlay():
     x = (W - new_w) // 2
     y = H - new_h - LOGO_BOTTOM_MARGIN
     canvas.paste(logo, (x, y), logo)
-
     return np.array(canvas)
 
 # ---------------- TEXT ENGINE ----------------
@@ -258,9 +251,8 @@ def make_logo_overlay():
 def make_text(text, highlight_first_word=True):
     # ================================================================
     # âœ… ORANGE FIRST-WORD HIGHLIGHT ENGINE
-    # First word of every chunk renders in orange â€” stops the scroll.
-    # Remaining words render in white. Same stroke on both.
-    # Matches the Wisdom Uncle style that drives 21kâ€“56k views.
+    # First word of every chunk = orange. Rest = white.
+    # Same black stroke on both. Matches Wisdom Uncle style.
     # ================================================================
     text = text.replace("\u2014", "-").replace("\u2013", "-")
     text = text.replace("\u2018", "'").replace("\u2019", "'")
@@ -268,7 +260,7 @@ def make_text(text, highlight_first_word=True):
     text = text.replace("\u2026", "...")
     text = text.upper()
 
-    img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    img  = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
     if not os.path.exists(FONT_PATH):
@@ -278,12 +270,11 @@ def make_text(text, highlight_first_word=True):
         )
 
     font_size = 92
-    font = ImageFont.truetype(FONT_PATH, font_size)
+    font      = ImageFont.truetype(FONT_PATH, font_size)
     max_width = W - 240
 
-    # Word wrap â€” same as before
-    words = text.split()
-    lines = []
+    words   = text.split()
+    lines   = []
     current = ""
 
     for word in words:
@@ -295,14 +286,11 @@ def make_text(text, highlight_first_word=True):
             current = word
     lines.append(current)
 
-    total_height = len(lines) * (font_size + 22)
-    y = (H - total_height) // 2
-
-    # âœ… Track whether we've drawn the first word yet
+    total_height     = len(lines) * (font_size + 22)
+    y                = (H - total_height) // 2
     first_word_drawn = False
-
-    ORANGE = (255, 140, 0, 255)   # âœ… Bold orange â€” matches Wisdom Uncle style
-    WHITE  = (255, 255, 255, 255)
+    ORANGE           = (255, 140, 0, 255)
+    WHITE            = (255, 255, 255, 255)
 
     for line in lines:
         line_words = line.split()
@@ -310,17 +298,15 @@ def make_text(text, highlight_first_word=True):
             y += font_size + 22
             continue
 
-        # Measure full line width for centering
         line_width = draw.textlength(line, font=font)
-        x = (W - line_width) // 2
+        x          = (W - line_width) // 2
 
         for i, word in enumerate(line_words):
-            word_width = draw.textlength(word, font=font)
+            word_width  = draw.textlength(word, font=font)
             space_width = draw.textlength(" ", font=font) if i < len(line_words) - 1 else 0
 
-            # âœ… First word of the entire chunk = orange, rest = white
             if highlight_first_word and not first_word_drawn:
-                color = ORANGE
+                color            = ORANGE
                 first_word_drawn = True
             else:
                 color = WHITE
@@ -342,13 +328,7 @@ def make_text(text, highlight_first_word=True):
 # ---------------- TTS ----------------
 
 async def tts_async(text, filename):
-    communicate = edge_tts.Communicate(
-        text,
-        VOICE,
-        rate=RATE,
-        pitch=PITCH,
-        volume=VOLUME
-    )
+    communicate = edge_tts.Communicate(text, VOICE, rate=RATE, pitch=PITCH, volume=VOLUME)
     await communicate.save(filename)
 
 def generate_voice(text, filename):
@@ -356,13 +336,12 @@ def generate_voice(text, filename):
 
 # ---------------- SCRIPT BUILDER ----------------
 
-# âœ… challenge added â€” every 4th reel converts to paid group
 SET_ORDER = ["identity", "comfort", "time", "challenge"]
 
 def get_set_category():
-    global set_step, last_category  # âœ… BUG 1 FIX â€” last_category is global
-    cat = SET_ORDER[set_step % len(SET_ORDER)]
-    set_step += 1
+    global set_step, last_category
+    cat           = SET_ORDER[set_step % len(SET_ORDER)]
+    set_step     += 1
     last_category = cat
     return cat
 
@@ -375,7 +354,7 @@ def get_hook_from_category(category):
     available = [h for h in pool if h not in used_hooks]
     if not available:
         used_hooks = []
-        available = pool.copy()
+        available  = pool.copy()
 
     hook = random.choice(available)
     used_hooks.append(hook)
@@ -383,27 +362,26 @@ def get_hook_from_category(category):
 
 def build_script():
     category = get_set_category()
-    hook = get_hook_from_category(category)
-    # âœ… Challenge reels use targeted truths and conversion CTAs
-    truth = random.choice(CHALLENGE_TRUTHS if category == "challenge" else TRUTHS)
+    hook     = get_hook_from_category(category)
+    truth    = random.choice(CHALLENGE_TRUTHS if category == "challenge" else TRUTHS)
     question = random.choice(QUESTIONS)
-    cta = random.choice(CHALLENGE_CTAS if category == "challenge" else CTAS)
+    cta      = random.choice(CHALLENGE_CTAS if category == "challenge" else CTAS)
     return [hook, truth, question, cta], category
 
 # ---------------- REEL ENGINE ----------------
 
 def make_reel(index, bg_path):
 
-    script_data = build_script()
+    script_data      = build_script()
     script, category = script_data
-    voice_files = []
+    voice_files      = []
 
     try:
         print(f"ðŸ–¼ï¸  Reel {index+1} | Category: {category} | Background: {bg_path}")
 
-        bg_img = Image.open(bg_path).convert("RGB")
-
-        img_ratio = bg_img.width / bg_img.height
+        # ---- Background processing ----
+        bg_img     = Image.open(bg_path).convert("RGB")
+        img_ratio  = bg_img.width / bg_img.height
         target_ratio = W / H
 
         if img_ratio > target_ratio:
@@ -414,9 +392,8 @@ def make_reel(index, bg_path):
             new_h = int(W / img_ratio)
 
         bg_img = bg_img.resize((new_w, new_h), Image.LANCZOS)
-
-        left = (new_w - W) // 2
-        top = (new_h - H) // 2
+        left   = (new_w - W) // 2
+        top    = (new_h - H) // 2
         bg_img = bg_img.crop((left, top, left + W, top + H))
 
         from PIL import ImageEnhance, ImageFilter
@@ -426,35 +403,28 @@ def make_reel(index, bg_path):
         bg_img = ImageEnhance.Contrast(bg_img).enhance(1.25)
 
         bg_array_float = np.array(bg_img, dtype=np.float32)
-
-        gradient = np.ones((H, W), dtype=np.float32)
+        gradient       = np.ones((H, W), dtype=np.float32)
         vignette_height = int(H * 0.55)
         for row in range(vignette_height):
             gradient[row, :] = (row / vignette_height) ** 1.6
 
-        gradient_3ch = np.stack([gradient] * 3, axis=-1)
+        gradient_3ch   = np.stack([gradient] * 3, axis=-1)
         bg_array_float = bg_array_float * gradient_3ch
-        bg_img = Image.fromarray(np.clip(bg_array_float, 0, 255).astype(np.uint8))
-        bg_array = np.array(bg_img)
+        bg_img         = Image.fromarray(np.clip(bg_array_float, 0, 255).astype(np.uint8))
+        bg_array       = np.array(bg_img)
 
-        ZOOM_START = 1.0
-        ZOOM_END   = 1.08
-
+        # ---- Effect selection ----
         EFFECTS = ["rain", "embers", "dust", "fog", "lightning"]
-
-        # âœ… Effect matched to category â€” intentional mood, not random
         CATEGORY_EFFECTS = {
-            "identity":  ["embers", "lightning"],  # burning self image + harsh wake-up
-            "comfort":   ["fog", "rain"],           # hidden in comfort + being rained on
-            "time":      ["dust", "rain"],          # fading away + time slipping through
-            "challenge": ["embers", "fog"],         # transformation + mystery of what's inside
+            "identity":  ["embers", "lightning"],
+            "comfort":   ["fog", "rain"],
+            "time":      ["dust", "rain"],
+            "challenge": ["embers", "fog"],
         }
-        effect_pool = CATEGORY_EFFECTS.get(category, EFFECTS)
-        chosen_effect = random.choice(effect_pool)
+        chosen_effect = random.choice(CATEGORY_EFFECTS.get(category, EFFECTS))
         print(f"âœ¨ Reel {index+1} | Effect: {chosen_effect}")
 
-        rng = np.random.default_rng(seed=index * 7 + 13)
-
+        rng          = np.random.default_rng(seed=index * 7 + 13)
         NUM_PARTICLES = 160
 
         rain_x       = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
@@ -488,30 +458,25 @@ def make_reel(index, bg_path):
             size=rng.integers(2, 5)
         ).tolist())
 
-        # âœ… BUG 3 FIX â€” bake once, index per frame â€” no recalculation
+        # ---- Camera shake â€” baked once ----
         def bake_shake(total_frames, intensity=3):
-            t = np.linspace(0, total_frames / FPS, total_frames)
+            t  = np.linspace(0, total_frames / FPS, total_frames)
             dx = (intensity * np.sin(2.3 * t + 0.5)
                 + intensity * 0.5 * np.sin(5.1 * t + 1.2)).astype(int)
             dy = (intensity * np.sin(1.7 * t + 0.9)
                 + intensity * 0.4 * np.sin(4.3 * t + 2.1)).astype(int)
             return dx, dy
 
-        reel_total_frames = int(MAX_REEL_LENGTH * FPS) + 10
-        baked_dx, baked_dy = bake_shake(reel_total_frames)
+        baked_dx, baked_dy = bake_shake(int(MAX_REEL_LENGTH * FPS) + 10)
 
         # ================================================================
         # âœ… PUNCH ZOOM ENGINE
-        # punch_times built from chunk timeline BEFORE VideoClip is created.
-        # Each entry: (timestamp, peak_scale, attack_seconds)
-        #   Hook start     â†’ hardest punch  (1.14, 0.20s)
-        #   Each chunk     â†’ medium punch   (1.08, 0.25s)
-        #   Question line  â†’ sharp punch    (1.11, 0.18s)
-        #   CTA first word â†’ firm punch     (1.09, 0.22s)
-        # Between punches: smoothly drifts back to base 1.0 over 1.8s.
+        # punch_times: list of (timestamp, peak_scale, attack_seconds)
+        # Built from the chunk loop BEFORE VideoClip is created.
+        # At each timestamp: fast snap to peak, slow drift back over 1.8s.
         # ================================================================
 
-        punch_times = []  # âœ… Filled during chunk loop below, before VideoClip
+        punch_times = []   # populated in chunk loop below
 
         def get_punch_scale(t, punches):
             base  = 1.0
@@ -521,21 +486,35 @@ def make_reel(index, bg_path):
                 if delta < 0:
                     continue
                 elif delta < attack:
-                    # Fast snap up
-                    progress    = delta / attack
-                    punch_scale = base + (peak - base) * progress
+                    punch_scale = base + (peak - base) * (delta / attack)
                 else:
-                    # Slow drift back over 1.8s
-                    release_dur      = 1.8
-                    release_progress = max(0.0, 1.0 - (delta - attack) / release_dur)
-                    punch_scale      = base + (peak - base) * release_progress
+                    release     = max(0.0, 1.0 - (delta - attack) / 1.8)
+                    punch_scale = base + (peak - base) * release
                 scale = max(scale, punch_scale)
             return scale
+
+        # ================================================================
+        # âœ… PUNCH ZOOM TUNING â€” per script line
+        #   line 0 = hook      â†’ hardest (1.14, 0.20s attack)
+        #   line 1 = truth     â†’ medium  (1.08, 0.25s)
+        #   line 2 = question  â†’ sharp   (1.11, 0.18s)
+        #   line 3 = CTA       â†’ firm    (1.09, 0.22s)
+        # Non-first chunks within a line get a lighter punch (1.06).
+        # ================================================================
+
+        LINE_PUNCH = {
+            0: (1.14, 0.20),
+            1: (1.08, 0.25),
+            2: (1.11, 0.18),
+            3: (1.09, 0.22),
+        }
+        CHUNK_PUNCH_SCALE  = 1.06
+        CHUNK_PUNCH_ATTACK = 0.25
 
         def make_cinematic_frame(t, total_duration):
             frame_idx = int(t * FPS)
 
-            # âœ… Punch zoom â€” keyframe driven, synced to word timestamps
+            # Punch zoom â€” keyframe driven
             scale = get_punch_scale(t, punch_times)
             new_w = int(W * scale)
             new_h = int(H * scale)
@@ -601,47 +580,22 @@ def make_reel(index, bg_path):
             frame_pil = Image.alpha_composite(frame_pil, fx_layer)
             return np.array(frame_pil.convert("RGB"))
 
-        # ================================================================
-        # âœ… CHUNK TEXT ENGINE
-        # ================================================================
-
+        # ---- Chunk helper ----
         def split_into_chunks(line, chunk_size=3):
-            words = line.split()
+            words  = line.split()
             chunks = []
             for i in range(0, len(words), chunk_size):
                 chunks.append(" ".join(words[i:i + chunk_size]))
             return chunks
 
-        logo_array = make_logo_overlay()
-
-        clips = []
+        # ---- Build subtitle + audio clips ----
+        logo_array  = make_logo_overlay()
+        clips       = []
         audio_clips = []
+        timeline    = STILL_FRAME_DURATION + 0.1
+        FADE_OUT    = 0.12
 
-        timeline = STILL_FRAME_DURATION + 0.1
-
-        is_last_line = lambda i: i == len(script) - 1
-
-        FADE_OUT = 0.12
-
-        # ================================================================
-        # âœ… PUNCH ZOOM TUNING
-        # Punch strength per script position:
-        #   line 0 = hook   â†’ hardest punch, viewer just arrived
-        #   line 1 = truth  â†’ medium, lands the weight
-        #   line 2 = question â†’ sharp, snaps attention back
-        #   line 3 = CTA    â†’ firm, drives action
-        # First chunk of each line always punches.
-        # Every subsequent chunk punches lighter to avoid fatigue.
-        # ================================================================
-
-        LINE_PUNCH = {
-            0: (1.14, 0.20),   # hook     â€” hardest
-            1: (1.08, 0.25),   # truth    â€” medium
-            2: (1.11, 0.18),   # question â€” sharp
-            3: (1.09, 0.22),   # CTA      â€” firm
-        }
-        CHUNK_PUNCH_SCALE = 1.06   # subsequent chunks within a line
-        CHUNK_PUNCH_ATTACK = 0.25
+        LINE_NAMES = {0: "HOOK", 1: "TRUTH", 2: "QUESTION", 3: "CTA"}
 
         for i, line in enumerate(script):
 
@@ -649,42 +603,36 @@ def make_reel(index, bg_path):
             voice_files.append(voice_file)
             generate_voice(line, voice_file)
 
-            audio = AudioFileClip(voice_file)
+            audio          = AudioFileClip(voice_file)
             voice_duration = audio.duration
 
-            chunks = split_into_chunks(line, chunk_size=3)
-            num_chunks = len(chunks)
+            if voice_duration > 4.0:
+                label = LINE_NAMES.get(i, f"LINE {i}")
+                print(f"âš ï¸  {label} is {voice_duration:.1f}s â€” consider shortening: \"{line[:50]}\"")
 
-            # âœ… Exact even slice â€” no drift
+            chunks         = split_into_chunks(line, chunk_size=3)
+            num_chunks     = len(chunks)
             chunk_duration = voice_duration / num_chunks
 
             audio_clips.append(audio.set_start(timeline))
 
-            # âœ… LINE LENGTH SAFETY CHECK
-            # Warns if any single voice clip risks blowing the 15s ceiling.
-            # Challenge hooks are the most likely offenders at 10-12 words.
-            LINE_NAMES = {0: "HOOK", 1: "TRUTH", 2: "QUESTION", 3: "CTA"}
-            if voice_duration > 4.0:
-                label = LINE_NAMES.get(i, f"LINE {i}")
-                print(f"âš ï¸  {label} is {voice_duration:.1f}s â€” consider shortening: \"{line[:50]}...\"")
-
+            for j, chunk in enumerate(chunks):
                 chunk_start = timeline + j * chunk_duration
 
-                # âœ… Register punch for this chunk
+                # âœ… Register punch â€” first chunk of line uses line strength
                 if j == 0:
-                    # First chunk of line â€” use line-specific punch strength
                     peak, attack = LINE_PUNCH.get(i, (1.08, 0.25))
                 else:
-                    # Subsequent chunks â€” lighter punch
                     peak, attack = CHUNK_PUNCH_SCALE, CHUNK_PUNCH_ATTACK
                 punch_times.append((chunk_start, peak, attack))
 
+                # Last chunk absorbs any remainder
                 if j == num_chunks - 1:
                     text_duration = (voice_duration - j * chunk_duration) + FADE_OUT
                 else:
                     text_duration = chunk_duration
 
-                text_img = make_text(chunk)
+                text_img  = make_text(chunk)
                 text_clip = (
                     ImageClip(text_img)
                     .set_start(chunk_start)
@@ -694,7 +642,8 @@ def make_reel(index, bg_path):
                 )
                 clips.append(text_clip)
 
-            if is_last_line(i):
+            # Advance timeline
+            if i == len(script) - 1:
                 timeline += voice_duration + FADE_OUT
             else:
                 timeline += voice_duration + FADE_OUT + 0.15
@@ -704,6 +653,7 @@ def make_reel(index, bg_path):
 
         reel_duration = float(timeline)
 
+        # âœ… punch_times is fully populated â€” VideoClip created AFTER
         def make_frame(t):
             return make_cinematic_frame(t, reel_duration)
 
@@ -726,21 +676,20 @@ def make_reel(index, bg_path):
         final_voice = CompositeAudioClip(audio_clips)
 
         if os.path.exists("music.mp3"):
-            music = AudioFileClip("music.mp3")
+            music          = AudioFileClip("music.mp3")
             music_duration = reel_duration - MUSIC_DELAY
             if music_duration > 0:
-                music = afx.audio_loop(music, duration=music_duration)
-                music = music.audio_fadein(0.8)
-                music = music.volumex(0.14)
-                music = music.set_start(MUSIC_DELAY)
+                music       = afx.audio_loop(music, duration=music_duration)
+                music       = music.audio_fadein(0.8)
+                music       = music.volumex(0.14)
+                music       = music.set_start(MUSIC_DELAY)
                 final_audio = CompositeAudioClip([music, final_voice.volumex(1.12)])
             else:
                 final_audio = final_voice
         else:
             final_audio = final_voice
 
-        final = final_video.set_audio(final_audio)
-
+        final      = final_video.set_audio(final_audio)
         video_path = f"outputs/reel_{index+1}.mp4"
         final.write_videofile(
             video_path,
@@ -750,7 +699,7 @@ def make_reel(index, bg_path):
             threads=4
         )
 
-        title = f"{script[0]} | INNER DISCIPLINE"
+        title   = f"{script[0]} | INNER DISCIPLINE"
         caption = build_caption(script, category)
 
         with open(f"outputs/reel_{index+1}_title.txt", "w") as f:
@@ -788,7 +737,6 @@ HASHTAG_POOL = {
     ],
 }
 
-# âœ… Challenge-specific hashtags â€” maximise group discovery
 CHALLENGE_HASHTAGS = [
     "#30daychallenge", "#accountabilitygroup", "#disciplinechallenge",
     "#30days", "#jointhegroup", "#innerdisciplinechallenge",
@@ -801,11 +749,10 @@ def pick_hashtags(category=None):
         selected = ["#innerdiscipline"] + random.sample(CHALLENGE_HASHTAGS, 6) + random.sample(HASHTAG_POOL["big"], 3)
         random.shuffle(selected)
         return " ".join(selected[:10])
-
-    brand = ["#innerdiscipline"]
-    big = random.sample(HASHTAG_POOL["big"], 3)
-    medium = random.sample(HASHTAG_POOL["medium"], 3)
-    niche = random.sample([h for h in HASHTAG_POOL["niche"] if h != "#innerdiscipline"], 3)
+    brand    = ["#innerdiscipline"]
+    big      = random.sample(HASHTAG_POOL["big"], 3)
+    medium   = random.sample(HASHTAG_POOL["medium"], 3)
+    niche    = random.sample([h for h in HASHTAG_POOL["niche"] if h != "#innerdiscipline"], 3)
     selected = brand + big + medium + niche
     random.shuffle(selected)
     return " ".join(selected)
@@ -825,7 +772,6 @@ CAPTION_OPENERS = [
     "The uncomfortable truth about discipline.",
 ]
 
-# âœ… Challenge-specific caption openers â€” sell the group
 CHALLENGE_OPENERS = [
     "You've been trying to do this alone. There's a better way.",
     "30 days of accountability. A room full of people who don't accept excuses.",
@@ -848,7 +794,6 @@ CAPTION_CLOSERS = [
     "This page is for the ones who are done making excuses.",
 ]
 
-# âœ… Challenge closers â€” direct link conversion
 CHALLENGE_CLOSERS = [
     "Link in bio. Join the Inner Discipline Challenge today.",
     "Under $20/month. Link in bio. No excuses.",
@@ -860,10 +805,9 @@ CHALLENGE_CLOSERS = [
 
 def build_caption(script, category=None):
     is_challenge = category == "challenge"
-
-    opener = random.choice(CHALLENGE_OPENERS if is_challenge else CAPTION_OPENERS)
-    closer = random.choice(CHALLENGE_CLOSERS if is_challenge else CAPTION_CLOSERS)
-    hashtags = pick_hashtags(category)
+    opener       = random.choice(CHALLENGE_OPENERS if is_challenge else CAPTION_OPENERS)
+    closer       = random.choice(CHALLENGE_CLOSERS if is_challenge else CAPTION_CLOSERS)
+    hashtags     = pick_hashtags(category)
 
     caption = "\n".join([
         opener,
@@ -905,8 +849,8 @@ for i in range(REELS_PER_RUN):
     make_reel(i, selected_backgrounds[i])
 
 # âœ… Save memory state after all reels complete
-json.dump(used_hooks, open(HOOK_MEMORY_FILE, "w"))
-json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
-json.dump(set_step, open(SET_STEP_FILE, "w"))
+json.dump(used_hooks,     open(HOOK_MEMORY_FILE,     "w"))
+json.dump(last_category,  open(CATEGORY_MEMORY_FILE, "w"))
+json.dump(set_step,       open(SET_STEP_FILE,         "w"))
 
 print("ðŸ”¥ INNER DISCIPLINE SET-OF-4 COMPLETE")
