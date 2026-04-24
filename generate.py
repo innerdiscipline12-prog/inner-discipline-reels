@@ -6,54 +6,68 @@ from moviepy.audio.fx import all as afx
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
-# ---------------- SETTINGS ----------------
+# ================================================================
+# INNER DISCIPLINE â€” VIDEO BACKGROUND ENGINE
+# 5-Set System:
+#   rain_*.mp4   â†’ Endurance  â†’ identity category
+#   fire_*.mp4   â†’ Power      â†’ comfort category
+#   smoke_*.mp4  â†’ Mental     â†’ time category
+#   dust_*.mp4   â†’ Battle     â†’ challenge category
+#   light_*.mp4  â†’ Purpose    â†’ rotates as 5th set
+#
+# Name your video files:
+#   rain_1.mp4, rain_2.mp4 ...
+#   fire_1.mp4, fire_2.mp4 ...
+#   smoke_1.mp4 ...
+#   dust_1.mp4  ...
+#   light_1.mp4 ...
+# ================================================================
 
-W, H = 1080, 1920
-FPS = 30
+W, H   = 1080, 1920
+FPS    = 30
 MAX_REEL_LENGTH = 15.0
 
-VOICE = "en-US-GuyNeural"
-RATE = "-10%"
-PITCH = "-45Hz"
+VOICE  = "en-US-GuyNeural"
+RATE   = "-10%"
+PITCH  = "-45Hz"
 VOLUME = "+0%"
 
-FONT_PATH = "Anton-Regular.ttf"
-LOGO_PATH = "logo.png"
-LOGO_OPACITY = 0.38
-LOGO_SIZE = 160
+FONT_PATH          = "Anton-Regular.ttf"
+LOGO_PATH          = "logo.png"
+LOGO_OPACITY       = 0.38
+LOGO_SIZE          = 160
 LOGO_BOTTOM_MARGIN = 90
 
-REELS_PER_RUN = 4
+REELS_PER_RUN = 5   # one full 5-set rotation per run
 
-# ---------------- RETENTION SETTINGS ----------------
-
-STILL_FRAME_DURATION = 1.0
 MUSIC_DELAY = 1.5
 
 os.makedirs("outputs", exist_ok=True)
 
 # ---------------- MEMORY ----------------
 
-HOOK_MEMORY_FILE = "hook_memory.json"
+HOOK_MEMORY_FILE     = "hook_memory.json"
 CATEGORY_MEMORY_FILE = "category_memory.json"
-SET_STEP_FILE = "set_step.json"
+SET_STEP_FILE        = "set_step.json"
 
-if os.path.exists(HOOK_MEMORY_FILE):
-    used_hooks = json.load(open(HOOK_MEMORY_FILE))
-else:
-    used_hooks = []
-
-if os.path.exists(CATEGORY_MEMORY_FILE):
-    last_category = json.load(open(CATEGORY_MEMORY_FILE))
-else:
-    last_category = None
-
-if os.path.exists(SET_STEP_FILE):
-    set_step = json.load(open(SET_STEP_FILE))
-    if not isinstance(set_step, int):
-        set_step = 0
-else:
+used_hooks    = json.load(open(HOOK_MEMORY_FILE))     if os.path.exists(HOOK_MEMORY_FILE)     else []
+last_category = json.load(open(CATEGORY_MEMORY_FILE)) if os.path.exists(CATEGORY_MEMORY_FILE) else None
+set_step      = json.load(open(SET_STEP_FILE))         if os.path.exists(SET_STEP_FILE)         else 0
+if not isinstance(set_step, int):
     set_step = 0
+
+# ---------------- VIDEO POOL ----------------
+# Upload your background videos to GitHub named:
+#   bg1.mp4, bg2.mp4, bg3.mp4 ... bgN.mp4
+# The engine picks 5 unique videos per run â€” one per category.
+# Add more bg videos for more variety. Minimum 5 required.
+
+def get_all_videos():
+    return (
+        glob.glob("bg*.mp4") +
+        glob.glob("bg*.mov") +
+        glob.glob("bg*.MP4")
+    )
 
 # ---------------- CONTENT ----------------
 
@@ -78,7 +92,7 @@ HOOKS = {
         "You let yourself slip again.",
         "You don't even fight it anymore.",
         "You're becoming predictable.",
-        "You made weakness routine."
+        "You made weakness routine.",
     ],
     "comfort": [
         "You chose easy again.",
@@ -100,7 +114,7 @@ HOOKS = {
         "You took the shortcut again.",
         "You chose now over later.",
         "You kept it easy.",
-        "You didn't go far enough."
+        "You didn't go far enough.",
     ],
     "time": [
         "You lost another day.",
@@ -122,7 +136,7 @@ HOOKS = {
         "You're falling behind slowly.",
         "You're still where you were.",
         "Time kept going without you.",
-        "You did nothing again."
+        "You did nothing again.",
     ],
     "challenge": [
         "You've been doing this alone.",
@@ -140,7 +154,24 @@ HOOKS = {
         "You don't need a perfect plan. You need people who won't let you quit.",
         "The version of you that shows up daily - that's who's inside.",
         "One group. 30 days. No excuses accepted.",
-    ]
+    ],
+    "purpose": [
+        "You were built for more than this.",
+        "There's a version of you that doesn't quit.",
+        "Legacy isn't given. It's built in silence.",
+        "One day you'll look back. Make sure it was worth it.",
+        "The work you do in private shows up in public.",
+        "You don't rise to the occasion. You fall to your standard.",
+        "The man you're becoming is built today.",
+        "Comfort is the enemy of the man you're meant to be.",
+        "Every rep. Every decision. Every day. It adds up.",
+        "You're not just building a body. You're building a mind.",
+        "Greatness doesn't announce itself. It shows up daily.",
+        "The best version of you is already inside. Start digging.",
+        "Your future self is watching every decision you make now.",
+        "Discipline today. Freedom tomorrow.",
+        "Become the man you needed when you were younger.",
+    ],
 }
 
 TRUTHS = [
@@ -158,7 +189,7 @@ TRUTHS = [
     "That's your limit right now.",
     "That's your truth, not your excuse.",
     "That's what you repeat.",
-    "That's your default setting."
+    "That's your default setting.",
 ]
 
 CHALLENGE_TRUTHS = [
@@ -172,6 +203,19 @@ CHALLENGE_TRUTHS = [
     "The group holds you to a standard you can't hold alone.",
     "That's exactly who joins the Inner Discipline Challenge.",
     "Daily check-ins make that impossible to ignore.",
+]
+
+PURPOSE_TRUTHS = [
+    "That's the man you're building.",
+    "That's what legacy looks like in real time.",
+    "That's your standard rising.",
+    "That's purpose showing up as action.",
+    "That's the version of you the world needs.",
+    "That's what separates the ones who make it.",
+    "That's discipline becoming identity.",
+    "That's the foundation nobody sees but everybody feels.",
+    "That's what it looks like when you choose yourself.",
+    "That's the work that changes everything.",
 ]
 
 QUESTIONS = [
@@ -189,7 +233,20 @@ QUESTIONS = [
     "Still repeating it?",
     "Still weak here?",
     "Still the same?",
-    "Or are you done?"
+    "Or are you done?",
+]
+
+PURPOSE_QUESTIONS = [
+    "Are you building or just existing?",
+    "What are you leaving behind?",
+    "Is today worth remembering?",
+    "Are you becoming him?",
+    "What does your future self see right now?",
+    "Are you doing the work?",
+    "Is this the standard you want to live by?",
+    "Are you showing up?",
+    "What story are you writing today?",
+    "Are you the man you said you'd be?",
 ]
 
 CTAS = [
@@ -207,42 +264,55 @@ CTAS = [
     "Choose your side.",
     "Stay soft or speak up.",
     "Draw the line here.",
-    "This is your moment."
+    "This is your moment.",
 ]
 
 CHALLENGE_CTAS = [
-    "Join the Inner Discipline Challenge. Link in bio.",
-    "30 days. Facebook group. Under $20. Link in bio.",
-    "The group is open. Link in bio.",
-    "Join 30 days of accountability. Link in bio.",
-    "Stop doing it alone. Link in bio.",
-    "Daily check-ins. Real accountability. Link in bio.",
-    "Your 30-day standard starts here. Link in bio.",
-    "The group won't wait. Link in bio.",
-    "Lock in for 30 days. Link in bio.",
-    "Join the challenge. Link in bio.",
+    "Join the Inner Discipline Challenge. DM DISCIPLINE.",
+    "30 days. Facebook group. DM DISCIPLINE.",
+    "The group is open. DM DISCIPLINE.",
+    "Join 30 days of accountability. DM DISCIPLINE.",
+    "Stop doing it alone. DM DISCIPLINE.",
+    "Daily check-ins. Real accountability. DM DISCIPLINE.",
+    "Your 30-day standard starts here. DM DISCIPLINE.",
+    "The group won't wait. DM DISCIPLINE.",
+    "Lock in for 30 days. DM DISCIPLINE.",
+    "Join the challenge. DM DISCIPLINE.",
+]
+
+PURPOSE_CTAS = [
+    "Comment LEGEND if you're building.",
+    "Type LEGACY if this hit.",
+    "Start today. Comment PURPOSE.",
+    "Say it. I AM BUILDING.",
+    "This is your sign. Comment LEGEND.",
+    "Lock in. Comment PURPOSE.",
+    "Decide who you're becoming. Comment LEGACY.",
+    "The work starts now. Comment BUILD.",
+    "Type LEGEND if you felt this.",
+    "Your legacy starts here. Comment PURPOSE.",
 ]
 
 # ---------------- LOGO OVERLAY ----------------
 
 def make_logo_overlay():
     if not os.path.exists(LOGO_PATH):
-        print(f"âš ï¸  Logo not found at '{LOGO_PATH}' â€” skipping logo overlay.")
+        print(f"âš ï¸  Logo not found at '{LOGO_PATH}' â€” skipping.")
         return None
 
-    logo = Image.open(LOGO_PATH).convert("RGBA")
+    logo   = Image.open(LOGO_PATH).convert("RGBA")
     aspect = logo.height / logo.width
-    new_w = LOGO_SIZE
-    new_h = int(LOGO_SIZE * aspect)
-    logo = logo.resize((new_w, new_h), Image.LANCZOS)
+    new_w  = LOGO_SIZE
+    new_h  = int(LOGO_SIZE * aspect)
+    logo   = logo.resize((new_w, new_h), Image.LANCZOS)
 
     r, g, b, a = logo.split()
-    a = a.point(lambda p: int(p * LOGO_OPACITY))
+    a    = a.point(lambda p: int(p * LOGO_OPACITY))
     logo = Image.merge("RGBA", (r, g, b, a))
 
     canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    x = (W - new_w) // 2
-    y = H - new_h - LOGO_BOTTOM_MARGIN
+    x      = (W - new_w) // 2
+    y      = H - new_h - LOGO_BOTTOM_MARGIN
     canvas.paste(logo, (x, y), logo)
     return np.array(canvas)
 
@@ -252,7 +322,7 @@ def make_text(text, highlight_first_word=True):
     # ================================================================
     # âœ… ORANGE FIRST-WORD HIGHLIGHT ENGINE
     # First word of every chunk = orange. Rest = white.
-    # Same black stroke on both. Matches Wisdom Uncle style.
+    # Matches the Wisdom Uncle style â€” stops the scroll.
     # ================================================================
     text = text.replace("\u2014", "-").replace("\u2013", "-")
     text = text.replace("\u2018", "'").replace("\u2019", "'")
@@ -266,7 +336,7 @@ def make_text(text, highlight_first_word=True):
     if not os.path.exists(FONT_PATH):
         raise FileNotFoundError(
             f"Font not found: '{FONT_PATH}'. "
-            "Download Anton-Regular.ttf from Google Fonts and place it in this directory."
+            "Download Anton-Regular.ttf from Google Fonts."
         )
 
     font_size = 92
@@ -312,12 +382,8 @@ def make_text(text, highlight_first_word=True):
                 color = WHITE
 
             draw.text(
-                (x, y),
-                word,
-                font=font,
-                fill=color,
-                stroke_width=5,
-                stroke_fill="black"
+                (x, y), word, font=font,
+                fill=color, stroke_width=5, stroke_fill="black"
             )
             x += word_width + space_width
 
@@ -336,14 +402,7 @@ def generate_voice(text, filename):
 
 # ---------------- SCRIPT BUILDER ----------------
 
-SET_ORDER = ["identity", "comfort", "time", "challenge"]
-
-def get_set_category():
-    global set_step, last_category
-    cat           = SET_ORDER[set_step % len(SET_ORDER)]
-    set_step     += 1
-    last_category = cat
-    return cat
+SET_ORDER = ["identity", "comfort", "time", "challenge", "purpose"]
 
 def get_hook_from_category(category):
     global used_hooks
@@ -360,242 +419,127 @@ def get_hook_from_category(category):
     used_hooks.append(hook)
     return hook
 
-def build_script():
-    category = get_set_category()
-    hook     = get_hook_from_category(category)
-    truth    = random.choice(CHALLENGE_TRUTHS if category == "challenge" else TRUTHS)
-    question = random.choice(QUESTIONS)
-    cta      = random.choice(CHALLENGE_CTAS if category == "challenge" else CTAS)
-    return [hook, truth, question, cta], category
+def build_script(category):
+    # âœ… category passed in â€” never overwritten by get_set_category()
+    hook = get_hook_from_category(category)
+
+    if category == "challenge":
+        truth    = random.choice(CHALLENGE_TRUTHS)
+        question = random.choice(QUESTIONS)
+        cta      = random.choice(CHALLENGE_CTAS)
+    elif category == "purpose":
+        truth    = random.choice(PURPOSE_TRUTHS)
+        question = random.choice(PURPOSE_QUESTIONS)
+        cta      = random.choice(PURPOSE_CTAS)
+    else:
+        truth    = random.choice(TRUTHS)
+        question = random.choice(QUESTIONS)
+        cta      = random.choice(CTAS)
+
+    return [hook, truth, question, cta]
+
+# ---------------- VIDEO BACKGROUND ENGINE ----------------
+
+def load_video_background(video_path, target_duration):
+    """
+    Loads a video, crops/scales to 1080x1920, loops if shorter than target_duration,
+    trims to target_duration, applies cinematic grade.
+    Returns a VideoClip ready to composite.
+    """
+    clip = VideoFileClip(video_path)
+
+    # âœ… Scale to fill 1080x1920 â€” no black bars
+    clip_ratio   = clip.w / clip.h
+    target_ratio = W / H
+
+    if clip_ratio > target_ratio:
+        # Wider than target â€” fit height, crop sides
+        clip = clip.resize(height=H)
+    else:
+        # Taller/narrower â€” fit width, crop top/bottom
+        clip = clip.resize(width=W)
+
+    # Center crop to exact W x H
+    x_center = clip.w / 2
+    y_center  = clip.h / 2
+    clip      = clip.crop(
+        x_center=x_center, y_center=y_center,
+        width=W, height=H
+    )
+
+    # âœ… Loop if video is shorter than reel duration
+    if clip.duration < target_duration:
+        clip = vfx.loop(clip, duration=target_duration)
+
+    # Trim to exact duration
+    clip = clip.subclip(0, target_duration)
+
+    # âœ… Cinematic grade â€” darken + contrast, matches image pipeline
+    clip = clip.fx(vfx.colorx, 0.72)         # brightness ~0.72
+    clip = clip.fx(vfx.lum_contrast, lum=0, contrast=40, contrast_thr=127)
+
+    return clip
+
+# ---------------- PUNCH ZOOM ENGINE ----------------
+
+def get_punch_scale(t, punches):
+    """
+    punches: list of (timestamp, peak_scale, attack_seconds)
+    Between punches: drifts back to base 1.0 over 1.8s.
+    """
+    base  = 1.0
+    scale = base
+    for punch_t, peak, attack in punches:
+        delta = t - punch_t
+        if delta < 0:
+            continue
+        elif delta < attack:
+            punch_scale = base + (peak - base) * (delta / attack)
+        else:
+            release     = max(0.0, 1.0 - (delta - attack) / 1.8)
+            punch_scale = base + (peak - base) * release
+        scale = max(scale, punch_scale)
+    return scale
+
+# Punch strength per script line
+LINE_PUNCH = {
+    0: (1.14, 0.20),   # hook      â€” hardest
+    1: (1.08, 0.25),   # truth     â€” medium
+    2: (1.11, 0.18),   # question  â€” sharp
+    3: (1.09, 0.22),   # CTA       â€” firm
+}
+CHUNK_PUNCH_SCALE  = 1.06
+CHUNK_PUNCH_ATTACK = 0.25
 
 # ---------------- REEL ENGINE ----------------
 
-def make_reel(index, bg_path):
+def split_into_chunks(line, chunk_size=3):
+    words  = line.split()
+    chunks = []
+    for i in range(0, len(words), chunk_size):
+        chunks.append(" ".join(words[i:i + chunk_size]))
+    return chunks
 
-    script_data      = build_script()
-    script, category = script_data
-    voice_files      = []
+def make_reel(index, category, video_path):
+
+    # âœ… category comes from run_queue â€” script is built to match it
+    script      = build_script(category)
+    voice_files = []
 
     try:
-        print(f"ðŸ–¼ï¸  Reel {index+1} | Category: {category} | Background: {bg_path}")
+        print(f"\nðŸŽ¬ Reel {index+1} | Category: {category.upper()} | Video: {video_path}")
 
-        # ---- Background processing ----
-        bg_img     = Image.open(bg_path).convert("RGB")
-        img_ratio  = bg_img.width / bg_img.height
-        target_ratio = W / H
+        # ---- Build subtitle + audio timeline first ----
+        # We need total duration BEFORE creating video clips
+        # so punch_times and reel_duration are ready.
 
-        if img_ratio > target_ratio:
-            new_h = H
-            new_w = int(H * img_ratio)
-        else:
-            new_w = W
-            new_h = int(W / img_ratio)
-
-        bg_img = bg_img.resize((new_w, new_h), Image.LANCZOS)
-        left   = (new_w - W) // 2
-        top    = (new_h - H) // 2
-        bg_img = bg_img.crop((left, top, left + W, top + H))
-
-        from PIL import ImageEnhance, ImageFilter
-
-        bg_img = bg_img.filter(ImageFilter.GaussianBlur(radius=1.4))
-        bg_img = ImageEnhance.Brightness(bg_img).enhance(0.72)
-        bg_img = ImageEnhance.Contrast(bg_img).enhance(1.25)
-
-        bg_array_float = np.array(bg_img, dtype=np.float32)
-        gradient       = np.ones((H, W), dtype=np.float32)
-        vignette_height = int(H * 0.55)
-        for row in range(vignette_height):
-            gradient[row, :] = (row / vignette_height) ** 1.6
-
-        gradient_3ch   = np.stack([gradient] * 3, axis=-1)
-        bg_array_float = bg_array_float * gradient_3ch
-        bg_img         = Image.fromarray(np.clip(bg_array_float, 0, 255).astype(np.uint8))
-        bg_array       = np.array(bg_img)
-
-        # ---- Effect selection ----
-        EFFECTS = ["rain", "embers", "dust", "fog", "lightning"]
-        CATEGORY_EFFECTS = {
-            "identity":  ["embers", "lightning"],
-            "comfort":   ["fog", "rain"],
-            "time":      ["dust", "rain"],
-            "challenge": ["embers", "fog"],
-        }
-        chosen_effect = random.choice(CATEGORY_EFFECTS.get(category, EFFECTS))
-        print(f"âœ¨ Reel {index+1} | Effect: {chosen_effect}")
-
-        rng          = np.random.default_rng(seed=index * 7 + 13)
-        NUM_PARTICLES = 160
-
-        rain_x       = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
-        rain_y       = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
-        rain_len     = rng.integers(18, 55, size=NUM_PARTICLES).astype(float)
-        rain_speed   = rng.uniform(18, 38,  size=NUM_PARTICLES)
-        rain_opacity = rng.uniform(55, 130, size=NUM_PARTICLES).astype(int)
-        rain_angle   = 0.18
-
-        ember_x       = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
-        ember_y       = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
-        ember_speed   = rng.uniform(0.4, 1.8, size=NUM_PARTICLES)
-        ember_drift   = rng.uniform(-0.3, 0.3, size=NUM_PARTICLES)
-        ember_size    = rng.integers(2, 5,   size=NUM_PARTICLES)
-        ember_opacity = rng.integers(120, 220, size=NUM_PARTICLES)
-
-        dust_x       = rng.integers(0, W,   size=NUM_PARTICLES).astype(float)
-        dust_y       = rng.integers(0, H,   size=NUM_PARTICLES).astype(float)
-        dust_speed   = rng.uniform(0.2, 0.8, size=NUM_PARTICLES)
-        dust_size    = rng.integers(1, 4,   size=NUM_PARTICLES)
-        dust_opacity = rng.integers(30, 90, size=NUM_PARTICLES)
-
-        fog_y       = rng.integers(0, H, size=40).astype(float)
-        fog_speed   = rng.uniform(0.05, 0.2, size=40)
-        fog_opacity = rng.integers(15, 45, size=40)
-        fog_height  = rng.integers(60, 180, size=40)
-
-        total_frames_est = int(MAX_REEL_LENGTH * FPS)
-        lightning_frames = sorted(rng.integers(
-            int(FPS * 3), total_frames_est,
-            size=rng.integers(2, 5)
-        ).tolist())
-
-        # ---- Camera shake â€” baked once ----
-        def bake_shake(total_frames, intensity=3):
-            t  = np.linspace(0, total_frames / FPS, total_frames)
-            dx = (intensity * np.sin(2.3 * t + 0.5)
-                + intensity * 0.5 * np.sin(5.1 * t + 1.2)).astype(int)
-            dy = (intensity * np.sin(1.7 * t + 0.9)
-                + intensity * 0.4 * np.sin(4.3 * t + 2.1)).astype(int)
-            return dx, dy
-
-        baked_dx, baked_dy = bake_shake(int(MAX_REEL_LENGTH * FPS) + 10)
-
-        # ================================================================
-        # âœ… PUNCH ZOOM ENGINE
-        # punch_times: list of (timestamp, peak_scale, attack_seconds)
-        # Built from the chunk loop BEFORE VideoClip is created.
-        # At each timestamp: fast snap to peak, slow drift back over 1.8s.
-        # ================================================================
-
-        punch_times = []   # populated in chunk loop below
-
-        def get_punch_scale(t, punches):
-            base  = 1.0
-            scale = base
-            for punch_t, peak, attack in punches:
-                delta = t - punch_t
-                if delta < 0:
-                    continue
-                elif delta < attack:
-                    punch_scale = base + (peak - base) * (delta / attack)
-                else:
-                    release     = max(0.0, 1.0 - (delta - attack) / 1.8)
-                    punch_scale = base + (peak - base) * release
-                scale = max(scale, punch_scale)
-            return scale
-
-        # ================================================================
-        # âœ… PUNCH ZOOM TUNING â€” per script line
-        #   line 0 = hook      â†’ hardest (1.14, 0.20s attack)
-        #   line 1 = truth     â†’ medium  (1.08, 0.25s)
-        #   line 2 = question  â†’ sharp   (1.11, 0.18s)
-        #   line 3 = CTA       â†’ firm    (1.09, 0.22s)
-        # Non-first chunks within a line get a lighter punch (1.06).
-        # ================================================================
-
-        LINE_PUNCH = {
-            0: (1.14, 0.20),
-            1: (1.08, 0.25),
-            2: (1.11, 0.18),
-            3: (1.09, 0.22),
-        }
-        CHUNK_PUNCH_SCALE  = 1.06
-        CHUNK_PUNCH_ATTACK = 0.25
-
-        def make_cinematic_frame(t, total_duration):
-            frame_idx = int(t * FPS)
-
-            # Punch zoom â€” keyframe driven
-            scale = get_punch_scale(t, punch_times)
-            new_w = int(W * scale)
-            new_h = int(H * scale)
-            zoomed = Image.fromarray(bg_array).resize((new_w, new_h), Image.BILINEAR)
-
-            idx = min(frame_idx, len(baked_dx) - 1)
-            cx  = max(0, min((new_w - W) // 2 + int(baked_dx[idx]), new_w - W))
-            cy  = max(0, min((new_h - H) // 2 + int(baked_dy[idx]), new_h - H))
-            frame_arr = np.array(zoomed.crop((cx, cy, cx + W, cy + H)), dtype=np.uint8)
-
-            fx_layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-            fx_draw  = ImageDraw.Draw(fx_layer)
-
-            if chosen_effect == "rain":
-                for i in range(NUM_PARTICLES):
-                    yp = (rain_y[i] + rain_speed[i] * t * FPS * 0.5) % H
-                    xp = (rain_x[i] + yp * np.tan(rain_angle)) % W
-                    xe = xp - rain_len[i] * np.sin(rain_angle)
-                    ye = yp - rain_len[i] * np.cos(rain_angle)
-                    fx_draw.line(
-                        [(int(xp), int(yp)), (int(xe), int(ye))],
-                        fill=(200, 220, 255, int(rain_opacity[i])), width=1
-                    )
-
-            elif chosen_effect == "embers":
-                for i in range(NUM_PARTICLES):
-                    yp = (ember_y[i] - ember_speed[i] * t * 60) % H
-                    xp = (ember_x[i] + ember_drift[i] * t * 60) % W
-                    r  = int(ember_size[i])
-                    fx_draw.ellipse(
-                        [(int(xp)-r, int(yp)-r), (int(xp)+r, int(yp)+r)],
-                        fill=(255, random.randint(80, 160), 20, int(ember_opacity[i]))
-                    )
-
-            elif chosen_effect == "dust":
-                for i in range(NUM_PARTICLES):
-                    xp = (dust_x[i] + dust_speed[i] * t * 60) % W
-                    yp = dust_y[i]
-                    r  = int(dust_size[i])
-                    fx_draw.ellipse(
-                        [(int(xp)-r, int(yp)-r), (int(xp)+r, int(yp)+r)],
-                        fill=(210, 190, 150, int(dust_opacity[i]))
-                    )
-
-            elif chosen_effect == "fog":
-                for i in range(40):
-                    xp = (-W + (fog_speed[i] * t * 60)) % (W * 2) - W
-                    yp = int(fog_y[i])
-                    fh = int(fog_height[i])
-                    fog_rect = Image.new("RGBA", (W * 2, fh),
-                        (200, 210, 220, int(fog_opacity[i])))
-                    fx_layer.paste(fog_rect, (int(xp), yp), fog_rect)
-
-            elif chosen_effect == "lightning":
-                near = [f for f in lightning_frames if abs(frame_idx - f) <= 2]
-                if near:
-                    dist     = abs(frame_idx - near[0])
-                    strength = max(0, 60 - dist * 25)
-                    flash    = Image.new("RGBA", (W, H), (255, 255, 255, strength))
-                    fx_layer = Image.alpha_composite(fx_layer, flash)
-
-            frame_pil = Image.fromarray(frame_arr).convert("RGBA")
-            frame_pil = Image.alpha_composite(frame_pil, fx_layer)
-            return np.array(frame_pil.convert("RGB"))
-
-        # ---- Chunk helper ----
-        def split_into_chunks(line, chunk_size=3):
-            words  = line.split()
-            chunks = []
-            for i in range(0, len(words), chunk_size):
-                chunks.append(" ".join(words[i:i + chunk_size]))
-            return chunks
-
-        # ---- Build subtitle + audio clips ----
         logo_array  = make_logo_overlay()
         clips       = []
         audio_clips = []
-        timeline    = STILL_FRAME_DURATION + 0.1
+        punch_times = []
+        timeline    = 0.5   # âœ… Small lead-in on video (no still frame needed â€” video moves)
         FADE_OUT    = 0.12
-
-        LINE_NAMES = {0: "HOOK", 1: "TRUTH", 2: "QUESTION", 3: "CTA"}
+        LINE_NAMES  = {0: "HOOK", 1: "TRUTH", 2: "QUESTION", 3: "CTA"}
 
         for i, line in enumerate(script):
 
@@ -608,7 +552,7 @@ def make_reel(index, bg_path):
 
             if voice_duration > 4.0:
                 label = LINE_NAMES.get(i, f"LINE {i}")
-                print(f"âš ï¸  {label} is {voice_duration:.1f}s â€” consider shortening: \"{line[:50]}\"")
+                print(f"  âš ï¸  {label} is {voice_duration:.1f}s â€” consider shortening: \"{line[:50]}\"")
 
             chunks         = split_into_chunks(line, chunk_size=3)
             num_chunks     = len(chunks)
@@ -619,14 +563,13 @@ def make_reel(index, bg_path):
             for j, chunk in enumerate(chunks):
                 chunk_start = timeline + j * chunk_duration
 
-                # âœ… Register punch â€” first chunk of line uses line strength
+                # Register punch
                 if j == 0:
                     peak, attack = LINE_PUNCH.get(i, (1.08, 0.25))
                 else:
                     peak, attack = CHUNK_PUNCH_SCALE, CHUNK_PUNCH_ATTACK
                 punch_times.append((chunk_start, peak, attack))
 
-                # Last chunk absorbs any remainder
                 if j == num_chunks - 1:
                     text_duration = (voice_duration - j * chunk_duration) + FADE_OUT
                 else:
@@ -642,24 +585,53 @@ def make_reel(index, bg_path):
                 )
                 clips.append(text_clip)
 
-            # Advance timeline
             if i == len(script) - 1:
                 timeline += voice_duration + FADE_OUT
             else:
                 timeline += voice_duration + FADE_OUT + 0.15
 
+        reel_duration = float(min(timeline, MAX_REEL_LENGTH))
+
         if timeline > MAX_REEL_LENGTH:
-            print(f"âš ï¸  Reel {index+1} is {timeline:.1f}s â€” consider shorter scripts.")
+            print(f"  âš ï¸  Reel {index+1} is {timeline:.1f}s â€” trimmed to {MAX_REEL_LENGTH}s.")
 
-        reel_duration = float(timeline)
+        # ---- Load + grade video background ----
+        bg_clip = load_video_background(video_path, reel_duration)
 
-        # âœ… punch_times is fully populated â€” VideoClip created AFTER
-        def make_frame(t):
-            return make_cinematic_frame(t, reel_duration)
+        # ---- Apply punch zoom to video via fl_time + resize ----
+        # We apply the zoom by resizing each frame via a lambda
+        def zoom_frame(get_frame, t):
+            scale  = get_punch_scale(t, punch_times)
+            frame  = get_frame(t)
+            if scale == 1.0:
+                return frame
+            h, w   = frame.shape[:2]
+            new_w  = int(w * scale)
+            new_h  = int(h * scale)
+            pil    = Image.fromarray(frame).resize((new_w, new_h), Image.BILINEAR)
+            # Center crop back to W x H
+            left   = (new_w - W) // 2
+            top    = (new_h - H) // 2
+            pil    = pil.crop((left, top, left + W, top + H))
+            return np.array(pil)
 
-        base = VideoClip(make_frame, duration=reel_duration).set_fps(FPS)
+        bg_clip = bg_clip.fl(zoom_frame, apply_to=["mask"])
 
-        all_layers = [base] + clips
+        # ---- Top vignette overlay (dark gradient from top) ----
+        vignette_arr    = np.zeros((H, W, 4), dtype=np.uint8)
+        vignette_height = int(H * 0.55)
+        for row in range(vignette_height):
+            alpha = int(255 * (1.0 - (row / vignette_height) ** 1.6))
+            vignette_arr[row, :, 3] = alpha   # only alpha, RGB stays 0 (black)
+
+        vignette_clip = (
+            ImageClip(vignette_arr)
+            .set_duration(reel_duration)
+        )
+
+        # ---- Composite all layers ----
+        all_layers = [bg_clip, vignette_clip] + clips
+
         if logo_array is not None:
             logo_clip = (
                 ImageClip(logo_array)
@@ -669,10 +641,11 @@ def make_reel(index, bg_path):
             )
             all_layers.append(logo_clip)
 
-        final_video = CompositeVideoClip(all_layers)
+        final_video = CompositeVideoClip(all_layers, size=(W, H))
         final_video = final_video.set_duration(reel_duration)
-        final_video = final_video.fadeout(0.25)
+        final_video = final_video.fadeout(0.3)
 
+        # ---- Audio assembly ----
         final_voice = CompositeAudioClip(audio_clips)
 
         if os.path.exists("music.mp3"):
@@ -690,13 +663,15 @@ def make_reel(index, bg_path):
             final_audio = final_voice
 
         final      = final_video.set_audio(final_audio)
-        video_path = f"outputs/reel_{index+1}.mp4"
+        video_path_out = f"outputs/reel_{index+1}.mp4"
+
         final.write_videofile(
-            video_path,
+            video_path_out,
             fps=FPS,
             codec="libx264",
             audio_codec="aac",
-            threads=4
+            threads=4,
+            preset="fast",
         )
 
         title   = f"{script[0]} | INNER DISCIPLINE"
@@ -704,14 +679,15 @@ def make_reel(index, bg_path):
 
         with open(f"outputs/reel_{index+1}_title.txt", "w") as f:
             f.write(title)
-
         with open(f"outputs/reel_{index+1}_caption.txt", "w") as f:
             f.write(caption)
 
-        print(f"âœ… Reel {index+1} complete â†’ {video_path}")
+        print(f"  âœ… Reel {index+1} complete â†’ {video_path_out}")
 
     except Exception as e:
-        print(f"âŒ Reel {index+1} failed: {e}")
+        import traceback
+        print(f"  âŒ Reel {index+1} failed: {e}")
+        traceback.print_exc()
 
     finally:
         for vf in voice_files:
@@ -721,32 +697,36 @@ def make_reel(index, bg_path):
 # ---------------- HASHTAG POOLS ----------------
 
 HASHTAG_POOL = {
-    "big": [
-        "#discipline", "#motivation", "#mindset", "#fitness",
-        "#success", "#selfimprovement", "#gym", "#hardwork",
-    ],
-    "medium": [
-        "#selfmastery", "#selfcontrol", "#mentalstrength",
-        "#consistency", "#dailymotivation", "#growthmindset",
-        "#personaldevelopment", "#focus",
-    ],
-    "niche": [
-        "#innerdiscipline", "#disciplinedmind", "#selfgrowth",
-        "#dailyhabits", "#noexcuses", "#accountability",
-        "#mindsetshift", "#innerwork",
-    ],
+    "big":    ["#discipline", "#motivation", "#mindset", "#fitness",
+               "#success", "#selfimprovement", "#gym", "#hardwork"],
+    "medium": ["#selfmastery", "#selfcontrol", "#mentalstrength",
+               "#consistency", "#dailymotivation", "#growthmindset",
+               "#personaldevelopment", "#focus"],
+    "niche":  ["#innerdiscipline", "#disciplinedmind", "#selfgrowth",
+               "#dailyhabits", "#noexcuses", "#accountability",
+               "#mindsetshift", "#innerwork"],
 }
 
 CHALLENGE_HASHTAGS = [
     "#30daychallenge", "#accountabilitygroup", "#disciplinechallenge",
     "#30days", "#jointhegroup", "#innerdisciplinechallenge",
     "#accountability", "#facebookgroup", "#selfimprovementchallenge",
-    "#disciplinegroup"
+    "#disciplinegroup",
+]
+
+PURPOSE_HASHTAGS = [
+    "#legacy", "#becomelegend", "#purpose", "#becomethebestversion",
+    "#growthmindset", "#levelup", "#mentalhealth", "#masculinity",
+    "#selfmastery", "#innerdiscipline",
 ]
 
 def pick_hashtags(category=None):
     if category == "challenge":
         selected = ["#innerdiscipline"] + random.sample(CHALLENGE_HASHTAGS, 6) + random.sample(HASHTAG_POOL["big"], 3)
+        random.shuffle(selected)
+        return " ".join(selected[:10])
+    if category == "purpose":
+        selected = ["#innerdiscipline"] + random.sample(PURPOSE_HASHTAGS, 6) + random.sample(HASHTAG_POOL["big"], 3)
         random.shuffle(selected)
         return " ".join(selected[:10])
     brand    = ["#innerdiscipline"]
@@ -783,6 +763,17 @@ CHALLENGE_OPENERS = [
     "The group that won't let you settle. Join us.",
 ]
 
+PURPOSE_OPENERS = [
+    "This one is for the men who are building in silence.",
+    "Legacy is built in the moments nobody sees.",
+    "Read this if you're serious about who you're becoming.",
+    "The man you're meant to be is built today.",
+    "This is for the ones who chose to rise.",
+    "Not everyone is meant for average. This is for you.",
+    "You were built for more. Here's the reminder.",
+    "The world needs the man you're becoming. Don't stop.",
+]
+
 CAPTION_CLOSERS = [
     "Comment DISCIPLINE if you're locking in today.",
     "Tag someone who needs to see this.",
@@ -803,54 +794,76 @@ CHALLENGE_CLOSERS = [
     "Daily check-ins. Real accountability. Link in bio.",
 ]
 
-def build_caption(script, category=None):
-    is_challenge = category == "challenge"
-    opener       = random.choice(CHALLENGE_OPENERS if is_challenge else CAPTION_OPENERS)
-    closer       = random.choice(CHALLENGE_CLOSERS if is_challenge else CAPTION_CLOSERS)
-    hashtags     = pick_hashtags(category)
+PURPOSE_CLOSERS = [
+    "Comment LEGEND if you're building your legacy.",
+    "Tag a man who needs to hear this.",
+    "Save this. Read it on the days you want to quit.",
+    "Follow @innerdiscipline â€” daily content for men who are serious.",
+    "Type LEGACY if this hit different.",
+    "Share this with someone who is becoming great.",
+]
 
-    caption = "\n".join([
-        opener,
-        "",
-        f'"{script[0]}"',
-        "",
-        script[1],
-        "",
-        script[2],
-        "",
+def build_caption(script, category=None):
+    if category == "challenge":
+        opener = random.choice(CHALLENGE_OPENERS)
+        closer = random.choice(CHALLENGE_CLOSERS)
+    elif category == "purpose":
+        opener = random.choice(PURPOSE_OPENERS)
+        closer = random.choice(PURPOSE_CLOSERS)
+    else:
+        opener = random.choice(CAPTION_OPENERS)
+        closer = random.choice(CAPTION_CLOSERS)
+
+    hashtags = pick_hashtags(category)
+
+    return "\n".join([
+        opener, "",
+        f'"{script[0]}"', "",
+        script[1], "",
+        script[2], "",
         "-",
-        closer,
-        "",
+        closer, "",
         hashtags,
     ])
-    return caption
 
 # ---------------- RUN ----------------
 
-all_backgrounds = glob.glob("bg*.png") + glob.glob("bg*.jpg") + glob.glob("bg*.jpeg")
+print("ðŸŽ¬ INNER DISCIPLINE â€” 5-SET VIDEO ENGINE")
+print("=" * 50)
 
-if not all_backgrounds:
-    raise Exception("No background images found. Add bg1.png, bg2.jpg etc to this folder.")
+all_videos = get_all_videos()
 
-if len(all_backgrounds) < REELS_PER_RUN:
-    print(f"âš ï¸  Only {len(all_backgrounds)} images found for {REELS_PER_RUN} reels.")
-    print(f"âš ï¸  Add more bg images to avoid repeats. Using what's available.")
-    selected_backgrounds = random.sample(all_backgrounds, len(all_backgrounds))
-    while len(selected_backgrounds) < REELS_PER_RUN:
-        selected_backgrounds.append(random.choice(all_backgrounds))
+if not all_videos:
+    raise Exception(
+        "No background videos found.\n"
+        "Add files named bg1.mp4, bg2.mp4 ... bg5.mp4 (minimum 5) to this folder."
+    )
+
+if len(all_videos) < REELS_PER_RUN:
+    print(f"âš ï¸  Only {len(all_videos)} video(s) found â€” need {REELS_PER_RUN} for a full run.")
+    print(f"   Repeats will occur. Add more bg*.mp4 files to avoid this.")
+    selected_videos = [all_videos[i % len(all_videos)] for i in range(REELS_PER_RUN)]
 else:
-    selected_backgrounds = random.sample(all_backgrounds, REELS_PER_RUN)
+    selected_videos = random.sample(all_videos, REELS_PER_RUN)
 
-print(f"ðŸŽ¬ Selected backgrounds for this run:")
-for idx, bg in enumerate(selected_backgrounds):
-    print(f"   Reel {idx+1} â†’ {bg}")
-
+# âœ… Build run queue â€” category determined by set_step rotation
+run_queue = []
 for i in range(REELS_PER_RUN):
-    make_reel(i, selected_backgrounds[i])
+    category = SET_ORDER[set_step % len(SET_ORDER)]
+    set_step += 1
+    last_category = category
+    video_path    = selected_videos[i]
+    run_queue.append((i, category, video_path))
+    print(f"   Reel {i+1} â†’ [{category.upper()}] {video_path}")
 
-# âœ… Save memory state after all reels complete
-json.dump(used_hooks,     open(HOOK_MEMORY_FILE,     "w"))
-json.dump(last_category,  open(CATEGORY_MEMORY_FILE, "w"))
-json.dump(set_step,       open(SET_STEP_FILE,         "w"))
+print("=" * 50)
 
-print("ðŸ”¥ INNER DISCIPLINE SET-OF-4 COMPLETE")
+for reel_index, category, video_path in run_queue:
+    make_reel(reel_index, category, video_path)
+
+# âœ… Save memory state
+json.dump(used_hooks,    open(HOOK_MEMORY_FILE,     "w"))
+json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
+json.dump(set_step,      open(SET_STEP_FILE,         "w"))
+
+print("\nðŸ”¥ INNER DISCIPLINE 5-SET COMPLETE")
