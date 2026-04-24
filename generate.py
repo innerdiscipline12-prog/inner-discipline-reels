@@ -268,16 +268,16 @@ CTAS = [
 ]
 
 CHALLENGE_CTAS = [
-    "Join the Inner Discipline Challenge. DM DISCIPLINE.",
-    "30 days. Facebook group. DM DISCIPLINE.",
-    "The group is open. DM DISCIPLINE.",
-    "Join 30 days of accountability. DM DISCIPLINE.",
-    "Stop doing it alone. DM DISCIPLINE.",
-    "Daily check-ins. Real accountability. DM DISCIPLINE.",
-    "Your 30-day standard starts here. DM DISCIPLINE.",
-    "The group won't wait. DM DISCIPLINE.",
-    "Lock in for 30 days. DM DISCIPLINE.",
-    "Join the challenge. DM DISCIPLINE.",
+    "Join the Inner Discipline Challenge. Link in bio.",
+    "30 days. Facebook group. Under $20. Link in bio.",
+    "The group is open. Link in bio.",
+    "Join 30 days of accountability. Link in bio.",
+    "Stop doing it alone. Link in bio.",
+    "Daily check-ins. Real accountability. Link in bio.",
+    "Your 30-day standard starts here. Link in bio.",
+    "The group won't wait. Link in bio.",
+    "Lock in for 30 days. Link in bio.",
+    "Join the challenge. Link in bio.",
 ]
 
 PURPOSE_CTAS = [
@@ -357,7 +357,8 @@ def make_text(text, highlight_first_word=True):
     lines.append(current)
 
     total_height     = len(lines) * (font_size + 22)
-    y                = (H - total_height) // 2
+    # âœ… Chest level â€” 62% down the frame, not centered
+    y                = int(H * 0.62) - total_height // 2
     first_word_drawn = False
     ORANGE           = (255, 140, 0, 255)
     WHITE            = (255, 255, 255, 255)
@@ -494,22 +495,27 @@ def get_punch_scale(t, punches):
         if delta < 0:
             continue
         elif delta < attack:
-            punch_scale = base + (peak - base) * (delta / attack)
+            # Slow smooth snap up
+            progress    = delta / attack
+            punch_scale = base + (peak - base) * (progress ** 0.5)  # ease-in curve
         else:
-            release     = max(0.0, 1.0 - (delta - attack) / 1.8)
+            # Slow drift back over 3.0s â€” not snappy, cinematic
+            release     = max(0.0, 1.0 - (delta - attack) / 3.0)
             punch_scale = base + (peak - base) * release
         scale = max(scale, punch_scale)
     return scale
 
-# Punch strength per script line
+# âœ… Punch only on HIGH IMPACT moments â€” not every chunk
+# hook first word  â†’ slow build to 1.08 (0.6s attack)
+# question line    â†’ medium punch 1.07  (0.5s attack)
+# CTA first word   â†’ firm push 1.06     (0.4s attack)
+# All other chunks â†’ NO punch â€” video breathes naturally
 LINE_PUNCH = {
-    0: (1.14, 0.20),   # hook      â€” hardest
-    1: (1.08, 0.25),   # truth     â€” medium
-    2: (1.11, 0.18),   # question  â€” sharp
-    3: (1.09, 0.22),   # CTA       â€” firm
+    0: (1.08, 0.6),    # hook      â€” slow powerful build
+    2: (1.07, 0.5),    # question  â€” medium snap
+    3: (1.06, 0.4),    # CTA       â€” firm push
 }
-CHUNK_PUNCH_SCALE  = 1.06
-CHUNK_PUNCH_ATTACK = 0.25
+# line 1 (truth) intentionally excluded â€” let it breathe
 
 # ---------------- REEL ENGINE ----------------
 
@@ -563,12 +569,12 @@ def make_reel(index, category, video_path):
             for j, chunk in enumerate(chunks):
                 chunk_start = timeline + j * chunk_duration
 
-                # Register punch
-                if j == 0:
-                    peak, attack = LINE_PUNCH.get(i, (1.08, 0.25))
-                else:
-                    peak, attack = CHUNK_PUNCH_SCALE, CHUNK_PUNCH_ATTACK
-                punch_times.append((chunk_start, peak, attack))
+                # âœ… Only punch on first chunk of HIGH IMPACT lines
+                # Hook (0), Question (2), CTA (3) â€” first chunk only
+                # Truth (1) and all subsequent chunks â€” no punch
+                if j == 0 and i in LINE_PUNCH:
+                    peak, attack = LINE_PUNCH[i]
+                    punch_times.append((chunk_start, peak, attack))
 
                 if j == num_chunks - 1:
                     text_duration = (voice_duration - j * chunk_duration) + FADE_OUT
@@ -836,12 +842,13 @@ all_videos = get_all_videos()
 if not all_videos:
     raise Exception(
         "No background videos found.\n"
-        "Add files named bg1.mp4, bg2.mp4 ... bg5.mp4 (minimum 5) to this folder."
+        "Add at least one file named bg1.mp4 (or bg2.mp4, bg3.mp4 etc.) to this folder."
     )
 
+# âœ… Works with 1 video â€” repeats across reels if needed
 if len(all_videos) < REELS_PER_RUN:
-    print(f"âš ï¸  Only {len(all_videos)} video(s) found â€” need {REELS_PER_RUN} for a full run.")
-    print(f"   Repeats will occur. Add more bg*.mp4 files to avoid this.")
+    print(f"âš ï¸  Only {len(all_videos)} video(s) found â€” repeating across {REELS_PER_RUN} reels.")
+    print(f"   Add more bg*.mp4 files for variety.")
     selected_videos = [all_videos[i % len(all_videos)] for i in range(REELS_PER_RUN)]
 else:
     selected_videos = random.sample(all_videos, REELS_PER_RUN)
