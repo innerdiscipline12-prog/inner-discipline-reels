@@ -34,7 +34,7 @@ VOLUME = "+0%"
 
 FONT_PATH          = "Anton-Regular.ttf"
 LOGO_PATH          = "logo.png"
-LOGO_OPACITY       = 0.38
+LOGO_OPACITY       = 0.65
 LOGO_SIZE          = 160
 LOGO_BOTTOM_MARGIN = 90
 
