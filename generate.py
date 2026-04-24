@@ -268,16 +268,16 @@ CTAS = [
 ]
 
 CHALLENGE_CTAS = [
-    "Join the Inner Discipline Challenge. Link in bio.",
-    "30 days. Facebook group. Under $20. Link in bio.",
-    "The group is open. Link in bio.",
-    "Join 30 days of accountability. Link in bio.",
-    "Stop doing it alone. Link in bio.",
-    "Daily check-ins. Real accountability. Link in bio.",
-    "Your 30-day standard starts here. Link in bio.",
-    "The group won't wait. Link in bio.",
-    "Lock in for 30 days. Link in bio.",
-    "Join the challenge. Link in bio.",
+    "Join the Inner Discipline Challenge. DM DISCIPLINE.",
+    "30 days. Facebook group. DM DISCIPLINE.",
+    "The group is open. DM DISCIPLINE.",
+    "Join 30 days of accountability. DM DISCIPLINE.",
+    "Stop doing it alone. DM DISCIPLINE.",
+    "Daily check-ins. Real accountability. DM DISCIPLINE.",
+    "Your 30-day standard starts here. DM DISCIPLINE.",
+    "The group won't wait. DM DISCIPLINE.",
+    "Lock in for 30 days. DM DISCIPLINE.",
+    "Join the challenge. DM DISCIPLINE.",
 ]
 
 PURPOSE_CTAS = [
@@ -475,9 +475,8 @@ def load_video_background(video_path, target_duration):
     # Trim to exact duration
     clip = clip.subclip(0, target_duration)
 
-    # âœ… Cinematic grade â€” darken + contrast, matches image pipeline
-    clip = clip.fx(vfx.colorx, 0.72)         # brightness ~0.72
-    clip = clip.fx(vfx.lum_contrast, lum=0, contrast=40, contrast_thr=127)
+    # âœ… Cinematic grade â€” slight darken only, keep video visible
+    clip = clip.fx(vfx.colorx, 0.90)         # was 0.72 â€” was crushing to black
 
     return clip
 
@@ -604,22 +603,23 @@ def make_reel(index, category, video_path):
         # ---- Load + grade video background ----
         bg_clip = load_video_background(video_path, reel_duration)
 
-        # ---- Apply punch zoom to video via fl_time + resize ----
-        # We apply the zoom by resizing each frame via a lambda
+        # ---- Apply punch zoom to video via fl ----
+        # âœ… FAST PATH: skip zoom entirely if scale is within 0.5% of 1.0
+        # Only resize+crop on the ~3 punch moments per reel
         def zoom_frame(get_frame, t):
-            scale  = get_punch_scale(t, punch_times)
-            frame  = get_frame(t)
-            if scale == 1.0:
-                return frame
-            h, w   = frame.shape[:2]
-            new_w  = int(w * scale)
-            new_h  = int(h * scale)
+            scale = get_punch_scale(t, punch_times)
+            frame = get_frame(t)
+            if scale < 1.005:
+                return frame   # âœ… Fast path â€” no processing on 95% of frames
+            new_w  = int(W * scale)
+            new_h  = int(H * scale)
+            # numpy resize via PIL â€” only fires during punch moments
             pil    = Image.fromarray(frame).resize((new_w, new_h), Image.BILINEAR)
-            # Center crop back to W x H
-            left   = (new_w - W) // 2
+            arr    = np.array(pil)
+            # numpy center crop â€” faster than PIL crop
             top    = (new_h - H) // 2
-            pil    = pil.crop((left, top, left + W, top + H))
-            return np.array(pil)
+            left   = (new_w - W) // 2
+            return arr[top:top+H, left:left+W]
 
         bg_clip = bg_clip.fl(zoom_frame, apply_to=["mask"])
 
