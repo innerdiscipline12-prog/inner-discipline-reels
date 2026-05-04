@@ -34,9 +34,9 @@ VOLUME = "+0%"
 
 FONT_PATH          = "Anton-Regular.ttf"
 LOGO_PATH          = "logo.png"
-LOGO_OPACITY       = 0.65
-LOGO_SIZE          = 160
-LOGO_BOTTOM_MARGIN = 90
+LOGO_OPACITY       = 0.85   # âœ… Was 0.38 â€” now clearly visible
+LOGO_SIZE          = 200    # âœ… Was 160 â€” bigger
+LOGO_BOTTOM_MARGIN = 120    # âœ… Was 90 â€” more breathing room from bottom
 
 REELS_PER_RUN = 5   # one full 5-set rotation per run
 
@@ -268,16 +268,16 @@ CTAS = [
 ]
 
 CHALLENGE_CTAS = [
-    "Join the Inner Discipline Challenge. DM DISCIPLINE.",
-    "30 days. Facebook group. DM DISCIPLINE.",
-    "The group is open. DM DISCIPLINE.",
-    "Join 30 days of accountability. DM DISCIPLINE.",
-    "Stop doing it alone. DM DISCIPLINE.",
-    "Daily check-ins. Real accountability. DM DISCIPLINE.",
-    "Your 30-day standard starts here. DM DISCIPLINE.",
-    "The group won't wait. DM DISCIPLINE.",
-    "Lock in for 30 days. DM DISCIPLINE.",
-    "Join the challenge. DM DISCIPLINE.",
+    "Join the Inner Discipline Challenge. Link in bio.",
+    "30 days. Facebook group. Under $20. Link in bio.",
+    "The group is open. Link in bio.",
+    "Join 30 days of accountability. Link in bio.",
+    "Stop doing it alone. Link in bio.",
+    "Daily check-ins. Real accountability. Link in bio.",
+    "Your 30-day standard starts here. Link in bio.",
+    "The group won't wait. Link in bio.",
+    "Lock in for 30 days. Link in bio.",
+    "Join the challenge. Link in bio.",
 ]
 
 PURPOSE_CTAS = [
@@ -525,11 +525,15 @@ def split_into_chunks(line, chunk_size=3):
         chunks.append(" ".join(words[i:i + chunk_size]))
     return chunks
 
-def make_reel(index, category, video_path):
+def make_reel(index, category, video_path, output_path=None):
 
     # âœ… category comes from run_queue â€” script is built to match it
     script      = build_script(category)
     voice_files = []
+
+    # Default output path if not specified
+    if output_path is None:
+        output_path = f"outputs/reel_{index+1}.mp4"
 
     try:
         print(f"\nðŸŽ¬ Reel {index+1} | Category: {category.upper()} | Video: {video_path}")
@@ -669,10 +673,9 @@ def make_reel(index, category, video_path):
             final_audio = final_voice
 
         final      = final_video.set_audio(final_audio)
-        video_path_out = f"outputs/reel_{index+1}.mp4"
 
         final.write_videofile(
-            video_path_out,
+            output_path,
             fps=FPS,
             codec="libx264",
             audio_codec="aac",
@@ -683,12 +686,13 @@ def make_reel(index, category, video_path):
         title   = f"{script[0]} | INNER DISCIPLINE"
         caption = build_caption(script, category)
 
-        with open(f"outputs/reel_{index+1}_title.txt", "w") as f:
+        base = os.path.splitext(output_path)[0]
+        with open(f"{base}_title.txt", "w") as f:
             f.write(title)
-        with open(f"outputs/reel_{index+1}_caption.txt", "w") as f:
+        with open(f"{base}_caption.txt", "w") as f:
             f.write(caption)
 
-        print(f"  âœ… Reel {index+1} complete â†’ {video_path_out}")
+        print(f"  âœ… Done â†’ {output_path}")
 
     except Exception as e:
         import traceback
@@ -832,9 +836,53 @@ def build_caption(script, category=None):
         hashtags,
     ])
 
+# ---------------- LONG VIDEO BUILDER ----------------
+
+TRANSITION_DURATION = 1.5   # black fade between segments
+LONG_VIDEO_SEGMENTS = 5     # 5 reels stitched = ~5 min long video
+
+def build_long_video(segment_paths, output_path):
+    """
+    Stitches segment_paths into one long video.
+    Adds a black fade transition between each segment.
+    Exports to output_path.
+    """
+    print(f"\nðŸ“¹ Building long video from {len(segment_paths)} segments...")
+
+    clips      = []
+    transition = ColorClip(size=(W, H), color=(0, 0, 0), duration=TRANSITION_DURATION)
+
+    for i, path in enumerate(segment_paths):
+        clip = VideoFileClip(path)
+        clip = clip.fadein(0.3).fadeout(0.3)
+        clips.append(clip)
+        if i < len(segment_paths) - 1:
+            clips.append(transition)
+
+    final = concatenate_videoclips(clips, method="compose")
+
+    print(f"   Total duration: {final.duration:.1f}s ({final.duration/60:.1f} min)")
+
+    final.write_videofile(
+        output_path,
+        fps=FPS,
+        codec="libx264",
+        audio_codec="aac",
+        threads=4,
+        preset="fast",
+    )
+
+    # Clean up individual segment clips
+    for clip in clips:
+        clip.close()
+
+    print(f"   âœ… Long video â†’ {output_path}")
+
+
 # ---------------- RUN ----------------
 
-print("ðŸŽ¬ INNER DISCIPLINE â€” 5-SET VIDEO ENGINE")
+print("ðŸŽ¬ INNER DISCIPLINE â€” DAILY ENGINE")
+print("   Output: 1 reel (15s) + 1 long video (5 min)")
 print("=" * 50)
 
 all_videos = get_all_videos()
@@ -842,35 +890,80 @@ all_videos = get_all_videos()
 if not all_videos:
     raise Exception(
         "No background videos found.\n"
-        "Add at least one file named bg1.mp4 (or bg2.mp4, bg3.mp4 etc.) to this folder."
+        "Add at least one file named bg1.mp4 to this folder."
     )
 
-# âœ… Works with 1 video â€” repeats across reels if needed
-if len(all_videos) < REELS_PER_RUN:
-    print(f"âš ï¸  Only {len(all_videos)} video(s) found â€” repeating across {REELS_PER_RUN} reels.")
-    print(f"   Add more bg*.mp4 files for variety.")
-    selected_videos = [all_videos[i % len(all_videos)] for i in range(REELS_PER_RUN)]
-else:
-    selected_videos = random.sample(all_videos, REELS_PER_RUN)
+# Works with 1 video â€” repeats if needed
+selected_videos = [all_videos[i % len(all_videos)] for i in range(LONG_VIDEO_SEGMENTS)]
 
-# âœ… Build run queue â€” category determined by set_step rotation
-run_queue = []
-for i in range(REELS_PER_RUN):
-    category = SET_ORDER[set_step % len(SET_ORDER)]
-    set_step += 1
+# ================================================================
+# PHASE 1 â€” Generate 5 internal segments (one per category)
+# These are temp files used to build the long video.
+# ================================================================
+
+print("\nðŸ“¦ Phase 1 â€” Generating 5 segments for long video...")
+
+os.makedirs("temp_segments", exist_ok=True)
+segment_paths = []
+
+for i in range(LONG_VIDEO_SEGMENTS):
+    category      = SET_ORDER[set_step % len(SET_ORDER)]
+    set_step     += 1
     last_category = category
     video_path    = selected_videos[i]
-    run_queue.append((i, category, video_path))
-    print(f"   Reel {i+1} â†’ [{category.upper()}] {video_path}")
+    seg_path      = f"temp_segments/seg_{i+1}.mp4"
 
-print("=" * 50)
+    print(f"\n   Segment {i+1}/5 â†’ [{category.upper()}] {video_path}")
+    make_reel(i, category, video_path, output_path=seg_path)
+    segment_paths.append(seg_path)
 
-for reel_index, category, video_path in run_queue:
-    make_reel(reel_index, category, video_path)
+# ================================================================
+# PHASE 2 â€” Stitch into long video (~5 min)
+# ================================================================
 
-# âœ… Save memory state
+print("\nðŸ“¹ Phase 2 â€” Stitching long video...")
+
+from datetime import datetime
+date_str       = datetime.now().strftime("%Y%m%d_%H%M")
+longvideo_path = f"outputs/longvideo_{date_str}.mp4"
+
+build_long_video(segment_paths, longvideo_path)
+
+# ================================================================
+# PHASE 3 â€” Generate the single daily reel
+# Uses the NEXT category in rotation
+# ================================================================
+
+print("\nðŸŽ¬ Phase 3 â€” Generating daily reel...")
+
+reel_category = SET_ORDER[set_step % len(SET_ORDER)]
+set_step     += 1
+last_category = reel_category
+reel_video    = all_videos[0]   # use first available bg video
+reel_path     = f"outputs/reel_{date_str}.mp4"
+
+print(f"   Reel â†’ [{reel_category.upper()}] {reel_video}")
+make_reel(0, reel_category, reel_video, output_path=reel_path)
+
+# ================================================================
+# CLEANUP â€” Remove temp segments
+# ================================================================
+
+import shutil
+if os.path.exists("temp_segments"):
+    shutil.rmtree("temp_segments")
+    print("\nðŸ—‘ï¸  Temp segments cleaned up.")
+
+# ================================================================
+# SAVE MEMORY STATE
+# ================================================================
+
 json.dump(used_hooks,    open(HOOK_MEMORY_FILE,     "w"))
 json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
 json.dump(set_step,      open(SET_STEP_FILE,         "w"))
 
-print("\nðŸ”¥ INNER DISCIPLINE 5-SET COMPLETE")
+print("\n" + "=" * 50)
+print(f"âœ… DAILY OUTPUT COMPLETE")
+print(f"   ðŸ“± Reel    â†’ {reel_path}")
+print(f"   ðŸŽ¥ Long    â†’ {longvideo_path}")
+print("=" * 50)
