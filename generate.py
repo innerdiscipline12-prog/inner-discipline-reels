@@ -750,6 +750,13 @@ def make_vignette(duration):
 # ================================================================
 
 def split_into_chunks(text, chunk_size=3):
+    """Split text into word chunks. Story mode splits at punctuation."""
+    # Try punctuation split first for natural phrasing
+    import re
+    sentences = re.split(r'(?<=[.!?,])\s+', text.strip())
+    if len(sentences) > 1:
+        return [s.strip() for s in sentences if s.strip()]
+    # Fallback: word chunks
     words  = text.split()
     chunks = []
     for i in range(0, len(words), chunk_size):
@@ -757,8 +764,61 @@ def split_into_chunks(text, chunk_size=3):
     return chunks
 
 # ================================================================
+# TEXT CLIP BUILDER — reel vs long video transitions
+# ================================================================
+
+def make_text_clip(text_img, start, duration, mode="reel"):
+    """
+    mode="reel"  → pop/snap: scale 0.7→1.0 in 0.08s, hard cut out
+    mode="long"  → fade/slide: fadein 0.2s, fadeout 0.2s
+    """
+    clip = ImageClip(text_img).set_start(start).set_duration(duration)
+
+    if mode == "reel":
+        # Pop/snap — aggressive scale up
+        def pop_frame(get_frame, t):
+            frame = get_frame(t)
+            snap_dur = 0.08
+            if t < snap_dur:
+                scale    = 0.75 + 0.25 * (t / snap_dur)
+                new_w    = max(1, int(W * scale))
+                new_h    = max(1, int(H * scale))
+                pil      = Image.fromarray(frame).resize((new_w, new_h), Image.BILINEAR)
+                canvas   = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                offset_x = (W - new_w) // 2
+                offset_y = (H - new_h) // 2
+                canvas.paste(Image.fromarray(frame) if scale == 1.0 else pil, (offset_x, offset_y))
+                return np.array(canvas)
+            return frame
+        clip = clip.fl(pop_frame)
+        clip = clip.fadeout(0.06)
+
+    else:
+        # Smooth fade + slide up from 18px below
+        def slide_frame(get_frame, t):
+            frame    = get_frame(t)
+            fade_dur = 0.20
+            if t < fade_dur:
+                progress  = t / fade_dur
+                offset_y  = int(18 * (1.0 - progress))
+                alpha     = progress
+                pil       = Image.fromarray(frame)
+                shifted   = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                shifted.paste(pil, (0, offset_y))
+                arr       = np.array(shifted).astype(float)
+                arr[..., 3] = arr[..., 3] * alpha
+                return arr.astype(np.uint8)
+            return frame
+        clip = clip.fl(slide_frame)
+        clip = clip.fadeout(0.20)
+
+    return clip
+
+# ================================================================
 # CORE VIDEO BUILDER
-# Shared by both reel and long video segment generation.
+# Shared by reel and long video.
+# mode="reel"  → 15s hard cap, pop transitions, confrontation pacing
+# mode="long"  → arc pacing, slide transitions, sync per voice duration
 # ================================================================
 
 def build_video_segment(
@@ -767,75 +827,103 @@ def build_video_segment(
     output_path,
     max_duration=None,
     seg_index=0,
+    transition_mode="reel",   # "reel" or "long"
 ):
-    """
-    Renders a video segment from a list of (text, pacing_mode) lines.
-    Each line uses its own TTS rate/pitch per pacing mode.
-    Subtitles chunked and synced to voice.
-    Punch zoom on hook, question, CTA.
-    """
     voice_files = []
 
     try:
-        # ---- Build audio + subtitle timeline ----
+        # ================================================================
+        # PHASE A — Generate all voice files FIRST
+        # Measure actual durations before building timeline.
+        # This is the sync fix — we never assume duration, we measure it.
+        # ================================================================
+
+        print(f"  🎙️  Generating voice for {len(lines_with_pacing)} lines...")
+        voice_data = []   # list of (voice_file, actual_duration, pacing, chunk_size)
+
+        for i, (line, pacing) in enumerate(lines_with_pacing):
+            mode       = PACING_MODES.get(pacing, PACING_MODES["confrontation"])
+            chunk_size = mode["chunk_size"]
+            vf         = f"temp_segments/v_{seg_index}_{i}.mp3"
+            voice_files.append(vf)
+            generate_voice(line, vf, pacing)
+            audio    = AudioFileClip(vf)
+            duration = audio.duration
+            audio.close()
+            voice_data.append((vf, duration, pacing, chunk_size, line))
+
+        # ================================================================
+        # PHASE B — Check total duration fits max_duration (reel only)
+        # If total voice would exceed 15s, drop last lines until it fits.
+        # ================================================================
+
+        if max_duration:
+            lead_in  = 0.5
+            gap      = 0.12
+            total    = lead_in + sum(d + gap for _, d, _, _, _ in voice_data)
+            # Trim lines from the end until it fits
+            while total > max_duration and len(voice_data) > 1:
+                removed  = voice_data.pop()
+                if removed[0] in voice_files:
+                    voice_files.remove(removed[0])
+                    if os.path.exists(removed[0]):
+                        os.remove(removed[0])
+                total = lead_in + sum(d + gap for _, d, _, _, _ in voice_data)
+
+        # ================================================================
+        # PHASE C — Build subtitle + audio timeline from measured durations
+        # ================================================================
+
         clips       = []
         audio_clips = []
         punch_times = []
         timeline    = 0.5
         FADE_OUT    = 0.12
 
-        for i, (line, pacing) in enumerate(lines_with_pacing):
-            mode       = PACING_MODES.get(pacing, PACING_MODES["confrontation"])
-            chunk_size = mode["chunk_size"]
-
-            voice_file = f"temp_segments/v_{seg_index}_{i}.mp3"
-            voice_files.append(voice_file)
-            generate_voice(line, voice_file, pacing)
-
-            audio          = AudioFileClip(voice_file)
-            voice_duration = audio.duration
-
-            chunks         = split_into_chunks(line, chunk_size)
-            num_chunks     = len(chunks)
-            chunk_duration = voice_duration / num_chunks
-
+        for i, (vf, voice_duration, pacing, chunk_size, line) in enumerate(voice_data):
+            audio = AudioFileClip(vf)
             audio_clips.append(audio.set_start(timeline))
 
-            # Punch on line 0, 2, last
-            is_punch_line = i == 0 or i == len(lines_with_pacing) - 2 or i == len(lines_with_pacing) - 1
-            if is_punch_line:
+            # Punch registration
+            is_punch = i == 0 or i == len(voice_data) - 2 or i == len(voice_data) - 1
+            if is_punch:
                 peak   = 1.08 if i == 0 else 1.06
                 attack = 0.6  if i == 0 else 0.4
                 punch_times.append((timeline, peak, attack))
 
+            # ✅ SYNC FIX — chunks sized from ACTUAL voice_duration
+            chunks         = split_into_chunks(line, chunk_size)
+            num_chunks     = max(len(chunks), 1)
+            chunk_duration = voice_duration / num_chunks   # exact slice per chunk
+
             for j, chunk in enumerate(chunks):
                 chunk_start = timeline + j * chunk_duration
+
+                # Last chunk absorbs any remainder exactly
                 if j == num_chunks - 1:
-                    text_duration = (voice_duration - j * chunk_duration) + FADE_OUT
+                    text_duration = max(0.1, (voice_duration - j * chunk_duration) + FADE_OUT)
                 else:
                     text_duration = chunk_duration
 
                 text_img  = make_text(chunk, highlight_first_word=(j == 0))
-                text_clip = (
-                    ImageClip(text_img)
-                    .set_start(chunk_start)
-                    .set_duration(text_duration)
-                    .fadein(0.08)
-                    .fadeout(FADE_OUT)
-                )
+                text_clip = make_text_clip(text_img, chunk_start, text_duration, mode=transition_mode)
                 clips.append(text_clip)
 
-            gap       = 0.15 if i < len(lines_with_pacing) - 1 else FADE_OUT
+            gap       = 0.12 if i < len(voice_data) - 1 else FADE_OUT
             timeline += voice_duration + gap
 
         reel_duration = float(timeline)
         if max_duration:
-            reel_duration = min(reel_duration, max_duration)
+            reel_duration = min(reel_duration, float(max_duration))
 
-        # ---- Load background ----
+        print(f"  ⏱️  Duration: {reel_duration:.2f}s")
+
+        # ================================================================
+        # PHASE D — Render video
+        # ================================================================
+
         bg_clip = load_video_background(video_path, reel_duration)
 
-        # ---- Punch zoom ----
         def zoom_frame(get_frame, t):
             scale = get_punch_scale(t, punch_times)
             frame = get_frame(t)
@@ -849,13 +937,10 @@ def build_video_segment(
             left  = (new_w - W) // 2
             return arr[top:top+H, left:left+W]
 
-        bg_clip = bg_clip.fl(zoom_frame, apply_to=["mask"])
-
-        # ---- Logo ----
+        bg_clip    = bg_clip.fl(zoom_frame, apply_to=["mask"])
         logo_array = make_logo_overlay()
-
-        # ---- Composite ----
         all_layers = [bg_clip, make_vignette(reel_duration)] + clips
+
         if logo_array is not None:
             all_layers.append(
                 ImageClip(logo_array).set_duration(reel_duration).fadein(0.4)
@@ -864,7 +949,7 @@ def build_video_segment(
         final_video = CompositeVideoClip(all_layers, size=(W, H))
         final_video = final_video.set_duration(reel_duration).fadeout(0.3)
 
-        # ---- Audio ----
+        # Audio
         final_voice = CompositeAudioClip(audio_clips)
 
         if os.path.exists("music.mp3"):
@@ -880,13 +965,16 @@ def build_video_segment(
             final_audio = final_voice
 
         final = final_video.set_audio(final_audio)
-        final.write_videofile(output_path, fps=FPS, codec="libx264", audio_codec="aac", threads=4, preset="fast")
-        print(f"  ✅ Segment → {output_path}  ({reel_duration:.1f}s)")
+        final.write_videofile(
+            output_path, fps=FPS, codec="libx264",
+            audio_codec="aac", threads=4, preset="fast"
+        )
+        print(f"  ✅ Done → {output_path}  ({reel_duration:.2f}s)")
         return output_path
 
     except Exception as e:
         import traceback
-        print(f"  ❌ Segment failed: {e}")
+        print(f"  ❌ Failed: {e}")
         traceback.print_exc()
         return None
 
@@ -908,7 +996,7 @@ CAPTION_OPENERS = {
         "This is the part nobody talks about.",
     ],
     "comfort": [
-        "Comfort is the most dangerous place to stay.",
+        "Comfort zone is the most dangerous place to stay.",
         "This is what playing it safe actually costs you.",
         "The cage you built yourself is still a cage.",
         "Stop scrolling. This is for you.",
@@ -937,7 +1025,7 @@ CAPTION_CLOSERS = {
     "identity":  ["Comment DISCIPLINE if you're locking in.", "Tag someone who needs this.", "Follow @innerdiscipline for daily content."],
     "comfort":   ["Comment DISCIPLINE if you're done settling.", "Save this for the next time comfort wins.", "Follow @innerdiscipline."],
     "time":      ["Comment DISCIPLINE if today is the day.", "Stop waiting. Comment DISCIPLINE.", "Follow @innerdiscipline for more."],
-    "challenge": ["Link in bio. Join the Inner Discipline Challenge.", "Under $20/month. Link in bio. No excuses.", "The group is open. Link in bio."],
+    "challenge": ["Link in bio. Join the Inner Discipline Challenge.", "Under $10/month. Link in bio. No excuses.", "The group is open. Link in bio."],
     "purpose":   ["Comment LEGEND if you're building.", "Type LEGACY if this hit.", "Follow @innerdiscipline — for the ones who are serious."],
 }
 
@@ -998,6 +1086,7 @@ result = build_video_segment(
     output_path=reel_path,
     max_duration=MAX_REEL_LENGTH,
     seg_index=0,
+    transition_mode="reel",
 )
 
 if result:
@@ -1025,6 +1114,7 @@ build_video_segment(
     output_path=long_path,
     max_duration=LONG_VIDEO_SECS,
     seg_index=99,
+    transition_mode="long",
 )
 
 # ================================================================
