@@ -530,7 +530,7 @@ def build_reel_script(category):
     if category == "challenge":
         cta_pool = [
             "Join the Inner Discipline Challenge. DM DISCIPLINE.",
-            "30 days. Facebook group. Under $10. DM DISCIPLINE.",
+            "30 days. Facebook group. Under $20. DM DISCIPLINE.",
             "The group is open. DM DISCIPLINE.",
             "Stop doing it alone. DM DISCIPLINE.",
             "Daily check-ins. Real accountability. DM DISCIPLINE.",
@@ -996,7 +996,7 @@ CAPTION_OPENERS = {
         "This is the part nobody talks about.",
     ],
     "comfort": [
-        "Comfort zone is the most dangerous place to stay.",
+        "Comfort is the most dangerous place to stay.",
         "This is what playing it safe actually costs you.",
         "The cage you built yourself is still a cage.",
         "Stop scrolling. This is for you.",
@@ -1025,7 +1025,7 @@ CAPTION_CLOSERS = {
     "identity":  ["Comment DISCIPLINE if you're locking in.", "Tag someone who needs this.", "Follow @innerdiscipline for daily content."],
     "comfort":   ["Comment DISCIPLINE if you're done settling.", "Save this for the next time comfort wins.", "Follow @innerdiscipline."],
     "time":      ["Comment DISCIPLINE if today is the day.", "Stop waiting. Comment DISCIPLINE.", "Follow @innerdiscipline for more."],
-    "challenge": ["Link in bio. Join the Inner Discipline Challenge.", "Under $10/month. Link in bio. No excuses.", "The group is open. Link in bio."],
+    "challenge": ["Link in bio. Join the Inner Discipline Challenge.", "Under $20/month. Link in bio. No excuses.", "The group is open. Link in bio."],
     "purpose":   ["Comment LEGEND if you're building.", "Type LEGACY if this hit.", "Follow @innerdiscipline — for the ones who are serious."],
 }
 
