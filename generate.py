@@ -48,6 +48,7 @@ PACING_MODES = {
 HOOK_MEMORY_FILE     = "hook_memory.json"
 CATEGORY_MEMORY_FILE = "category_memory.json"
 SET_STEP_FILE        = "set_step.json"
+USED_LINES_FILE      = "used_lines.json"   # âœ… persists used content across runs
 
 used_hooks    = json.load(open(HOOK_MEMORY_FILE))     if os.path.exists(HOOK_MEMORY_FILE)     else []
 last_category = json.load(open(CATEGORY_MEMORY_FILE)) if os.path.exists(CATEGORY_MEMORY_FILE) else None
@@ -349,7 +350,7 @@ SET_ORDER = ["identity", "comfort", "time", "challenge", "purpose"]
 # CONTENT SELECTION
 # ================================================================
 
-used_lines = []
+used_lines = json.load(open(USED_LINES_FILE)) if os.path.exists(USED_LINES_FILE) else []
 
 def pick_line(category, section, pacing=None):
     cat_data = CONTENT.get(category, {})
@@ -747,7 +748,7 @@ CAPTION_CLOSERS = {
     "identity":  ["Comment DISCIPLINE if you are locking in.", "Follow @innerdiscipline."],
     "comfort":   ["Comment DISCIPLINE if you are done settling.", "Follow @innerdiscipline."],
     "time":      ["Comment DISCIPLINE if today is the day.", "Follow @innerdiscipline."],
-    "challenge": ["Link in bio. Join the Inner Discipline Challenge.", "Under $20 per month. Link in bio."],
+    "challenge": ["Link in bio. Join the Inner Discipline Challenge.", "Under $20 per month. DM DISCIPLINE."],
     "purpose":   ["Comment LEGEND if you are building.", "Type LEGACY if this hit."],
 }
 HASHTAGS = {
@@ -845,6 +846,7 @@ if os.path.exists("temp_segments"):
 json.dump(used_hooks,    open(HOOK_MEMORY_FILE,     "w"))
 json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
 json.dump(set_step,      open(SET_STEP_FILE,         "w"))
+json.dump(used_lines,    open(USED_LINES_FILE,       "w"))  # âœ… saves all used lines
 
 print("\n" + "=" * 52)
 print(f"âœ… COMPLETE")
