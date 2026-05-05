@@ -21,9 +21,9 @@ LONG_VIDEO_SECS = 300
 
 FONT_PATH          = "Anton-Regular.ttf"
 LOGO_PATH          = "logo.png"
-LOGO_OPACITY       = 0.85
-LOGO_SIZE          = 180
-LOGO_BOTTOM_MARGIN = 80
+LOGO_OPACITY       = 0.60
+LOGO_SIZE          = 150
+LOGO_BOTTOM_MARGIN = 120
 MUSIC_DELAY        = 1.5
 VOICE              = "en-US-GuyNeural"
 VOLUME             = "+0%"
@@ -318,13 +318,29 @@ CONTENT = {
 # ================================================================
 
 LONG_VIDEO_ARC = [
-    {"name": "HOOK",    "pacing": "confrontation", "categories": ["identity", "comfort", "time"],    "section": "hooks",     "count": 1},
-    {"name": "DEEPEN",  "pacing": "build",         "categories": ["identity", "comfort"],            "section": "hooks",     "count": 1},
-    {"name": "STORY",   "pacing": "story",         "categories": ["identity", "comfort", "time"],    "section": "story",     "count": 1},
-    {"name": "TRUTH",   "pacing": "confrontation", "categories": ["identity", "time", "comfort"],    "section": "truths",    "count": 2},
-    {"name": "TENSION", "pacing": "build",         "categories": ["time", "identity"],               "section": "questions", "count": 2},
-    {"name": "TURN",    "pacing": "story",         "categories": ["purpose"],                        "section": "story",     "count": 1},
-    {"name": "CLOSE",   "pacing": "confrontation", "categories": ["challenge", "purpose"],           "section": "hooks",     "count": 1},
+    # Act 1 â€” Cold hook. Hard pattern interrupt.
+    {"name": "HOOK",      "pacing": "confrontation", "categories": ["identity", "comfort", "time"],  "section": "hooks",     "count": 1},
+    # Act 2 â€” Second punch. Don't let them breathe yet.
+    {"name": "HOOK2",     "pacing": "confrontation", "categories": ["comfort", "time"],              "section": "hooks",     "count": 1},
+    # Act 3 â€” Deepen. Slow build. Let the weight press.
+    {"name": "DEEPEN",    "pacing": "build",         "categories": ["identity", "comfort"],          "section": "hooks",     "count": 2},
+    # Act 4 â€” Story. Third person. Viewer sees themselves.
+    {"name": "STORY1",    "pacing": "story",         "categories": ["identity", "comfort", "time"],  "section": "story",     "count": 1},
+    # Act 5 â€” Truth. Hard landing after the story.
+    {"name": "TRUTH",     "pacing": "confrontation", "categories": ["identity", "time", "comfort"],  "section": "truths",    "count": 3},
+    # Act 6 â€” Questions. Build pressure.
+    {"name": "QUESTIONS", "pacing": "build",         "categories": ["time", "identity", "comfort"],  "section": "questions", "count": 3},
+    # Act 7 â€” Deeper truth. Build continues.
+    {"name": "DEEPEN2",   "pacing": "build",         "categories": ["identity", "purpose"],          "section": "truths",    "count": 2},
+    # Act 8 â€” Story again. The turn. Purpose emerges.
+    {"name": "TURN",      "pacing": "story",         "categories": ["purpose"],                      "section": "story",     "count": 1},
+    # Act 9 â€” Purpose confrontation. Rising energy.
+    {"name": "PURPOSE",   "pacing": "confrontation", "categories": ["purpose"],                      "section": "hooks",     "count": 2},
+    # Act 10 â€” Final questions. Leave them thinking.
+    {"name": "FINAL_Q",   "pacing": "build",         "categories": ["purpose", "identity"],          "section": "questions", "count": 2},
+    # Act 11 â€” Close hard. Challenge CTA.
+    {"name": "CLOSE",     "pacing": "confrontation", "categories": ["challenge"],                    "section": "hooks",     "count": 1},
+    {"name": "CTA",       "pacing": "confrontation", "categories": ["challenge"],                    "section": "truths",    "count": 1},
 ]
 
 SET_ORDER = ["identity", "comfort", "time", "challenge", "purpose"]
@@ -690,8 +706,8 @@ def build_video(lines_with_pacing, video_path, output_path, max_duration=None, s
             logger=None
         )
 
-        # ---- Step 12: Hard trim reel to exactly 15s ----
-        if max_duration:
+        # ---- Step 12: Hard trim reel to exactly 15s (reel only) ----
+        if max_duration and max_duration <= MAX_REEL_LENGTH:
             trimmed = output_path.replace(".mp4", "_t.mp4")
             subprocess.run([
                 "ffmpeg", "-y", "-i", output_path,
