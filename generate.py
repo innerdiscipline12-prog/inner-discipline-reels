@@ -8,10 +8,10 @@ from datetime import datetime
 import edge_tts
 
 # ================================================================
-# INNER DISCIPLINE — DAILY ENGINE
+# INNER DISCIPLINE â€” DAILY ENGINE
 # Output per run:
-#   1 x reel_[date].mp4         — 15s short form
-#   1 x longvideo_[date].mp4    — ~5 min continuous monologue
+#   1 x reel_[date].mp4         â€” 15s short form
+#   1 x longvideo_[date].mp4    â€” ~5 min continuous monologue
 #
 # Background videos: name them bg1.mp4, bg2.mp4 etc.
 # ================================================================
@@ -23,8 +23,8 @@ LONG_VIDEO_SECS = 300   # 5 minutes target
 
 FONT_PATH          = "Anton-Regular.ttf"
 LOGO_PATH          = "logo.png"
-LOGO_OPACITY       = 0.85
-LOGO_SIZE          = 200
+LOGO_OPACITY       = 0.75
+LOGO_SIZE          = 180
 LOGO_BOTTOM_MARGIN = 120
 
 MUSIC_DELAY = 1.5
@@ -35,26 +35,26 @@ os.makedirs("temp_segments", exist_ok=True)
 # ================================================================
 # PACING MODES
 # Each mode changes TTS rate/pitch and chunk display speed.
-# Confrontation = fast, punchy — hits like a slap
-# Build         = slow, heavy — presses like a weight
-# Story         = measured, human — lands like a truth
+# Confrontation = fast, punchy â€” hits like a slap
+# Build         = slow, heavy â€” presses like a weight
+# Story         = measured, human â€” lands like a truth
 # ================================================================
 
 PACING_MODES = {
     "confrontation": {
         "rate":  "-5%",     # Fast delivery
         "pitch": "-40Hz",   # Sharp tone
-        "chunk_size": 2,    # Shorter chunks — rapid fire
+        "chunk_size": 2,    # Shorter chunks â€” rapid fire
     },
     "build": {
         "rate":  "-25%",    # Slow, weighted delivery
         "pitch": "-55Hz",   # Deeper tone
-        "chunk_size": 3,    # Normal chunks — let words breathe
+        "chunk_size": 3,    # Normal chunks â€” let words breathe
     },
     "story": {
         "rate":  "-15%",    # Measured, natural pace
         "pitch": "-45Hz",   # Neutral tone
-        "chunk_size": 4,    # Longer chunks — narrative flow
+        "chunk_size": 4,    # Longer chunks â€” narrative flow
     },
 }
 
@@ -87,18 +87,18 @@ def get_all_videos():
     )
 
 # ================================================================
-# CONTENT BANK — REWRITTEN FOR EMOTIONAL WEIGHT
+# CONTENT BANK â€” REWRITTEN FOR EMOTIONAL WEIGHT
 #
 # Three pacing modes per category:
-#   confrontation — fast, direct, aggressive
-#   build         — slow, heavy, pressing
-#   story         — narrative, third person, cinematic
+#   confrontation â€” fast, direct, aggressive
+#   build         â€” slow, heavy, pressing
+#   story         â€” narrative, third person, cinematic
 # ================================================================
 
 CONTENT = {
 
     # ----------------------------------------------------------------
-    # IDENTITY — Who you've become vs who you said you'd be
+    # IDENTITY â€” Who you've become vs who you said you'd be
     # ----------------------------------------------------------------
     "identity": {
         "confrontation": {
@@ -163,7 +163,7 @@ CONTENT = {
     },
 
     # ----------------------------------------------------------------
-    # COMFORT — The enemy that feels like a friend
+    # COMFORT â€” The enemy that feels like a friend
     # ----------------------------------------------------------------
     "comfort": {
         "confrontation": {
@@ -223,7 +223,7 @@ CONTENT = {
     },
 
     # ----------------------------------------------------------------
-    # TIME — The resource you can't earn back
+    # TIME â€” The resource you can't earn back
     # ----------------------------------------------------------------
     "time": {
         "confrontation": {
@@ -283,7 +283,7 @@ CONTENT = {
     },
 
     # ----------------------------------------------------------------
-    # CHALLENGE — The paid accountability group
+    # CHALLENGE â€” The paid accountability group
     # ----------------------------------------------------------------
     "challenge": {
         "confrontation": {
@@ -341,7 +341,7 @@ CONTENT = {
     },
 
     # ----------------------------------------------------------------
-    # PURPOSE — The deepest layer. Who you're becoming.
+    # PURPOSE â€” The deepest layer. Who you're becoming.
     # ----------------------------------------------------------------
     "purpose": {
         "confrontation": {
@@ -410,7 +410,7 @@ CONTENT = {
 # ================================================================
 
 LONG_VIDEO_ARC = [
-    # Act 1 — Cold hook. Confrontation. Pattern interrupt.
+    # Act 1 â€” Cold hook. Confrontation. Pattern interrupt.
     {
         "name":   "HOOK",
         "pacing": "confrontation",
@@ -418,7 +418,7 @@ LONG_VIDEO_ARC = [
         "section": "hooks",
         "count":  1,
     },
-    # Act 2 — Deepen the pain. Build mode. Let it press.
+    # Act 2 â€” Deepen the pain. Build mode. Let it press.
     {
         "name":   "DEEPEN",
         "pacing": "build",
@@ -426,7 +426,7 @@ LONG_VIDEO_ARC = [
         "section": "hooks",
         "count":  1,
     },
-    # Act 3 — Story. Third person. Viewer sees themselves in it.
+    # Act 3 â€” Story. Third person. Viewer sees themselves in it.
     {
         "name":   "STORY",
         "pacing": "story",
@@ -434,7 +434,7 @@ LONG_VIDEO_ARC = [
         "section": "story",
         "count":  1,
     },
-    # Act 4 — Truth. Confrontation. Hard landing.
+    # Act 4 â€” Truth. Confrontation. Hard landing.
     {
         "name":   "TRUTH",
         "pacing": "confrontation",
@@ -442,7 +442,7 @@ LONG_VIDEO_ARC = [
         "section": "truths",
         "count":  2,
     },
-    # Act 5 — Rising tension. Build. Questions that press.
+    # Act 5 â€” Rising tension. Build. Questions that press.
     {
         "name":   "TENSION",
         "pacing": "build",
@@ -450,7 +450,7 @@ LONG_VIDEO_ARC = [
         "section": "questions",
         "count":  2,
     },
-    # Act 6 — Purpose. Story. The turn. Hope through discipline.
+    # Act 6 â€” Purpose. Story. The turn. Hope through discipline.
     {
         "name":   "TURN",
         "pacing": "story",
@@ -458,7 +458,7 @@ LONG_VIDEO_ARC = [
         "section": "story",
         "count":  1,
     },
-    # Act 7 — CTA. Confrontation. Close hard.
+    # Act 7 â€” CTA. Confrontation. Close hard.
     {
         "name":   "CLOSE",
         "pacing": "confrontation",
@@ -482,7 +482,7 @@ def get_next_category():
     return cat
 
 # ================================================================
-# CONTENT SELECTION — with memory to avoid repeats
+# CONTENT SELECTION â€” with memory to avoid repeats
 # ================================================================
 
 used_lines = []   # tracks all lines used this session to avoid repeats
@@ -560,7 +560,7 @@ def build_reel_script(category):
 def build_long_video_script():
     """
     Builds the full monologue script for the 5-min long video.
-    Returns list of (text, pacing_mode) tuples — one per line spoken.
+    Returns list of (text, pacing_mode) tuples â€” one per line spoken.
     """
     lines = []
     used_categories = {}
@@ -585,7 +585,7 @@ def build_long_video_script():
 
 def make_logo_overlay():
     if not os.path.exists(LOGO_PATH):
-        print(f"⚠️  Logo not found — skipping.")
+        print(f"âš ï¸  Logo not found â€” skipping.")
         return None
 
     logo   = Image.open(LOGO_PATH).convert("RGBA")
@@ -605,7 +605,7 @@ def make_logo_overlay():
     return np.array(canvas)
 
 # ================================================================
-# TEXT ENGINE — orange first word, chest position
+# TEXT ENGINE â€” orange first word, chest position
 # ================================================================
 
 def make_text(text, highlight_first_word=True):
@@ -671,7 +671,7 @@ def make_text(text, highlight_first_word=True):
     return np.array(img)
 
 # ================================================================
-# TTS — pacing-aware
+# TTS â€” pacing-aware
 # ================================================================
 
 async def tts_async(text, filename, rate, pitch):
@@ -747,35 +747,30 @@ def make_vignette(duration):
 
 # ================================================================
 # CHUNK SPLITTER
+# âœ… Always splits by word count â€” never by punctuation.
+# Sync depends on equal-slice timing. Sentence split breaks it.
 # ================================================================
 
 def split_into_chunks(text, chunk_size=3):
-    """Split text into word chunks. Story mode splits at punctuation."""
-    # Try punctuation split first for natural phrasing
-    import re
-    sentences = re.split(r'(?<=[.!?,])\s+', text.strip())
-    if len(sentences) > 1:
-        return [s.strip() for s in sentences if s.strip()]
-    # Fallback: word chunks
     words  = text.split()
     chunks = []
     for i in range(0, len(words), chunk_size):
         chunks.append(" ".join(words[i:i + chunk_size]))
-    return chunks
+    return [c for c in chunks if c.strip()]
 
 # ================================================================
-# TEXT CLIP BUILDER — reel vs long video transitions
+# TEXT CLIP BUILDER â€” reel vs long video transitions
 # ================================================================
 
 def make_text_clip(text_img, start, duration, mode="reel"):
     """
-    mode="reel"  → pop/snap: scale 0.7→1.0 in 0.08s, hard cut out
-    mode="long"  → fade/slide: fadein 0.2s, fadeout 0.2s
+    mode="reel"  â†’ pop/snap: scale 0.7â†’1.0 in 0.08s, hard cut out
+    mode="long"  â†’ fade/slide: fadein 0.2s, fadeout 0.2s
     """
     clip = ImageClip(text_img).set_start(start).set_duration(duration)
 
     if mode == "reel":
-        # Pop/snap — aggressive scale up
+        # Pop/snap â€” aggressive scale up
         def pop_frame(get_frame, t):
             frame = get_frame(t)
             snap_dur = 0.08
@@ -817,8 +812,8 @@ def make_text_clip(text_img, start, duration, mode="reel"):
 # ================================================================
 # CORE VIDEO BUILDER
 # Shared by reel and long video.
-# mode="reel"  → 15s hard cap, pop transitions, confrontation pacing
-# mode="long"  → arc pacing, slide transitions, sync per voice duration
+# mode="reel"  â†’ 15s hard cap, pop transitions, confrontation pacing
+# mode="long"  â†’ arc pacing, slide transitions, sync per voice duration
 # ================================================================
 
 def build_video_segment(
@@ -833,12 +828,12 @@ def build_video_segment(
 
     try:
         # ================================================================
-        # PHASE A — Generate all voice files FIRST
+        # PHASE A â€” Generate all voice files FIRST
         # Measure actual durations before building timeline.
-        # This is the sync fix — we never assume duration, we measure it.
+        # This is the sync fix â€” we never assume duration, we measure it.
         # ================================================================
 
-        print(f"  🎙️  Generating voice for {len(lines_with_pacing)} lines...")
+        print(f"  ðŸŽ™ï¸  Generating voice for {len(lines_with_pacing)} lines...")
         voice_data = []   # list of (voice_file, actual_duration, pacing, chunk_size)
 
         for i, (line, pacing) in enumerate(lines_with_pacing):
@@ -853,7 +848,7 @@ def build_video_segment(
             voice_data.append((vf, duration, pacing, chunk_size, line))
 
         # ================================================================
-        # PHASE B — Check total duration fits max_duration (reel only)
+        # PHASE B â€” Check total duration fits max_duration (reel only)
         # If total voice would exceed 15s, drop last lines until it fits.
         # ================================================================
 
@@ -871,7 +866,7 @@ def build_video_segment(
                 total = lead_in + sum(d + gap for _, d, _, _, _ in voice_data)
 
         # ================================================================
-        # PHASE C — Build subtitle + audio timeline from measured durations
+        # PHASE C â€” Build subtitle + audio timeline from measured durations
         # ================================================================
 
         clips       = []
@@ -891,7 +886,7 @@ def build_video_segment(
                 attack = 0.6  if i == 0 else 0.4
                 punch_times.append((timeline, peak, attack))
 
-            # ✅ SYNC FIX — chunks sized from ACTUAL voice_duration
+            # âœ… SYNC FIX â€” chunks sized from ACTUAL voice_duration
             chunks         = split_into_chunks(line, chunk_size)
             num_chunks     = max(len(chunks), 1)
             chunk_duration = voice_duration / num_chunks   # exact slice per chunk
@@ -905,7 +900,7 @@ def build_video_segment(
                 else:
                     text_duration = chunk_duration
 
-                text_img  = make_text(chunk, highlight_first_word=(j == 0))
+                text_img  = make_text(chunk, highlight_first_word=True)  # âœ… orange first word on every chunk
                 text_clip = make_text_clip(text_img, chunk_start, text_duration, mode=transition_mode)
                 clips.append(text_clip)
 
@@ -916,10 +911,10 @@ def build_video_segment(
         if max_duration:
             reel_duration = min(reel_duration, float(max_duration))
 
-        print(f"  ⏱️  Duration: {reel_duration:.2f}s")
+        print(f"  â±ï¸  Duration: {reel_duration:.2f}s")
 
         # ================================================================
-        # PHASE D — Render video
+        # PHASE D â€” Render video
         # ================================================================
 
         bg_clip = load_video_background(video_path, reel_duration)
@@ -969,12 +964,12 @@ def build_video_segment(
             output_path, fps=FPS, codec="libx264",
             audio_codec="aac", threads=4, preset="fast"
         )
-        print(f"  ✅ Done → {output_path}  ({reel_duration:.2f}s)")
+        print(f"  âœ… Done â†’ {output_path}  ({reel_duration:.2f}s)")
         return output_path
 
     except Exception as e:
         import traceback
-        print(f"  ❌ Failed: {e}")
+        print(f"  âŒ Failed: {e}")
         traceback.print_exc()
         return None
 
@@ -1026,7 +1021,7 @@ CAPTION_CLOSERS = {
     "comfort":   ["Comment DISCIPLINE if you're done settling.", "Save this for the next time comfort wins.", "Follow @innerdiscipline."],
     "time":      ["Comment DISCIPLINE if today is the day.", "Stop waiting. Comment DISCIPLINE.", "Follow @innerdiscipline for more."],
     "challenge": ["Link in bio. Join the Inner Discipline Challenge.", "Under $20/month. Link in bio. No excuses.", "The group is open. Link in bio."],
-    "purpose":   ["Comment LEGEND if you're building.", "Type LEGACY if this hit.", "Follow @innerdiscipline — for the ones who are serious."],
+    "purpose":   ["Comment LEGEND if you're building.", "Type LEGACY if this hit.", "Follow @innerdiscipline â€” for the ones who are serious."],
 }
 
 HASHTAGS = {
@@ -1056,7 +1051,7 @@ def build_caption(script_lines, category):
 # RUN
 # ================================================================
 
-print("\n🎬 INNER DISCIPLINE — DAILY ENGINE")
+print("\nðŸŽ¬ INNER DISCIPLINE â€” DAILY ENGINE")
 print("   Output: 1 reel (15s) + 1 long video (~5 min)")
 print("=" * 52)
 
@@ -1065,13 +1060,13 @@ if not all_videos:
     raise Exception("No background videos found. Add bg1.mp4 etc.")
 
 date_str = datetime.now().strftime("%Y%m%d_%H%M")
-bg_video = all_videos[0]   # use first available — add more for variety
+bg_video = all_videos[0]   # use first available â€” add more for variety
 
 # ================================================================
-# PHASE 1 — Daily Reel (15s)
+# PHASE 1 â€” Daily Reel (15s)
 # ================================================================
 
-print("\n📱 Phase 1 — Daily Reel...")
+print("\nðŸ“± Phase 1 â€” Daily Reel...")
 
 reel_category             = get_next_category()
 reel_script, reel_pacing  = build_reel_script(reel_category)
@@ -1090,16 +1085,29 @@ result = build_video_segment(
 )
 
 if result:
-    caption  = build_caption(reel_script, reel_category)
-    base     = os.path.splitext(reel_path)[0]
+    # âœ… Hard enforce 15.0s â€” trim with ffmpeg if any rounding crept in
+    import subprocess
+    subprocess.run([
+        "ffmpeg", "-y", "-i", reel_path,
+        "-t", str(MAX_REEL_LENGTH),
+        "-c", "copy",
+        reel_path.replace(".mp4", "_trim.mp4")
+    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    trim_path = reel_path.replace(".mp4", "_trim.mp4")
+    if os.path.exists(trim_path):
+        os.replace(trim_path, reel_path)
+
+    caption = build_caption(reel_script, reel_category)
+    base    = os.path.splitext(reel_path)[0]
     open(f"{base}_title.txt",   "w").write(f"{reel_script[0]} | INNER DISCIPLINE")
     open(f"{base}_caption.txt", "w").write(caption)
+    print(f"   ðŸ“„ Caption saved â†’ {base}_caption.txt")
 
 # ================================================================
-# PHASE 2 — Long Video (~5 min continuous monologue)
+# PHASE 2 â€” Long Video (~5 min continuous monologue)
 # ================================================================
 
-print("\n🎥 Phase 2 — Long Video monologue...")
+print("\nðŸŽ¥ Phase 2 â€” Long Video monologue...")
 
 long_script   = build_long_video_script()
 long_path     = f"outputs/longvideo_{date_str}.mp4"
@@ -1108,7 +1116,7 @@ print(f"   Arc: {len(long_script)} lines across {len(LONG_VIDEO_ARC)} acts")
 for act, (line, pacing) in zip(LONG_VIDEO_ARC, long_script):
     print(f"   [{act['name']}:{pacing}] {line[:60]}...")
 
-build_video_segment(
+long_result = build_video_segment(
     lines_with_pacing=long_script,
     video_path=bg_video,
     output_path=long_path,
@@ -1116,6 +1124,15 @@ build_video_segment(
     seg_index=99,
     transition_mode="long",
 )
+
+# âœ… Save long video caption
+if long_result:
+    long_lines   = [line for line, _ in long_script]
+    long_caption = build_caption(long_lines, "purpose")   # purpose tone for long video
+    long_base    = os.path.splitext(long_path)[0]
+    open(f"{long_base}_title.txt",   "w").write("Inner Discipline | Full Motivation | INNER DISCIPLINE")
+    open(f"{long_base}_caption.txt", "w").write(long_caption)
+    print(f"   ðŸ“„ Long video caption saved â†’ {long_base}_caption.txt")
 
 # ================================================================
 # CLEANUP + MEMORY
@@ -1129,7 +1146,7 @@ json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
 json.dump(set_step,      open(SET_STEP_FILE,         "w"))
 
 print("\n" + "=" * 52)
-print(f"✅ COMPLETE")
-print(f"   📱 Reel      → {reel_path}")
-print(f"   🎥 Long video → {long_path}")
+print(f"âœ… COMPLETE")
+print(f"   ðŸ“± Reel      â†’ {reel_path}")
+print(f"   ðŸŽ¥ Long video â†’ {long_path}")
 print("=" * 52)
