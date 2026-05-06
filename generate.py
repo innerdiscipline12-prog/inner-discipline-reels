@@ -36,9 +36,9 @@ os.makedirs("temp_segments", exist_ok=True)
 # ================================================================
 
 PACING_MODES = {
-    "confrontation": {"rate": "-5%",  "pitch": "-40Hz", "chunk_size": 2},
-    "build":         {"rate": "-25%", "pitch": "-55Hz", "chunk_size": 3},
-    "story":         {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3},
+    "confrontation": {"rate": "-18%", "pitch": "-40Hz", "chunk_size": 2},  # controlled punch
+    "build":         {"rate": "-32%", "pitch": "-55Hz", "chunk_size": 3},  # heavy, weighted
+    "story":         {"rate": "-22%", "pitch": "-45Hz", "chunk_size": 3},  # measured, human
 }
 
 # ================================================================
@@ -390,7 +390,7 @@ def build_reel_script(category):
     if category == "challenge":
         cta = random.choice([
             "Join the Inner Discipline Challenge. DM DISCIPLINE.",
-            "30 days. Facebook group. Under 20$. DM DISCIPLINE.",
+            "30 days. Facebook group. Under 20 dollars. DM DISCIPLINE.",
             "The group is open. DM DISCIPLINE.",
             "Stop doing it alone. DM DISCIPLINE.",
         ])
@@ -577,36 +577,47 @@ def build_video(lines_with_pacing, video_path, output_path, max_duration=None, s
                     voice_files.remove(removed[0])
                 total = lead + sum(d + gap for _, d, _, _, _ in voice_data)
 
-        # ---- Step 3: Build timeline â€” (chunk_text, start, end) list ----
-        timeline   = 0.5
-        gap        = 0.12
-        FADE_OUT   = 0.10
+        # ---- Step 3: Build timeline from EXACT audio durations ----
+        # âœ… All timestamps calculated upfront from measured durations.
+        # No floating point accumulation â€” last line stays in sync.
+        FADE_DUR    = 0.15   # fade in / fade out duration seconds
+        LINE_GAP    = 0.25   # silence between lines â€” breathing room
+        lead        = 0.5    # lead-in before first word
+
+        # First pass â€” calculate exact start time of every line
+        line_starts = []
+        cursor      = lead
+        for i, (vf, voice_duration, pacing, chunk_size, line) in enumerate(voice_data):
+            line_starts.append(cursor)
+            cursor += voice_duration + (LINE_GAP if i < len(voice_data) - 1 else FADE_DUR)
+
+        reel_duration = float(cursor)
+        if max_duration:
+            reel_duration = min(reel_duration, float(max_duration))
+
+        # Second pass â€” build text_events and audio_clips from exact starts
         text_events = []   # (chunk_text, t_start, t_end)
         audio_clips = []
 
         for i, (vf, voice_duration, pacing, chunk_size, line) in enumerate(voice_data):
-            audio = AudioFileClip(vf)
-            audio_clips.append(audio.set_start(timeline))
+            line_t = line_starts[i]
+            audio  = AudioFileClip(vf)
+            audio_clips.append(audio.set_start(line_t))
 
             chunks         = split_into_chunks(line, chunk_size)
             num_chunks     = len(chunks)
-            chunk_duration = voice_duration / num_chunks
+            chunk_duration = voice_duration / num_chunks   # exact equal slice
 
             for j, chunk in enumerate(chunks):
-                t_start = timeline + j * chunk_duration
+                t_start = line_t + j * chunk_duration
+                # Last chunk ends exactly when voice ends + small fade tail
                 if j == num_chunks - 1:
-                    t_end = timeline + voice_duration + FADE_OUT
+                    t_end = line_t + voice_duration + FADE_DUR
                 else:
-                    t_end = t_start + chunk_duration
-                text_events.append((chunk, t_start, t_end))
+                    t_end = t_start + chunk_duration + FADE_DUR * 0.5
+                text_events.append((chunk, t_start, min(t_end, reel_duration)))
 
-            timeline += voice_duration + (gap if i < len(voice_data) - 1 else FADE_OUT)
-
-        reel_duration = float(timeline)
-        if max_duration:
-            reel_duration = min(reel_duration, float(max_duration))
-
-        print(f"  â±ï¸  Duration: {reel_duration:.2f}s | Text events: {len(text_events)}")
+        print(f"  â±ï¸  Duration: {reel_duration:.2f}s | Lines: {len(voice_data)} | Chunks: {len(text_events)}")
 
         # ---- Step 4: Pre-render all text frames ----
         print(f"  ðŸ–¼ï¸  Pre-rendering {len(text_events)} text frames...")
@@ -654,21 +665,35 @@ def build_video(lines_with_pacing, video_path, output_path, max_duration=None, s
             bg[:, :, 2] *= vignette_mask
             bg = np.clip(bg, 0, 255).astype(np.uint8)
 
-            # Composite active text chunks
+            # âœ… Composite text with fade in / fade out
             for text_frame, t_start, t_end in rendered_texts:
                 if t_start <= t < t_end:
-                    # Blend: anywhere text_frame is not black, overlay it
-                    # Mask = any channel > 20 (text pixels)
-                    mask = np.any(text_frame > 20, axis=2)   # (H, W) bool
-                    bg[mask] = text_frame[mask]
+                    duration = t_end - t_start
+
+                    # Fade in over FADE_DUR seconds
+                    if t - t_start < FADE_DUR:
+                        alpha = (t - t_start) / FADE_DUR
+                    # Fade out over FADE_DUR seconds
+                    elif t_end - t < FADE_DUR:
+                        alpha = (t_end - t) / FADE_DUR
+                    else:
+                        alpha = 1.0
+
+                    alpha = float(np.clip(alpha, 0.0, 1.0))
+
+                    # Blend text pixels only (not black background)
+                    mask   = np.any(text_frame > 20, axis=2)
+                    bg_f   = bg.astype(np.float32)
+                    txt_f  = text_frame.astype(np.float32)
+                    bg_f[mask] = bg_f[mask] * (1.0 - alpha) + txt_f[mask] * alpha
+                    bg     = np.clip(bg_f, 0, 255).astype(np.uint8)
 
             # Composite logo (always visible)
             if logo_frame is not None:
                 logo_mask = np.any(logo_frame > 10, axis=2)
-                # Apply logo opacity
-                bg_f    = bg.astype(np.float32)
-                logo_f  = logo_frame.astype(np.float32)
-                blended = bg_f.copy()
+                bg_f      = bg.astype(np.float32)
+                logo_f    = logo_frame.astype(np.float32)
+                blended   = bg_f.copy()
                 blended[logo_mask] = (
                     bg_f[logo_mask] * (1.0 - LOGO_OPACITY) +
                     logo_f[logo_mask] * LOGO_OPACITY
