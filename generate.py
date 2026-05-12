@@ -64,160 +64,272 @@ def get_all_videos():
     return glob.glob("bg*.mp4") + glob.glob("bg*.mov") + glob.glob("bg*.MP4")
 
 # ================================================================
-# CONTENT BANK
+# CONTENT BANK â€” Fresh lines across 4 directions:
+# Identity crisis, Mental toughness, Masculinity, Daily habits
 # ================================================================
 
 CONTENT = {
+
+    # ----------------------------------------------------------------
+    # IDENTITY â€” Deeper crisis. Who you have become.
+    # ----------------------------------------------------------------
     "identity": {
         "confrontation": {
             "hooks": [
-                "You became someone you don't recognise.",
-                "You broke the promise you made to yourself.",
-                "You stopped fighting. Nobody even had to beat you.",
-                "You made peace with failing. That's the worst part.",
-                "You lowered the bar so many times you forgot where it was.",
-                "You told yourself you'd change. You didn't.",
-                "You sold yourself out. For nothing.",
-                "You don't even flinch anymore. That's how deep it goes.",
+                "You do not even recognise yourself anymore.",
+                "You used to have standards. Look at them now.",
+                "The man you promised to be is watching you settle.",
+                "You have become the person you used to judge.",
+                "You traded your edge for comfort and called it growth.",
+                "You know exactly what you are doing. That is the worst part.",
+                "You stopped holding yourself accountable. Nobody else will.",
+                "You are building a life you will be ashamed of.",
+                "The version of you from five years ago would not respect you.",
+                "You do not even fight yourself anymore. You just give in.",
+                "You lowered the bar so many times the bar is on the floor.",
+                "You are performing discipline. You are not living it.",
+                "Every mirror shows you the man you chose to become.",
+                "You made weakness a habit. Now it feels like personality.",
+                "You are comfortable with failure. That is the real problem.",
             ],
             "truths": [
-                "That's not a bad day. That's a pattern.",
-                "That's not a mistake. That's who you're choosing to be.",
-                "You did this. Every single day, you chose this.",
-                "The man you used to respect wouldn't recognise you.",
-                "This is what giving up slowly looks like.",
-                "Every compromise you made added up to this moment.",
+                "That is not a rough patch. That is who you are becoming.",
+                "The man you are today is the sum of every choice you avoided.",
+                "You are not stuck. You are choosing this every single day.",
+                "Somewhere you decided less was acceptable. That decision stuck.",
+                "Nobody forced this on you. You built it one excuse at a time.",
+                "This is what slow surrender looks like from the inside.",
+                "The identity you are living was never chosen. It was settled for.",
+                "You are not struggling. You are coasting. There is a difference.",
             ],
             "questions": [
-                "Is this the man you're going to stay as?",
-                "How much longer are you going to watch yourself fall?",
-                "At what point did you decide this was acceptable?",
-                "Can you even look at yourself honestly anymore?",
+                "When did you stop being someone you respected?",
+                "What would it take for you to finally hold yourself accountable?",
+                "How long are you going to pretend this version of you is acceptable?",
+                "If nothing changes, who will you be in five years?",
+                "At what point did you stop being the man and start being the excuse?",
+                "Are you building an identity or inheriting one by default?",
             ],
         },
         "build": {
             "hooks": [
-                "Somewhere along the way you stopped showing up for yourself.",
-                "There was a version of you that used to fight back.",
-                "You remember the last time you were proud of yourself.",
-                "The man you planned to be is still waiting.",
-                "Every morning you wake up and feel the gap.",
-                "You carry this quietly. The weight of knowing you're capable of more.",
+                "There is a version of you buried under years of small surrenders.",
+                "You feel it every morning. The distance between who you are and who you were meant to be.",
+                "The man you planned to become did not disappear. He is waiting.",
+                "Identity is not what you say you are. It is what you do when no one is watching.",
+                "You have been drifting so long that drift feels like direction.",
+                "The gap between your standards and your actions has never been wider.",
+                "You carry a version of yourself that you have never fully become.",
             ],
             "truths": [
-                "The silence between who you are and who you could be is deafening.",
-                "You haven't lost the ability. You've lost the decision.",
-                "Nobody is coming to pull you back. This is yours to fix.",
-                "The version of you that didn't quit is still in there.",
+                "Character is built in the moments you think do not matter. They all matter.",
+                "You do not find yourself. You build yourself through repeated decisions.",
+                "The man you are becoming is decided in the hours nobody sees.",
+                "Reclaiming your identity starts with one decision held long enough to become a pattern.",
+                "You cannot think your way into a new identity. You have to act your way there.",
             ],
             "questions": [
-                "How much more time are you willing to give this version of yourself?",
-                "What are you waiting for before you take yourself seriously?",
-                "If not now, when. And if not you, who.",
+                "What would you do differently if you truly believed you were capable of more?",
+                "Who were you before the world convinced you to aim lower?",
+                "What is one standard you dropped that you need to pick back up today?",
+                "If you lived by your own values for thirty days who would you become?",
             ],
         },
         "story": [
-            "He had a plan. A real one. He wrote it down and believed every word. Then life got heavy. And instead of pushing through, he adjusted. Just this once. Then again. Then it wasn't adjusting anymore. It was retreating. Nobody saw it happen. Not even him. Until one day he looked up and the man in the mirror was a stranger.",
-            "There is a man who checks his phone first thing every morning. Not for opportunity. For escape. He used to have a standard. He is not sure exactly when he let go. But he can feel the distance between then and now every single day.",
-            "He made a promise to himself at twenty. A real one. By thirty he could not remember the last time he kept it. He did not fail dramatically. He failed quietly. One small compromise after another. Together they built the life he never wanted.",
+            "He used to be the one people counted on. The one who followed through. Then gradually almost invisibly he stopped. Not all at once. Just a little less reliable each month. A little more willing to let himself down quietly. Until one day someone who used to admire him looked at him differently. And he knew why. Because he had been looking at himself the same way for a long time.",
+            "He had a standard once. It was not written anywhere but he felt it. Like a line he would not cross. Then one day he crossed it. Just barely. Then again. Then the line moved. Not dramatically. Just enough that he did not have to feel it. He told himself he was evolving. He was not. He was retreating. And calling it wisdom.",
+            "Every morning he woke up with intentions. Every night he went to sleep with excuses. The gap between the two was his life. He knew it. He had known it for years. But knowing and changing are not the same thing. And every day he did not change the gap got a little more permanent.",
+            "He was not a bad man. That was the thing. He was a decent man who had made peace with not becoming the man he was capable of being. And somewhere in that peace was a quiet tragedy that nobody around him could see. But he could feel it. Every single day.",
         ],
     },
-    "comfort": {
+
+    # ----------------------------------------------------------------
+    # MENTAL â€” Toughness. Suffering. Not breaking.
+    # ----------------------------------------------------------------
+    "mental": {
         "confrontation": {
             "hooks": [
-                "You chose easy. Again.",
-                "Comfort is the cage you built yourself.",
-                "You stopped before it got hard. Like always.",
-                "You folded the moment it cost you something real.",
-                "Soft choices make a soft life. This is the proof.",
-                "You avoided the hard thing and called it self-care.",
-                "The version of you that was hungry is gone. Comfort killed it.",
+                "You quit the moment it got uncomfortable.",
+                "Pain is a signal. You are reading it wrong.",
+                "You are not tired. You are soft. There is a difference.",
+                "Every hard thing you avoided made the next one harder.",
+                "You fold under pressure because you have never practiced staying.",
+                "The first sign of difficulty and you look for the exit.",
+                "Mental weakness does not announce itself. It just keeps choosing easy.",
+                "You called it burnout. It was resistance. And you lost.",
+                "Discomfort is the price of growth. You keep refusing to pay.",
+                "You stop exactly where it starts to count.",
             ],
             "truths": [
-                "Everything you want is on the other side of what you keep avoiding.",
-                "Every time you chose easy, you made hard things harder.",
-                "The cage has no lock. You just stopped trying the door.",
-                "You will never accidentally become great. You have to fight for it.",
+                "Toughness is not a trait. It is a practice. And you are out of practice.",
+                "Every time you quit early you train yourself to quit early.",
+                "The mind breaks before the body. Every time. Train the mind first.",
+                "Suffering is not the enemy. Avoidance is.",
+                "You do not get stronger by staying comfortable. You get comfortable.",
+                "The reps that build you are the ones you do not want to do.",
             ],
             "questions": [
-                "How comfortable are you willing to let yourself become?",
-                "What has choosing easy actually given you?",
-                "Is the short-term relief worth the long-term cost?",
-                "What are you protecting yourself from by staying safe?",
+                "When was the last time you stayed when everything in you said go?",
+                "What are you capable of if you stop listening to the part that wants to quit?",
+                "How much of your ceiling is self-imposed?",
+                "What would change if you decided discomfort was not a reason to stop?",
+                "What are you avoiding right now that you know you need to face?",
             ],
         },
         "build": {
             "hooks": [
-                "Comfort does not feel like the enemy. That is why it wins.",
-                "You have been resting so long that rest feels normal.",
-                "The soft life crept up on you. You did not choose it all at once.",
-                "It was supposed to be temporary. The break. The pause. The wait.",
-                "Nobody told you that comfort was the most dangerous place to stay.",
+                "The hard days are not punishment. They are curriculum.",
+                "Toughness is built in the moments you stay when you want to leave.",
+                "Nobody becomes mentally strong in comfort. Comfort is where strength dies.",
+                "Every difficult season you survived made you something. Did you notice?",
+                "Pressure does not create character. It reveals it. And it can build it.",
+                "The version of you that does not break is built through repeated exposure to breaking points.",
             ],
             "truths": [
-                "Comfort is a slow thief. It takes your edge first. Then your hunger. Then your identity.",
-                "You do not notice you have stopped growing until you try to move and cannot.",
-                "Ease is the environment where potential dies quietly.",
-                "You were made for resistance. Without it you soften in ways you do not see coming.",
+                "The suffering you avoid now becomes the weakness you carry later.",
+                "Mental toughness is not about feeling nothing. It is about moving despite feeling everything.",
+                "You become what you repeatedly do under pressure. Not what you intend.",
+                "The hardest moments are the ones that decide who you are becoming.",
+                "Resilience is not bouncing back. It is walking forward while still carrying the weight.",
             ],
             "questions": [
-                "When did you last do something that genuinely challenged you?",
-                "What are you capable of that comfort has been keeping hidden?",
-                "If ease is the strategy, what is the destination?",
+                "What would you be capable of if you stopped letting discomfort make your decisions?",
+                "Which hard thing have you been avoiding that is quietly making you weaker?",
+                "What does the strongest version of you do in the moment you want to quit?",
             ],
         },
         "story": [
-            "He told himself he had earned the rest. So he rested. And resting felt so good he did it a little longer. Months passed. He was comfortable. Then he looked at his life and realised that comfortable and happy are not the same thing. And one of them had been slowly replacing the other without asking permission.",
-            "She used to push hard. The kind of push that leaves fire in your chest. Then she found a rhythm. Safe. Good enough. And good enough became the new ceiling. And the ceiling got lower every year. Not dramatically. Just quietly. The way all important things are lost.",
+            "He did not quit dramatically. He just stopped pushing. And stopping felt reasonable at the time. It always does. A week passed. Then a month. Then the thing he had been building started to feel like something that happened to someone else. He had not lost his ability. He had lost his willingness. And willingness is harder to rebuild than ability.",
+            "There was a morning he showed up when everything in him said do not. His body was heavy. His mind was loud with reasons to stay. He went anyway. He did not perform well. He did not feel good about it afterward. But he showed up. And that showing up quietly without drama without reward was the most important thing he did that year.",
+            "He thought mental toughness was about never feeling weak. He was wrong. It was about feeling completely broken and still not using it as a reason to stop. The feeling was allowed. The quitting was not. Once he understood that everything changed. Not immediately. But permanently.",
         ],
     },
-    "time": {
+
+    # ----------------------------------------------------------------
+    # MASCULINITY â€” Being a real man. Standards. Presence.
+    # ----------------------------------------------------------------
+    "masculinity": {
         "confrontation": {
             "hooks": [
-                "That day is gone. You are not getting it back.",
-                "You wasted another one. That is the truth of it.",
-                "Time does not pause while you figure it out.",
-                "The clock moved. You did not.",
-                "You keep saying tomorrow like it is guaranteed.",
-                "Every hour you delay is an hour you will never spend building.",
-                "Time is the only thing you spend that you cannot replace.",
+                "You are not the man your household needs you to be.",
+                "Real men do not need applause for doing what they should.",
+                "You have been waiting for someone to make you step up.",
+                "The world does not need your potential. It needs your presence.",
+                "You outsourced your responsibilities and called it balance.",
+                "A man who cannot lead himself cannot lead anything.",
+                "You are present in the room but absent in the ways that matter.",
+                "The sons watching you are learning what a man does.",
+                "You demand respect you have not earned through consistent action.",
+                "Masculinity is not performance. It is what you do when no one is watching.",
             ],
             "truths": [
-                "The right moment you are waiting for does not exist. It never did.",
-                "Delay is a decision. You just do not frame it that way.",
-                "The years are going whether you use them or not.",
-                "While you wait, someone else is building.",
+                "A real man does not need external pressure to hold his standard.",
+                "Your presence or absence is shaping people around you whether you know it or not.",
+                "The measure of a man is not what he says. It is what he does consistently.",
+                "Leadership starts with self-governance. You cannot give what you do not have.",
+                "Strength is not loudness. It is steadiness under pressure over time.",
+                "The men who matter are not the ones who were perfect. They are the ones who kept showing up.",
             ],
             "questions": [
-                "What exactly are you waiting for?",
-                "How many more days are you willing to lose?",
-                "Five years from now, what will you wish you had started today?",
-                "At what point does delay become a permanent choice?",
+                "Are you the kind of man you would want your son to become?",
+                "What standard are you setting for the people who are watching you?",
+                "Are you leading or just occupying space?",
+                "If your actions were the only definition of masculinity what would it mean?",
+                "What does the man you most respect do that you are not doing?",
             ],
         },
         "build": {
             "hooks": [
-                "You feel it sometimes. The quiet weight of time passing.",
-                "Another year. And the thing you planned to do is still just a plan.",
-                "You are not running out of time dramatically. You are losing it quietly.",
-                "The things you keep meaning to start are still exactly where you left them.",
+                "Becoming a real man is not a moment. It is a decade of decisions.",
+                "The standard of a man is set by what he tolerates in himself.",
+                "A man is built in his private decisions. Not his public ones.",
+                "Masculinity that only shows up when it is convenient is not masculinity.",
+                "The most powerful thing a man can do is hold himself accountable before anyone else does.",
             ],
             "truths": [
-                "Time does not end suddenly. It erodes. Day by day until there is less than you thought.",
-                "The future you plan for is built from the days you are spending right now.",
-                "Every day you do not start is a day you will have to make up later.",
+                "A man who disciplines himself does not need to be controlled by the world.",
+                "Real strength is built in silence tested in difficulty and revealed under pressure.",
+                "The men worth following are not the most talented. They are the most consistent.",
+                "Your word to yourself is the foundation of your character. Keep it.",
+                "A man who shows up for himself will naturally show up for everyone who depends on him.",
             ],
             "questions": [
-                "What would you do differently if you truly felt how limited your time was?",
-                "Which regret are you building toward. Trying or not trying.",
-                "What would it mean if you started today. Not tomorrow. Today.",
+                "What is one standard you need to raise starting today?",
+                "Are the people who depend on you getting the best version of you or the leftover version?",
+                "What would change if you held yourself to the same standard you expect from others?",
             ],
         },
         "story": [
-            "He had five years left on the plan. Then four. Then three. He kept adjusting the timeline but not the effort. The deadline moved. The dream did not. Eventually the deadline passed. And the dream just sat there unchased quietly becoming the thing he used to want.",
-            "At forty she looked back at thirty and thought about everything she had said she would do. At thirty she had looked back at twenty and thought the same thing. The pattern scared her more than the lost time.",
+            "His father was not perfect. Nobody is. But he showed up. Every morning every obligation every hard conversation. He did not complain loudly. He did not demand credit. He just handled what needed to be handled and moved on. When he was gone the people who loved him did not talk about his achievements. They talked about how he made them feel safe. How nothing felt uncertain when he was in the room.",
+            "He used to think being a man meant never showing weakness. Then he watched a man he respected cry at his father funeral. Controlled. Present. Not hiding. And he realised that was not weakness. That was strength that was complete enough to feel everything without letting it make him irresponsible.",
         ],
     },
+
+    # ----------------------------------------------------------------
+    # HABITS â€” Daily discipline. Routine. The unsexy work.
+    # ----------------------------------------------------------------
+    "habits": {
+        "confrontation": {
+            "hooks": [
+                "Your mornings are soft and your results show it.",
+                "You do not have bad luck. You have bad habits.",
+                "The routine you keep is the life you build. Look at it honestly.",
+                "You sleep in and wonder why you fall behind.",
+                "Every day without a standard is a vote for the man you do not want to be.",
+                "You are what you repeatedly do. Not what you plan to do.",
+                "Your habits are either building you or shrinking you. There is no neutral.",
+                "The undisciplined morning costs the entire day.",
+                "You are waiting for motivation. Discipline does not wait.",
+                "Consistency is the only strategy that actually works. You know this.",
+            ],
+            "truths": [
+                "Motivation gets you started. Habit keeps you going. You need the second one.",
+                "The gap between who you are and who you want to be is filled by daily action.",
+                "You cannot think your way to a better life. You have to routine your way there.",
+                "Small daily actions compounded over years are more powerful than any single decision.",
+                "The person you become is built in the hours everyone else uses for comfort.",
+                "Discipline is not restriction. It is the foundation that makes freedom possible.",
+            ],
+            "questions": [
+                "What does your morning say about who you are becoming?",
+                "If your daily routine stayed exactly as it is where will you be in two years?",
+                "What is one habit you need to kill and one you need to build starting today?",
+                "Are your habits designed by intention or inherited by default?",
+                "What would your life look like if you treated your daily habits as seriously as your biggest goals?",
+            ],
+        },
+        "build": {
+            "hooks": [
+                "Every great life was built by someone who showed up on the days they did not feel like it.",
+                "The unsexy work done consistently produces the only results worth having.",
+                "Your daily habits are quietly writing the story of your life.",
+                "The morning belongs to the man who claims it before the world does.",
+                "Small disciplines practiced daily become the architecture of a life worth living.",
+                "You do not rise to the level of your goals. You fall to the level of your habits.",
+            ],
+            "truths": [
+                "A habit takes weeks to build and days to lose. Protect what you have built.",
+                "The man who controls his morning controls his mindset. The man who controls his mindset controls his life.",
+                "Routine is not the enemy of freedom. It is the structure that makes everything else possible.",
+                "The compounding of daily discipline is invisible in the short term and undeniable in the long term.",
+                "You do not need a perfect system. You need a consistent one.",
+            ],
+            "questions": [
+                "Which part of your routine is serving the man you are becoming?",
+                "What would you add to your mornings if you truly believed they shaped everything else?",
+                "What would your life look like if you treated every day as if it mattered?",
+            ],
+        },
+        "story": [
+            "He did not have a dramatic transformation. There was no single moment that changed everything. Just one morning where he decided to do the thing he had been postponing. Then the next morning he did it again. Three weeks later it was not a decision anymore. It was just what he did. Six months later the results showed up. Not because he was gifted. Because he was consistent.",
+            "He used to say he would start when things settled down. When work slowed. When life got easier. He said it for three years. Things never settled. They never do. The men who built something real did not wait for the right conditions. They built the conditions through the consistency of their habits.",
+            "Every morning at five he did the same things in the same order. Not because someone told him to. Because he had learned that the structure of his morning determined the quality of his day. And the quality of his days was determining the direction of his life. Nobody posted about it. But it was quietly building something real.",
+        ],
+    },
+
+    # ----------------------------------------------------------------
+    # CHALLENGE â€” Paid accountability group
+    # ----------------------------------------------------------------
     "challenge": {
         "confrontation": {
             "hooks": [
@@ -227,89 +339,103 @@ CONTENT = {
                 "You keep starting over because there is nobody to answer to.",
                 "30 days with the right people changes more than 3 years alone.",
                 "Stop making private promises you have no reason to keep.",
+                "The reason you quit is always the same. No consequence.",
+                "Isolation is not strength. It is the reason most men fail.",
             ],
             "truths": [
                 "The environment you are in determines the standard you hold.",
-                "When people are watching, you show up differently. Every time.",
+                "When people are watching you show up differently. Every time.",
                 "You do not have a discipline problem. You have an accountability gap.",
                 "A room full of people who will not accept your excuses is priceless.",
+                "The men who changed their lives did not do it alone. Nobody does.",
             ],
             "questions": [
                 "How many more times are you going to restart alone?",
-                "What would change if someone was watching every day?",
-                "If not this, then what is the plan?",
-                "At what point does doing it alone become the problem?",
+                "What would change if someone was watching every single day?",
+                "If not this what exactly is the plan?",
+                "At what point does doing it alone become the problem and not the solution?",
+                "What is twenty dollars a month if it is the thing that finally makes the difference?",
             ],
         },
         "build": {
             "hooks": [
-                "There is a reason the best athletes have coaches. Even when they are already great.",
+                "There is a reason the best athletes in the world have coaches.",
                 "Discipline is easier when the environment demands it.",
-                "The men who changed their lives did not do it in isolation.",
-                "The 30 day challenge exists because accountability changes the brain.",
+                "The 30 day challenge exists because accountability rewires the brain.",
+                "You rise to the standard of the people you surround yourself with. Always.",
             ],
             "truths": [
-                "Community is not a crutch. It is the structure that lets you go further.",
-                "You rise to the standard of the people around you. Always.",
-                "Under twenty dollars a month. No excuses. Just accountability.",
-                "Daily check-ins make the invisible visible. That is where change happens.",
+                "Community is not weakness. It is the structure that lets you go further.",
+                "Under twenty dollars a month. Daily check-ins. Real accountability. No excuses.",
+                "Daily check-ins make the invisible visible. That is where real change begins.",
+                "Thirty days of consistent accountability creates the foundation of a new standard.",
             ],
             "questions": [
                 "What would thirty days of real accountability produce in your life?",
-                "What is twenty dollars if it is the thing that finally makes the difference?",
                 "When was the last time you invested in yourself the way you invest in everything else?",
+                "What is stopping you from joining the men who are already building?",
             ],
         },
         "story": [
-            "He had tried alone seventeen times. He counted once. Seventeen fresh starts, seventeen slow stops. Each one began with certainty and ended with the same familiar drift. Then someone put him in a room with people who checked in every morning. People who did not accept excuses. The eighteenth time was different. Not because he was different. Because the environment was.",
+            "He had tried alone seventeen times. He counted once. Seventeen fresh starts seventeen slow stops. Each one began with certainty and ended with the same familiar drift. Then someone put him in a room with people who checked in every morning. People who did not accept the usual excuses. The eighteenth time was different. Not because he was different. Because the environment was.",
+            "He thought accountability was for people who lacked self-discipline. Then he realised that self-discipline without structure is just willpower. And willpower always runs out. Accountability is the structure that makes discipline sustainable. He joined a group. He showed up every day because people were watching. Then he kept showing up after they stopped watching. That is when it became identity.",
         ],
     },
+
+    # ----------------------------------------------------------------
+    # PURPOSE â€” Legacy. The long game.
+    # ----------------------------------------------------------------
     "purpose": {
         "confrontation": {
             "hooks": [
                 "You were built for more than this comfortable nothing.",
                 "Legacy does not build itself while you wait.",
-                "Greatness does not wait. And it does not forgive wasted years.",
                 "You have one life. This is it. Not the practice run.",
                 "Stop treating your potential like a backup plan.",
                 "Every day you coast is a day the better version of you does not exist.",
+                "The world does not need your intentions. It needs your output.",
+                "Greatness belongs to the consistent not the talented.",
+                "You are running out of time to become who you were supposed to be.",
             ],
             "truths": [
                 "Purpose is not found. It is built. One decision at a time.",
                 "The man you want to become is made in the moments nobody watches.",
-                "You do not become great by accident. You become great by decision.",
+                "You do not become great by accident. You become great by daily decision.",
                 "The mark you leave on the world starts with the mark you make on yourself.",
+                "Legacy is the sum of ordinary days lived with extraordinary intention.",
             ],
             "questions": [
                 "What do you want people to say about you when it is over?",
                 "Are you building something that will outlast you?",
                 "Who would you become if you stopped playing small?",
                 "Is the life you are living the one you were built for?",
+                "What would your life look like if you lived it at full capacity every day?",
             ],
         },
         "build": {
             "hooks": [
                 "Legacy is a quiet thing. It builds in the years nobody celebrates.",
-                "The men who are remembered were not always the loudest. They were the most consistent.",
+                "The men who are remembered were not the loudest. They were the most consistent.",
                 "The work you are doing in silence right now is the foundation of everything.",
-                "Becoming who you are meant to be is slower than you want and more real than you expect.",
+                "Not every chapter looks like progress. Some look like patience. Both build the same thing.",
             ],
             "truths": [
                 "Legacy is not a destination. It is the sum of daily decisions made over years.",
                 "Discipline practiced in private becomes character displayed in public.",
                 "You do not have to be extraordinary every day. You have to be consistent.",
                 "The best version of you is not waiting for perfect conditions. It is built through imperfect ones.",
+                "A life of purpose is built in ten thousand small acts that nobody sees.",
             ],
             "questions": [
                 "What are you building that will still matter in ten years?",
-                "Who is the man you are becoming, and are you proud of him?",
-                "If today was a brick in the foundation of your legacy, what kind of brick was it?",
+                "Who is the man you are becoming and are you proud of him?",
+                "If today was a brick in the foundation of your legacy what kind of brick was it?",
             ],
         },
         "story": [
             "He was not famous. Nobody interviewed him. Nobody watched him train at five in the morning. But he showed up. Every day for years he showed up. And slowly quietly the life he built became the kind of life other people pointed at and said. That is what is possible. He never set out to inspire anyone. He just refused to disappear.",
-            "She decided at thirty two that she was going to become someone her children would be proud of. Not rich. Not famous. Just honest. Disciplined. Consistent. She started small. Too small to matter she thought. But small things done every day do not stay small.",
-            "The young man asked the old man how he had built something that lasted. The old man thought for a long time. Then he said. I just refused to stop on the days I wanted to quit. Every other day was easy. It was the days I wanted to stop that mattered. And I just did not.",
+            "The young man asked the old man how he had built something that lasted. The old man thought for a long time. Then he said. I just refused to stop on the days I wanted to quit. Every other day was easy. It was the days I wanted to stop that mattered. And I just did not. That is all it was. Decades of not stopping on the days I wanted to.",
+            "She decided she was going to become someone her children would be proud of. Not rich. Not famous. Just honest. Disciplined. Present. She started small. Too small to matter she thought. But small things done every day do not stay small. Five years later her children did not know exactly when she changed. They just knew she was different. Solid. The kind of person you lean on without thinking about it.",
         ],
     },
 }
@@ -319,32 +445,21 @@ CONTENT = {
 # ================================================================
 
 LONG_VIDEO_ARC = [
-    # Act 1 â€” Cold hook. Hard pattern interrupt.
-    {"name": "HOOK",      "pacing": "confrontation", "categories": ["identity", "comfort", "time"],  "section": "hooks",     "count": 1},
-    # Act 2 â€” Second punch. Don't let them breathe yet.
-    {"name": "HOOK2",     "pacing": "confrontation", "categories": ["comfort", "time"],              "section": "hooks",     "count": 1},
-    # Act 3 â€” Deepen. Slow build. Let the weight press.
-    {"name": "DEEPEN",    "pacing": "build",         "categories": ["identity", "comfort"],          "section": "hooks",     "count": 2},
-    # Act 4 â€” Story. Third person. Viewer sees themselves.
-    {"name": "STORY1",    "pacing": "story",         "categories": ["identity", "comfort", "time"],  "section": "story",     "count": 1},
-    # Act 5 â€” Truth. Hard landing after the story.
-    {"name": "TRUTH",     "pacing": "confrontation", "categories": ["identity", "time", "comfort"],  "section": "truths",    "count": 3},
-    # Act 6 â€” Questions. Build pressure.
-    {"name": "QUESTIONS", "pacing": "build",         "categories": ["time", "identity", "comfort"],  "section": "questions", "count": 3},
-    # Act 7 â€” Deeper truth. Build continues.
-    {"name": "DEEPEN2",   "pacing": "build",         "categories": ["identity", "purpose"],          "section": "truths",    "count": 2},
-    # Act 8 â€” Story again. The turn. Purpose emerges.
-    {"name": "TURN",      "pacing": "story",         "categories": ["purpose"],                      "section": "story",     "count": 1},
-    # Act 9 â€” Purpose confrontation. Rising energy.
-    {"name": "PURPOSE",   "pacing": "confrontation", "categories": ["purpose"],                      "section": "hooks",     "count": 2},
-    # Act 10 â€” Final questions. Leave them thinking.
-    {"name": "FINAL_Q",   "pacing": "build",         "categories": ["purpose", "identity"],          "section": "questions", "count": 2},
-    # Act 11 â€” Close hard. Challenge CTA.
-    {"name": "CLOSE",     "pacing": "confrontation", "categories": ["challenge"],                    "section": "hooks",     "count": 1},
-    {"name": "CTA",       "pacing": "confrontation", "categories": ["challenge"],                    "section": "truths",    "count": 1},
+    {"name": "HOOK",      "pacing": "confrontation", "categories": ["identity", "mental", "habits"],       "section": "hooks",     "count": 1},
+    {"name": "HOOK2",     "pacing": "confrontation", "categories": ["masculinity", "mental"],              "section": "hooks",     "count": 1},
+    {"name": "DEEPEN",    "pacing": "build",         "categories": ["identity", "habits"],                 "section": "hooks",     "count": 2},
+    {"name": "STORY1",    "pacing": "story",         "categories": ["identity", "mental", "habits"],       "section": "story",     "count": 1},
+    {"name": "TRUTH",     "pacing": "confrontation", "categories": ["identity", "mental", "masculinity"],  "section": "truths",    "count": 3},
+    {"name": "QUESTIONS", "pacing": "build",         "categories": ["habits", "identity", "mental"],       "section": "questions", "count": 3},
+    {"name": "DEEPEN2",   "pacing": "build",         "categories": ["masculinity", "purpose"],             "section": "truths",    "count": 2},
+    {"name": "TURN",      "pacing": "story",         "categories": ["purpose", "masculinity"],             "section": "story",     "count": 1},
+    {"name": "PURPOSE",   "pacing": "confrontation", "categories": ["purpose"],                            "section": "hooks",     "count": 2},
+    {"name": "FINAL_Q",   "pacing": "build",         "categories": ["purpose", "identity"],                "section": "questions", "count": 2},
+    {"name": "CLOSE",     "pacing": "confrontation", "categories": ["challenge"],                          "section": "hooks",     "count": 1},
+    {"name": "CTA",       "pacing": "confrontation", "categories": ["challenge"],                          "section": "truths",    "count": 1},
 ]
 
-SET_ORDER = ["identity", "comfort", "time", "challenge", "purpose"]
+SET_ORDER = ["identity", "mental", "masculinity", "habits", "challenge", "purpose"]
 
 # ================================================================
 # CONTENT SELECTION
@@ -390,7 +505,7 @@ def build_reel_script(category):
     if category == "challenge":
         cta = random.choice([
             "Join the Inner Discipline Challenge. DM DISCIPLINE.",
-            "30 days. Facebook group. Under 20 dollars. DM DISCIPLINE.",
+            "30 days. Facebook group. Under 20$. DM DISCIPLINE.",
             "The group is open. DM DISCIPLINE.",
             "Stop doing it alone. DM DISCIPLINE.",
         ])
@@ -804,7 +919,12 @@ if not all_videos:
     raise Exception("No background videos found. Add bg1.mp4 to this folder.")
 
 date_str = datetime.now().strftime("%Y%m%d_%H%M")
-bg_video = all_videos[0]
+
+# âœ… Random video per output â€” reel and long video each pick independently
+reel_video = random.choice(all_videos)
+long_video = random.choice(all_videos)
+print(f"   ðŸ“¹ Reel video  â†’ {reel_video}")
+print(f"   ðŸ“¹ Long video  â†’ {long_video}")
 
 # ================================================================
 # PHASE 1 â€” REEL (exactly 15s)
@@ -821,7 +941,7 @@ print(f"   Category: {reel_category.upper()} | Pacing: {reel_pacing}")
 
 reel_result = build_video(
     lines_with_pacing=reel_lines,
-    video_path=bg_video,
+    video_path=reel_video,
     output_path=reel_path,
     max_duration=MAX_REEL_LENGTH,
     seg_index=0,
@@ -847,7 +967,7 @@ print(f"   Arc: {len(long_script)} lines | {len(LONG_VIDEO_ARC)} acts")
 
 long_result = build_video(
     lines_with_pacing=long_script,
-    video_path=bg_video,
+    video_path=long_video,
     output_path=long_path,
     max_duration=LONG_VIDEO_SECS,
     seg_index=99,
