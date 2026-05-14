@@ -1,12 +1,20 @@
-name: Generate Reels
+name: Inner Discipline
 
 on:
   workflow_dispatch:
+    inputs:
+      script:
+        description: "Which script to run"
+        required: true
+        default: "generate"
+        type: choice
+        options:
+          - generate
+          - promo
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,7 +28,13 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - run: python generate.py
+      - name: Run generate.py
+        if: ${{ github.event.inputs.script == 'generate' }}
+        run: python generate.py
+
+      - name: Run promo.py
+        if: ${{ github.event.inputs.script == 'promo' }}
+        run: python promo.py
 
       - uses: actions/upload-artifact@v4
         with:
