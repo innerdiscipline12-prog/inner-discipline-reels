@@ -5,6 +5,8 @@ import asyncio
 import json
 import shutil
 import math
+import time
+import uuid
 from datetime import datetime
 from dataclasses import dataclass
 
@@ -19,7 +21,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v4 COVER
+# INNER DISCIPLINE â€” GROWTH ENGINE v5 ANTI-REPEAT
 #
 # FULL generator. Not a test file.
 #
@@ -57,6 +59,16 @@ STATE_FILE = os.path.join(BASE_DIR, "engine_state_v3.json")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
+
+# ================================================================
+# ANTI-REPEAT RANDOMIZER
+# GitHub Actions does NOT automatically save memory JSON back to repo.
+# So this generator must not depend on JSON memory alone.
+# This seed changes every run even when JSON resets.
+# ================================================================
+
+RUN_ID = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+random.seed(f"{RUN_ID}_{time.time_ns()}")
 
 
 # ================================================================
@@ -387,9 +399,84 @@ def pick_hook():
 
 
 def get_next_category():
-    index = state["category_step"] % len(CATEGORY_ORDER)
+    """
+    Old version used only engine_state_v3.json.
+    That repeats on GitHub Actions when JSON is not committed back.
+    This version uses weighted random + output scan + state as backup.
+    """
     state["category_step"] += 1
-    return CATEGORY_ORDER[index]
+    return weighted_category_choice()
+
+
+
+# ================================================================
+# ANTI-REPEAT HELPERS
+# ================================================================
+
+def get_recent_generated_categories(limit=20):
+    """
+    Reads existing output filenames when available.
+    This helps avoid repeating the same category even if JSON memory is not committed.
+    Example filename:
+    reel_v4_regular_wasted_potential_20260516_104500.mp4
+    """
+    recent = []
+    if not os.path.isdir(OUTPUT_DIR):
+        return recent
+
+    files = []
+    for name in os.listdir(OUTPUT_DIR):
+        if name.endswith(".mp4") and name.startswith("reel_"):
+            full = os.path.join(OUTPUT_DIR, name)
+            try:
+                files.append((os.path.getmtime(full), name))
+            except Exception:
+                pass
+
+    files.sort(reverse=True)
+
+    for _, name in files[:limit]:
+        for cat in CATEGORY_ORDER:
+            if f"_{cat}_" in name:
+                recent.append(cat)
+                break
+        if "_series_" in name:
+            recent.append("series")
+
+    return recent
+
+
+def weighted_category_choice():
+    """
+    Avoids repeating the last few visible output categories.
+    This does NOT depend on memory JSON.
+    """
+    recent = get_recent_generated_categories(limit=8)
+
+    weights = []
+    for cat in CATEGORY_ORDER:
+        if recent[:1] and cat == recent[0]:
+            weights.append(0.15)
+        elif cat in recent[:3]:
+            weights.append(0.40)
+        else:
+            weights.append(1.0)
+
+    return random.choices(CATEGORY_ORDER, weights=weights, k=1)[0]
+
+
+def should_make_series():
+    """
+    Series mode stays active, but avoids generating series too often
+    when the last generated output was already a series.
+    """
+    recent = get_recent_generated_categories(limit=5)
+
+    if recent[:1] == ["series"]:
+        return False
+
+    # roughly 30 percent series, 70 percent regular
+    return random.random() < 0.30
 
 
 # ================================================================
@@ -453,8 +540,9 @@ def build_series_script():
 
 
 def build_script():
-    # 30% series, 70% regular reach reels
-    if random.random() < 0.30:
+    # 30% series, 70% regular reach reels.
+    # Uses output scan so it does not repeat the same mode when JSON memory resets.
+    if should_make_series():
         return build_series_script()
     return build_regular_script()
 
@@ -1179,14 +1267,21 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v4 COVER")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v5 ANTI-REPEAT")
     print("=" * 64)
 
+    print("RUN ID:", RUN_ID)
+    print("RECENT OUTPUT CATEGORIES:", get_recent_generated_categories(limit=8))
+
     script = build_script()
+    print("SELECTED MODE:", script.mode)
+    print("SELECTED CATEGORY:", script.category)
+    print("SELECTED MOOD:", script.mood)
+
     bg = choose_background(script.mood)
 
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v3_{script.mode}_{script.category}_{date}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v5_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
