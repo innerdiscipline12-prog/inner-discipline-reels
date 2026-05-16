@@ -7,7 +7,7 @@ import shutil
 import math
 import time
 import uuid
-from datetime import datetime
+from datetime import datetime, date
 from dataclasses import dataclass
 
 import numpy as np
@@ -21,7 +21,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v5 ANTI-REPEAT
+# INNER DISCIPLINE â€” GROWTH ENGINE v6 RETENTION CLEAN
 #
 # FULL generator. Not a test file.
 #
@@ -100,7 +100,7 @@ COVER_DARKEN = 0.36
 COVER_BLUR_RADIUS = 18
 
 ZOOM_STRENGTH = 0.072
-SHAKE_STRENGTH = 5
+SHAKE_STRENGTH = 3
 
 
 # ================================================================
@@ -467,16 +467,16 @@ def weighted_category_choice():
 
 def should_make_series():
     """
-    Series mode stays active, but avoids generating series too often
-    when the last generated output was already a series.
+    Series mode supports followership, but should not dominate the page.
+    Lower frequency prevents repeated Day content from flooding the account.
     """
     recent = get_recent_generated_categories(limit=5)
 
     if recent[:1] == ["series"]:
         return False
 
-    # roughly 30 percent series, 70 percent regular
-    return random.random() < 0.30
+    # roughly 15 percent series, 85 percent regular reach reels
+    return random.random() < 0.15
 
 
 # ================================================================
@@ -511,12 +511,20 @@ def build_regular_script():
 
 
 def build_series_script():
-    day = state["series_day"]
-    episode = SERIES_EPISODES[(day - 1) % len(SERIES_EPISODES)]
+    """
+    Does NOT depend on engine_state_v3.json anymore.
+    GitHub Actions may reset JSON memory, so the series day is calculated
+    from the calendar day. This prevents endless Day 1 repeats.
+    """
+    challenge_start = date(2026, 1, 1)
+    today = date.today()
+    day = ((today - challenge_start).days % 30) + 1
 
-    state["series_day"] += 1
-    if state["series_day"] > 30:
-        state["series_day"] = 1
+    # small random nudge sometimes, so multiple runs on same day do not all look identical
+    if random.random() < 0.35:
+        day = ((day + random.randint(1, 6) - 1) % 30) + 1
+
+    episode = SERIES_EPISODES[(day - 1) % len(SERIES_EPISODES)]
 
     lines = [
         f"Day {episode['day']} of 30. {episode['title']}.",
@@ -840,8 +848,8 @@ def subtitle_animation_values(t, start, end, event_type):
 
     alpha = float(np.clip(alpha, 0.0, 1.0))
 
-    if local < 0.12:
-        scale = 1.0 + (0.06 * (1 - local / 0.12))
+    if local < 0.10:
+        scale = 1.0 + (0.035 * (1 - local / 0.10))
     else:
         scale = 1.0
 
@@ -870,51 +878,55 @@ def split_chunks(text, chunk_size):
 
 
 def make_text_events(script, voice_data, duration):
+    """
+    Retention Clean v6:
+    - removes mid-video flash overlays
+    - prevents cover text and subtitles from overlapping
+    - prevents one subtitle chunk from colliding with the next
+    - keeps retention through escalation, pacing, and clean readability
+    """
     events = []
 
+    cover_end = min(0.78, duration)
     events.append({
         "frame": make_text_frame(script.cover, "cover"),
         "start": 0.01,
-        "end": min(0.82, duration),
+        "end": cover_end,
         "type": "cover",
+        "label": script.cover,
     })
 
-    fade_tail = 0.10
+    gap_between_texts = 0.035
+    fade_tail = 0.055
+    last_end = cover_end + 0.08
 
     for i, item in enumerate(voice_data):
         chunks = split_chunks(item["line"], item["chunk_size"])
         chunk_dur = item["duration"] / max(1, len(chunks))
 
         for j, chunk in enumerate(chunks):
-            start = item["start"] + j * chunk_dur
-            end = item["start"] + (j + 1) * chunk_dur + fade_tail
+            natural_start = item["start"] + j * chunk_dur
+            natural_end = item["start"] + (j + 1) * chunk_dur + fade_tail
 
-            if start >= duration:
+            start = max(natural_start, last_end + gap_between_texts)
+            end = min(natural_end, duration)
+
+            if end - start < 0.16:
                 continue
 
             level = "hook" if i == 0 and j == 0 else "normal"
             raw = chunk.upper()
-
-            event_type = "impact" if any(
-                w in raw for w in ["WEAK", "FAIL", "NO ", "STOP", "KILL", "QUIT", "DAY"]
-            ) else "text"
+            event_type = "impact" if any(w in raw for w in ["WEAK", "FAIL", "NO ", "STOP", "KILL", "QUIT", "DAY"]) else "text"
 
             events.append({
                 "frame": make_text_frame(chunk, level),
                 "start": start,
-                "end": min(end, duration),
+                "end": end,
                 "type": event_type,
+                "label": chunk,
             })
 
-    if duration > 12:
-        flash = random.choice(["NO EXCUSES", "LOCK IN", "WAKE UP", "MOVE NOW", "PROVE IT"])
-        t = min(duration - 2.5, max(7.0, duration * 0.52))
-        events.append({
-            "frame": make_text_frame(flash, "cover"),
-            "start": t,
-            "end": min(t + 0.42, duration),
-            "type": "impact",
-        })
+            last_end = end
 
     return events
 
@@ -936,7 +948,7 @@ def build_video(script, bg_path, out_path):
         print(f"Cover: {script.cover}")
 
         voice_data = []
-        cursor = 0.30
+        cursor = 0.95
         gap = PACING[script.pacing]["gap"]
 
         print("Generating voice lines...")
@@ -1267,7 +1279,7 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v5 ANTI-REPEAT")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v6 RETENTION CLEAN")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
