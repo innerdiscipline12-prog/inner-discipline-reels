@@ -1,653 +1,393 @@
-import os, random, glob, asyncio, json, shutil, subprocess
+import os
+import random
+import glob
+import asyncio
+import json
+import shutil
+import subprocess
+from datetime import datetime
+from dataclasses import dataclass
+
 import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
 from moviepy.editor import (
-    VideoFileClip, ImageClip, AudioFileClip,
-    CompositeVideoClip, CompositeAudioClip, VideoClip
+    VideoFileClip,
+    AudioFileClip,
+    CompositeAudioClip,
+    VideoClip,
 )
 from moviepy.audio.fx import all as afx
 from moviepy.video.fx import all as vfx
-from PIL import Image, ImageDraw, ImageFont
-from datetime import datetime
+
 import edge_tts
+
+
+# ================================================================
+# INNER DISCIPLINE â€” RETENTION ENGINE v2
+# Purpose:
+#   Generate Reels/Facebook Reels that are built for:
+#   1. violent first-second hooks
+#   2. faster pacing
+#   3. emotional escalation
+#   4. less repetitive visuals
+#   5. stronger comment/follow conversion
+#
+# Required files in same folder:
+#   - bg1.mp4 / bg2.mp4 / bg3.mp4 ... OR .mov files
+#   - Anton-Regular.ttf
+#   - logo.png
+#   - optional: music.mp3
+#
+# Run:
+#   python generate.py
+# ================================================================
+
 
 # ================================================================
 # SETTINGS
 # ================================================================
 
-W, H            = 1080, 1920
-FPS             = 30
-MAX_REEL_LENGTH = 15.0
+W, H = 1080, 1920
+FPS = 30
+
+REEL_SECONDS = 18.0          # 15â€“22 sec is stronger than forcing exactly 15
 LONG_VIDEO_SECS = 300
 
-FONT_PATH          = "Anton-Regular.ttf"
-LOGO_PATH          = "logo.png"
-LOGO_OPACITY       = 0.60
-LOGO_SIZE          = 150
-LOGO_BOTTOM_MARGIN = 120
-MUSIC_DELAY        = 1.5
-VOICE              = "en-US-GuyNeural"
-VOLUME             = "+0%"
+FONT_PATH = "Anton-Regular.ttf"
+LOGO_PATH = "logo.png"
+MUSIC_PATH = "music.mp3"
 
-os.makedirs("outputs",       exist_ok=True)
-os.makedirs("temp_segments", exist_ok=True)
+VOICE = "en-US-GuyNeural"
+VOLUME = "+0%"
+
+OUTPUT_DIR = "outputs"
+TEMP_DIR = "temp_segments"
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(TEMP_DIR, exist_ok=True)
+
+
+# ================================================================
+# VISUAL SETTINGS
+# ================================================================
+
+ORANGE = (255, 126, 0)
+WHITE = (255, 255, 255)
+RED = (255, 45, 45)
+BLACK = (0, 0, 0)
+
+LOGO_OPACITY = 0.42
+LOGO_SIZE = 115
+LOGO_BOTTOM_MARGIN = 105
+
+# stronger than old code: bigger readable text and higher placement
+TEXT_Y_REEL = 0.56
+TEXT_Y_HOOK = 0.49
+TEXT_MAX_WIDTH = 890
+
+# prevent visual sameness
+ZOOM_STRENGTH = 0.055
+SHAKE_STRENGTH = 4
+
 
 # ================================================================
 # PACING MODES
 # ================================================================
 
 PACING_MODES = {
-    "confrontation": {"rate": "-18%", "pitch": "-40Hz", "chunk_size": 2},  # controlled punch
-    "build":         {"rate": "-32%", "pitch": "-55Hz", "chunk_size": 3},  # heavy, weighted
-    "story":         {"rate": "-22%", "pitch": "-45Hz", "chunk_size": 3},  # measured, human
+    # faster than old generator; old pacing was too cinematic/slow
+    "attack": {"rate": "-6%", "pitch": "-35Hz", "chunk_size": 2, "music_volume": 0.16},
+    "story": {"rate": "-12%", "pitch": "-40Hz", "chunk_size": 3, "music_volume": 0.12},
+    "cold": {"rate": "-16%", "pitch": "-45Hz", "chunk_size": 3, "music_volume": 0.10},
 }
 
+
 # ================================================================
-# MEMORY
+# MEMORY FILES
 # ================================================================
 
-HOOK_MEMORY_FILE     = "hook_memory.json"
-CATEGORY_MEMORY_FILE = "category_memory.json"
-SET_STEP_FILE        = "set_step.json"
-USED_LINES_FILE      = "used_lines.json"   # âœ… persists used content across runs
+USED_LINES_FILE = "used_lines_v2.json"
+SET_STEP_FILE = "set_step_v2.json"
 
-used_hooks    = json.load(open(HOOK_MEMORY_FILE))     if os.path.exists(HOOK_MEMORY_FILE)     else []
-last_category = json.load(open(CATEGORY_MEMORY_FILE)) if os.path.exists(CATEGORY_MEMORY_FILE) else None
-set_step      = json.load(open(SET_STEP_FILE))         if os.path.exists(SET_STEP_FILE)         else 0
+used_lines = json.load(open(USED_LINES_FILE, "r", encoding="utf-8")) if os.path.exists(USED_LINES_FILE) else []
+set_step = json.load(open(SET_STEP_FILE, "r", encoding="utf-8")) if os.path.exists(SET_STEP_FILE) else 0
 if not isinstance(set_step, int):
     set_step = 0
 
-# ================================================================
-# VIDEO POOL
-# ================================================================
-
-def get_all_videos():
-    return glob.glob("bg*.mp4") + glob.glob("bg*.mov") + glob.glob("bg*.MP4")
 
 # ================================================================
-# CONTENT BANK â€” Fresh lines across 4 directions:
-# Identity crisis, Mental toughness, Masculinity, Daily habits
+# CONTENT SYSTEM
+# Each reel is no longer random quote + truth + question.
+# It is structured as:
+#   HOOK -> PROBLEM -> MIRROR -> CONSEQUENCE -> COMMAND/CTA
+# This creates emotional escalation.
 # ================================================================
 
-CONTENT = {
-
-    # ----------------------------------------------------------------
-    # IDENTITY â€” Deeper crisis. Who you have become.
-    # ----------------------------------------------------------------
-    "identity": {
-        "confrontation": {
-            "hooks": [
-                "You do not even recognise yourself anymore.",
-                "You used to have standards. Look at them now.",
-                "The man you promised to be is watching you settle.",
-                "You have become the person you used to judge.",
-                "You traded your edge for comfort and called it growth.",
-                "You know exactly what you are doing. That is the worst part.",
-                "You stopped holding yourself accountable. Nobody else will.",
-                "You are building a life you will be ashamed of.",
-                "The version of you from five years ago would not respect you.",
-                "You do not even fight yourself anymore. You just give in.",
-                "You lowered the bar so many times the bar is on the floor.",
-                "You are performing discipline. You are not living it.",
-                "Every mirror shows you the man you chose to become.",
-                "You made weakness a habit. Now it feels like personality.",
-                "You are comfortable with failure. That is the real problem.",
-            ],
-            "truths": [
-                "That is not a rough patch. That is who you are becoming.",
-                "The man you are today is the sum of every choice you avoided.",
-                "You are not stuck. You are choosing this every single day.",
-                "Somewhere you decided less was acceptable. That decision stuck.",
-                "Nobody forced this on you. You built it one excuse at a time.",
-                "This is what slow surrender looks like from the inside.",
-                "The identity you are living was never chosen. It was settled for.",
-                "You are not struggling. You are coasting. There is a difference.",
-            ],
-            "questions": [
-                "When did you stop being someone you respected?",
-                "What would it take for you to finally hold yourself accountable?",
-                "How long are you going to pretend this version of you is acceptable?",
-                "If nothing changes, who will you be in five years?",
-                "At what point did you stop being the man and start being the excuse?",
-                "Are you building an identity or inheriting one by default?",
-            ],
-        },
-        "build": {
-            "hooks": [
-                "There is a version of you buried under years of small surrenders.",
-                "You feel it every morning. The distance between who you are and who you were meant to be.",
-                "The man you planned to become did not disappear. He is waiting.",
-                "Identity is not what you say you are. It is what you do when no one is watching.",
-                "You have been drifting so long that drift feels like direction.",
-                "The gap between your standards and your actions has never been wider.",
-                "You carry a version of yourself that you have never fully become.",
-            ],
-            "truths": [
-                "Character is built in the moments you think do not matter. They all matter.",
-                "You do not find yourself. You build yourself through repeated decisions.",
-                "The man you are becoming is decided in the hours nobody sees.",
-                "Reclaiming your identity starts with one decision held long enough to become a pattern.",
-                "You cannot think your way into a new identity. You have to act your way there.",
-            ],
-            "questions": [
-                "What would you do differently if you truly believed you were capable of more?",
-                "Who were you before the world convinced you to aim lower?",
-                "What is one standard you dropped that you need to pick back up today?",
-                "If you lived by your own values for thirty days who would you become?",
-            ],
-        },
-        "story": [
-            "He used to be the one people counted on. The one who followed through. Then gradually almost invisibly he stopped. Not all at once. Just a little less reliable each month. A little more willing to let himself down quietly. Until one day someone who used to admire him looked at him differently. And he knew why. Because he had been looking at himself the same way for a long time.",
-            "He had a standard once. It was not written anywhere but he felt it. Like a line he would not cross. Then one day he crossed it. Just barely. Then again. Then the line moved. Not dramatically. Just enough that he did not have to feel it. He told himself he was evolving. He was not. He was retreating. And calling it wisdom.",
-            "Every morning he woke up with intentions. Every night he went to sleep with excuses. The gap between the two was his life. He knew it. He had known it for years. But knowing and changing are not the same thing. And every day he did not change the gap got a little more permanent.",
-            "He was not a bad man. That was the thing. He was a decent man who had made peace with not becoming the man he was capable of being. And somewhere in that peace was a quiet tragedy that nobody around him could see. But he could feel it. Every single day.",
+CONTENT_BANK = {
+    "wasted_potential": {
+        "covers": [
+            "YOU DRIFT",
+            "STILL WEAK",
+            "WASTED TIME",
+            "NO STANDARD",
+            "YOU LOST",
+        ],
+        "hooks": [
+            "You are not behind because life is hard.",
+            "You are losing to the version of you that keeps negotiating.",
+            "You keep calling it a phase. It is becoming your identity.",
+            "You are not stuck. You are undisciplined and comfortable.",
+            "Every day you delay, the weaker version of you gets stronger.",
+        ],
+        "problem": [
+            "You wake up with plans and go to sleep with excuses.",
+            "You know what to do, but you keep choosing the easiest option.",
+            "You lowered your standards so many times they no longer feel low.",
+            "You are not failing from lack of information. You are failing from lack of execution.",
+            "Your life is not falling apart loudly. It is drifting quietly.",
+        ],
+        "mirror": [
+            "And the worst part is, you can feel it.",
+            "Nobody has to tell you. You already know.",
+            "That little shame you feel is not random. It is your standard trying to come back.",
+            "The mirror is not lying. Your habits are showing.",
+            "Deep down, you know this version of you is not enough.",
+        ],
+        "consequence": [
+            "If you keep moving like this, five years will disappear and nothing will change.",
+            "Comfort is charging you interest every single day.",
+            "The future you want will not survive the habits you protect.",
+            "Every weak decision becomes a vote for the man you hate becoming.",
+            "You are not just wasting time. You are training weakness.",
+        ],
+        "cta": [
+            "Today, kill one excuse. Comment DISCIPLINE.",
+            "No speech. One action today. Comment LOCKED.",
+            "Restart now. Not Monday. Comment DISCIPLINE.",
+            "If this hit too close, comment RESET.",
+            "Follow if you are done restarting.",
         ],
     },
 
-    # ----------------------------------------------------------------
-    # MENTAL â€” Toughness. Suffering. Not breaking.
-    # ----------------------------------------------------------------
-    "mental": {
-        "confrontation": {
-            "hooks": [
-                "You quit the moment it got uncomfortable.",
-                "Pain is a signal. You are reading it wrong.",
-                "You are not tired. You are soft. There is a difference.",
-                "Every hard thing you avoided made the next one harder.",
-                "You fold under pressure because you have never practiced staying.",
-                "The first sign of difficulty and you look for the exit.",
-                "Mental weakness does not announce itself. It just keeps choosing easy.",
-                "You called it burnout. It was resistance. And you lost.",
-                "Discomfort is the price of growth. You keep refusing to pay.",
-                "You stop exactly where it starts to count.",
-            ],
-            "truths": [
-                "Toughness is not a trait. It is a practice. And you are out of practice.",
-                "Every time you quit early you train yourself to quit early.",
-                "The mind breaks before the body. Every time. Train the mind first.",
-                "Suffering is not the enemy. Avoidance is.",
-                "You do not get stronger by staying comfortable. You get comfortable.",
-                "The reps that build you are the ones you do not want to do.",
-            ],
-            "questions": [
-                "When was the last time you stayed when everything in you said go?",
-                "What are you capable of if you stop listening to the part that wants to quit?",
-                "How much of your ceiling is self-imposed?",
-                "What would change if you decided discomfort was not a reason to stop?",
-                "What are you avoiding right now that you know you need to face?",
-            ],
-        },
-        "build": {
-            "hooks": [
-                "The hard days are not punishment. They are curriculum.",
-                "Toughness is built in the moments you stay when you want to leave.",
-                "Nobody becomes mentally strong in comfort. Comfort is where strength dies.",
-                "Every difficult season you survived made you something. Did you notice?",
-                "Pressure does not create character. It reveals it. And it can build it.",
-                "The version of you that does not break is built through repeated exposure to breaking points.",
-            ],
-            "truths": [
-                "The suffering you avoid now becomes the weakness you carry later.",
-                "Mental toughness is not about feeling nothing. It is about moving despite feeling everything.",
-                "You become what you repeatedly do under pressure. Not what you intend.",
-                "The hardest moments are the ones that decide who you are becoming.",
-                "Resilience is not bouncing back. It is walking forward while still carrying the weight.",
-            ],
-            "questions": [
-                "What would you be capable of if you stopped letting discomfort make your decisions?",
-                "Which hard thing have you been avoiding that is quietly making you weaker?",
-                "What does the strongest version of you do in the moment you want to quit?",
-            ],
-        },
-        "story": [
-            "He did not quit dramatically. He just stopped pushing. And stopping felt reasonable at the time. It always does. A week passed. Then a month. Then the thing he had been building started to feel like something that happened to someone else. He had not lost his ability. He had lost his willingness. And willingness is harder to rebuild than ability.",
-            "There was a morning he showed up when everything in him said do not. His body was heavy. His mind was loud with reasons to stay. He went anyway. He did not perform well. He did not feel good about it afterward. But he showed up. And that showing up quietly without drama without reward was the most important thing he did that year.",
-            "He thought mental toughness was about never feeling weak. He was wrong. It was about feeling completely broken and still not using it as a reason to stop. The feeling was allowed. The quitting was not. Once he understood that everything changed. Not immediately. But permanently.",
+    "morning_discipline": {
+        "covers": [
+            "OWN MORNING",
+            "WAKE UP",
+            "FIRST BATTLE",
+            "NO SNOOZE",
+            "WIN EARLY",
+        ],
+        "hooks": [
+            "Your day is already losing before you touch the floor.",
+            "The first battle is not the gym. It is the bed.",
+            "You keep losing the morning and expecting to win the life.",
+            "The snooze button is teaching you to betray yourself.",
+            "Your morning routine is exposing your real standard.",
+        ],
+        "problem": [
+            "You wake up late, rush everything, and call the day stressful.",
+            "You give your best energy to comfort, then give leftovers to your goals.",
+            "You start the day reactive, then wonder why your mind is weak.",
+            "The phone gets your first attention. Your future gets whatever is left.",
+            "You do not need a better life first. You need a better first hour.",
+        ],
+        "mirror": [
+            "That is not a small habit. That is identity training.",
+            "Every morning tells the truth before your mouth can lie.",
+            "The man you become is built before the world sees you.",
+            "Nobody claps for the morning win. That is why it matters.",
+            "Discipline is decided when nobody is watching.",
+        ],
+        "consequence": [
+            "Win the first hour and the rest of the day has to respect you.",
+            "Lose the morning long enough and weakness starts feeling normal.",
+            "The life you want is being blocked by the routine you defend.",
+            "You cannot build a hard life with soft mornings.",
+            "Your future is not waiting for motivation. It is waiting for structure.",
+        ],
+        "cta": [
+            "Tomorrow, no snooze. Comment 5AM.",
+            "Win the first hour. Comment LOCKED.",
+            "Set the alarm now. Comment DISCIPLINE.",
+            "Your reset starts tomorrow morning. Comment RESET.",
+            "Follow for the 30 day discipline build.",
         ],
     },
 
-    # ----------------------------------------------------------------
-    # MASCULINITY â€” Being a real man. Standards. Presence.
-    # ----------------------------------------------------------------
-    "masculinity": {
-        "confrontation": {
-            "hooks": [
-                "You are not the man your household needs you to be.",
-                "Real men do not need applause for doing what they should.",
-                "You have been waiting for someone to make you step up.",
-                "The world does not need your potential. It needs your presence.",
-                "You outsourced your responsibilities and called it balance.",
-                "A man who cannot lead himself cannot lead anything.",
-                "You are present in the room but absent in the ways that matter.",
-                "The sons watching you are learning what a man does.",
-                "You demand respect you have not earned through consistent action.",
-                "Masculinity is not performance. It is what you do when no one is watching.",
-            ],
-            "truths": [
-                "A real man does not need external pressure to hold his standard.",
-                "Your presence or absence is shaping people around you whether you know it or not.",
-                "The measure of a man is not what he says. It is what he does consistently.",
-                "Leadership starts with self-governance. You cannot give what you do not have.",
-                "Strength is not loudness. It is steadiness under pressure over time.",
-                "The men who matter are not the ones who were perfect. They are the ones who kept showing up.",
-            ],
-            "questions": [
-                "Are you the kind of man you would want your son to become?",
-                "What standard are you setting for the people who are watching you?",
-                "Are you leading or just occupying space?",
-                "If your actions were the only definition of masculinity what would it mean?",
-                "What does the man you most respect do that you are not doing?",
-            ],
-        },
-        "build": {
-            "hooks": [
-                "Becoming a real man is not a moment. It is a decade of decisions.",
-                "The standard of a man is set by what he tolerates in himself.",
-                "A man is built in his private decisions. Not his public ones.",
-                "Masculinity that only shows up when it is convenient is not masculinity.",
-                "The most powerful thing a man can do is hold himself accountable before anyone else does.",
-            ],
-            "truths": [
-                "A man who disciplines himself does not need to be controlled by the world.",
-                "Real strength is built in silence tested in difficulty and revealed under pressure.",
-                "The men worth following are not the most talented. They are the most consistent.",
-                "Your word to yourself is the foundation of your character. Keep it.",
-                "A man who shows up for himself will naturally show up for everyone who depends on him.",
-            ],
-            "questions": [
-                "What is one standard you need to raise starting today?",
-                "Are the people who depend on you getting the best version of you or the leftover version?",
-                "What would change if you held yourself to the same standard you expect from others?",
-            ],
-        },
-        "story": [
-            "His father was not perfect. Nobody is. But he showed up. Every morning every obligation every hard conversation. He did not complain loudly. He did not demand credit. He just handled what needed to be handled and moved on. When he was gone the people who loved him did not talk about his achievements. They talked about how he made them feel safe. How nothing felt uncertain when he was in the room.",
-            "He used to think being a man meant never showing weakness. Then he watched a man he respected cry at his father funeral. Controlled. Present. Not hiding. And he realised that was not weakness. That was strength that was complete enough to feel everything without letting it make him irresponsible.",
+    "masculine_standard": {
+        "covers": [
+            "BE THE MAN",
+            "RAISE STANDARD",
+            "NO EXCUSES",
+            "LEAD YOURSELF",
+            "REAL MAN",
+        ],
+        "hooks": [
+            "A man who cannot lead himself should stop talking about leading anything else.",
+            "You want respect, but your habits do not respect you.",
+            "Masculinity is not volume. It is self-control under pressure.",
+            "Nobody is coming to make you a man.",
+            "Your household does not need your potential. It needs your presence.",
+        ],
+        "problem": [
+            "You keep demanding from life what you have not earned through consistency.",
+            "You say you want to lead, but you cannot even keep a promise to yourself.",
+            "You confuse anger with strength and comfort with peace.",
+            "You are physically present but mentally absent where it matters.",
+            "You want the title of a man without the private discipline of one.",
+        ],
+        "mirror": [
+            "Your actions are your real reputation.",
+            "The people watching you are learning from what you tolerate.",
+            "Your word to yourself is either building you or destroying you.",
+            "A standard is not what you post. It is what you refuse to break.",
+            "Every man is measured by what he does when it is inconvenient.",
+        ],
+        "consequence": [
+            "If you cannot govern yourself, the world will govern you.",
+            "A weak standard does not stay private. It leaks into everything.",
+            "The man you become will either protect your future or ruin it.",
+            "Discipline is the price of being trusted.",
+            "You do not rise by talking harder. You rise by living cleaner.",
+        ],
+        "cta": [
+            "Raise one standard today. Comment STANDARD.",
+            "Lead yourself first. Comment DISCIPLINE.",
+            "No more fake standards. Comment LOCKED.",
+            "Follow if you are rebuilding the man.",
+            "Thirty days. New standard. Link in bio.",
         ],
     },
 
-    # ----------------------------------------------------------------
-    # HABITS â€” Daily discipline. Routine. The unsexy work.
-    # ----------------------------------------------------------------
-    "habits": {
-        "confrontation": {
-            "hooks": [
-                "Your mornings are soft and your results show it.",
-                "You do not have bad luck. You have bad habits.",
-                "The routine you keep is the life you build. Look at it honestly.",
-                "You sleep in and wonder why you fall behind.",
-                "Every day without a standard is a vote for the man you do not want to be.",
-                "You are what you repeatedly do. Not what you plan to do.",
-                "Your habits are either building you or shrinking you. There is no neutral.",
-                "The undisciplined morning costs the entire day.",
-                "You are waiting for motivation. Discipline does not wait.",
-                "Consistency is the only strategy that actually works. You know this.",
-            ],
-            "truths": [
-                "Motivation gets you started. Habit keeps you going. You need the second one.",
-                "The gap between who you are and who you want to be is filled by daily action.",
-                "You cannot think your way to a better life. You have to routine your way there.",
-                "Small daily actions compounded over years are more powerful than any single decision.",
-                "The person you become is built in the hours everyone else uses for comfort.",
-                "Discipline is not restriction. It is the foundation that makes freedom possible.",
-            ],
-            "questions": [
-                "What does your morning say about who you are becoming?",
-                "If your daily routine stayed exactly as it is where will you be in two years?",
-                "What is one habit you need to kill and one you need to build starting today?",
-                "Are your habits designed by intention or inherited by default?",
-                "What would your life look like if you treated your daily habits as seriously as your biggest goals?",
-            ],
-        },
-        "build": {
-            "hooks": [
-                "Every great life was built by someone who showed up on the days they did not feel like it.",
-                "The unsexy work done consistently produces the only results worth having.",
-                "Your daily habits are quietly writing the story of your life.",
-                "The morning belongs to the man who claims it before the world does.",
-                "Small disciplines practiced daily become the architecture of a life worth living.",
-                "You do not rise to the level of your goals. You fall to the level of your habits.",
-            ],
-            "truths": [
-                "A habit takes weeks to build and days to lose. Protect what you have built.",
-                "The man who controls his morning controls his mindset. The man who controls his mindset controls his life.",
-                "Routine is not the enemy of freedom. It is the structure that makes everything else possible.",
-                "The compounding of daily discipline is invisible in the short term and undeniable in the long term.",
-                "You do not need a perfect system. You need a consistent one.",
-            ],
-            "questions": [
-                "Which part of your routine is serving the man you are becoming?",
-                "What would you add to your mornings if you truly believed they shaped everything else?",
-                "What would your life look like if you treated every day as if it mattered?",
-            ],
-        },
-        "story": [
-            "He did not have a dramatic transformation. There was no single moment that changed everything. Just one morning where he decided to do the thing he had been postponing. Then the next morning he did it again. Three weeks later it was not a decision anymore. It was just what he did. Six months later the results showed up. Not because he was gifted. Because he was consistent.",
-            "He used to say he would start when things settled down. When work slowed. When life got easier. He said it for three years. Things never settled. They never do. The men who built something real did not wait for the right conditions. They built the conditions through the consistency of their habits.",
-            "Every morning at five he did the same things in the same order. Not because someone told him to. Because he had learned that the structure of his morning determined the quality of his day. And the quality of his days was determining the direction of his life. Nobody posted about it. But it was quietly building something real.",
+    "accountability_challenge": {
+        "covers": [
+            "STOP ALONE",
+            "30 DAYS",
+            "JOIN NOW",
+            "REAL ACCOUNTABILITY",
+            "NO HIDING",
         ],
-    },
-
-    # ----------------------------------------------------------------
-    # CHALLENGE â€” Paid accountability group
-    # ----------------------------------------------------------------
-    "challenge": {
-        "confrontation": {
-            "hooks": [
-                "You have been trying alone. It is not working.",
-                "Willpower runs out. Accountability does not.",
-                "You do not need more motivation. You need someone watching.",
-                "You keep starting over because there is nobody to answer to.",
-                "30 days with the right people changes more than 3 years alone.",
-                "Stop making private promises you have no reason to keep.",
-                "The reason you quit is always the same. No consequence.",
-                "Isolation is not strength. It is the reason most men fail.",
-            ],
-            "truths": [
-                "The environment you are in determines the standard you hold.",
-                "When people are watching you show up differently. Every time.",
-                "You do not have a discipline problem. You have an accountability gap.",
-                "A room full of people who will not accept your excuses is priceless.",
-                "The men who changed their lives did not do it alone. Nobody does.",
-            ],
-            "questions": [
-                "How many more times are you going to restart alone?",
-                "What would change if someone was watching every single day?",
-                "If not this what exactly is the plan?",
-                "At what point does doing it alone become the problem and not the solution?",
-                "What is twenty dollars a month if it is the thing that finally makes the difference?",
-            ],
-        },
-        "build": {
-            "hooks": [
-                "There is a reason the best athletes in the world have coaches.",
-                "Discipline is easier when the environment demands it.",
-                "The 30 day challenge exists because accountability rewires the brain.",
-                "You rise to the standard of the people you surround yourself with. Always.",
-            ],
-            "truths": [
-                "Community is not weakness. It is the structure that lets you go further.",
-                "Under twenty dollars a month. Daily check-ins. Real accountability. No excuses.",
-                "Daily check-ins make the invisible visible. That is where real change begins.",
-                "Thirty days of consistent accountability creates the foundation of a new standard.",
-            ],
-            "questions": [
-                "What would thirty days of real accountability produce in your life?",
-                "When was the last time you invested in yourself the way you invest in everything else?",
-                "What is stopping you from joining the men who are already building?",
-            ],
-        },
-        "story": [
-            "He had tried alone seventeen times. He counted once. Seventeen fresh starts seventeen slow stops. Each one began with certainty and ended with the same familiar drift. Then someone put him in a room with people who checked in every morning. People who did not accept the usual excuses. The eighteenth time was different. Not because he was different. Because the environment was.",
-            "He thought accountability was for people who lacked self-discipline. Then he realised that self-discipline without structure is just willpower. And willpower always runs out. Accountability is the structure that makes discipline sustainable. He joined a group. He showed up every day because people were watching. Then he kept showing up after they stopped watching. That is when it became identity.",
+        "hooks": [
+            "You keep restarting because nobody sees you quit.",
+            "Doing it alone is not strength if it keeps failing.",
+            "You do not need more motivation. You need accountability.",
+            "Private promises are easy to break.",
+            "The reason you keep quitting is simple. No consequence.",
         ],
-    },
-
-    # ----------------------------------------------------------------
-    # PURPOSE â€” Legacy. The long game.
-    # ----------------------------------------------------------------
-    "purpose": {
-        "confrontation": {
-            "hooks": [
-                "You were built for more than this comfortable nothing.",
-                "Legacy does not build itself while you wait.",
-                "You have one life. This is it. Not the practice run.",
-                "Stop treating your potential like a backup plan.",
-                "Every day you coast is a day the better version of you does not exist.",
-                "The world does not need your intentions. It needs your output.",
-                "Greatness belongs to the consistent not the talented.",
-                "You are running out of time to become who you were supposed to be.",
-            ],
-            "truths": [
-                "Purpose is not found. It is built. One decision at a time.",
-                "The man you want to become is made in the moments nobody watches.",
-                "You do not become great by accident. You become great by daily decision.",
-                "The mark you leave on the world starts with the mark you make on yourself.",
-                "Legacy is the sum of ordinary days lived with extraordinary intention.",
-            ],
-            "questions": [
-                "What do you want people to say about you when it is over?",
-                "Are you building something that will outlast you?",
-                "Who would you become if you stopped playing small?",
-                "Is the life you are living the one you were built for?",
-                "What would your life look like if you lived it at full capacity every day?",
-            ],
-        },
-        "build": {
-            "hooks": [
-                "Legacy is a quiet thing. It builds in the years nobody celebrates.",
-                "The men who are remembered were not the loudest. They were the most consistent.",
-                "The work you are doing in silence right now is the foundation of everything.",
-                "Not every chapter looks like progress. Some look like patience. Both build the same thing.",
-            ],
-            "truths": [
-                "Legacy is not a destination. It is the sum of daily decisions made over years.",
-                "Discipline practiced in private becomes character displayed in public.",
-                "You do not have to be extraordinary every day. You have to be consistent.",
-                "The best version of you is not waiting for perfect conditions. It is built through imperfect ones.",
-                "A life of purpose is built in ten thousand small acts that nobody sees.",
-            ],
-            "questions": [
-                "What are you building that will still matter in ten years?",
-                "Who is the man you are becoming and are you proud of him?",
-                "If today was a brick in the foundation of your legacy what kind of brick was it?",
-            ],
-        },
-        "story": [
-            "He was not famous. Nobody interviewed him. Nobody watched him train at five in the morning. But he showed up. Every day for years he showed up. And slowly quietly the life he built became the kind of life other people pointed at and said. That is what is possible. He never set out to inspire anyone. He just refused to disappear.",
-            "The young man asked the old man how he had built something that lasted. The old man thought for a long time. Then he said. I just refused to stop on the days I wanted to quit. Every other day was easy. It was the days I wanted to stop that mattered. And I just did not. That is all it was. Decades of not stopping on the days I wanted to.",
-            "She decided she was going to become someone her children would be proud of. Not rich. Not famous. Just honest. Disciplined. Present. She started small. Too small to matter she thought. But small things done every day do not stay small. Five years later her children did not know exactly when she changed. They just knew she was different. Solid. The kind of person you lean on without thinking about it.",
+        "problem": [
+            "You start strong, disappear quietly, then promise yourself next week will be different.",
+            "You keep relying on willpower, and willpower keeps running out.",
+            "Your environment accepts your excuses, so your standard never rises.",
+            "Nobody checks in. Nobody notices. Nobody challenges the drift.",
+            "Alone, you negotiate. Around disciplined people, you execute.",
+        ],
+        "mirror": [
+            "That is why structure matters.",
+            "That is why the right room changes behavior.",
+            "People show up differently when the standard is visible.",
+            "Accountability exposes the excuses you hide from yourself.",
+            "You do not need hype. You need pressure that makes you better.",
+        ],
+        "consequence": [
+            "Thirty days of daily check-ins can do what three years of private promises could not.",
+            "The group gives you one thing comfort never will: consequence.",
+            "You either build with people who push you or stay alone with excuses.",
+            "The standard rises when the room refuses to let you disappear.",
+            "Your next level needs structure, not another motivational video.",
+        ],
+        "cta": [
+            "Join the Inner Discipline Challenge. Link in bio.",
+            "Thirty days. Daily check-ins. Link in bio.",
+            "Stop doing it alone. Link in bio.",
+            "The group is open. Link in bio.",
+            "Under twenty dollars. Real accountability. Link in bio.",
         ],
     },
 }
 
-# ================================================================
-# LONG VIDEO ARC â€” 7 acts, one continuous monologue
-# ================================================================
+CATEGORY_ORDER = list(CONTENT_BANK.keys())
 
-LONG_VIDEO_ARC = [
-    {"name": "HOOK",      "pacing": "confrontation", "categories": ["identity", "mental", "habits"],       "section": "hooks",     "count": 1},
-    {"name": "HOOK2",     "pacing": "confrontation", "categories": ["masculinity", "mental"],              "section": "hooks",     "count": 1},
-    {"name": "DEEPEN",    "pacing": "build",         "categories": ["identity", "habits"],                 "section": "hooks",     "count": 2},
-    {"name": "STORY1",    "pacing": "story",         "categories": ["identity", "mental", "habits"],       "section": "story",     "count": 1},
-    {"name": "TRUTH",     "pacing": "confrontation", "categories": ["identity", "mental", "masculinity"],  "section": "truths",    "count": 3},
-    {"name": "QUESTIONS", "pacing": "build",         "categories": ["habits", "identity", "mental"],       "section": "questions", "count": 3},
-    {"name": "DEEPEN2",   "pacing": "build",         "categories": ["masculinity", "purpose"],             "section": "truths",    "count": 2},
-    {"name": "TURN",      "pacing": "story",         "categories": ["purpose", "masculinity"],             "section": "story",     "count": 1},
-    {"name": "PURPOSE",   "pacing": "confrontation", "categories": ["purpose"],                            "section": "hooks",     "count": 2},
-    {"name": "FINAL_Q",   "pacing": "build",         "categories": ["purpose", "identity"],                "section": "questions", "count": 2},
-    {"name": "CLOSE",     "pacing": "confrontation", "categories": ["challenge"],                          "section": "hooks",     "count": 1},
-    {"name": "CTA",       "pacing": "confrontation", "categories": ["challenge"],                          "section": "truths",    "count": 1},
-]
-
-SET_ORDER = ["identity", "mental", "masculinity", "habits", "challenge", "purpose"]
 
 # ================================================================
-# CONTENT SELECTION
+# UTILITIES
 # ================================================================
 
-used_lines = json.load(open(USED_LINES_FILE)) if os.path.exists(USED_LINES_FILE) else []
+def clean_text(text):
+    replacements = {
+        "\u2014": "-",
+        "\u2013": "-",
+        "\u2018": "'",
+        "\u2019": "'",
+        "\u201c": '"',
+        "\u201d": '"',
+        "\u2026": "...",
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text.strip()
 
-def pick_line(category, section, pacing=None):
-    cat_data = CONTENT.get(category, {})
-    if section == "story":
-        pool = cat_data.get("story", [])
-    elif pacing and pacing in cat_data:
-        pool = cat_data[pacing].get(section, [])
-    else:
-        pool = []
-        for mode_data in cat_data.values():
-            if isinstance(mode_data, dict):
-                pool += mode_data.get(section, [])
 
-    available = [l for l in pool if l not in used_lines]
+def get_all_videos():
+    files = []
+    for pattern in ["bg*.mp4", "bg*.mov", "bg*.MP4", "bg*.MOV"]:
+        files.extend(glob.glob(pattern))
+    return files
+
+
+def save_memory():
+    json.dump(used_lines, open(USED_LINES_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    json.dump(set_step, open(SET_STEP_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+
+
+def pick_unique(pool):
+    available = [x for x in pool if x not in used_lines]
     if not available:
-        available = pool.copy()
-    if not available:
-        return "You know what you need to do."
+        available = pool[:]
+    choice = random.choice(available)
+    used_lines.append(choice)
+    return choice
 
-    chosen = random.choice(available)
-    used_lines.append(chosen)
-    return chosen
 
-def get_next_category():
-    global set_step, last_category
-    cat           = SET_ORDER[set_step % len(SET_ORDER)]
-    set_step     += 1
-    last_category = cat
-    return cat
+def next_category():
+    global set_step
+    category = CATEGORY_ORDER[set_step % len(CATEGORY_ORDER)]
+    set_step += 1
+    return category
 
-def build_reel_script(category):
-    pacing   = random.choice(["confrontation", "build"])
-    hook     = pick_line(category, "hooks",     pacing)
-    truth    = pick_line(category, "truths",    pacing)
-    question = pick_line(category, "questions", pacing)
 
-    if category == "challenge":
-        cta = random.choice([
-            "Join the Inner Discipline Challenge. DM DISCIPLINE.",
-            "30 days. Facebook group. Under 20$. DM DISCIPLINE.",
-            "The group is open. DM DISCIPLINE.",
-            "Stop doing it alone. DM DISCIPLINE.",
-        ])
-    elif category == "purpose":
-        cta = random.choice([
-            "Comment LEGEND if you are building.",
-            "Type LEGACY if this hit.",
-            "This is your sign. Comment LEGEND.",
-        ])
-    else:
-        cta = random.choice([
-            "Prove it. Comment DISCIPLINE.",
-            "Type DISCIPLINE if you are done.",
-            "Lock in or leave.",
-            "No excuses. Type DISCIPLINE.",
-            "This is your moment.",
-        ])
-    return [hook, truth, question, cta], pacing
+@dataclass
+class ReelScript:
+    category: str
+    cover: str
+    pacing: str
+    lines: list
 
-def build_long_video_script():
-    lines = []
-    for act in LONG_VIDEO_ARC:
-        for _ in range(act["count"]):
-            cat  = random.choice(act["categories"])
-            line = pick_line(cat, act["section"], act["pacing"] if act["section"] != "story" else None)
-            if line:
-                lines.append((line, act["pacing"]))
-    return lines
 
-# ================================================================
-# TTS
-# ================================================================
+def build_reel_script():
+    category = next_category()
+    bank = CONTENT_BANK[category]
 
-async def tts_async(text, filename, rate, pitch):
-    communicate = edge_tts.Communicate(text, VOICE, rate=rate, pitch=pitch, volume=VOLUME)
-    await communicate.save(filename)
+    pacing = random.choices(
+        ["attack", "story", "cold"],
+        weights=[0.56, 0.30, 0.14],
+        k=1
+    )[0]
 
-def generate_voice(text, filename, pacing="confrontation"):
-    mode = PACING_MODES.get(pacing, PACING_MODES["confrontation"])
-    asyncio.run(tts_async(text, filename, mode["rate"], mode["pitch"]))
+    lines = [
+        pick_unique(bank["hooks"]),
+        pick_unique(bank["problem"]),
+        pick_unique(bank["mirror"]),
+        pick_unique(bank["consequence"]),
+        pick_unique(bank["cta"]),
+    ]
 
-# ================================================================
-# TEXT RENDERER
-# Returns RGB numpy array (H, W, 3) with text composited on
-# transparent black. Text pixels are white/orange, rest is black.
-# We return RGB so MoviePy ImageClip works without mask issues.
-# ================================================================
+    cover = random.choice(bank["covers"])
+    return ReelScript(category=category, cover=cover, pacing=pacing, lines=lines)
 
-def make_text_frame(text):
-    """Render text onto black RGB frame. Orange first word, white rest."""
-    text = text.replace("\u2014", "-").replace("\u2013", "-")
-    text = text.replace("\u2018", "'").replace("\u2019", "'")
-    text = text.replace("\u201c", '"').replace("\u201d", '"')
-    text = text.replace("\u2026", "...")
-    text = text.upper()
-
-    # Render on black background â€” we'll blend it in using numpy
-    img  = Image.new("RGB", (W, H), (0, 0, 0))
-    draw = ImageDraw.Draw(img)
-
-    font_size = 88
-    font      = ImageFont.truetype(FONT_PATH, font_size)
-    max_width = W - 240
-
-    words   = text.split()
-    lines   = []
-    current = ""
-    for word in words:
-        test = (current + " " + word).strip()
-        if draw.textlength(test, font=font) <= max_width:
-            current = test
-        else:
-            lines.append(current)
-            current = word
-    if current:
-        lines.append(current)
-
-    total_height     = len(lines) * (font_size + 22)
-    y                = int(H * 0.62) - total_height // 2
-    first_word_drawn = False
-    ORANGE           = (255, 140, 0)
-    WHITE            = (255, 255, 255)
-
-    for line in lines:
-        line_words = line.split()
-        if not line_words:
-            y += font_size + 22
-            continue
-        line_width = draw.textlength(line, font=font)
-        x          = (W - line_width) // 2
-        for idx, word in enumerate(line_words):
-            word_width  = draw.textlength(word, font=font)
-            space_width = draw.textlength(" ", font=font) if idx < len(line_words) - 1 else 0
-            color = ORANGE if not first_word_drawn else WHITE
-            first_word_drawn = True
-            draw.text((x, y), word, font=font, fill=color, stroke_width=5, stroke_fill=(0, 0, 0))
-            x += word_width + space_width
-        y += font_size + 22
-
-    return np.array(img)   # shape (H, W, 3)
-
-# ================================================================
-# LOGO RENDERER
-# Returns RGB numpy array (H, W, 3)
-# ================================================================
-
-def make_logo_frame():
-    if not os.path.exists(LOGO_PATH):
-        return None
-    logo   = Image.open(LOGO_PATH).convert("RGBA")
-    aspect = logo.height / logo.width
-    new_w  = LOGO_SIZE
-    new_h  = int(LOGO_SIZE * aspect)
-    logo   = logo.resize((new_w, new_h), Image.LANCZOS)
-
-    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    x      = (W - new_w) // 2
-    y      = H - new_h - LOGO_BOTTOM_MARGIN
-    canvas.paste(logo, (x, y), logo)
-
-    # Flatten to RGB with black background
-    bg  = Image.new("RGB", (W, H), (0, 0, 0))
-    bg.paste(canvas.convert("RGB"), (0, 0), canvas.split()[3])
-    return np.array(bg)
-
-# ================================================================
-# VIGNETTE â€” precomputed numpy mask
-# ================================================================
-
-def make_vignette_mask():
-    mask            = np.ones((H, W), dtype=np.float32)
-    vignette_height = int(H * 0.55)
-    for row in range(vignette_height):
-        mask[row, :] = (row / vignette_height) ** 1.6
-    return mask   # values 0.0 (black at top) to 1.0
-
-# ================================================================
-# CHUNK SPLITTER â€” always word count, never punctuation
-# ================================================================
 
 def split_into_chunks(text, chunk_size):
-    words  = text.split()
+    words = clean_text(text).split()
     chunks = []
     for i in range(0, len(words), chunk_size):
         chunk = " ".join(words[i:i + chunk_size]).strip()
@@ -655,346 +395,533 @@ def split_into_chunks(text, chunk_size):
             chunks.append(chunk)
     return chunks if chunks else [text]
 
+
 # ================================================================
-# CORE VIDEO BUILDER
-# Uses VideoClip(make_frame) for bg â€” proven MoviePy pattern.
-# Text composited via numpy inside make_frame â€” no RGBA clip issues.
+# TTS
 # ================================================================
 
-def build_video(lines_with_pacing, video_path, output_path, max_duration=None, seg_index=0):
+async def tts_async(text, filename, rate, pitch):
+    communicate = edge_tts.Communicate(
+        clean_text(text),
+        VOICE,
+        rate=rate,
+        pitch=pitch,
+        volume=VOLUME,
+    )
+    await communicate.save(filename)
+
+
+def generate_voice(text, filename, pacing):
+    mode = PACING_MODES[pacing]
+    asyncio.run(tts_async(text, filename, mode["rate"], mode["pitch"]))
+
+
+# ================================================================
+# TEXT RENDERING
+# ================================================================
+
+def load_font(size):
+    if not os.path.exists(FONT_PATH):
+        raise FileNotFoundError(f"Missing font file: {FONT_PATH}")
+    return ImageFont.truetype(FONT_PATH, size)
+
+
+def draw_centered_multiline(draw, lines, font, y, colors, stroke=6):
+    line_gap = int(font.size * 0.22)
+    total_height = len(lines) * font.size + (len(lines) - 1) * line_gap
+    start_y = int(y - total_height / 2)
+
+    for line_index, line_words in enumerate(lines):
+        widths = [draw.textlength(word, font=font) for word in line_words]
+        space = draw.textlength(" ", font=font)
+        line_width = sum(widths) + space * max(0, len(line_words) - 1)
+        x = int((W - line_width) / 2)
+        yy = start_y + line_index * (font.size + line_gap)
+
+        for i, word in enumerate(line_words):
+            color = colors(word, line_index, i)
+            draw.text(
+                (x, yy),
+                word,
+                font=font,
+                fill=color,
+                stroke_width=stroke,
+                stroke_fill=BLACK,
+            )
+            x += int(widths[i] + space)
+
+
+def wrap_words(draw, text, font, max_width):
+    words = clean_text(text).upper().split()
+    lines = []
+    current = []
+    for word in words:
+        test = " ".join(current + [word])
+        if draw.textlength(test, font=font) <= max_width:
+            current.append(word)
+        else:
+            if current:
+                lines.append(current)
+            current = [word]
+    if current:
+        lines.append(current)
+    return lines
+
+
+def make_text_frame(text, mode="normal"):
+    img = Image.new("RGB", (W, H), BLACK)
+    draw = ImageDraw.Draw(img)
+
+    word_count = len(clean_text(text).split())
+    if mode == "hook":
+        font_size = 142 if word_count <= 3 else 118
+        y = H * TEXT_Y_HOOK
+    elif word_count <= 2:
+        font_size = 142
+        y = H * TEXT_Y_REEL
+    elif word_count <= 5:
+        font_size = 112
+        y = H * TEXT_Y_REEL
+    else:
+        font_size = 92
+        y = H * TEXT_Y_REEL
+
+    font = load_font(font_size)
+    lines = wrap_words(draw, text, font, TEXT_MAX_WIDTH)
+
+    hot_words = {
+        "WEAK", "LOSING", "FAIL", "FAILED", "KILL", "EXCUSE", "EXCUSES",
+        "DISCIPLINE", "STANDARD", "STANDARDS", "RESET", "LOCKED",
+        "ALONE", "QUIT", "QUITTING", "DRIFT", "DRIFTING", "WASTING",
+        "MAN", "MORNING", "SNOOZE", "NOW", "TODAY",
+    }
+
+    first_drawn = {"done": False}
+
+    def color_fn(word, line_index, word_index):
+        raw = word.replace(".", "").replace(",", "").replace("?", "").replace("!", "")
+        if mode == "hook":
+            return ORANGE if not first_drawn["done"] else WHITE
+        if raw in hot_words:
+            return ORANGE
+        if not first_drawn["done"]:
+            first_drawn["done"] = True
+            return ORANGE
+        return WHITE
+
+    draw_centered_multiline(draw, lines, font, y, color_fn, stroke=7)
+    return np.array(img)
+
+
+def make_cover_frame(cover_text):
+    img = Image.new("RGB", (W, H), BLACK)
+    draw = ImageDraw.Draw(img)
+
+    # subtle center glow block, text only; real bg is composited behind it
+    font = load_font(168 if len(cover_text.split()) <= 2 else 132)
+    lines = wrap_words(draw, cover_text, font, 940)
+
+    def color_fn(word, line_index, word_index):
+        return ORANGE if word_index == 0 else WHITE
+
+    draw_centered_multiline(draw, lines, font, H * 0.54, color_fn, stroke=8)
+    return np.array(img)
+
+
+def make_logo_frame():
+    if not os.path.exists(LOGO_PATH):
+        return None
+
+    logo = Image.open(LOGO_PATH).convert("RGBA")
+    aspect = logo.height / max(1, logo.width)
+    new_w = LOGO_SIZE
+    new_h = int(LOGO_SIZE * aspect)
+    logo = logo.resize((new_w, new_h), Image.LANCZOS)
+
+    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    x = (W - new_w) // 2
+    y = H - new_h - LOGO_BOTTOM_MARGIN
+    canvas.paste(logo, (x, y), logo)
+
+    bg = Image.new("RGB", (W, H), BLACK)
+    bg.paste(canvas.convert("RGB"), (0, 0), canvas.split()[3])
+    return np.array(bg)
+
+
+# ================================================================
+# BACKGROUND LOOK
+# ================================================================
+
+def prepare_background(video_path, duration):
+    bg = VideoFileClip(video_path)
+
+    clip_ratio = bg.w / bg.h
+    target_ratio = W / H
+
+    if clip_ratio > target_ratio:
+        bg = bg.resize(height=H)
+    else:
+        bg = bg.resize(width=W)
+
+    bg = bg.crop(
+        x_center=bg.w / 2,
+        y_center=bg.h / 2,
+        width=W,
+        height=H,
+    )
+
+    if bg.duration < duration:
+        bg = vfx.loop(bg, duration=duration)
+
+    # random start point prevents every output feeling identical
+    max_start = max(0, bg.duration - duration - 0.1)
+    start = random.uniform(0, max_start) if max_start > 1 else 0
+    bg = bg.subclip(start, start + duration)
+
+    return bg
+
+
+def make_vignette_mask():
+    y = np.linspace(0, 1, H).reshape(H, 1)
+    x = np.linspace(-1, 1, W).reshape(1, W)
+    radial = 1 - 0.36 * np.clip((x ** 2 + (y - 0.45) ** 2), 0, 1)
+    top = np.ones((H, W), dtype=np.float32)
+    top[: int(H * 0.42), :] *= np.linspace(0.47, 1, int(H * 0.42)).reshape(-1, 1)
+    mask = radial * top
+    return np.clip(mask, 0.34, 1.0).astype(np.float32)
+
+
+def apply_contrast(frame):
+    f = frame.astype(np.float32)
+    f = (f - 128) * 1.12 + 128
+    f = np.clip(f + 4, 0, 255)
+    return f.astype(np.uint8)
+
+
+def composite_rgb(base, overlay, opacity=1.0):
+    mask = np.any(overlay > 18, axis=2)
+    if not np.any(mask):
+        return base
+    b = base.astype(np.float32)
+    o = overlay.astype(np.float32)
+    b[mask] = b[mask] * (1.0 - opacity) + o[mask] * opacity
+    return np.clip(b, 0, 255).astype(np.uint8)
+
+
+# ================================================================
+# VIDEO BUILDER
+# ================================================================
+
+def build_video(script: ReelScript, video_path, output_path):
     voice_files = []
+    audio_clips = []
 
     try:
-        # ---- Step 1: Generate all voice files and measure durations ----
-        print(f"  ðŸŽ™ï¸  Generating {len(lines_with_pacing)} voice lines...")
-        voice_data = []   # (file, duration, pacing, chunk_size, line_text)
+        print(f"  Category: {script.category.upper()} | Pacing: {script.pacing}")
+        print(f"  Cover: {script.cover}")
+        print("  Generating voice...")
 
-        for i, (line, pacing) in enumerate(lines_with_pacing):
-            mode       = PACING_MODES.get(pacing, PACING_MODES["confrontation"])
-            chunk_size = mode["chunk_size"]
-            vf         = f"temp_segments/v_{seg_index}_{i}.mp3"
+        voice_data = []
+        for i, line in enumerate(script.lines):
+            vf = os.path.join(TEMP_DIR, f"v2_{datetime.now().strftime('%H%M%S')}_{i}.mp3")
             voice_files.append(vf)
-            generate_voice(line, vf, pacing)
-            audio    = AudioFileClip(vf)
-            duration = audio.duration
+            generate_voice(line, vf, script.pacing)
+            audio = AudioFileClip(vf)
+            voice_data.append({
+                "file": vf,
+                "duration": float(audio.duration),
+                "line": line,
+                "chunk_size": PACING_MODES[script.pacing]["chunk_size"],
+            })
             audio.close()
-            voice_data.append((vf, duration, pacing, chunk_size, line))
 
-        # ---- Step 2: If reel, trim lines until total fits under max_duration ----
-        if max_duration:
-            gap   = 0.12
-            lead  = 0.5
-            total = lead + sum(d + gap for _, d, _, _, _ in voice_data)
-            while total > max_duration and len(voice_data) > 1:
-                removed = voice_data.pop()
-                if os.path.exists(removed[0]):
-                    os.remove(removed[0])
-                    voice_files.remove(removed[0])
-                total = lead + sum(d + gap for _, d, _, _, _ in voice_data)
+        # timeline
+        lead = 0.30
+        line_gap = 0.16 if script.pacing == "attack" else 0.22
+        fade = 0.11
 
-        # ---- Step 3: Build timeline from EXACT audio durations ----
-        # âœ… All timestamps calculated upfront from measured durations.
-        # No floating point accumulation â€” last line stays in sync.
-        FADE_DUR    = 0.15   # fade in / fade out duration seconds
-        LINE_GAP    = 0.25   # silence between lines â€” breathing room
-        lead        = 0.5    # lead-in before first word
-
-        # First pass â€” calculate exact start time of every line
+        cursor = lead
         line_starts = []
-        cursor      = lead
-        for i, (vf, voice_duration, pacing, chunk_size, line) in enumerate(voice_data):
+        for i, item in enumerate(voice_data):
             line_starts.append(cursor)
-            cursor += voice_duration + (LINE_GAP if i < len(voice_data) - 1 else FADE_DUR)
+            cursor += item["duration"] + (line_gap if i < len(voice_data) - 1 else 0.20)
 
-        reel_duration = float(cursor)
-        if max_duration:
-            reel_duration = min(reel_duration, float(max_duration))
+        duration = min(cursor, REEL_SECONDS)
 
-        # Second pass â€” build text_events and audio_clips from exact starts
-        text_events = []   # (chunk_text, t_start, t_end)
-        audio_clips = []
+        # build text events
+        text_events = []
 
-        for i, (vf, voice_duration, pacing, chunk_size, line) in enumerate(voice_data):
-            line_t = line_starts[i]
-            audio  = AudioFileClip(vf)
-            audio_clips.append(audio.set_start(line_t))
+        # cover blast in first 0.85s
+        cover_frame = make_cover_frame(script.cover)
+        text_events.append({
+            "frame": cover_frame,
+            "start": 0.02,
+            "end": min(0.88, duration),
+            "type": "cover",
+        })
 
-            chunks         = split_into_chunks(line, chunk_size)
-            num_chunks     = len(chunks)
-            chunk_duration = voice_duration / num_chunks   # exact equal slice
+        for i, item in enumerate(voice_data):
+            start = line_starts[i]
+            if start >= duration:
+                continue
+
+            audio = AudioFileClip(item["file"]).set_start(start)
+            audio_clips.append(audio)
+
+            chunks = split_into_chunks(item["line"], item["chunk_size"])
+            chunk_duration = item["duration"] / max(1, len(chunks))
 
             for j, chunk in enumerate(chunks):
-                t_start = line_t + j * chunk_duration
-                # Last chunk ends exactly when voice ends + small fade tail
-                if j == num_chunks - 1:
-                    t_end = line_t + voice_duration + FADE_DUR
-                else:
-                    t_end = t_start + chunk_duration + FADE_DUR * 0.5
-                text_events.append((chunk, t_start, min(t_end, reel_duration)))
+                t_start = start + j * chunk_duration
+                t_end = start + (j + 1) * chunk_duration + fade
+                if t_start >= duration:
+                    continue
 
-        print(f"  â±ï¸  Duration: {reel_duration:.2f}s | Lines: {len(voice_data)} | Chunks: {len(text_events)}")
+                frame = make_text_frame(chunk, mode="hook" if i == 0 and j == 0 else "normal")
+                text_events.append({
+                    "frame": frame,
+                    "start": t_start,
+                    "end": min(t_end, duration),
+                    "type": "text",
+                })
 
-        # ---- Step 4: Pre-render all text frames ----
-        print(f"  ðŸ–¼ï¸  Pre-rendering {len(text_events)} text frames...")
-        rendered_texts = []
-        for chunk, t_start, t_end in text_events:
-            frame = make_text_frame(chunk)
-            rendered_texts.append((frame, t_start, t_end))
+        print(f"  Duration: {duration:.2f}s | Events: {len(text_events)}")
 
-        # ---- Step 5: Pre-render logo ----
         logo_frame = make_logo_frame()
-
-        # ---- Step 6: Load and prep background video ----
-        print(f"  ðŸŽ¬  Loading background: {video_path}")
-        bg_clip      = VideoFileClip(video_path)
-        clip_ratio   = bg_clip.w / bg_clip.h
-        target_ratio = W / H
-        if clip_ratio > target_ratio:
-            bg_clip = bg_clip.resize(height=H)
-        else:
-            bg_clip = bg_clip.resize(width=W)
-        bg_clip = bg_clip.crop(
-            x_center=bg_clip.w / 2,
-            y_center=bg_clip.h / 2,
-            width=W, height=H
-        )
-        if bg_clip.duration < reel_duration:
-            bg_clip = vfx.loop(bg_clip, duration=reel_duration)
-        bg_clip = bg_clip.subclip(0, reel_duration)
-
-        # ---- Step 7: Precompute vignette ----
-        vignette_mask = make_vignette_mask()   # (H, W) float32 0-1
-
-        # ================================================================
-        # ---- Step 8: make_frame â€” composites everything via numpy ----
-        # This is the proven pattern. No fl(), no RGBA ImageClip issues.
-        # ================================================================
+        bg_clip = prepare_background(video_path, duration)
+        vignette = make_vignette_mask()
 
         def make_frame(t):
-            # Get background frame
-            bg = bg_clip.get_frame(t).astype(np.float32)
+            frame = bg_clip.get_frame(t).astype(np.uint8)
 
-            # Apply vignette (darken top)
-            bg[:, :, 0] *= vignette_mask
-            bg[:, :, 1] *= vignette_mask
-            bg[:, :, 2] *= vignette_mask
-            bg = np.clip(bg, 0, 255).astype(np.uint8)
+            # slow zoom punch
+            zoom = 1.0 + ZOOM_STRENGTH * (t / max(duration, 0.01))
+            if zoom > 1.001:
+                new_w = int(W / zoom)
+                new_h = int(H / zoom)
+                x1 = (W - new_w) // 2
+                y1 = (H - new_h) // 2
+                pil = Image.fromarray(frame)
+                pil = pil.crop((x1, y1, x1 + new_w, y1 + new_h)).resize((W, H), Image.LANCZOS)
+                frame = np.array(pil)
 
-            # âœ… Composite text with fade in / fade out
-            for text_frame, t_start, t_end in rendered_texts:
-                if t_start <= t < t_end:
-                    duration = t_end - t_start
+            # tiny hook shake first second
+            if t < 0.82:
+                dx = int(np.sin(t * 90) * SHAKE_STRENGTH)
+                dy = int(np.cos(t * 75) * SHAKE_STRENGTH)
+                frame = np.roll(frame, shift=(dy, dx), axis=(0, 1))
 
-                    # Fade in over FADE_DUR seconds
-                    if t - t_start < FADE_DUR:
-                        alpha = (t - t_start) / FADE_DUR
-                    # Fade out over FADE_DUR seconds
-                    elif t_end - t < FADE_DUR:
-                        alpha = (t_end - t) / FADE_DUR
+            frame = apply_contrast(frame)
+
+            f = frame.astype(np.float32)
+            f[:, :, 0] *= vignette
+            f[:, :, 1] *= vignette
+            f[:, :, 2] *= vignette
+            frame = np.clip(f, 0, 255).astype(np.uint8)
+
+            # dark text readability band
+            band = frame.astype(np.float32)
+            y1 = int(H * 0.36)
+            y2 = int(H * 0.72)
+            band[y1:y2, :, :] *= 0.78
+            frame = np.clip(band, 0, 255).astype(np.uint8)
+
+            for event in text_events:
+                if event["start"] <= t < event["end"]:
+                    event_duration = event["end"] - event["start"]
+                    local = t - event["start"]
+
+                    # sharper pop for cover; softer for normal text
+                    fd = 0.08 if event["type"] == "cover" else fade
+
+                    if local < fd:
+                        alpha = local / fd
+                    elif event["end"] - t < fd:
+                        alpha = (event["end"] - t) / fd
                     else:
                         alpha = 1.0
 
                     alpha = float(np.clip(alpha, 0.0, 1.0))
+                    frame = composite_rgb(frame, event["frame"], opacity=alpha)
 
-                    # Blend text pixels only (not black background)
-                    mask   = np.any(text_frame > 20, axis=2)
-                    bg_f   = bg.astype(np.float32)
-                    txt_f  = text_frame.astype(np.float32)
-                    bg_f[mask] = bg_f[mask] * (1.0 - alpha) + txt_f[mask] * alpha
-                    bg     = np.clip(bg_f, 0, 255).astype(np.uint8)
-
-            # Composite logo (always visible)
             if logo_frame is not None:
-                logo_mask = np.any(logo_frame > 10, axis=2)
-                bg_f      = bg.astype(np.float32)
-                logo_f    = logo_frame.astype(np.float32)
-                blended   = bg_f.copy()
-                blended[logo_mask] = (
-                    bg_f[logo_mask] * (1.0 - LOGO_OPACITY) +
-                    logo_f[logo_mask] * LOGO_OPACITY
-                )
-                bg = np.clip(blended, 0, 255).astype(np.uint8)
+                frame = composite_rgb(frame, logo_frame, opacity=LOGO_OPACITY)
 
-            return bg
+            return frame
 
-        # ---- Step 9: Build final video ----
-        final_video = VideoClip(make_frame, duration=reel_duration).set_fps(FPS)
-        final_video = final_video.fadeout(0.3)
-
-        # ---- Step 10: Audio ----
+        final_video = VideoClip(make_frame, duration=duration).set_fps(FPS)
         final_voice = CompositeAudioClip(audio_clips)
 
-        if os.path.exists("music.mp3"):
-            music = AudioFileClip("music.mp3")
-            md    = reel_duration - MUSIC_DELAY
-            if md > 0:
-                music       = afx.audio_loop(music, duration=md)
-                music       = music.audio_fadein(0.8).volumex(0.13).set_start(MUSIC_DELAY)
-                final_audio = CompositeAudioClip([music, final_voice.volumex(1.12)])
-            else:
-                final_audio = final_voice
+        if os.path.exists(MUSIC_PATH):
+            music = AudioFileClip(MUSIC_PATH)
+            music = afx.audio_loop(music, duration=duration)
+            music = music.audio_fadein(0.45).audio_fadeout(0.45)
+            music = music.volumex(PACING_MODES[script.pacing]["music_volume"]).set_start(0)
+            final_audio = CompositeAudioClip([music, final_voice.volumex(1.20)])
         else:
             final_audio = final_voice
 
-        final = final_video.set_audio(final_audio)
+        final = final_video.set_audio(final_audio).fadeout(0.22)
 
-        # ---- Step 11: Render ----
-        print(f"  ðŸ“¼  Rendering â†’ {output_path}")
+        print(f"  Rendering: {output_path}")
         final.write_videofile(
-            output_path, fps=FPS,
-            codec="libx264", audio_codec="aac",
-            threads=4, preset="fast",
-            logger=None
+            output_path,
+            fps=FPS,
+            codec="libx264",
+            audio_codec="aac",
+            threads=4,
+            preset="fast",
+            logger=None,
         )
 
-        # ---- Step 12: Hard trim reel to exactly 15s (reel only) ----
-        if max_duration and max_duration <= MAX_REEL_LENGTH:
-            trimmed = output_path.replace(".mp4", "_t.mp4")
-            subprocess.run([
-                "ffmpeg", "-y", "-i", output_path,
-                "-t", str(MAX_REEL_LENGTH),
-                "-c", "copy", trimmed
-            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            if os.path.exists(trimmed):
-                os.replace(trimmed, output_path)
-
-        print(f"  âœ… Done â†’ {output_path}")
         bg_clip.close()
-        return output_path
+        final_video.close()
+        final.close()
+
+        print(f"  Done: {output_path}")
+        return True
 
     except Exception as e:
         import traceback
-        print(f"  âŒ Failed: {e}")
+        print(f"  FAILED: {e}")
         traceback.print_exc()
-        return None
+        return False
 
     finally:
+        for clip in audio_clips:
+            try:
+                clip.close()
+            except Exception:
+                pass
+
         for vf in voice_files:
             if os.path.exists(vf):
-                os.remove(vf)
+                try:
+                    os.remove(vf)
+                except Exception:
+                    pass
+
 
 # ================================================================
-# CAPTION BUILDER
+# CAPTION + TITLE SYSTEM
 # ================================================================
 
-CAPTION_OPENERS = {
-    "identity": ["Most people won't admit this.", "Read this slowly.", "The truth nobody says."],
-    "comfort":  ["Comfort is the most dangerous place.", "This is what playing safe costs you."],
-    "time":     ["You needed to hear this today.", "The most expensive thing you keep wasting."],
-    "challenge":["You have been trying alone. There is a better way.", "The group is open. This is your sign."],
-    "purpose":  ["This is for the men building in silence.", "Legacy is built in the years nobody celebrates."],
-}
-CAPTION_CLOSERS = {
-    "identity":  ["Comment DISCIPLINE if you are locking in.", "Follow @innerdiscipline."],
-    "comfort":   ["Comment DISCIPLINE if you are done settling.", "Follow @innerdiscipline."],
-    "time":      ["Comment DISCIPLINE if today is the day.", "Follow @innerdiscipline."],
-    "challenge": ["Link in bio. Join the Inner Discipline Challenge.", "Under $20 per month. DM DISCIPLINE."],
-    "purpose":   ["Comment LEGEND if you are building.", "Type LEGACY if this hit."],
-}
-HASHTAGS = {
-    "identity":  "#discipline #mindset #selfimprovement #innerdiscipline #accountability #noexcuses #selfmastery #growthmindset #hardwork #mentalstrength",
-    "comfort":   "#discipline #motivation #selfimprovement #innerdiscipline #growthmindset #noexcuses #selfmastery #hardwork #mindset #consistency",
-    "time":      "#discipline #motivation #mindset #innerdiscipline #selfimprovement #consistency #focus #hardwork #growthmindset #dailymotivation",
-    "challenge": "#30daychallenge #accountability #innerdisciplinechallenge #disciplinegroup #30days #facebookgroup #selfimprovement #discipline #mindset #hardwork",
-    "purpose":   "#legacy #purpose #innerdiscipline #becomelegend #growthmindset #selfmastery #discipline #mentalstrength #levelup #hardwork",
-}
+def build_caption(script: ReelScript):
+    opener_by_category = {
+        "wasted_potential": "Most men do not fail loudly. They drift quietly.",
+        "morning_discipline": "Win the morning before the world gets access to you.",
+        "masculine_standard": "Your standard is not what you say. It is what you repeat.",
+        "accountability_challenge": "Discipline gets easier when the room refuses your excuses.",
+    }
 
-def build_caption(lines, category):
-    opener   = random.choice(CAPTION_OPENERS.get(category, CAPTION_OPENERS["identity"]))
-    closer   = random.choice(CAPTION_CLOSERS.get(category, CAPTION_CLOSERS["identity"]))
-    hashtags = HASHTAGS.get(category, HASHTAGS["identity"])
-    hook     = lines[0] if lines else ""
-    body     = lines[1] if len(lines) > 1 else ""
-    return "\n".join([opener, "", f'"{hook}"', "", body, "", "-", closer, "", hashtags])
+    hashtags_by_category = {
+        "wasted_potential": "#discipline #selfimprovement #mindset #noexcuses #selfmastery #growthmindset #mentalstrength #innerdiscipline #accountability #hardwork",
+        "morning_discipline": "#morningroutine #discipline #5amclub #selfimprovement #mindset #consistency #focus #innerdiscipline #noexcuses #growthmindset",
+        "masculine_standard": "#masculinity #discipline #selfmastery #menwithstandards #mindset #noexcuses #leadership #innerdiscipline #growthmindset #accountability",
+        "accountability_challenge": "#30daychallenge #accountability #discipline #innerdisciplinechallenge #selfimprovement #mindset #facebookgroup #consistency #noexcuses #hardwork",
+    }
+
+    return "\n".join([
+        opener_by_category.get(script.category, "Read this twice."),
+        "",
+        f'"{script.lines[0]}"',
+        "",
+        script.lines[2],
+        "",
+        "-",
+        script.lines[-1],
+        "",
+        hashtags_by_category.get(script.category, hashtags_by_category["wasted_potential"]),
+    ])
+
+
+def write_metadata(script: ReelScript, video_path):
+    base = os.path.splitext(video_path)[0]
+    title = f"{script.cover} | INNER DISCIPLINE"
+    caption = build_caption(script)
+
+    with open(f"{base}_title.txt", "w", encoding="utf-8") as f:
+        f.write(title)
+
+    with open(f"{base}_caption.txt", "w", encoding="utf-8") as f:
+        f.write(caption)
+
+    with open(f"{base}_script.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(script.lines))
+
+
+# ================================================================
+# OPTIONAL: CREATE THUMBNAIL IMAGE FROM SAME COVER TEXT
+# ================================================================
+
+def export_cover_image(script: ReelScript, video_path):
+    base = os.path.splitext(video_path)[0]
+    out = f"{base}_cover.png"
+
+    # standalone black cover for manual upload fallback
+    img = Image.new("RGB", (W, H), BLACK)
+    draw = ImageDraw.Draw(img)
+
+    font = load_font(170 if len(script.cover.split()) <= 2 else 132)
+    lines = wrap_words(draw, script.cover, font, 940)
+
+    def color_fn(word, line_index, word_index):
+        return ORANGE if word_index == 0 else WHITE
+
+    draw_centered_multiline(draw, lines, font, H * 0.54, color_fn, stroke=8)
+
+    if os.path.exists(LOGO_PATH):
+        logo = Image.open(LOGO_PATH).convert("RGBA")
+        aspect = logo.height / max(1, logo.width)
+        new_w = LOGO_SIZE
+        new_h = int(LOGO_SIZE * aspect)
+        logo = logo.resize((new_w, new_h), Image.LANCZOS)
+        img_rgba = img.convert("RGBA")
+        img_rgba.paste(logo, ((W - new_w) // 2, H - new_h - LOGO_BOTTOM_MARGIN), logo)
+        img = img_rgba.convert("RGB")
+
+    img.save(out, quality=95)
+    return out
+
 
 # ================================================================
 # RUN
 # ================================================================
 
-print("\nðŸŽ¬ INNER DISCIPLINE â€” DAILY ENGINE")
-print("=" * 52)
+def main():
+    print("\nINNER DISCIPLINE â€” RETENTION ENGINE v2")
+    print("=" * 58)
 
-all_videos = get_all_videos()
-if not all_videos:
-    raise Exception("No background videos found. Add bg1.mp4 to this folder.")
+    all_videos = get_all_videos()
+    if not all_videos:
+        raise Exception("No background videos found. Add bg1.mp4, bg2.mp4, etc.")
 
-date_str = datetime.now().strftime("%Y%m%d_%H%M")
+    script = build_reel_script()
+    video_path = random.choice(all_videos)
 
-# âœ… Random video per output â€” reel and long video each pick independently
-reel_video = random.choice(all_videos)
-long_video = random.choice(all_videos)
-print(f"   ðŸ“¹ Reel video  â†’ {reel_video}")
-print(f"   ðŸ“¹ Long video  â†’ {long_video}")
+    date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v2_{script.category}_{date_str}.mp4")
 
-# ================================================================
-# PHASE 1 â€” REEL (exactly 15s)
-# ================================================================
+    print(f"Background: {video_path}")
+    ok = build_video(script, video_path, out_path)
 
-print("\nðŸ“± Phase 1 â€” Daily Reel (15s)...")
+    if ok:
+        write_metadata(script, out_path)
+        cover_path = export_cover_image(script, out_path)
+        print(f"Title: {os.path.splitext(out_path)[0]}_title.txt")
+        print(f"Caption: {os.path.splitext(out_path)[0]}_caption.txt")
+        print(f"Script: {os.path.splitext(out_path)[0]}_script.txt")
+        print(f"Cover: {cover_path}")
 
-reel_category            = get_next_category()
-reel_script, reel_pacing = build_reel_script(reel_category)
-reel_lines               = [(line, reel_pacing) for line in reel_script]
-reel_path                = f"outputs/reel_{date_str}.mp4"
+    save_memory()
 
-print(f"   Category: {reel_category.upper()} | Pacing: {reel_pacing}")
+    if os.path.exists(TEMP_DIR):
+        shutil.rmtree(TEMP_DIR)
+    os.makedirs(TEMP_DIR, exist_ok=True)
 
-reel_result = build_video(
-    lines_with_pacing=reel_lines,
-    video_path=reel_video,
-    output_path=reel_path,
-    max_duration=MAX_REEL_LENGTH,
-    seg_index=0,
-)
+    print("=" * 58)
+    print("COMPLETE")
 
-if reel_result:
-    base    = os.path.splitext(reel_path)[0]
-    caption = build_caption(reel_script, reel_category)
-    open(f"{base}_title.txt",   "w").write(f"{reel_script[0]} | INNER DISCIPLINE")
-    open(f"{base}_caption.txt", "w").write(caption)
-    print(f"   ðŸ“„ Caption â†’ {base}_caption.txt")
 
-# ================================================================
-# PHASE 2 â€” LONG VIDEO (~5 min continuous monologue)
-# ================================================================
-
-print("\nðŸŽ¥ Phase 2 â€” Long Video (~5 min)...")
-
-long_script = build_long_video_script()
-long_path   = f"outputs/longvideo_{date_str}.mp4"
-
-print(f"   Arc: {len(long_script)} lines | {len(LONG_VIDEO_ARC)} acts")
-
-long_result = build_video(
-    lines_with_pacing=long_script,
-    video_path=long_video,
-    output_path=long_path,
-    max_duration=LONG_VIDEO_SECS,
-    seg_index=99,
-)
-
-if long_result:
-    long_lines = [line for line, _ in long_script]
-    base       = os.path.splitext(long_path)[0]
-    caption    = build_caption(long_lines, "purpose")
-    open(f"{base}_title.txt",   "w").write("Inner Discipline | Full Motivation | INNER DISCIPLINE")
-    open(f"{base}_caption.txt", "w").write(caption)
-    print(f"   ðŸ“„ Caption â†’ {base}_caption.txt")
-
-# ================================================================
-# CLEANUP + MEMORY
-# ================================================================
-
-if os.path.exists("temp_segments"):
-    shutil.rmtree("temp_segments")
-
-json.dump(used_hooks,    open(HOOK_MEMORY_FILE,     "w"))
-json.dump(last_category, open(CATEGORY_MEMORY_FILE, "w"))
-json.dump(set_step,      open(SET_STEP_FILE,         "w"))
-json.dump(used_lines,    open(USED_LINES_FILE,       "w"))  # âœ… saves all used lines
-
-print("\n" + "=" * 52)
-print(f"âœ… COMPLETE")
-print(f"   ðŸ“± Reel      â†’ {reel_path}")
-print(f"   ðŸŽ¥ Long video â†’ {long_path}")
-print("=" * 52)
+if __name__ == "__main__":
+    main()
