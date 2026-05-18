@@ -21,7 +21,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v6 RETENTION CLEAN
+# INNER DISCIPLINE â€” GROWTH ENGINE v7 ECOSYSTEM
 #
 # FULL generator. Not a test file.
 #
@@ -49,6 +49,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
 TEMP_DIR = os.path.join(BASE_DIR, "temp_segments")
 BG_ROOT = os.path.join(BASE_DIR, "backgrounds")
+EBOOK_ROOT = os.path.join(BASE_DIR, "ebook_screenshots")
 
 FONT_PATH = os.path.join(BASE_DIR, "Anton-Regular.ttf")
 LOGO_PATH = os.path.join(BASE_DIR, "logo.png")
@@ -98,6 +99,9 @@ LOGO_BOTTOM_MARGIN = 100
 COVER_LOGO_SIZE = 92
 COVER_DARKEN = 0.36
 COVER_BLUR_RADIUS = 18
+
+EBOOK_BAIT_PROBABILITY = 0.16
+MEMBER_REEL_PROBABILITY = 0.18
 
 ZOOM_STRENGTH = 0.072
 SHAKE_STRENGTH = 3
@@ -339,6 +343,76 @@ CONTENT = {
     },
 }
 
+
+MEMBER_CONTENT = {
+    "member_accountability": {
+        "mood": "challenge",
+        "cover": ["MEMBERS ONLY", "NO HIDING", "REAL PRESSURE", "JOIN THE ROOM", "STOP ALONE"],
+        "lines": [
+            [
+                "Nobody notices when you disappear.",
+                "That is why most men stay weak.",
+                "Inside the challenge, the standard stays visible.",
+                "Daily check-ins. Real accountability. No private hiding.",
+                "Members unlock the Discipline Manual inside the group.",
+            ],
+            [
+                "You keep restarting because there is no consequence.",
+                "Private promises are too easy to break.",
+                "The challenge gives you pressure before motivation dies.",
+                "The manual is inside the group. The work starts after you join.",
+                "Join the Inner Discipline Challenge. Link in bio.",
+            ],
+            [
+                "Stay alone if you want.",
+                "Just understand where that road keeps taking you.",
+                "Same excuses. Same drift. Same quiet disappointment.",
+                "The group gives you structure. The manual gives you the rules.",
+                "Join when you are done negotiating.",
+            ],
+        ],
+        "cta": [
+            "Join the Inner Discipline Challenge. Link in bio.",
+            "Members get the Discipline Manual inside the group.",
+            "The group is open. The manual is inside.",
+            "Daily accountability plus the private manual. Link in bio.",
+        ],
+    },
+    "ebook_bait": {
+        "mood": "rebuild",
+        "cover": ["THE MANUAL", "MEMBER WEAPON", "PRIVATE MANUAL", "INSIDE ONLY", "DISCIPLINE MANUAL"],
+        "lines": [
+            [
+                "This is not extra content.",
+                "It is the first weapon inside the group.",
+                "The Discipline Manual gives you the rules.",
+                "The group gives you the pressure.",
+                "Members unlock it after joining.",
+            ],
+            [
+                "Most men do not need another motivational video.",
+                "They need a system they cannot keep ignoring.",
+                "That is why the manual is inside the challenge.",
+                "Read it. Apply it. Check in daily.",
+                "Join the group. Link in bio.",
+            ],
+            [
+                "The public reels expose the problem.",
+                "The group creates accountability.",
+                "The manual gives the structure.",
+                "That is the system.",
+                "Members get access inside.",
+            ],
+        ],
+        "cta": [
+            "Members unlock the full Discipline Manual inside.",
+            "The manual is inside the group. Link in bio.",
+            "Join the challenge and download the manual inside.",
+        ],
+    },
+}
+
+
 CATEGORY_ORDER = list(CONTENT.keys())
 
 
@@ -353,6 +427,7 @@ class Script:
     lines: list
     day: int = 0
     task: str = ""
+    ebook_image: str = ""
 
 
 # ================================================================
@@ -547,12 +622,42 @@ def build_series_script():
     )
 
 
+
+def build_member_script():
+    key = random.choice(list(MEMBER_CONTENT.keys()))
+    bank = MEMBER_CONTENT[key]
+    lines = random.choice(bank["lines"])
+    cover = random.choice(bank["cover"])
+
+    if random.random() < 0.55:
+        lines = lines[:-1] + [random.choice(bank["cta"])]
+
+    return Script(
+        mode="member",
+        category=key,
+        mood=bank["mood"],
+        cover=cover,
+        title=f"{cover} | INNER DISCIPLINE",
+        pacing=random.choice(["attack", "story"]),
+        lines=lines,
+        ebook_image="",
+    )
+
 def build_script():
-    # 30% series, 70% regular reach reels.
-    # Uses output scan so it does not repeat the same mode when JSON memory resets.
-    if should_make_series():
-        return build_series_script()
-    return build_regular_script()
+    if random.random() < MEMBER_REEL_PROBABILITY:
+        script = build_member_script()
+    elif should_make_series():
+        script = build_series_script()
+    else:
+        script = build_regular_script()
+
+    if should_use_ebook_bait(script):
+        ebook = choose_ebook_screenshot()
+        if ebook:
+            script.ebook_image = ebook
+            print("EBOOK BAIT IMAGE:", ebook)
+
+    return script
 
 
 # ================================================================
@@ -612,6 +717,90 @@ def choose_background(mood):
         )
 
     return random.choice(pool)
+
+
+
+# ================================================================
+# EBOOK SCREENSHOT BAIT
+# Folder:
+# ebook_screenshots/quotes/
+# ebook_screenshots/trackers/
+# ebook_screenshots/rules/
+# ebook_screenshots/phases/
+# ebook_screenshots/generic/
+# ================================================================
+
+IMAGE_EXTENSIONS = ["*.png", "*.jpg", "*.jpeg", "*.webp", "*.PNG", "*.JPG", "*.JPEG", "*.WEBP"]
+
+def scan_image_files(folder):
+    files = []
+    for ext in IMAGE_EXTENSIONS:
+        files.extend(glob.glob(os.path.join(folder, ext)))
+    return sorted(list(set(files)))
+
+def get_ebook_screenshot_pool():
+    pool = []
+    if os.path.isdir(EBOOK_ROOT):
+        for sub in ["quotes", "trackers", "rules", "phases", "generic"]:
+            folder = os.path.join(EBOOK_ROOT, sub)
+            if os.path.isdir(folder):
+                pool.extend(scan_image_files(folder))
+        if not pool:
+            for folder, _, _ in os.walk(EBOOK_ROOT):
+                pool.extend(scan_image_files(folder))
+    return sorted(list(set(pool)))
+
+def choose_ebook_screenshot():
+    pool = get_ebook_screenshot_pool()
+    return random.choice(pool) if pool else None
+
+def should_use_ebook_bait(script):
+    if script.mode == "series":
+        return False
+    if script.category in ["member_accountability", "ebook_bait"]:
+        return True
+    return random.random() < EBOOK_BAIT_PROBABILITY
+
+def prepare_ebook_overlay(image_path):
+    if not image_path or not os.path.exists(image_path):
+        return None
+    try:
+        img = Image.open(image_path).convert("RGB")
+        max_w = int(W * 0.72)
+        max_h = int(H * 0.52)
+        ratio = img.width / max(1, img.height)
+
+        if ratio > max_w / max_h:
+            new_w = max_w
+            new_h = int(max_w / ratio)
+        else:
+            new_h = max_h
+            new_w = int(max_h * ratio)
+
+        img = img.resize((new_w, new_h), Image.LANCZOS)
+        img_rgba = img.convert("RGBA").rotate(-3, expand=True, resample=Image.BICUBIC)
+
+        canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        shadow = Image.new("RGBA", img_rgba.size, (0, 0, 0, 135))
+
+        x = (W - img_rgba.width) // 2
+        y = int(H * 0.19)
+        canvas.paste(shadow, (x + 18, y + 18), shadow)
+        canvas.paste(img_rgba, (x, y), img_rgba)
+
+        draw = ImageDraw.Draw(canvas)
+        label_font = load_font(48)
+        label = "MEMBERS ONLY"
+        tw = draw.textlength(label, font=label_font)
+        lx = int((W - tw) / 2)
+        ly = int(H * 0.735)
+        draw.text((lx + 3, ly + 4), label, font=label_font, fill=(0, 0, 0, 220))
+        draw.text((lx, ly), label, font=label_font, fill=ORANGE + (255,), stroke_width=4, stroke_fill=(0, 0, 0, 255))
+
+        return np.array(canvas.convert("RGB"))
+    except Exception as e:
+        print(f"Ebook overlay failed: {e}")
+        return None
 
 
 # ================================================================
@@ -987,6 +1176,10 @@ def build_video(script, bg_path, out_path):
         logo_frame = make_logo_frame()
         vignette = make_vignette()
 
+        ebook_overlay = prepare_ebook_overlay(script.ebook_image) if getattr(script, "ebook_image", "") else None
+        ebook_start = max(2.2, duration * 0.26)
+        ebook_end = min(duration - 2.0, ebook_start + 3.2)
+
         bg_clip = prepare_background(bg_path, duration)
 
         def make_frame(t):
@@ -1020,6 +1213,18 @@ def build_video(script, bg_path, out_path):
             y2 = int(H * 0.72)
             band[y1:y2, :, :] *= 0.74
             frame = np.clip(band, 0, 255).astype(np.uint8)
+
+            if ebook_overlay is not None and ebook_start <= t < ebook_end:
+                local = t - ebook_start
+                if local < 0.18:
+                    ebook_alpha = local / 0.18
+                elif ebook_end - t < 0.18:
+                    ebook_alpha = (ebook_end - t) / 0.18
+                else:
+                    ebook_alpha = 1.0
+                ebook_alpha = float(np.clip(ebook_alpha, 0.0, 1.0))
+                ebook_scale = 1.0 + 0.018 * math.sin(local * 2.6)
+                frame = composite_rgb(frame, ebook_overlay, opacity=ebook_alpha * 0.92, scale=ebook_scale)
 
             for ev in text_events:
                 if ev["start"] <= t < ev["end"]:
@@ -1113,6 +1318,19 @@ def build_caption(script):
             "#discipline #30daychallenge #innerdiscipline #selfimprovement #accountability #mindset #noexcuses #consistency #growthmindset #hardwork",
         ])
 
+    if script.mode == "member":
+        return "\n".join([
+            "This is not just a group.",
+            "It is the room where the standard stays visible.",
+            "",
+            "Join the Inner Discipline 30 Day Challenge.",
+            "Members unlock the Discipline Manual inside the group.",
+            "",
+            "Link in bio.",
+            "",
+            "#discipline #accountability #30daychallenge #innerdiscipline #selfimprovement #mindset #noexcuses #mensdiscipline #growthmindset #hardwork",
+        ])
+
     openers = {
         "wasted_potential": "Most men do not fail loudly. They drift quietly.",
         "morning_discipline": "Win the morning before the world gets access to you.",
@@ -1127,122 +1345,22 @@ def build_caption(script):
         "accountability_challenge": "#30daychallenge #accountability #discipline #innerdisciplinechallenge #selfimprovement #mindset #facebookgroup #consistency #noexcuses #hardwork",
     }
 
+    ebook_line = ""
+    if getattr(script, "ebook_image", ""):
+        ebook_line = "\nMembers unlock the Discipline Manual inside the group.\n"
+
     return "\n".join([
         openers.get(script.category, "Read this twice."),
         "",
         f'"{script.lines[0]}"',
         "",
         script.lines[2],
-        "",
+        ebook_line,
         "-",
         script.lines[-1],
         "",
         hashtags.get(script.category, hashtags["wasted_potential"]),
     ])
-
-
-def make_cinematic_cover_background(bg_path):
-    """
-    Cover Engine v4:
-    Pulls one frame from the chosen background,
-    crops it vertical, blurs it, darkens it, then uses it as a cinematic cover.
-    """
-    try:
-        clip = VideoFileClip(bg_path)
-        t = min(max(0.15, clip.duration * 0.28), max(0, clip.duration - 0.10))
-        frame = clip.get_frame(t).astype(np.uint8)
-        clip.close()
-
-        img = Image.fromarray(frame).convert("RGB")
-
-        ratio = img.width / img.height
-        target = W / H
-
-        if ratio > target:
-            new_h = H
-            new_w = int(H * ratio)
-            img = img.resize((new_w, new_h), Image.LANCZOS)
-        else:
-            new_w = W
-            new_h = int(W / ratio)
-            img = img.resize((new_w, new_h), Image.LANCZOS)
-
-        left = (img.width - W) // 2
-        top = (img.height - H) // 2
-        img = img.crop((left, top, left + W, top + H))
-
-        # blur without importing extra filters
-        small = img.resize((max(1, W // COVER_BLUR_RADIUS), max(1, H // COVER_BLUR_RADIUS)), Image.BILINEAR)
-        img = small.resize((W, H), Image.BICUBIC)
-
-        arr = np.array(img).astype(np.float32)
-        arr = (arr - 128) * 1.12 + 128
-        arr *= COVER_DARKEN
-        arr = np.clip(arr, 0, 255).astype(np.uint8)
-
-        return Image.fromarray(arr).convert("RGB")
-
-    except Exception as e:
-        print(f"Cover background failed, using black fallback: {e}")
-        return Image.new("RGB", (W, H), BLACK)
-
-
-def draw_cover_text_on_image(img, cover_text):
-    img_rgba = img.convert("RGBA")
-
-    # readability band
-    band = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    band_draw = ImageDraw.Draw(band)
-    band_draw.rectangle((0, int(H * 0.34), W, int(H * 0.70)), fill=(0, 0, 0, 92))
-    img_rgba.alpha_composite(band)
-
-    draw = ImageDraw.Draw(img_rgba)
-    wc = len(clean_text(cover_text).split())
-    font = load_font(178 if wc <= 2 else 136)
-    lines = wrap_words(draw, cover_text, font, 940)
-
-    line_gap = int(font.size * 0.20)
-    total_h = len(lines) * font.size + max(0, len(lines) - 1) * line_gap
-    y0 = int(H * 0.53 - total_h / 2)
-
-    for li, words in enumerate(lines):
-        widths = [draw.textlength(w, font=font) for w in words]
-        space = draw.textlength(" ", font=font)
-        line_w = sum(widths) + max(0, len(words) - 1) * space
-        x = int((W - line_w) / 2)
-        y = y0 + li * (font.size + line_gap)
-
-        for wi, word in enumerate(words):
-            raw = word.strip(".,?!:;\"'").upper()
-            color = ORANGE if wi == 0 else WHITE
-            if raw in DANGER_WORDS:
-                color = RED
-
-            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0, 210))
-            draw.text(
-                (x, y),
-                word,
-                font=font,
-                fill=color + (255,),
-                stroke_width=8,
-                stroke_fill=(0, 0, 0, 255),
-            )
-            x += int(widths[wi] + space)
-
-    if os.path.exists(LOGO_PATH):
-        logo = Image.open(LOGO_PATH).convert("RGBA")
-        aspect = logo.height / max(1, logo.width)
-        new_w = COVER_LOGO_SIZE
-        new_h = int(COVER_LOGO_SIZE * aspect)
-        logo = logo.resize((new_w, new_h), Image.LANCZOS)
-        logo.putalpha(150)
-        img_rgba.paste(
-            logo,
-            ((W - new_w) // 2, H - new_h - LOGO_BOTTOM_MARGIN),
-            logo,
-        )
-
-    return img_rgba.convert("RGB")
 
 
 def export_cover(script, out_path, bg_path=None):
@@ -1279,11 +1397,13 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v6 RETENTION CLEAN")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7 ECOSYSTEM")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
     print("RECENT OUTPUT CATEGORIES:", get_recent_generated_categories(limit=8))
+    print("EBOOK ROOT:", EBOOK_ROOT)
+    print("EBOOK SCREENSHOTS FOUND:", get_ebook_screenshot_pool())
 
     script = build_script()
     print("SELECTED MODE:", script.mode)
@@ -1293,7 +1413,7 @@ def main():
     bg = choose_background(script.mood)
 
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v5_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v7_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
