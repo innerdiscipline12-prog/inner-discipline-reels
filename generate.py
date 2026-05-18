@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v7.2 SEQUENTIAL SERIES
+# INNER DISCIPLINE â€” GROWTH ENGINE v7.3 ECOSYSTEM FIXED
 #
 # FULL generator. Not a test file.
 #
@@ -746,7 +746,41 @@ def build_series_script():
     return script
 
 
+
+def build_member_script():
+    """
+    Rare ecosystem reel:
+    group + accountability + private manual.
+    This fixes the missing function crash.
+    """
+    key = random.choice(list(MEMBER_CONTENT.keys()))
+    bank = MEMBER_CONTENT[key]
+
+    lines = list(random.choice(bank["lines"]))
+    cover = random.choice(bank["cover"])
+
+    if random.random() < 0.55:
+        lines = lines[:-1] + [random.choice(bank["cta"])]
+
+    return Script(
+        mode="member",
+        category=key,
+        mood=bank["mood"],
+        cover=cover,
+        title=f"{cover} | INNER DISCIPLINE",
+        pacing=random.choice(["attack", "story"]),
+        lines=lines,
+        ebook_image="",
+    )
+
+
 def build_script():
+    """
+    Main content selector.
+    - Most reels are reach-focused.
+    - Some reels are sequential series.
+    - Rare reels mention group/manual/accountability.
+    """
     if random.random() < MEMBER_REEL_PROBABILITY:
         script = build_member_script()
     elif should_make_series():
@@ -1604,7 +1638,7 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7.2 SEQUENTIAL SERIES")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7.3 ECOSYSTEM FIXED")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
@@ -1622,7 +1656,7 @@ def main():
     bg = choose_background(script.mood)
 
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v72_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v73_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
