@@ -21,7 +21,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v7 ECOSYSTEM
+# INNER DISCIPLINE â€” GROWTH ENGINE v7.1 ECOSYSTEM FIXED
 #
 # FULL generator. Not a test file.
 #
@@ -1363,6 +1363,110 @@ def build_caption(script):
     ])
 
 
+
+def make_cinematic_cover_background(bg_path):
+    """
+    Creates a cinematic cover background from the selected reel background.
+    """
+    try:
+        clip = VideoFileClip(bg_path)
+        t = min(max(0.15, clip.duration * 0.28), max(0, clip.duration - 0.10))
+        frame = clip.get_frame(t).astype(np.uint8)
+        clip.close()
+
+        img = Image.fromarray(frame).convert("RGB")
+        ratio = img.width / img.height
+        target = W / H
+
+        if ratio > target:
+            new_h = H
+            new_w = int(H * ratio)
+            img = img.resize((new_w, new_h), Image.LANCZOS)
+        else:
+            new_w = W
+            new_h = int(W / ratio)
+            img = img.resize((new_w, new_h), Image.LANCZOS)
+
+        left = (img.width - W) // 2
+        top = (img.height - H) // 2
+        img = img.crop((left, top, left + W, top + H))
+
+        blur_factor = max(8, COVER_BLUR_RADIUS)
+        small = img.resize((max(1, W // blur_factor), max(1, H // blur_factor)), Image.BILINEAR)
+        img = small.resize((W, H), Image.BICUBIC)
+
+        arr = np.array(img).astype(np.float32)
+        arr = (arr - 128) * 1.12 + 128
+        arr *= COVER_DARKEN
+        arr = np.clip(arr, 0, 255).astype(np.uint8)
+
+        return Image.fromarray(arr).convert("RGB")
+
+    except Exception as e:
+        print(f"Cover background failed, using black fallback: {e}")
+        return Image.new("RGB", (W, H), BLACK)
+
+
+def draw_cover_text_on_image(img, cover_text):
+    """
+    Draws the reel cover text over the cinematic background.
+    """
+    img_rgba = img.convert("RGBA")
+
+    band = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    band_draw = ImageDraw.Draw(band)
+    band_draw.rectangle((0, int(H * 0.34), W, int(H * 0.70)), fill=(0, 0, 0, 92))
+    img_rgba.alpha_composite(band)
+
+    draw = ImageDraw.Draw(img_rgba)
+    wc = len(clean_text(cover_text).split())
+    font = load_font(178 if wc <= 2 else 136)
+    lines = wrap_words(draw, cover_text, font, 940)
+
+    line_gap = int(font.size * 0.20)
+    total_h = len(lines) * font.size + max(0, len(lines) - 1) * line_gap
+    y0 = int(H * 0.53 - total_h / 2)
+
+    for li, words in enumerate(lines):
+        widths = [draw.textlength(w, font=font) for w in words]
+        space = draw.textlength(" ", font=font)
+        line_w = sum(widths) + max(0, len(words) - 1) * space
+        x = int((W - line_w) / 2)
+        y = y0 + li * (font.size + line_gap)
+
+        for wi, word in enumerate(words):
+            raw = word.strip(".,?!:;\"'").upper()
+            color = ORANGE if wi == 0 else WHITE
+            if raw in DANGER_WORDS:
+                color = RED
+
+            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0, 210))
+            draw.text(
+                (x, y),
+                word,
+                font=font,
+                fill=color + (255,),
+                stroke_width=8,
+                stroke_fill=(0, 0, 0, 255),
+            )
+            x += int(widths[wi] + space)
+
+    if os.path.exists(LOGO_PATH):
+        logo = Image.open(LOGO_PATH).convert("RGBA")
+        aspect = logo.height / max(1, logo.width)
+        new_w = COVER_LOGO_SIZE
+        new_h = int(COVER_LOGO_SIZE * aspect)
+        logo = logo.resize((new_w, new_h), Image.LANCZOS)
+        logo.putalpha(150)
+        img_rgba.paste(
+            logo,
+            ((W - new_w) // 2, H - new_h - LOGO_BOTTOM_MARGIN),
+            logo,
+        )
+
+    return img_rgba.convert("RGB")
+
+
 def export_cover(script, out_path, bg_path=None):
     base = os.path.splitext(out_path)[0]
     out = f"{base}_cover.png"
@@ -1397,7 +1501,7 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7 ECOSYSTEM")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7.1 ECOSYSTEM FIXED")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
