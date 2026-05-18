@@ -7,6 +7,7 @@ import shutil
 import math
 import time
 import uuid
+import subprocess
 from datetime import datetime, date
 from dataclasses import dataclass
 
@@ -21,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v7.1 ECOSYSTEM FIXED
+# INNER DISCIPLINE â€” GROWTH ENGINE v7.2 SEQUENTIAL SERIES
 #
 # FULL generator. Not a test file.
 #
@@ -57,6 +58,7 @@ MUSIC_PATH = os.path.join(BASE_DIR, "music.mp3")
 
 USED_LINES_FILE = os.path.join(BASE_DIR, "used_lines_v3.json")
 STATE_FILE = os.path.join(BASE_DIR, "engine_state_v3.json")
+SERIES_STATE_FILE = os.path.join(BASE_DIR, "series_state.json")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
@@ -102,6 +104,14 @@ COVER_BLUR_RADIUS = 18
 
 EBOOK_BAIT_PROBABILITY = 0.16
 MEMBER_REEL_PROBABILITY = 0.18
+
+# Sequential Series System:
+# This prevents Day 1 -> Day 21 random jumps.
+# If series_state.json does not exist, it starts from this day.
+# If you already posted Day 1 and want the next series reel to be Day 2,
+# create series_state.json with: {"next_day": 2}
+DEFAULT_SERIES_DAY = 1
+AUTO_COMMIT_SERIES_STATE = True
 
 ZOOM_STRENGTH = 0.072
 SHAKE_STRENGTH = 3
@@ -484,6 +494,113 @@ def get_next_category():
 
 
 
+
+# ================================================================
+# SEQUENTIAL SERIES STATE
+# ================================================================
+
+def load_series_state():
+    """
+    Series must be sequential.
+    This reads series_state.json:
+      {"next_day": 1}
+    If the file is missing, it starts at DEFAULT_SERIES_DAY.
+    """
+    if os.path.exists(SERIES_STATE_FILE):
+        try:
+            with open(SERIES_STATE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            next_day = int(data.get("next_day", DEFAULT_SERIES_DAY))
+            if next_day < 1 or next_day > 30:
+                next_day = 1
+            return {"next_day": next_day}
+        except Exception:
+            pass
+
+    return {"next_day": DEFAULT_SERIES_DAY}
+
+
+def save_series_state(next_day):
+    """
+    Saves the next day to series_state.json.
+    Day 30 loops back to Day 1.
+    """
+    if next_day < 1 or next_day > 30:
+        next_day = 1
+
+    data = {
+        "next_day": next_day,
+        "updated_at": datetime.now().isoformat(timespec="seconds"),
+        "note": "Auto-updated by generate.py so challenge reels stay sequential."
+    }
+
+    with open(SERIES_STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    return data
+
+
+def advance_series_day(current_day):
+    next_day = current_day + 1
+    if next_day > 30:
+        next_day = 1
+    save_series_state(next_day)
+
+
+def auto_commit_series_state():
+    """
+    GitHub Actions runners are temporary.
+    If series_state.json is not committed back, the series resets.
+    This tries to commit only series_state.json back to the repo.
+
+    If GitHub blocks push permissions, the reel still renders.
+    Then you must commit series_state.json manually or enable workflow write permissions.
+    """
+    if not AUTO_COMMIT_SERIES_STATE:
+        return
+
+    if not os.path.exists(SERIES_STATE_FILE):
+        return
+
+    try:
+        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=BASE_DIR, check=False)
+        subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=BASE_DIR, check=False)
+        subprocess.run(["git", "add", "series_state.json"], cwd=BASE_DIR, check=False)
+
+        status = subprocess.run(
+            ["git", "status", "--porcelain", "series_state.json"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False
+        )
+
+        if not status.stdout.strip():
+            print("SERIES STATE: no commit needed.")
+            return
+
+        commit = subprocess.run(
+            ["git", "commit", "-m", "Update series day"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False
+        )
+        print("SERIES STATE COMMIT:", commit.stdout.strip() or commit.stderr.strip())
+
+        push = subprocess.run(
+            ["git", "push"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False
+        )
+        print("SERIES STATE PUSH:", push.stdout.strip() or push.stderr.strip())
+
+    except Exception as e:
+        print(f"SERIES STATE AUTO-COMMIT FAILED: {e}")
+
+
 # ================================================================
 # ANTI-REPEAT HELPERS
 # ================================================================
@@ -587,17 +704,16 @@ def build_regular_script():
 
 def build_series_script():
     """
-    Does NOT depend on engine_state_v3.json anymore.
-    GitHub Actions may reset JSON memory, so the series day is calculated
-    from the calendar day. This prevents endless Day 1 repeats.
+    Sequential challenge reel generator.
+    No random calendar jump.
+    No Day 1 -> Day 21 nonsense.
+    It reads series_state.json and advances by one day only.
     """
-    challenge_start = date(2026, 1, 1)
-    today = date.today()
-    day = ((today - challenge_start).days % 30) + 1
+    series_data = load_series_state()
+    day = int(series_data.get("next_day", DEFAULT_SERIES_DAY))
 
-    # small random nudge sometimes, so multiple runs on same day do not all look identical
-    if random.random() < 0.35:
-        day = ((day + random.randint(1, 6) - 1) % 30) + 1
+    if day < 1 or day > 30:
+        day = 1
 
     episode = SERIES_EPISODES[(day - 1) % len(SERIES_EPISODES)]
 
@@ -609,7 +725,7 @@ def build_series_script():
         "Comment DONE when you finish it.",
     ]
 
-    return Script(
+    script = Script(
         mode="series",
         category="series",
         mood=episode["mood"],
@@ -621,27 +737,14 @@ def build_series_script():
         task=episode["task"],
     )
 
+    # Mark the next day immediately. At the end of main we try to commit it.
+    advance_series_day(day)
 
+    print("SERIES DAY SELECTED:", day)
+    print("SERIES NEXT DAY SAVED:", load_series_state().get("next_day"))
 
-def build_member_script():
-    key = random.choice(list(MEMBER_CONTENT.keys()))
-    bank = MEMBER_CONTENT[key]
-    lines = random.choice(bank["lines"])
-    cover = random.choice(bank["cover"])
+    return script
 
-    if random.random() < 0.55:
-        lines = lines[:-1] + [random.choice(bank["cta"])]
-
-    return Script(
-        mode="member",
-        category=key,
-        mood=bank["mood"],
-        cover=cover,
-        title=f"{cover} | INNER DISCIPLINE",
-        pacing=random.choice(["attack", "story"]),
-        lines=lines,
-        ebook_image="",
-    )
 
 def build_script():
     if random.random() < MEMBER_REEL_PROBABILITY:
@@ -1501,13 +1604,15 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7.1 ECOSYSTEM FIXED")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7.2 SEQUENTIAL SERIES")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
     print("RECENT OUTPUT CATEGORIES:", get_recent_generated_categories(limit=8))
     print("EBOOK ROOT:", EBOOK_ROOT)
     print("EBOOK SCREENSHOTS FOUND:", get_ebook_screenshot_pool())
+    print("SERIES STATE FILE:", SERIES_STATE_FILE)
+    print("SERIES NEXT DAY:", load_series_state().get("next_day"))
 
     script = build_script()
     print("SELECTED MODE:", script.mode)
@@ -1517,7 +1622,7 @@ def main():
     bg = choose_background(script.mood)
 
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v7_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v72_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
@@ -1531,6 +1636,7 @@ def main():
         print(f"Cover:   {cover}")
 
     save_state()
+    auto_commit_series_state()
 
     if os.path.exists(TEMP_DIR):
         shutil.rmtree(TEMP_DIR)
