@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v8 CINEMATIC CONTROL
+# INNER DISCIPLINE â€” GROWTH ENGINE v8.1 CINEMATIC FIXED
 #
 # FULL generator. Not a test file.
 #
@@ -581,12 +581,116 @@ def build_regular_script():
     )
 
 
+
+# ================================================================
+# SEQUENTIAL SERIES STATE
+# ================================================================
+
+def load_series_state():
+    """
+    Reads series_state.json.
+    Keeps the challenge sequence professional:
+    Day 1 -> Day 2 -> Day 3.
+    """
+    if os.path.exists(SERIES_STATE_FILE):
+        try:
+            with open(SERIES_STATE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            next_day = int(data.get("next_day", DEFAULT_SERIES_DAY))
+            if next_day < 1 or next_day > 30:
+                next_day = 1
+            return {"next_day": next_day}
+        except Exception:
+            pass
+
+    return {"next_day": DEFAULT_SERIES_DAY}
+
+
+def save_series_state(next_day):
+    if next_day < 1 or next_day > 30:
+        next_day = 1
+
+    data = {
+        "next_day": next_day,
+        "updated_at": datetime.now().isoformat(timespec="seconds"),
+        "note": "Auto-updated by generate.py so challenge reels stay sequential."
+    }
+
+    with open(SERIES_STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    return data
+
+
+def advance_series_day(current_day):
+    next_day = current_day + 1
+    if next_day > 30:
+        next_day = 1
+    save_series_state(next_day)
+
+
+def auto_commit_series_state():
+    """
+    Tries to commit state files back to GitHub.
+    If permissions block it, the video still renders.
+    """
+    if not AUTO_COMMIT_SERIES_STATE:
+        return
+
+    files_to_commit = [
+        "series_state.json",
+        "rotation_state.json",
+        "used_lines_v3.json",
+        "engine_state_v3.json"
+    ]
+
+    existing_files = [f for f in files_to_commit if os.path.exists(os.path.join(BASE_DIR, f))]
+    if not existing_files:
+        return
+
+    try:
+        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=BASE_DIR, check=False)
+        subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=BASE_DIR, check=False)
+        subprocess.run(["git", "add"] + existing_files, cwd=BASE_DIR, check=False)
+
+        status = subprocess.run(
+            ["git", "status", "--porcelain"] + existing_files,
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False
+        )
+
+        if not status.stdout.strip():
+            print("STATE COMMIT: no changes.")
+            return
+
+        commit = subprocess.run(
+            ["git", "commit", "-m", "Update generator state"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False
+        )
+        print("STATE COMMIT:", commit.stdout.strip() or commit.stderr.strip())
+
+        push = subprocess.run(
+            ["git", "push"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False
+        )
+        print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
+
+    except Exception as e:
+        print(f"STATE AUTO-COMMIT FAILED: {e}")
+
+
 def build_series_script():
     """
     Sequential challenge reel generator.
-    No random calendar jump.
-    No Day 1 -> Day 21 nonsense.
-    It reads series_state.json and advances by one day only.
+    No random Day 21 jump.
     """
     series_data = load_series_state()
     day = int(series_data.get("next_day", DEFAULT_SERIES_DAY))
@@ -616,52 +720,12 @@ def build_series_script():
         task=episode["task"],
     )
 
-    # Mark the next day immediately. At the end of main we try to commit it.
     advance_series_day(day)
 
     print("SERIES DAY SELECTED:", day)
     print("SERIES NEXT DAY SAVED:", load_series_state().get("next_day"))
 
     return script
-
-
-
-def build_member_script():
-    key = random.choice(list(MEMBER_CONTENT.keys()))
-    bank = MEMBER_CONTENT[key]
-
-    script_options = bank["lines"]
-    data = load_rotation_state()
-    recent_keys = set(data.get("recent_line_keys", [])[:80])
-
-    candidates = []
-    for option in script_options:
-        option_key = line_key(" | ".join(option))
-        if option_key not in recent_keys:
-            candidates.append(option)
-
-    if not candidates:
-        candidates = script_options
-
-    lines = list(random.choice(candidates))
-    remember_rotation_item("recent_line_keys", line_key(" | ".join(lines)), 80)
-
-    cover = pick_cover_rotated(bank["cover"])
-
-    if random.random() < 0.55:
-        cta = pick_unique_rotated(bank["cta"])
-        lines = lines[:-1] + [cta]
-
-    return Script(
-        mode="member",
-        category=key,
-        mood=bank["mood"],
-        cover=cover,
-        title=f"{cover} | INNER DISCIPLINE",
-        pacing=random.choice(["attack", "story"]),
-        lines=lines,
-        ebook_image="",
-    )
 
 
 def build_script():
@@ -1635,7 +1699,7 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v8 CINEMATIC CONTROL")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v8.1 CINEMATIC FIXED")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
@@ -1656,7 +1720,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v8_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v81_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
