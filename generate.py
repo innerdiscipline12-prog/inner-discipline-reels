@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v7.3 ECOSYSTEM FIXED
+# INNER DISCIPLINE â€” GROWTH ENGINE v7.4 ROTATION MEMORY
 #
 # FULL generator. Not a test file.
 #
@@ -59,6 +59,7 @@ MUSIC_PATH = os.path.join(BASE_DIR, "music.mp3")
 USED_LINES_FILE = os.path.join(BASE_DIR, "used_lines_v3.json")
 STATE_FILE = os.path.join(BASE_DIR, "engine_state_v3.json")
 SERIES_STATE_FILE = os.path.join(BASE_DIR, "series_state.json")
+ROTATION_STATE_FILE = os.path.join(BASE_DIR, "rotation_state.json")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
@@ -466,10 +467,7 @@ def save_state():
 
 
 def pick_unique(pool):
-    available = [x for x in pool if x not in used_lines]
-    if not available:
-        available = pool[:]
-    choice = random.choice(available)
+    choice = pick_unique_rotated(pool)
     used_lines.append(choice)
     return choice
 
@@ -484,191 +482,8 @@ def pick_hook():
 
 
 def get_next_category():
-    """
-    Old version used only engine_state_v3.json.
-    That repeats on GitHub Actions when JSON is not committed back.
-    This version uses weighted random + output scan + state as backup.
-    """
     state["category_step"] += 1
-    return weighted_category_choice()
-
-
-
-
-# ================================================================
-# SEQUENTIAL SERIES STATE
-# ================================================================
-
-def load_series_state():
-    """
-    Series must be sequential.
-    This reads series_state.json:
-      {"next_day": 1}
-    If the file is missing, it starts at DEFAULT_SERIES_DAY.
-    """
-    if os.path.exists(SERIES_STATE_FILE):
-        try:
-            with open(SERIES_STATE_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            next_day = int(data.get("next_day", DEFAULT_SERIES_DAY))
-            if next_day < 1 or next_day > 30:
-                next_day = 1
-            return {"next_day": next_day}
-        except Exception:
-            pass
-
-    return {"next_day": DEFAULT_SERIES_DAY}
-
-
-def save_series_state(next_day):
-    """
-    Saves the next day to series_state.json.
-    Day 30 loops back to Day 1.
-    """
-    if next_day < 1 or next_day > 30:
-        next_day = 1
-
-    data = {
-        "next_day": next_day,
-        "updated_at": datetime.now().isoformat(timespec="seconds"),
-        "note": "Auto-updated by generate.py so challenge reels stay sequential."
-    }
-
-    with open(SERIES_STATE_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-    return data
-
-
-def advance_series_day(current_day):
-    next_day = current_day + 1
-    if next_day > 30:
-        next_day = 1
-    save_series_state(next_day)
-
-
-def auto_commit_series_state():
-    """
-    GitHub Actions runners are temporary.
-    If series_state.json is not committed back, the series resets.
-    This tries to commit only series_state.json back to the repo.
-
-    If GitHub blocks push permissions, the reel still renders.
-    Then you must commit series_state.json manually or enable workflow write permissions.
-    """
-    if not AUTO_COMMIT_SERIES_STATE:
-        return
-
-    if not os.path.exists(SERIES_STATE_FILE):
-        return
-
-    try:
-        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=BASE_DIR, check=False)
-        subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=BASE_DIR, check=False)
-        subprocess.run(["git", "add", "series_state.json"], cwd=BASE_DIR, check=False)
-
-        status = subprocess.run(
-            ["git", "status", "--porcelain", "series_state.json"],
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False
-        )
-
-        if not status.stdout.strip():
-            print("SERIES STATE: no commit needed.")
-            return
-
-        commit = subprocess.run(
-            ["git", "commit", "-m", "Update series day"],
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False
-        )
-        print("SERIES STATE COMMIT:", commit.stdout.strip() or commit.stderr.strip())
-
-        push = subprocess.run(
-            ["git", "push"],
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False
-        )
-        print("SERIES STATE PUSH:", push.stdout.strip() or push.stderr.strip())
-
-    except Exception as e:
-        print(f"SERIES STATE AUTO-COMMIT FAILED: {e}")
-
-
-# ================================================================
-# ANTI-REPEAT HELPERS
-# ================================================================
-
-def get_recent_generated_categories(limit=20):
-    """
-    Reads existing output filenames when available.
-    This helps avoid repeating the same category even if JSON memory is not committed.
-    Example filename:
-    reel_v4_regular_wasted_potential_20260516_104500.mp4
-    """
-    recent = []
-    if not os.path.isdir(OUTPUT_DIR):
-        return recent
-
-    files = []
-    for name in os.listdir(OUTPUT_DIR):
-        if name.endswith(".mp4") and name.startswith("reel_"):
-            full = os.path.join(OUTPUT_DIR, name)
-            try:
-                files.append((os.path.getmtime(full), name))
-            except Exception:
-                pass
-
-    files.sort(reverse=True)
-
-    for _, name in files[:limit]:
-        for cat in CATEGORY_ORDER:
-            if f"_{cat}_" in name:
-                recent.append(cat)
-                break
-        if "_series_" in name:
-            recent.append("series")
-
-    return recent
-
-
-def weighted_category_choice():
-    """
-    Avoids repeating the last few visible output categories.
-    This does NOT depend on memory JSON.
-    """
-    recent = get_recent_generated_categories(limit=8)
-
-    weights = []
-    for cat in CATEGORY_ORDER:
-        if recent[:1] and cat == recent[0]:
-            weights.append(0.15)
-        elif cat in recent[:3]:
-            weights.append(0.40)
-        else:
-            weights.append(1.0)
-
-    return random.choices(CATEGORY_ORDER, weights=weights, k=1)[0]
-
-
-def should_make_series():
-    """
-    Series mode supports followership, but should not dominate the page.
-    Lower frequency prevents repeated Day content from flooding the account.
-    """
-    recent = get_recent_generated_categories(limit=5)
-
-    if recent[:1] == ["series"]:
-        return False
-
-    # roughly 15 percent series, 85 percent regular reach reels
-    return random.random() < 0.15
+    return pick_category_rotated()
 
 
 # ================================================================
@@ -689,7 +504,7 @@ def build_regular_script():
         pick_unique(bank["cta"]),
     ]
 
-    cover = random.choice(bank["cover"])
+    cover = pick_cover_rotated(bank["cover"])
 
     return Script(
         mode="regular",
@@ -748,19 +563,30 @@ def build_series_script():
 
 
 def build_member_script():
-    """
-    Rare ecosystem reel:
-    group + accountability + private manual.
-    This fixes the missing function crash.
-    """
     key = random.choice(list(MEMBER_CONTENT.keys()))
     bank = MEMBER_CONTENT[key]
 
-    lines = list(random.choice(bank["lines"]))
-    cover = random.choice(bank["cover"])
+    script_options = bank["lines"]
+    data = load_rotation_state()
+    recent_keys = set(data.get("recent_line_keys", [])[:80])
+
+    candidates = []
+    for option in script_options:
+        option_key = line_key(" | ".join(option))
+        if option_key not in recent_keys:
+            candidates.append(option)
+
+    if not candidates:
+        candidates = script_options
+
+    lines = list(random.choice(candidates))
+    remember_rotation_item("recent_line_keys", line_key(" | ".join(lines)), 80)
+
+    cover = pick_cover_rotated(bank["cover"])
 
     if random.random() < 0.55:
-        lines = lines[:-1] + [random.choice(bank["cta"])]
+        cta = pick_unique_rotated(bank["cta"])
+        lines = lines[:-1] + [cta]
 
     return Script(
         mode="member",
@@ -1638,7 +1464,7 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7.3 ECOSYSTEM FIXED")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7.4 ROTATION MEMORY")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
@@ -1647,16 +1473,19 @@ def main():
     print("EBOOK SCREENSHOTS FOUND:", get_ebook_screenshot_pool())
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
     print("SERIES NEXT DAY:", load_series_state().get("next_day"))
+    print("ROTATION STATE FILE:", ROTATION_STATE_FILE)
+    print("RECENT ROTATION CATEGORIES:", load_rotation_state().get("recent_categories", [])[:5])
+    print("RECENT ROTATION BACKGROUNDS:", load_rotation_state().get("recent_backgrounds", [])[:5])
 
     script = build_script()
     print("SELECTED MODE:", script.mode)
     print("SELECTED CATEGORY:", script.category)
     print("SELECTED MOOD:", script.mood)
 
-    bg = choose_background(script.mood)
+    bg = choose_background_rotated(script.mood)
 
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v73_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v74_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
