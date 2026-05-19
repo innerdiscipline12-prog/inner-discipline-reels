@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v8.1 CINEMATIC FIXED
+# INNER DISCIPLINE â€” GROWTH ENGINE v8.2 STATE FIXED
 #
 # FULL generator. Not a test file.
 #
@@ -551,6 +551,174 @@ def get_recent_generated_categories(limit=20):
 
 
 # ================================================================
+
+# ================================================================
+# ROTATION STATE MEMORY
+# ================================================================
+
+def load_rotation_state():
+    default = {
+        "recent_line_keys": [],
+        "recent_covers": [],
+        "recent_categories": [],
+        "recent_backgrounds": [],
+        "background_cursor": {},
+        "updated_at": ""
+    }
+
+    if os.path.exists(ROTATION_STATE_FILE):
+        try:
+            with open(ROTATION_STATE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            for k, v in default.items():
+                data.setdefault(k, v)
+            return data
+        except Exception:
+            pass
+
+    return default
+
+
+def save_rotation_state(data):
+    data["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    with open(ROTATION_STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def remember_rotation_item(key, value, max_items=80):
+    data = load_rotation_state()
+    items = data.get(key, [])
+    if value in items:
+        items.remove(value)
+    items.insert(0, value)
+    data[key] = items[:max_items]
+    save_rotation_state(data)
+
+
+def line_key(text):
+    return clean_text(text).lower().strip()
+
+
+def pick_unique_rotated(pool, memory_key="recent_line_keys", max_recent=80):
+    data = load_rotation_state()
+    recent = set(data.get(memory_key, [])[:max_recent])
+
+    candidates = [x for x in pool if line_key(x) not in recent]
+    if not candidates:
+        candidates = pool[:]
+
+    choice = random.choice(candidates)
+    remember_rotation_item(memory_key, line_key(choice), max_recent)
+    return choice
+
+
+def pick_cover_rotated(pool):
+    data = load_rotation_state()
+    recent = set(data.get("recent_covers", [])[:20])
+
+    candidates = [x for x in pool if x not in recent]
+    if not candidates:
+        candidates = pool[:]
+
+    choice = random.choice(candidates)
+    remember_rotation_item("recent_covers", choice, 30)
+    return choice
+
+
+def pick_category_rotated():
+    data = load_rotation_state()
+    recent = data.get("recent_categories", [])[:3]
+
+    weights = []
+    for cat in CATEGORY_ORDER:
+        if recent and cat == recent[0]:
+            weights.append(0.05)
+        elif cat in recent:
+            weights.append(0.25)
+        else:
+            weights.append(1.0)
+
+    choice = random.choices(CATEGORY_ORDER, weights=weights, k=1)[0]
+    remember_rotation_item("recent_categories", choice, 20)
+    return choice
+
+
+def choose_background_rotated(mood=None):
+    pool = get_background_pool(mood)
+
+    print("BASE DIR:", BASE_DIR)
+    print("BG ROOT:", BG_ROOT)
+    print("REQUESTED MOOD:", mood)
+    print("BACKGROUND POOL FOUND:", pool)
+
+    if not pool:
+        raise Exception(
+            "No background videos found. Add videos to backgrounds/broken, "
+            "backgrounds/morning, backgrounds/dangerous, backgrounds/rebuild, "
+            "backgrounds/challenge, backgrounds/generic OR add bg1.mp4 in repo root."
+        )
+
+    data = load_rotation_state()
+    cursor = data.get("background_cursor", {})
+    key = mood or "all"
+
+    pool_sorted = sorted(pool)
+    index = int(cursor.get(key, 0)) % len(pool_sorted)
+    chosen = pool_sorted[index]
+
+    cursor[key] = (index + 1) % len(pool_sorted)
+    data["background_cursor"] = cursor
+
+    recent_bg = data.get("recent_backgrounds", [])
+    if chosen in recent_bg:
+        recent_bg.remove(chosen)
+    recent_bg.insert(0, chosen)
+    data["recent_backgrounds"] = recent_bg[:80]
+
+    save_rotation_state(data)
+
+    print("BACKGROUND ROTATION INDEX:", index)
+    print("SELECTED BACKGROUND:", chosen)
+
+    return chosen
+
+
+def get_recent_generated_categories(limit=20):
+    recent = []
+
+    if os.path.isdir(OUTPUT_DIR):
+        files = []
+        for name in os.listdir(OUTPUT_DIR):
+            if name.endswith(".mp4") and name.startswith("reel_"):
+                full = os.path.join(OUTPUT_DIR, name)
+                try:
+                    files.append((os.path.getmtime(full), name))
+                except Exception:
+                    pass
+
+        files.sort(reverse=True)
+
+        for _, name in files[:limit]:
+            if "_series_" in name:
+                recent.append("series")
+                continue
+            if "_member_" in name:
+                recent.append("member")
+                continue
+            for cat in CATEGORY_ORDER:
+                if f"_{cat}_" in name:
+                    recent.append(cat)
+                    break
+
+    if not recent:
+        try:
+            recent.extend(load_rotation_state().get("recent_categories", [])[:limit])
+        except Exception:
+            pass
+
+    return recent[:limit]
+
+
 # SCRIPT BUILDING
 # ================================================================
 
@@ -1699,7 +1867,7 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v8.1 CINEMATIC FIXED")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v8.2 STATE FIXED")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
@@ -1720,7 +1888,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v81_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v82_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
