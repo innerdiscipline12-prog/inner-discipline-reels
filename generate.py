@@ -8,7 +8,7 @@ import math
 import time
 import uuid
 import subprocess
-from datetime import datetime, date
+from datetime import datetime
 from dataclasses import dataclass
 
 import numpy as np
@@ -22,22 +22,21 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v8.2 STATE FIXED
+# INNER DISCIPLINE â€” GROWTH ENGINE v9 CLEAN REBUILD
 #
-# FULL generator. Not a test file.
+# Clean rebuild. No patch stacking.
 #
-# Adds:
-# - background mood folders
-# - viral hook engine
-# - 30-day series mode
-# - retention subtitle animation
-# - title/caption/script/cover output
-#
-# Required:
-# - Anton-Regular.ttf
-# - logo.png optional
-# - music.mp3 optional
-# - backgrounds/broken/*.mp4 etc OR root bg1.mp4/bg2.mp4 fallback
+# Includes:
+# - cinematic dark grading
+# - lower-center text
+# - emerging-from-darkness text animation
+# - sequential series_state.json
+# - rotation_state.json for lines/covers/backgrounds
+# - ebook screenshot bait overlays
+# - member/manual/accountability reels
+# - background round-robin
+# - audio ducking / silence control
+# - cover export
 # ================================================================
 
 
@@ -64,11 +63,9 @@ ROTATION_STATE_FILE = os.path.join(BASE_DIR, "rotation_state.json")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
 
+
 # ================================================================
-# ANTI-REPEAT RANDOMIZER
-# GitHub Actions does NOT automatically save memory JSON back to repo.
-# So this generator must not depend on JSON memory alone.
-# This seed changes every run even when JSON resets.
+# RANDOM
 # ================================================================
 
 RUN_ID = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
@@ -92,7 +89,6 @@ RED = (255, 42, 42)
 BLACK = (0, 0, 0)
 
 TEXT_MAX_WIDTH = 900
-# Text lives slightly lower-center so it feels cinematic, not like generic TikTok captions.
 TEXT_CENTER_Y = 0.585
 TEXT_HOOK_Y = 0.535
 
@@ -104,60 +100,164 @@ COVER_LOGO_SIZE = 92
 COVER_DARKEN = 0.36
 COVER_BLUR_RADIUS = 18
 
-EBOOK_BAIT_PROBABILITY = 0.16
-MEMBER_REEL_PROBABILITY = 0.18
-
-# Sequential Series System:
-# This prevents Day 1 -> Day 21 random jumps.
-# If series_state.json does not exist, it starts from this day.
-# If you already posted Day 1 and want the next series reel to be Day 2,
-# create series_state.json with: {"next_day": 2}
-DEFAULT_SERIES_DAY = 1
-AUTO_COMMIT_SERIES_STATE = True
-
-# Slow pressure zoom. Subtle. Entire clip. Creates subconscious tension.
 ZOOM_STRENGTH = 0.088
 SHAKE_STRENGTH = 2
 
-# Cinematic restraint grading.
-# The goal is controlled darkness, not overedited trash.
 CINEMATIC_CONTRAST = 1.18
 CINEMATIC_BRIGHTNESS = -12
 CINEMATIC_SATURATION = 0.90
 CINEMATIC_HIGHLIGHT_CAP = 238
 CINEMATIC_SHADOW_LIFT = -10
+
 TEXT_BAND_STRENGTH = 0.66
 TEXT_BAND_TOP = 0.40
 TEXT_BAND_BOTTOM = 0.73
 
-# Audio silence control.
-# Music ducks during impact lines so the voice hits harder.
 MUSIC_BASE_VOLUME = 0.14
 MUSIC_DUCK_VOLUME = 0.055
-DUCK_FADE_SECONDS = 0.18
+
+EBOOK_BAIT_PROBABILITY = 0.14
+MEMBER_REEL_PROBABILITY = 0.16
+SERIES_REEL_PROBABILITY = 0.18
+
+DEFAULT_SERIES_DAY = 1
+AUTO_COMMIT_STATE = True
 
 
 # ================================================================
 # STATE
 # ================================================================
 
-if os.path.exists(USED_LINES_FILE):
-    with open(USED_LINES_FILE, "r", encoding="utf-8") as f:
-        used_lines = json.load(f)
-else:
-    used_lines = []
+def safe_load_json(path, default):
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, type(default)):
+                return data
+        except Exception:
+            pass
+    return default
 
-if os.path.exists(STATE_FILE):
-    with open(STATE_FILE, "r", encoding="utf-8") as f:
-        state = json.load(f)
-else:
-    state = {"category_step": 0, "series_day": 1}
+
+used_lines = safe_load_json(USED_LINES_FILE, [])
+state = safe_load_json(STATE_FILE, {"category_step": 0})
 
 if not isinstance(state.get("category_step"), int):
     state["category_step"] = 0
 
-if not isinstance(state.get("series_day"), int):
-    state["series_day"] = 1
+
+def save_json(path, data):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def save_state():
+    save_json(USED_LINES_FILE, used_lines)
+    save_json(STATE_FILE, state)
+
+
+def load_series_state():
+    data = safe_load_json(SERIES_STATE_FILE, {"next_day": DEFAULT_SERIES_DAY})
+    try:
+        next_day = int(data.get("next_day", DEFAULT_SERIES_DAY))
+    except Exception:
+        next_day = DEFAULT_SERIES_DAY
+    if next_day < 1 or next_day > 30:
+        next_day = 1
+    return {"next_day": next_day}
+
+
+def save_series_state(next_day):
+    if next_day < 1 or next_day > 30:
+        next_day = 1
+    data = {
+        "next_day": next_day,
+        "updated_at": datetime.now().isoformat(timespec="seconds"),
+        "note": "Auto-updated by generate.py so challenge reels stay sequential."
+    }
+    save_json(SERIES_STATE_FILE, data)
+    return data
+
+
+def advance_series_day(current_day):
+    next_day = current_day + 1
+    if next_day > 30:
+        next_day = 1
+    save_series_state(next_day)
+
+
+def load_rotation_state():
+    default = {
+        "recent_line_keys": [],
+        "recent_covers": [],
+        "recent_categories": [],
+        "recent_backgrounds": [],
+        "background_cursor": {},
+        "updated_at": ""
+    }
+    data = safe_load_json(ROTATION_STATE_FILE, default)
+    for k, v in default.items():
+        data.setdefault(k, v)
+    return data
+
+
+def save_rotation_state(data):
+    data["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    save_json(ROTATION_STATE_FILE, data)
+
+
+def auto_commit_state_files():
+    if not AUTO_COMMIT_STATE:
+        return
+
+    files = [
+        "series_state.json",
+        "rotation_state.json",
+        "used_lines_v3.json",
+        "engine_state_v3.json",
+    ]
+    existing = [f for f in files if os.path.exists(os.path.join(BASE_DIR, f))]
+    if not existing:
+        return
+
+    try:
+        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=BASE_DIR, check=False)
+        subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=BASE_DIR, check=False)
+        subprocess.run(["git", "add"] + existing, cwd=BASE_DIR, check=False)
+
+        status = subprocess.run(
+            ["git", "status", "--porcelain"] + existing,
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+        if not status.stdout.strip():
+            print("STATE COMMIT: no changes.")
+            return
+
+        commit = subprocess.run(
+            ["git", "commit", "-m", "Update generator state"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        print("STATE COMMIT:", commit.stdout.strip() or commit.stderr.strip())
+
+        push = subprocess.run(
+            ["git", "push"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
+
+    except Exception as e:
+        print(f"STATE AUTO-COMMIT FAILED: {e}")
 
 
 # ================================================================
@@ -165,14 +265,14 @@ if not isinstance(state.get("series_day"), int):
 # ================================================================
 
 PACING = {
-    "attack": {"rate": "-4%", "pitch": "-35Hz", "chunk_size": 2, "music_volume": 0.16, "gap": 0.13},
-    "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "music_volume": 0.12, "gap": 0.18},
-    "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "music_volume": 0.10, "gap": 0.22},
+    "attack": {"rate": "-4%", "pitch": "-35Hz", "chunk_size": 2, "gap": 0.16},
+    "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
+    "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
 }
 
 
 # ================================================================
-# HOOK ENGINE
+# CONTENT
 # ================================================================
 
 HOOK_FORMULAS = {
@@ -204,64 +304,12 @@ HOOK_FORMULAS = {
         "You are not lacking potential. You are lacking pressure.",
         "Your life does not change when you feel ready.",
     ],
-    "curiosity": [
-        "The first sign of weakness is not what you think.",
-        "Most men lose themselves in a way nobody notices.",
-        "There is one habit that exposes your entire standard.",
-        "The reason you keep restarting is painfully simple.",
-        "This is why your motivation keeps dying.",
-    ],
 }
-
-
-# ================================================================
-# SERIES MODE
-# ================================================================
-
-SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
-
-SERIES_EPISODES = [
-    {"day": 1, "title": "NO SNOOZE", "mood": "morning", "task": "Wake up on the first alarm.", "pain": "The snooze button trains betrayal."},
-    {"day": 2, "title": "NO PHONE", "mood": "morning", "task": "No phone for the first hour.", "pain": "Your attention is stolen before your day begins."},
-    {"day": 3, "title": "MAKE THE BED", "mood": "rebuild", "task": "Make your bed before anything else.", "pain": "A chaotic room creates a chaotic mind."},
-    {"day": 4, "title": "WALK ALONE", "mood": "broken", "task": "Take a 20 minute walk without music.", "pain": "You keep avoiding your own thoughts."},
-    {"day": 5, "title": "TRAIN TIRED", "mood": "dangerous", "task": "Train for 20 minutes even if you feel weak.", "pain": "You only respect discipline when it is convenient."},
-    {"day": 6, "title": "CLEAN YOUR SPACE", "mood": "rebuild", "task": "Clean one area you have been ignoring.", "pain": "Your environment is exposing your standard."},
-    {"day": 7, "title": "WRITE THE TRUTH", "mood": "broken", "task": "Journal one honest page.", "pain": "You cannot fix what you refuse to face."},
-    {"day": 8, "title": "COLD START", "mood": "morning", "task": "Start the day with discomfort.", "pain": "Comfort has been making your decisions."},
-    {"day": 9, "title": "ONE HARD THING", "mood": "dangerous", "task": "Do the hardest task first.", "pain": "You keep giving your best energy to easy things."},
-    {"day": 10, "title": "NO EXCUSES", "mood": "challenge", "task": "Complete today with zero excuses.", "pain": "Your excuses are shrinking you."},
-    {"day": 11, "title": "SILENT WORK", "mood": "rebuild", "task": "Work for 45 minutes without announcing it.", "pain": "You keep wanting credit before the result."},
-    {"day": 12, "title": "FACE THE MIRROR", "mood": "broken", "task": "Say the truth out loud to yourself.", "pain": "The mirror knows when you are lying."},
-    {"day": 13, "title": "RUN THE STAIRS", "mood": "dangerous", "task": "Do a short brutal conditioning session.", "pain": "Your mind keeps quitting before your body needs to."},
-    {"day": 14, "title": "RESET NIGHT", "mood": "rebuild", "task": "Prepare tomorrow before sleeping.", "pain": "A weak night creates a weak morning."},
-    {"day": 15, "title": "HALF WAY", "mood": "challenge", "task": "Review what changed and what still disgusts you.", "pain": "Progress without honesty becomes ego."},
-    {"day": 16, "title": "DEEP WORK", "mood": "rebuild", "task": "Give one goal 60 undistracted minutes.", "pain": "Your future is losing to notifications."},
-    {"day": 17, "title": "NO COMFORT FOOD", "mood": "dangerous", "task": "Eat like someone who respects his body.", "pain": "Every craving asks who is in control."},
-    {"day": 18, "title": "CALL YOURSELF OUT", "mood": "broken", "task": "Write down your top three excuses.", "pain": "Your favorite excuse is your prison."},
-    {"day": 19, "title": "TRAIN EARLY", "mood": "morning", "task": "Move your body before the day owns you.", "pain": "If you wait for energy, weakness wins."},
-    {"day": 20, "title": "NO COMPLAINING", "mood": "dangerous", "task": "Go one day without complaining.", "pain": "Complaining makes weakness feel justified."},
-    {"day": 21, "title": "FIX ONE THING", "mood": "rebuild", "task": "Fix one neglected part of your life.", "pain": "Neglect compounds quietly."},
-    {"day": 22, "title": "BE UNREACHABLE", "mood": "rebuild", "task": "Block two hours for your future.", "pain": "Everyone has access to you except your goals."},
-    {"day": 23, "title": "SHOW UP ANYWAY", "mood": "dangerous", "task": "Do the work even if the mood is gone.", "pain": "Mood-based discipline is fake discipline."},
-    {"day": 24, "title": "CUT THE NOISE", "mood": "broken", "task": "Remove one distraction for 24 hours.", "pain": "Noise is how you avoid the truth."},
-    {"day": 25, "title": "BUILD QUIETLY", "mood": "rebuild", "task": "Do one thing today without posting it.", "pain": "Public identity is worthless without private proof."},
-    {"day": 26, "title": "PRESSURE DAY", "mood": "challenge", "task": "Tell someone your task and report back.", "pain": "Private promises are too easy to break."},
-    {"day": 27, "title": "HARD CONVERSATION", "mood": "broken", "task": "Have the conversation you keep avoiding.", "pain": "Avoidance is costing your respect."},
-    {"day": 28, "title": "STANDARD CHECK", "mood": "dangerous", "task": "Raise one standard and obey it today.", "pain": "A man becomes what he tolerates."},
-    {"day": 29, "title": "FINAL PUSH", "mood": "challenge", "task": "Do not coast because the finish is close.", "pain": "Most men quit mentally before they quit physically."},
-    {"day": 30, "title": "NEW IDENTITY", "mood": "rebuild", "task": "Choose the standard you will carry forward.", "pain": "Thirty days means nothing if you return to the old man."},
-]
-
-
-# ================================================================
-# REGULAR CONTENT
-# ================================================================
 
 CONTENT = {
     "wasted_potential": {
         "mood": "broken",
-        "cover": ["YOU DRIFT", "STILL WEAK", "WASTED TIME", "NO STANDARD", "YOU LOST"],
+        "cover": ["YOU DRIFT", "STILL WEAK", "WASTED TIME", "NO STANDARD", "QUIET FAILURE"],
         "problem": [
             "You wake up with plans and go to sleep with excuses.",
             "You know what to do, but you keep choosing the easiest option.",
@@ -373,6 +421,7 @@ CONTENT = {
     },
 }
 
+CATEGORY_ORDER = list(CONTENT.keys())
 
 MEMBER_CONTENT = {
     "member_accountability": {
@@ -381,7 +430,7 @@ MEMBER_CONTENT = {
         "lines": [
             [
                 "Nobody notices when you disappear.",
-                "That is why most men stay weak.",
+                "That is why most people stay weak.",
                 "Inside the challenge, the standard stays visible.",
                 "Daily check-ins. Real accountability. No private hiding.",
                 "Members unlock the Discipline Manual inside the group.",
@@ -393,24 +442,11 @@ MEMBER_CONTENT = {
                 "The manual is inside the group. The work starts after you join.",
                 "Join the Inner Discipline Challenge. Link in bio.",
             ],
-            [
-                "Stay alone if you want.",
-                "Just understand where that road keeps taking you.",
-                "Same excuses. Same drift. Same quiet disappointment.",
-                "The group gives you structure. The manual gives you the rules.",
-                "Join when you are done negotiating.",
-            ],
-        ],
-        "cta": [
-            "Join the Inner Discipline Challenge. Link in bio.",
-            "Members get the Discipline Manual inside the group.",
-            "The group is open. The manual is inside.",
-            "Daily accountability plus the private manual. Link in bio.",
         ],
     },
     "ebook_bait": {
         "mood": "rebuild",
-        "cover": ["THE MANUAL", "MEMBER WEAPON", "PRIVATE MANUAL", "INSIDE ONLY", "DISCIPLINE MANUAL"],
+        "cover": ["THE MANUAL", "PRIVATE MANUAL", "INSIDE ONLY", "DISCIPLINE MANUAL"],
         "lines": [
             [
                 "This is not extra content.",
@@ -420,13 +456,6 @@ MEMBER_CONTENT = {
                 "Members unlock it after joining.",
             ],
             [
-                "Most men do not need another motivational video.",
-                "They need a system they cannot keep ignoring.",
-                "That is why the manual is inside the challenge.",
-                "Read it. Apply it. Check in daily.",
-                "Join the group. Link in bio.",
-            ],
-            [
                 "The public reels expose the problem.",
                 "The group creates accountability.",
                 "The manual gives the structure.",
@@ -434,16 +463,43 @@ MEMBER_CONTENT = {
                 "Members get access inside.",
             ],
         ],
-        "cta": [
-            "Members unlock the full Discipline Manual inside.",
-            "The manual is inside the group. Link in bio.",
-            "Join the challenge and download the manual inside.",
-        ],
     },
 }
 
+SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
 
-CATEGORY_ORDER = list(CONTENT.keys())
+SERIES_EPISODES = [
+    {"day": 1, "title": "NO SNOOZE", "mood": "morning", "task": "Wake up on the first alarm.", "pain": "The snooze button trains betrayal."},
+    {"day": 2, "title": "NO PHONE", "mood": "morning", "task": "No phone for the first hour.", "pain": "Your attention is stolen before your day begins."},
+    {"day": 3, "title": "MAKE THE BED", "mood": "rebuild", "task": "Make your bed before anything else.", "pain": "A chaotic room creates a chaotic mind."},
+    {"day": 4, "title": "WALK ALONE", "mood": "broken", "task": "Take a 20 minute walk without music.", "pain": "You keep avoiding your own thoughts."},
+    {"day": 5, "title": "TRAIN TIRED", "mood": "dangerous", "task": "Train for 20 minutes even if you feel weak.", "pain": "You only respect discipline when it is convenient."},
+    {"day": 6, "title": "CLEAN YOUR SPACE", "mood": "rebuild", "task": "Clean one area you have been ignoring.", "pain": "Your environment is exposing your standard."},
+    {"day": 7, "title": "WRITE THE TRUTH", "mood": "broken", "task": "Journal one honest page.", "pain": "You cannot fix what you refuse to face."},
+    {"day": 8, "title": "COLD START", "mood": "morning", "task": "Start the day with discomfort.", "pain": "Comfort has been making your decisions."},
+    {"day": 9, "title": "ONE HARD THING", "mood": "dangerous", "task": "Do the hardest task first.", "pain": "You keep giving your best energy to easy things."},
+    {"day": 10, "title": "NO EXCUSES", "mood": "challenge", "task": "Complete today with zero excuses.", "pain": "Your excuses are shrinking you."},
+    {"day": 11, "title": "SILENT WORK", "mood": "rebuild", "task": "Work for 45 minutes without announcing it.", "pain": "You keep wanting credit before the result."},
+    {"day": 12, "title": "FACE THE MIRROR", "mood": "broken", "task": "Say the truth out loud to yourself.", "pain": "The mirror knows when you are lying."},
+    {"day": 13, "title": "RUN THE STAIRS", "mood": "dangerous", "task": "Do a short brutal conditioning session.", "pain": "Your mind keeps quitting before your body needs to."},
+    {"day": 14, "title": "RESET NIGHT", "mood": "rebuild", "task": "Prepare tomorrow before sleeping.", "pain": "A weak night creates a weak morning."},
+    {"day": 15, "title": "HALF WAY", "mood": "challenge", "task": "Review what changed and what still disgusts you.", "pain": "Progress without honesty becomes ego."},
+    {"day": 16, "title": "DEEP WORK", "mood": "rebuild", "task": "Give one goal 60 undistracted minutes.", "pain": "Your future is losing to notifications."},
+    {"day": 17, "title": "NO COMFORT FOOD", "mood": "dangerous", "task": "Eat like someone who respects his body.", "pain": "Every craving asks who is in control."},
+    {"day": 18, "title": "CALL YOURSELF OUT", "mood": "broken", "task": "Write down your top three excuses.", "pain": "Your favorite excuse is your prison."},
+    {"day": 19, "title": "TRAIN EARLY", "mood": "morning", "task": "Move your body before the day owns you.", "pain": "If you wait for energy, weakness wins."},
+    {"day": 20, "title": "NO COMPLAINING", "mood": "dangerous", "task": "Go one day without complaining.", "pain": "Complaining makes weakness feel justified."},
+    {"day": 21, "title": "FIX ONE THING", "mood": "rebuild", "task": "Fix one neglected part of your life.", "pain": "Neglect compounds quietly."},
+    {"day": 22, "title": "BE UNREACHABLE", "mood": "rebuild", "task": "Block two hours for your future.", "pain": "Everyone has access to you except your goals."},
+    {"day": 23, "title": "SHOW UP ANYWAY", "mood": "dangerous", "task": "Do the work even if the mood is gone.", "pain": "Mood-based discipline is fake discipline."},
+    {"day": 24, "title": "CUT THE NOISE", "mood": "broken", "task": "Remove one distraction for 24 hours.", "pain": "Noise is how you avoid the truth."},
+    {"day": 25, "title": "BUILD QUIETLY", "mood": "rebuild", "task": "Do one thing today without posting it.", "pain": "Public identity is worthless without private proof."},
+    {"day": 26, "title": "PRESSURE DAY", "mood": "challenge", "task": "Tell someone your task and report back.", "pain": "Private promises are too easy to break."},
+    {"day": 27, "title": "HARD CONVERSATION", "mood": "broken", "task": "Have the conversation you keep avoiding.", "pain": "Avoidance is costing your respect."},
+    {"day": 28, "title": "STANDARD CHECK", "mood": "dangerous", "task": "Raise one standard and obey it today.", "pain": "A man becomes what he tolerates."},
+    {"day": 29, "title": "FINAL PUSH", "mood": "challenge", "task": "Do not coast because the finish is close.", "pain": "Most people quit mentally before they quit physically."},
+    {"day": 30, "title": "NEW IDENTITY", "mood": "rebuild", "task": "Choose the standard you will carry forward.", "pain": "Thirty days means nothing if you return to the old version."},
+]
 
 
 @dataclass
@@ -461,7 +517,7 @@ class Script:
 
 
 # ================================================================
-# UTILS
+# TEXT UTILS / ROTATION
 # ================================================================
 
 def clean_text(text):
@@ -478,111 +534,8 @@ def clean_text(text):
     return text.strip()
 
 
-def save_state():
-    with open(USED_LINES_FILE, "w", encoding="utf-8") as f:
-        json.dump(used_lines, f, ensure_ascii=False, indent=2)
-    with open(STATE_FILE, "w", encoding="utf-8") as f:
-        json.dump(state, f, ensure_ascii=False, indent=2)
-
-
-def pick_unique(pool):
-    choice = pick_unique_rotated(pool)
-    used_lines.append(choice)
-    return choice
-
-
-def pick_hook():
-    formula = random.choices(
-        list(HOOK_FORMULAS.keys()),
-        weights=[0.24, 0.25, 0.22, 0.17, 0.12],
-        k=1,
-    )[0]
-    return pick_unique(HOOK_FORMULAS[formula])
-
-
-def get_next_category():
-    state["category_step"] += 1
-    return pick_category_rotated()
-
-
-
-def get_recent_generated_categories(limit=20):
-    """
-    Backward-compatible helper used by main() and should_make_series().
-    Reads existing output filenames when available.
-    Also falls back to rotation_state.json.
-    """
-    recent = []
-
-    # First: use output filenames if outputs exist.
-    if os.path.isdir(OUTPUT_DIR):
-        files = []
-        for name in os.listdir(OUTPUT_DIR):
-            if name.endswith(".mp4") and name.startswith("reel_"):
-                full = os.path.join(OUTPUT_DIR, name)
-                try:
-                    files.append((os.path.getmtime(full), name))
-                except Exception:
-                    pass
-
-        files.sort(reverse=True)
-
-        for _, name in files[:limit]:
-            if "_series_" in name:
-                recent.append("series")
-                continue
-            if "_member_" in name:
-                recent.append("member")
-                continue
-            for cat in CATEGORY_ORDER:
-                if f"_{cat}_" in name:
-                    recent.append(cat)
-                    break
-
-    # Second: fallback to rotation memory.
-    if not recent:
-        try:
-            data = load_rotation_state()
-            recent.extend(data.get("recent_categories", [])[:limit])
-        except Exception:
-            pass
-
-    return recent[:limit]
-
-
-# ================================================================
-
-# ================================================================
-# ROTATION STATE MEMORY
-# ================================================================
-
-def load_rotation_state():
-    default = {
-        "recent_line_keys": [],
-        "recent_covers": [],
-        "recent_categories": [],
-        "recent_backgrounds": [],
-        "background_cursor": {},
-        "updated_at": ""
-    }
-
-    if os.path.exists(ROTATION_STATE_FILE):
-        try:
-            with open(ROTATION_STATE_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            for k, v in default.items():
-                data.setdefault(k, v)
-            return data
-        except Exception:
-            pass
-
-    return default
-
-
-def save_rotation_state(data):
-    data["updated_at"] = datetime.now().isoformat(timespec="seconds")
-    with open(ROTATION_STATE_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+def line_key(text):
+    return clean_text(text).lower().strip()
 
 
 def remember_rotation_item(key, value, max_items=80):
@@ -595,18 +548,12 @@ def remember_rotation_item(key, value, max_items=80):
     save_rotation_state(data)
 
 
-def line_key(text):
-    return clean_text(text).lower().strip()
-
-
 def pick_unique_rotated(pool, memory_key="recent_line_keys", max_recent=80):
     data = load_rotation_state()
     recent = set(data.get(memory_key, [])[:max_recent])
-
     candidates = [x for x in pool if line_key(x) not in recent]
     if not candidates:
         candidates = pool[:]
-
     choice = random.choice(candidates)
     remember_rotation_item(memory_key, line_key(choice), max_recent)
     return choice
@@ -615,11 +562,9 @@ def pick_unique_rotated(pool, memory_key="recent_line_keys", max_recent=80):
 def pick_cover_rotated(pool):
     data = load_rotation_state()
     recent = set(data.get("recent_covers", [])[:20])
-
     candidates = [x for x in pool if x not in recent]
     if not candidates:
         candidates = pool[:]
-
     choice = random.choice(candidates)
     remember_rotation_item("recent_covers", choice, 30)
     return choice
@@ -628,7 +573,6 @@ def pick_cover_rotated(pool):
 def pick_category_rotated():
     data = load_rotation_state()
     recent = data.get("recent_categories", [])[:3]
-
     weights = []
     for cat in CATEGORY_ORDER:
         if recent and cat == recent[0]:
@@ -637,103 +581,35 @@ def pick_category_rotated():
             weights.append(0.25)
         else:
             weights.append(1.0)
-
     choice = random.choices(CATEGORY_ORDER, weights=weights, k=1)[0]
     remember_rotation_item("recent_categories", choice, 20)
     return choice
 
 
-def choose_background_rotated(mood=None):
-    pool = get_background_pool(mood)
-
-    print("BASE DIR:", BASE_DIR)
-    print("BG ROOT:", BG_ROOT)
-    print("REQUESTED MOOD:", mood)
-    print("BACKGROUND POOL FOUND:", pool)
-
-    if not pool:
-        raise Exception(
-            "No background videos found. Add videos to backgrounds/broken, "
-            "backgrounds/morning, backgrounds/dangerous, backgrounds/rebuild, "
-            "backgrounds/challenge, backgrounds/generic OR add bg1.mp4 in repo root."
-        )
-
-    data = load_rotation_state()
-    cursor = data.get("background_cursor", {})
-    key = mood or "all"
-
-    pool_sorted = sorted(pool)
-    index = int(cursor.get(key, 0)) % len(pool_sorted)
-    chosen = pool_sorted[index]
-
-    cursor[key] = (index + 1) % len(pool_sorted)
-    data["background_cursor"] = cursor
-
-    recent_bg = data.get("recent_backgrounds", [])
-    if chosen in recent_bg:
-        recent_bg.remove(chosen)
-    recent_bg.insert(0, chosen)
-    data["recent_backgrounds"] = recent_bg[:80]
-
-    save_rotation_state(data)
-
-    print("BACKGROUND ROTATION INDEX:", index)
-    print("SELECTED BACKGROUND:", chosen)
-
-    return chosen
+def pick_hook():
+    formula = random.choice(list(HOOK_FORMULAS.keys()))
+    return pick_unique_rotated(HOOK_FORMULAS[formula])
 
 
 def get_recent_generated_categories(limit=20):
-    recent = []
-
-    if os.path.isdir(OUTPUT_DIR):
-        files = []
-        for name in os.listdir(OUTPUT_DIR):
-            if name.endswith(".mp4") and name.startswith("reel_"):
-                full = os.path.join(OUTPUT_DIR, name)
-                try:
-                    files.append((os.path.getmtime(full), name))
-                except Exception:
-                    pass
-
-        files.sort(reverse=True)
-
-        for _, name in files[:limit]:
-            if "_series_" in name:
-                recent.append("series")
-                continue
-            if "_member_" in name:
-                recent.append("member")
-                continue
-            for cat in CATEGORY_ORDER:
-                if f"_{cat}_" in name:
-                    recent.append(cat)
-                    break
-
-    if not recent:
-        try:
-            recent.extend(load_rotation_state().get("recent_categories", [])[:limit])
-        except Exception:
-            pass
-
-    return recent[:limit]
+    return load_rotation_state().get("recent_categories", [])[:limit]
 
 
-# SCRIPT BUILDING
+# ================================================================
+# SCRIPT BUILDERS
 # ================================================================
 
 def build_regular_script():
-    category = get_next_category()
+    category = pick_category_rotated()
     bank = CONTENT[category]
-
     pacing = random.choices(["attack", "story", "cold"], weights=[0.60, 0.28, 0.12], k=1)[0]
 
     lines = [
         pick_hook(),
-        pick_unique(bank["problem"]),
-        pick_unique(bank["mirror"]),
-        pick_unique(bank["consequence"]),
-        pick_unique(bank["cta"]),
+        pick_unique_rotated(bank["problem"]),
+        pick_unique_rotated(bank["mirror"]),
+        pick_unique_rotated(bank["consequence"]),
+        pick_unique_rotated(bank["cta"]),
     ]
 
     cover = pick_cover_rotated(bank["cover"])
@@ -749,124 +625,36 @@ def build_regular_script():
     )
 
 
+def build_member_script():
+    key = random.choice(list(MEMBER_CONTENT.keys()))
+    bank = MEMBER_CONTENT[key]
 
-# ================================================================
-# SEQUENTIAL SERIES STATE
-# ================================================================
+    options = bank["lines"]
+    full_options = [" | ".join(x) for x in options]
+    selected_key = pick_unique_rotated(full_options)
+    selected_index = full_options.index(selected_key) if selected_key in full_options else 0
+    lines = list(options[selected_index])
 
-def load_series_state():
-    """
-    Reads series_state.json.
-    Keeps the challenge sequence professional:
-    Day 1 -> Day 2 -> Day 3.
-    """
-    if os.path.exists(SERIES_STATE_FILE):
-        try:
-            with open(SERIES_STATE_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            next_day = int(data.get("next_day", DEFAULT_SERIES_DAY))
-            if next_day < 1 or next_day > 30:
-                next_day = 1
-            return {"next_day": next_day}
-        except Exception:
-            pass
+    cover = pick_cover_rotated(bank["cover"])
 
-    return {"next_day": DEFAULT_SERIES_DAY}
-
-
-def save_series_state(next_day):
-    if next_day < 1 or next_day > 30:
-        next_day = 1
-
-    data = {
-        "next_day": next_day,
-        "updated_at": datetime.now().isoformat(timespec="seconds"),
-        "note": "Auto-updated by generate.py so challenge reels stay sequential."
-    }
-
-    with open(SERIES_STATE_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-    return data
-
-
-def advance_series_day(current_day):
-    next_day = current_day + 1
-    if next_day > 30:
-        next_day = 1
-    save_series_state(next_day)
-
-
-def auto_commit_series_state():
-    """
-    Tries to commit state files back to GitHub.
-    If permissions block it, the video still renders.
-    """
-    if not AUTO_COMMIT_SERIES_STATE:
-        return
-
-    files_to_commit = [
-        "series_state.json",
-        "rotation_state.json",
-        "used_lines_v3.json",
-        "engine_state_v3.json"
-    ]
-
-    existing_files = [f for f in files_to_commit if os.path.exists(os.path.join(BASE_DIR, f))]
-    if not existing_files:
-        return
-
-    try:
-        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=BASE_DIR, check=False)
-        subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=BASE_DIR, check=False)
-        subprocess.run(["git", "add"] + existing_files, cwd=BASE_DIR, check=False)
-
-        status = subprocess.run(
-            ["git", "status", "--porcelain"] + existing_files,
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False
-        )
-
-        if not status.stdout.strip():
-            print("STATE COMMIT: no changes.")
-            return
-
-        commit = subprocess.run(
-            ["git", "commit", "-m", "Update generator state"],
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False
-        )
-        print("STATE COMMIT:", commit.stdout.strip() or commit.stderr.strip())
-
-        push = subprocess.run(
-            ["git", "push"],
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False
-        )
-        print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
-
-    except Exception as e:
-        print(f"STATE AUTO-COMMIT FAILED: {e}")
+    return Script(
+        mode="member",
+        category=key,
+        mood=bank["mood"],
+        cover=cover,
+        title=f"{cover} | INNER DISCIPLINE",
+        pacing=random.choice(["attack", "story"]),
+        lines=lines,
+    )
 
 
 def build_series_script():
-    """
-    Sequential challenge reel generator.
-    No random Day 21 jump.
-    """
     series_data = load_series_state()
     day = int(series_data.get("next_day", DEFAULT_SERIES_DAY))
-
     if day < 1 or day > 30:
         day = 1
 
-    episode = SERIES_EPISODES[(day - 1) % len(SERIES_EPISODES)]
+    episode = SERIES_EPISODES[day - 1]
 
     lines = [
         f"Day {episode['day']} of 30. {episode['title']}.",
@@ -896,17 +684,19 @@ def build_series_script():
     return script
 
 
+def should_make_series():
+    recent = get_recent_generated_categories(limit=5)
+    if recent and recent[0] == "series":
+        return False
+    return random.random() < SERIES_REEL_PROBABILITY
+
+
 def build_script():
-    """
-    Main content selector.
-    - Most reels are reach-focused.
-    - Some reels are sequential series.
-    - Rare reels mention group/manual/accountability.
-    """
     if random.random() < MEMBER_REEL_PROBABILITY:
         script = build_member_script()
     elif should_make_series():
         script = build_series_script()
+        remember_rotation_item("recent_categories", "series", 20)
     else:
         script = build_regular_script()
 
@@ -920,7 +710,7 @@ def build_script():
 
 
 # ================================================================
-# BACKGROUND SELECTION
+# BACKGROUNDS
 # ================================================================
 
 VIDEO_EXTENSIONS = ["*.mp4", "*.MP4", "*.mov", "*.MOV"]
@@ -930,22 +720,23 @@ def scan_video_files(folder):
     files = []
     for ext in VIDEO_EXTENSIONS:
         files.extend(glob.glob(os.path.join(folder, ext)))
-    return files
+    return sorted(list(set(files)))
 
 
 def root_bg_files():
     files = []
     for pattern in ["bg*.mp4", "bg*.MP4", "bg*.mov", "bg*.MOV"]:
         files.extend(glob.glob(os.path.join(BASE_DIR, pattern)))
-    return files
+    return sorted(list(set(files)))
 
 
-def get_background_pool(mood):
+def get_background_pool(mood=None):
     pool = []
 
-    mood_folder = os.path.join(BG_ROOT, mood)
-    if os.path.isdir(mood_folder):
-        pool.extend(scan_video_files(mood_folder))
+    if mood:
+        mood_folder = os.path.join(BG_ROOT, mood)
+        if os.path.isdir(mood_folder):
+            pool.extend(scan_video_files(mood_folder))
 
     generic_folder = os.path.join(BG_ROOT, "generic")
     if os.path.isdir(generic_folder):
@@ -960,42 +751,55 @@ def get_background_pool(mood):
     return sorted(list(set(pool)))
 
 
-def choose_background(mood):
+def choose_background_rotated(mood=None):
     pool = get_background_pool(mood)
 
     print("BASE DIR:", BASE_DIR)
     print("BG ROOT:", BG_ROOT)
-    print("MOOD:", mood)
+    print("REQUESTED MOOD:", mood)
     print("BACKGROUND POOL FOUND:", pool)
 
     if not pool:
-        raise Exception(
-            "No background videos found. Add videos to backgrounds/broken, "
-            "backgrounds/morning, backgrounds/dangerous, backgrounds/rebuild, "
-            "backgrounds/challenge, backgrounds/generic OR add bg1.mp4 in root."
-        )
+        raise Exception("No background videos found.")
 
-    return random.choice(pool)
+    data = load_rotation_state()
+    cursor = data.get("background_cursor", {})
+    key = mood or "all"
 
+    pool_sorted = sorted(pool)
+    index = int(cursor.get(key, 0)) % len(pool_sorted)
+    chosen = pool_sorted[index]
+
+    cursor[key] = (index + 1) % len(pool_sorted)
+    data["background_cursor"] = cursor
+
+    recent_bg = data.get("recent_backgrounds", [])
+    if chosen in recent_bg:
+        recent_bg.remove(chosen)
+    recent_bg.insert(0, chosen)
+    data["recent_backgrounds"] = recent_bg[:80]
+
+    save_rotation_state(data)
+
+    print("BACKGROUND ROTATION INDEX:", index)
+    print("SELECTED BACKGROUND:", chosen)
+
+    return chosen
 
 
 # ================================================================
-# EBOOK SCREENSHOT BAIT
-# Folder:
-# ebook_screenshots/quotes/
-# ebook_screenshots/trackers/
-# ebook_screenshots/rules/
-# ebook_screenshots/phases/
-# ebook_screenshots/generic/
+# EBOOK SCREENSHOTS
 # ================================================================
 
 IMAGE_EXTENSIONS = ["*.png", "*.jpg", "*.jpeg", "*.webp", "*.PNG", "*.JPG", "*.JPEG", "*.WEBP"]
+
 
 def scan_image_files(folder):
     files = []
     for ext in IMAGE_EXTENSIONS:
         files.extend(glob.glob(os.path.join(folder, ext)))
     return sorted(list(set(files)))
+
 
 def get_ebook_screenshot_pool():
     pool = []
@@ -1009,9 +813,11 @@ def get_ebook_screenshot_pool():
                 pool.extend(scan_image_files(folder))
     return sorted(list(set(pool)))
 
+
 def choose_ebook_screenshot():
     pool = get_ebook_screenshot_pool()
     return random.choice(pool) if pool else None
+
 
 def should_use_ebook_bait(script):
     if script.mode == "series":
@@ -1020,9 +826,11 @@ def should_use_ebook_bait(script):
         return True
     return random.random() < EBOOK_BAIT_PROBABILITY
 
+
 def prepare_ebook_overlay(image_path):
     if not image_path or not os.path.exists(image_path):
         return None
+
     try:
         img = Image.open(image_path).convert("RGB")
         max_w = int(W * 0.72)
@@ -1067,13 +875,7 @@ def prepare_ebook_overlay(image_path):
 # ================================================================
 
 async def tts_async(text, filename, rate, pitch):
-    communicate = edge_tts.Communicate(
-        clean_text(text),
-        VOICE,
-        rate=rate,
-        pitch=pitch,
-        volume=VOLUME,
-    )
+    communicate = edge_tts.Communicate(clean_text(text), VOICE, rate=rate, pitch=pitch, volume=VOLUME)
     await communicate.save(filename)
 
 
@@ -1087,16 +889,15 @@ def generate_voice(text, filename, pacing):
 # ================================================================
 
 HOT_WORDS = {
-    "WEAK", "WEAKNESS", "LOSING", "FAIL", "FAILED", "KILL", "EXCUSE", "EXCUSES",
-    "DISCIPLINE", "STANDARD", "STANDARDS", "RESET", "LOCKED", "ALONE", "QUIT",
-    "QUITTING", "DRIFT", "DRIFTING", "WASTING", "MAN", "MORNING", "SNOOZE",
-    "NOW", "TODAY", "DONE", "DAY", "NO", "STOP", "HARD", "COMFORT", "CONTROL",
-    "ACCOUNTABILITY", "CONSEQUENCE", "FIRST", "BATTLE", "FUTURE",
+    "WEAK", "WEAKNESS", "DISCIPLINE", "STANDARD", "STANDARDS", "RESET", "LOCKED",
+    "ALONE", "QUIT", "DRIFT", "MAN", "MORNING", "SNOOZE", "NOW", "TODAY",
+    "DONE", "DAY", "NO", "STOP", "HARD", "COMFORT", "CONTROL", "ACCOUNTABILITY",
+    "CONSEQUENCE", "FUTURE", "MEMBERS", "MANUAL", "PRIVATE", "JOIN",
 }
 
 DANGER_WORDS = {
     "WEAK", "WEAKNESS", "FAIL", "FAILED", "QUIT", "QUITTING", "EXCUSE", "EXCUSES",
-    "WASTING", "DRIFT", "DRIFTING", "COMFORT", "BETRAYAL",
+    "WASTING", "DRIFT", "COMFORT", "BETRAYAL",
 }
 
 
@@ -1151,37 +952,30 @@ def draw_multiline(draw, lines, font, center_y, style="normal"):
             else:
                 color = WHITE
 
-            draw.text(
-                (x, y),
-                word,
-                font=font,
-                fill=color,
-                stroke_width=7,
-                stroke_fill=BLACK,
-            )
+            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0), stroke_width=8, stroke_fill=(0, 0, 0))
+            draw.text((x, y), word, font=font, fill=color, stroke_width=7, stroke_fill=BLACK)
             x += int(widths[wi] + space)
 
 
 def make_text_frame(text, level="normal"):
     img = Image.new("RGB", (W, H), BLACK)
     draw = ImageDraw.Draw(img)
-
     wc = len(clean_text(text).split())
 
     if level == "cover":
-        font_size = 170 if wc <= 2 else 135
+        font_size = 170 if wc <= 2 else 132
         y = H * 0.53
     elif level == "hook":
-        font_size = 140 if wc <= 4 else 114
+        font_size = 132 if wc <= 5 else 108
         y = H * TEXT_HOOK_Y
     elif wc <= 2:
-        font_size = 145
+        font_size = 140
         y = H * TEXT_CENTER_Y
     elif wc <= 5:
-        font_size = 114
+        font_size = 110
         y = H * TEXT_CENTER_Y
     else:
-        font_size = 92
+        font_size = 88
         y = H * TEXT_CENTER_Y
 
     font = load_font(font_size)
@@ -1211,7 +1005,7 @@ def make_logo_frame():
 
 
 # ================================================================
-# VIDEO FX
+# VISUAL FX
 # ================================================================
 
 def prepare_background(video_path, duration):
@@ -1238,44 +1032,28 @@ def prepare_background(video_path, duration):
 def make_vignette():
     y = np.linspace(0, 1, H).reshape(H, 1)
     x = np.linspace(-1, 1, W).reshape(1, W)
-
     radial = 1 - 0.42 * np.clip((x ** 2 + (y - 0.45) ** 2), 0, 1)
-
     top = np.ones((H, W), dtype=np.float32)
     top[: int(H * 0.40), :] *= np.linspace(0.44, 1.0, int(H * 0.40)).reshape(-1, 1)
-
     bottom = np.ones((H, W), dtype=np.float32)
     bottom[int(H * 0.76):, :] *= np.linspace(1.0, 0.70, H - int(H * 0.76)).reshape(-1, 1)
-
     return np.clip(radial * top * bottom, 0.32, 1.0).astype(np.float32)
 
 
-def apply_contrast(frame):
-    """
-    Cinematic restraint grade:
-    - controlled contrast
-    - slight desaturation
-    - darker mood
-    - protected highlights
-    - no cartoon overprocessing
-    """
+def apply_cinematic_grade(frame):
     f = frame.astype(np.float32)
-
-    # contrast around midpoint
     f = (f - 128) * CINEMATIC_CONTRAST + 128
-
-    # brightness / shadow control
     f = f + CINEMATIC_BRIGHTNESS + CINEMATIC_SHADOW_LIFT
-
-    # desaturate slightly
     gray = f.mean(axis=2, keepdims=True)
     f = gray + (f - gray) * CINEMATIC_SATURATION
-
-    # cap highlights softly
     f = np.minimum(f, CINEMATIC_HIGHLIGHT_CAP)
-
     return np.clip(f, 0, 255).astype(np.uint8)
 
+
+def add_film_grain(frame, t):
+    rng = np.random.default_rng(int(t * 1000) % 100000)
+    grain = rng.normal(0, 2.1, frame.shape).astype(np.float32)
+    return np.clip(frame.astype(np.float32) + grain, 0, 255).astype(np.uint8)
 
 
 def composite_rgb(base, overlay, opacity=1.0, offset_y=0, scale=1.0):
@@ -1284,7 +1062,6 @@ def composite_rgb(base, overlay, opacity=1.0, offset_y=0, scale=1.0):
         nw = max(1, int(W * scale))
         nh = max(1, int(H * scale))
         pil = pil.resize((nw, nh), Image.LANCZOS)
-
         canvas = Image.new("RGB", (W, H), BLACK)
         x = (W - nw) // 2
         y = (H - nh) // 2 + int(offset_y)
@@ -1303,23 +1080,8 @@ def composite_rgb(base, overlay, opacity=1.0, offset_y=0, scale=1.0):
     return np.clip(b, 0, 255).astype(np.uint8)
 
 
-def add_film_grain(frame, t):
-    """
-    Very subtle grain. It should be felt, not noticed.
-    """
-    rng = np.random.default_rng(int(t * 1000) % 100000)
-    grain = rng.normal(0, 2.1, frame.shape).astype(np.float32)
-    f = frame.astype(np.float32) + grain
-    return np.clip(f, 0, 255).astype(np.uint8)
-
-
 def subtitle_animation_values(t, start, end, event_type):
-    """
-    Text should feel like it is emerging from darkness:
-    slower fade-in, tiny upward drift, no cheap bouncing.
-    """
     local = t - start
-
     fd_in = 0.18 if event_type in ["cover", "impact"] else 0.16
     fd_out = 0.10
 
@@ -1331,19 +1093,8 @@ def subtitle_animation_values(t, start, end, event_type):
         alpha = 1.0
 
     alpha = float(np.clip(alpha, 0.0, 1.0))
-
-    # Small scale breath only on entry.
-    if local < 0.18:
-        scale = 1.0 + (0.025 * (1 - local / 0.18))
-    else:
-        scale = 1.0
-
-    # Drift upward slightly as it emerges.
-    if local < 0.22:
-        offset_y = 10 * (1 - local / 0.22)
-    else:
-        offset_y = 0
-
+    scale = 1.0 + (0.025 * (1 - local / 0.18)) if local < 0.18 else 1.0
+    offset_y = 10 * (1 - local / 0.22) if local < 0.22 else 0
     return alpha, offset_y, scale
 
 
@@ -1362,27 +1113,19 @@ def split_chunks(text, chunk_size):
 
 
 def make_text_events(script, voice_data, duration):
-    """
-    Retention Clean v6:
-    - removes mid-video flash overlays
-    - prevents cover text and subtitles from overlapping
-    - prevents one subtitle chunk from colliding with the next
-    - keeps retention through escalation, pacing, and clean readability
-    """
     events = []
-
     cover_end = min(0.78, duration)
+
     events.append({
         "frame": make_text_frame(script.cover, "cover"),
         "start": 0.01,
         "end": cover_end,
         "type": "cover",
-        "label": script.cover,
     })
 
+    last_end = cover_end + 0.08
     gap_between_texts = 0.035
     fade_tail = 0.055
-    last_end = cover_end + 0.08
 
     for i, item in enumerate(voice_data):
         chunks = split_chunks(item["line"], item["chunk_size"])
@@ -1391,48 +1134,40 @@ def make_text_events(script, voice_data, duration):
         for j, chunk in enumerate(chunks):
             natural_start = item["start"] + j * chunk_dur
             natural_end = item["start"] + (j + 1) * chunk_dur + fade_tail
-
             start = max(natural_start, last_end + gap_between_texts)
             end = min(natural_end, duration)
 
             if end - start < 0.16:
                 continue
 
-            level = "hook" if i == 0 and j == 0 else "normal"
             raw = chunk.upper()
-            event_type = "impact" if any(w in raw for w in ["WEAK", "FAIL", "NO ", "STOP", "KILL", "QUIT", "DAY"]) else "text"
+            event_type = "impact" if any(w in raw for w in ["WEAK", "FAIL", "NO ", "STOP", "KILL", "QUIT", "DAY", "JOIN"]) else "text"
+            level = "hook" if i == 0 and j == 0 else "normal"
 
             events.append({
                 "frame": make_text_frame(chunk, level),
                 "start": start,
                 "end": end,
                 "type": event_type,
-                "label": chunk,
             })
-
             last_end = end
 
     return events
 
 
 # ================================================================
-# AUDIO SILENCE CONTROL
+# AUDIO DUCKING
 # ================================================================
 
 def build_music_duck_segments(duration, voice_data):
-    """
-    Creates volume segments for background music.
-    Music drops under impact/CTA moments.
-    This creates psychological punch without flashy editing.
-    """
     duck_windows = []
 
     for item in voice_data:
         line = item.get("line", "")
         start = float(item.get("start", 0))
         end = start + float(item.get("duration", 0))
-
         raw = line.upper()
+
         is_impact = any(word in raw for word in [
             "WEAK", "WEAKNESS", "QUIT", "NO EXCUSES", "DONE", "LINK IN BIO",
             "COMMENT", "STANDARD", "DISCIPLINE", "DAY ", "STOP", "KILL",
@@ -1445,7 +1180,6 @@ def build_music_duck_segments(duration, voice_data):
     if not duck_windows:
         return [(0, duration, MUSIC_BASE_VOLUME)]
 
-    # Merge overlapping windows
     duck_windows.sort()
     merged = []
     for s, e in duck_windows:
@@ -1469,10 +1203,6 @@ def build_music_duck_segments(duration, voice_data):
 
 
 def build_ducked_music(music_path, duration, voice_data):
-    """
-    Builds background music with intentional ducking.
-    No full silence unless the line needs pressure.
-    """
     music = AudioFileClip(music_path)
     music = afx.audio_loop(music, duration=duration)
     music = music.audio_fadein(0.55).audio_fadeout(0.75)
@@ -1481,10 +1211,160 @@ def build_ducked_music(music_path, duration, voice_data):
     for s, e, vol in build_music_duck_segments(duration, voice_data):
         if e <= s:
             continue
-        segment = music.subclip(s, e).volumex(vol).set_start(s)
-        clips.append(segment)
+        clips.append(music.subclip(s, e).volumex(vol).set_start(s))
 
     return CompositeAudioClip(clips)
+
+
+# ================================================================
+# COVER
+# ================================================================
+
+def make_cinematic_cover_background(bg_path):
+    try:
+        clip = VideoFileClip(bg_path)
+        t = min(max(0.15, clip.duration * 0.28), max(0, clip.duration - 0.10))
+        frame = clip.get_frame(t).astype(np.uint8)
+        clip.close()
+
+        img = Image.fromarray(frame).convert("RGB")
+        ratio = img.width / img.height
+        target = W / H
+
+        if ratio > target:
+            img = img.resize((int(H * ratio), H), Image.LANCZOS)
+        else:
+            img = img.resize((W, int(W / ratio)), Image.LANCZOS)
+
+        left = (img.width - W) // 2
+        top = (img.height - H) // 2
+        img = img.crop((left, top, left + W, top + H))
+
+        small = img.resize((max(1, W // COVER_BLUR_RADIUS), max(1, H // COVER_BLUR_RADIUS)), Image.BILINEAR)
+        img = small.resize((W, H), Image.BICUBIC)
+
+        arr = np.array(img).astype(np.float32)
+        arr = (arr - 128) * 1.12 + 128
+        arr *= COVER_DARKEN
+        arr = np.clip(arr, 0, 255).astype(np.uint8)
+
+        return Image.fromarray(arr).convert("RGB")
+    except Exception as e:
+        print(f"Cover background failed, using black fallback: {e}")
+        return Image.new("RGB", (W, H), BLACK)
+
+
+def draw_cover_text_on_image(img, cover_text):
+    img_rgba = img.convert("RGBA")
+    band = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    band_draw = ImageDraw.Draw(band)
+    band_draw.rectangle((0, int(H * 0.34), W, int(H * 0.70)), fill=(0, 0, 0, 92))
+    img_rgba.alpha_composite(band)
+
+    draw = ImageDraw.Draw(img_rgba)
+    wc = len(clean_text(cover_text).split())
+    font = load_font(178 if wc <= 2 else 136)
+    lines = wrap_words(draw, cover_text, font, 940)
+
+    line_gap = int(font.size * 0.20)
+    total_h = len(lines) * font.size + max(0, len(lines) - 1) * line_gap
+    y0 = int(H * 0.53 - total_h / 2)
+
+    for li, words in enumerate(lines):
+        widths = [draw.textlength(w, font=font) for w in words]
+        space = draw.textlength(" ", font=font)
+        line_w = sum(widths) + max(0, len(words) - 1) * space
+        x = int((W - line_w) / 2)
+        y = y0 + li * (font.size + line_gap)
+
+        for wi, word in enumerate(words):
+            raw = word.strip(".,?!:;\"'").upper()
+            color = RED if raw in DANGER_WORDS else (ORANGE if wi == 0 else WHITE)
+
+            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0, 210))
+            draw.text((x, y), word, font=font, fill=color + (255,), stroke_width=8, stroke_fill=(0, 0, 0, 255))
+            x += int(widths[wi] + space)
+
+    if os.path.exists(LOGO_PATH):
+        logo = Image.open(LOGO_PATH).convert("RGBA")
+        aspect = logo.height / max(1, logo.width)
+        new_w = COVER_LOGO_SIZE
+        new_h = int(COVER_LOGO_SIZE * aspect)
+        logo = logo.resize((new_w, new_h), Image.LANCZOS)
+        logo.putalpha(150)
+        img_rgba.paste(logo, ((W - new_w) // 2, H - new_h - LOGO_BOTTOM_MARGIN), logo)
+
+    return img_rgba.convert("RGB")
+
+
+def export_cover(script, out_path, bg_path=None):
+    base = os.path.splitext(out_path)[0]
+    out = f"{base}_cover.png"
+    img = make_cinematic_cover_background(bg_path) if bg_path else Image.new("RGB", (W, H), BLACK)
+    img = draw_cover_text_on_image(img, script.cover)
+    img.save(out, quality=95)
+    return out
+
+
+# ================================================================
+# METADATA
+# ================================================================
+
+def build_caption(script):
+    if script.mode == "series":
+        return "\n".join([
+            SERIES_NAME,
+            "",
+            f"Day {script.day}: {script.title.replace(' | INNER DISCIPLINE', '')}",
+            "",
+            f"Task: {script.task}",
+            "",
+            "Comment DONE when you finish it.",
+            "Save this and come back tomorrow.",
+            "",
+            "#discipline #30daychallenge #innerdiscipline #selfimprovement #accountability #mindset #noexcuses #consistency #growthmindset #hardwork",
+        ])
+
+    if script.mode == "member":
+        return "\n".join([
+            "This is not just a group.",
+            "It is the room where the standard stays visible.",
+            "",
+            "Join the Inner Discipline 30 Day Challenge.",
+            "Members unlock the Discipline Manual inside the group.",
+            "",
+            "Link in bio.",
+            "",
+            "#discipline #accountability #30daychallenge #innerdiscipline #selfimprovement #mindset #noexcuses #growthmindset #hardwork",
+        ])
+
+    return "\n".join([
+        "Most people do not fail loudly. They drift quietly.",
+        "",
+        f'"{script.lines[0]}"',
+        "",
+        script.lines[2],
+        "",
+        "-",
+        script.lines[-1],
+        "",
+        "#discipline #selfimprovement #mindset #noexcuses #innerdiscipline #accountability #growthmindset #hardwork",
+    ])
+
+
+def write_metadata(script, out_path, bg_path=None):
+    base = os.path.splitext(out_path)[0]
+
+    with open(f"{base}_title.txt", "w", encoding="utf-8") as f:
+        f.write(script.title)
+
+    with open(f"{base}_caption.txt", "w", encoding="utf-8") as f:
+        f.write(build_caption(script))
+
+    with open(f"{base}_script.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(script.lines))
+
+    return export_cover(script, out_path, bg_path)
 
 
 # ================================================================
@@ -1509,10 +1389,7 @@ def build_video(script, bg_path, out_path):
 
         print("Generating voice lines...")
         for i, line in enumerate(script.lines):
-            vf = os.path.join(
-                TEMP_DIR,
-                f"voice_{datetime.now().strftime('%H%M%S')}_{i}_{random.randint(1000,9999)}.mp3",
-            )
+            vf = os.path.join(TEMP_DIR, f"voice_{datetime.now().strftime('%H%M%S')}_{i}_{random.randint(1000,9999)}.mp3")
             voice_files.append(vf)
 
             generate_voice(line, vf, script.pacing)
@@ -1535,15 +1412,14 @@ def build_video(script, bg_path, out_path):
         print(f"Video duration: {duration:.2f}s")
 
         for item in voice_data:
-            if item["start"] >= duration:
-                continue
-            audio_clips.append(AudioFileClip(item["file"]).set_start(item["start"]))
+            if item["start"] < duration:
+                audio_clips.append(AudioFileClip(item["file"]).set_start(item["start"]))
 
         text_events = make_text_events(script, voice_data, duration)
         logo_frame = make_logo_frame()
         vignette = make_vignette()
 
-        ebook_overlay = prepare_ebook_overlay(script.ebook_image) if getattr(script, "ebook_image", "") else None
+        ebook_overlay = prepare_ebook_overlay(script.ebook_image) if script.ebook_image else None
         ebook_start = max(2.2, duration * 0.26)
         ebook_end = min(duration - 2.0, ebook_start + 3.2)
 
@@ -1562,12 +1438,12 @@ def build_video(script, bg_path, out_path):
                 pil = pil.crop((x1, y1, x1 + new_w, y1 + new_h)).resize((W, H), Image.LANCZOS)
                 frame = np.array(pil)
 
-            if t < 0.80:
-                dx = int(math.sin(t * 95) * SHAKE_STRENGTH)
-                dy = int(math.cos(t * 85) * SHAKE_STRENGTH)
+            if t < 0.65:
+                dx = int(math.sin(t * 70) * SHAKE_STRENGTH)
+                dy = int(math.cos(t * 60) * SHAKE_STRENGTH)
                 frame = np.roll(frame, shift=(dy, dx), axis=(0, 1))
 
-            frame = apply_contrast(frame)
+            frame = apply_cinematic_grade(frame)
 
             f = frame.astype(np.float32)
             f[:, :, 0] *= vignette
@@ -1597,9 +1473,7 @@ def build_video(script, bg_path, out_path):
 
             for ev in text_events:
                 if ev["start"] <= t < ev["end"]:
-                    alpha, offset_y, scale = subtitle_animation_values(
-                        t, ev["start"], ev["end"], ev["type"]
-                    )
+                    alpha, offset_y, scale = subtitle_animation_values(t, ev["start"], ev["end"], ev["type"])
                     frame = composite_rgb(frame, ev["frame"], opacity=alpha, offset_y=offset_y, scale=scale)
 
             if logo_frame is not None:
@@ -1666,229 +1540,31 @@ def build_video(script, bg_path, out_path):
 
 
 # ================================================================
-# METADATA
-# ================================================================
-
-def build_caption(script):
-    if script.mode == "series":
-        return "\n".join([
-            SERIES_NAME,
-            "",
-            f"Day {script.day}: {script.title.replace(' | INNER DISCIPLINE', '')}",
-            "",
-            f"Task: {script.task}",
-            "",
-            "Comment DONE when you finish it.",
-            "Save this and come back tomorrow.",
-            "",
-            "#discipline #30daychallenge #innerdiscipline #selfimprovement #accountability #mindset #noexcuses #consistency #growthmindset #hardwork",
-        ])
-
-    if script.mode == "member":
-        return "\n".join([
-            "This is not just a group.",
-            "It is the room where the standard stays visible.",
-            "",
-            "Join the Inner Discipline 30 Day Challenge.",
-            "Members unlock the Discipline Manual inside the group.",
-            "",
-            "Link in bio.",
-            "",
-            "#discipline #accountability #30daychallenge #innerdiscipline #selfimprovement #mindset #noexcuses #mensdiscipline #growthmindset #hardwork",
-        ])
-
-    openers = {
-        "wasted_potential": "Most men do not fail loudly. They drift quietly.",
-        "morning_discipline": "Win the morning before the world gets access to you.",
-        "masculine_standard": "Your standard is not what you say. It is what you repeat.",
-        "accountability_challenge": "Discipline gets easier when the room refuses your excuses.",
-    }
-
-    hashtags = {
-        "wasted_potential": "#discipline #selfimprovement #mindset #noexcuses #selfmastery #growthmindset #mentalstrength #innerdiscipline #accountability #hardwork",
-        "morning_discipline": "#morningroutine #discipline #5amclub #selfimprovement #mindset #consistency #focus #innerdiscipline #noexcuses #growthmindset",
-        "masculine_standard": "#masculinity #discipline #selfmastery #menwithstandards #mindset #noexcuses #leadership #innerdiscipline #growthmindset #accountability",
-        "accountability_challenge": "#30daychallenge #accountability #discipline #innerdisciplinechallenge #selfimprovement #mindset #facebookgroup #consistency #noexcuses #hardwork",
-    }
-
-    ebook_line = ""
-    if getattr(script, "ebook_image", ""):
-        ebook_line = "\nMembers unlock the Discipline Manual inside the group.\n"
-
-    return "\n".join([
-        openers.get(script.category, "Read this twice."),
-        "",
-        f'"{script.lines[0]}"',
-        "",
-        script.lines[2],
-        ebook_line,
-        "-",
-        script.lines[-1],
-        "",
-        hashtags.get(script.category, hashtags["wasted_potential"]),
-    ])
-
-
-
-def make_cinematic_cover_background(bg_path):
-    """
-    Creates a cinematic cover background from the selected reel background.
-    """
-    try:
-        clip = VideoFileClip(bg_path)
-        t = min(max(0.15, clip.duration * 0.28), max(0, clip.duration - 0.10))
-        frame = clip.get_frame(t).astype(np.uint8)
-        clip.close()
-
-        img = Image.fromarray(frame).convert("RGB")
-        ratio = img.width / img.height
-        target = W / H
-
-        if ratio > target:
-            new_h = H
-            new_w = int(H * ratio)
-            img = img.resize((new_w, new_h), Image.LANCZOS)
-        else:
-            new_w = W
-            new_h = int(W / ratio)
-            img = img.resize((new_w, new_h), Image.LANCZOS)
-
-        left = (img.width - W) // 2
-        top = (img.height - H) // 2
-        img = img.crop((left, top, left + W, top + H))
-
-        blur_factor = max(8, COVER_BLUR_RADIUS)
-        small = img.resize((max(1, W // blur_factor), max(1, H // blur_factor)), Image.BILINEAR)
-        img = small.resize((W, H), Image.BICUBIC)
-
-        arr = np.array(img).astype(np.float32)
-        arr = (arr - 128) * 1.12 + 128
-        arr *= COVER_DARKEN
-        arr = np.clip(arr, 0, 255).astype(np.uint8)
-
-        return Image.fromarray(arr).convert("RGB")
-
-    except Exception as e:
-        print(f"Cover background failed, using black fallback: {e}")
-        return Image.new("RGB", (W, H), BLACK)
-
-
-def draw_cover_text_on_image(img, cover_text):
-    """
-    Draws the reel cover text over the cinematic background.
-    """
-    img_rgba = img.convert("RGBA")
-
-    band = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    band_draw = ImageDraw.Draw(band)
-    band_draw.rectangle((0, int(H * 0.34), W, int(H * 0.70)), fill=(0, 0, 0, 92))
-    img_rgba.alpha_composite(band)
-
-    draw = ImageDraw.Draw(img_rgba)
-    wc = len(clean_text(cover_text).split())
-    font = load_font(178 if wc <= 2 else 136)
-    lines = wrap_words(draw, cover_text, font, 940)
-
-    line_gap = int(font.size * 0.20)
-    total_h = len(lines) * font.size + max(0, len(lines) - 1) * line_gap
-    y0 = int(H * 0.53 - total_h / 2)
-
-    for li, words in enumerate(lines):
-        widths = [draw.textlength(w, font=font) for w in words]
-        space = draw.textlength(" ", font=font)
-        line_w = sum(widths) + max(0, len(words) - 1) * space
-        x = int((W - line_w) / 2)
-        y = y0 + li * (font.size + line_gap)
-
-        for wi, word in enumerate(words):
-            raw = word.strip(".,?!:;\"'").upper()
-            color = ORANGE if wi == 0 else WHITE
-            if raw in DANGER_WORDS:
-                color = RED
-
-            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0, 210))
-            draw.text(
-                (x, y),
-                word,
-                font=font,
-                fill=color + (255,),
-                stroke_width=8,
-                stroke_fill=(0, 0, 0, 255),
-            )
-            x += int(widths[wi] + space)
-
-    if os.path.exists(LOGO_PATH):
-        logo = Image.open(LOGO_PATH).convert("RGBA")
-        aspect = logo.height / max(1, logo.width)
-        new_w = COVER_LOGO_SIZE
-        new_h = int(COVER_LOGO_SIZE * aspect)
-        logo = logo.resize((new_w, new_h), Image.LANCZOS)
-        logo.putalpha(150)
-        img_rgba.paste(
-            logo,
-            ((W - new_w) // 2, H - new_h - LOGO_BOTTOM_MARGIN),
-            logo,
-        )
-
-    return img_rgba.convert("RGB")
-
-
-def export_cover(script, out_path, bg_path=None):
-    base = os.path.splitext(out_path)[0]
-    out = f"{base}_cover.png"
-
-    if bg_path:
-        img = make_cinematic_cover_background(bg_path)
-    else:
-        img = Image.new("RGB", (W, H), BLACK)
-
-    img = draw_cover_text_on_image(img, script.cover)
-    img.save(out, quality=95)
-    return out
-
-
-def write_metadata(script, out_path, bg_path=None):
-    base = os.path.splitext(out_path)[0]
-
-    with open(f"{base}_title.txt", "w", encoding="utf-8") as f:
-        f.write(script.title)
-
-    with open(f"{base}_caption.txt", "w", encoding="utf-8") as f:
-        f.write(build_caption(script))
-
-    with open(f"{base}_script.txt", "w", encoding="utf-8") as f:
-        f.write("\n".join(script.lines))
-
-    return export_cover(script, out_path, bg_path)
-
-
-# ================================================================
 # MAIN
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v8.2 STATE FIXED")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v9 CLEAN REBUILD")
     print("=" * 64)
-
     print("RUN ID:", RUN_ID)
-    print("RECENT OUTPUT CATEGORIES:", get_recent_generated_categories(limit=8))
-    print("EBOOK ROOT:", EBOOK_ROOT)
-    print("EBOOK SCREENSHOTS FOUND:", get_ebook_screenshot_pool())
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
     print("SERIES NEXT DAY:", load_series_state().get("next_day"))
     print("ROTATION STATE FILE:", ROTATION_STATE_FILE)
     print("RECENT ROTATION CATEGORIES:", load_rotation_state().get("recent_categories", [])[:5])
     print("RECENT ROTATION BACKGROUNDS:", load_rotation_state().get("recent_backgrounds", [])[:5])
+    print("EBOOK ROOT:", EBOOK_ROOT)
+    print("EBOOK SCREENSHOTS FOUND:", get_ebook_screenshot_pool())
 
     script = build_script()
+
     print("SELECTED MODE:", script.mode)
     print("SELECTED CATEGORY:", script.category)
     print("SELECTED MOOD:", script.mood)
 
     bg = choose_background_rotated(script.mood)
 
-    date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v82_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
+    date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v9_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
@@ -1902,7 +1578,7 @@ def main():
         print(f"Cover:   {cover}")
 
     save_state()
-    auto_commit_series_state()
+    auto_commit_state_files()
 
     if os.path.exists(TEMP_DIR):
         shutil.rmtree(TEMP_DIR)
