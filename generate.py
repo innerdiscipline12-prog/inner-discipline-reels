@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v7.4 ROTATION MEMORY
+# INNER DISCIPLINE â€” GROWTH ENGINE v8 CINEMATIC CONTROL
 #
 # FULL generator. Not a test file.
 #
@@ -92,8 +92,9 @@ RED = (255, 42, 42)
 BLACK = (0, 0, 0)
 
 TEXT_MAX_WIDTH = 900
-TEXT_CENTER_Y = 0.555
-TEXT_HOOK_Y = 0.50
+# Text lives slightly lower-center so it feels cinematic, not like generic TikTok captions.
+TEXT_CENTER_Y = 0.585
+TEXT_HOOK_Y = 0.535
 
 LOGO_OPACITY = 0.38
 LOGO_SIZE = 112
@@ -114,8 +115,26 @@ MEMBER_REEL_PROBABILITY = 0.18
 DEFAULT_SERIES_DAY = 1
 AUTO_COMMIT_SERIES_STATE = True
 
-ZOOM_STRENGTH = 0.072
-SHAKE_STRENGTH = 3
+# Slow pressure zoom. Subtle. Entire clip. Creates subconscious tension.
+ZOOM_STRENGTH = 0.088
+SHAKE_STRENGTH = 2
+
+# Cinematic restraint grading.
+# The goal is controlled darkness, not overedited trash.
+CINEMATIC_CONTRAST = 1.18
+CINEMATIC_BRIGHTNESS = -12
+CINEMATIC_SATURATION = 0.90
+CINEMATIC_HIGHLIGHT_CAP = 238
+CINEMATIC_SHADOW_LIFT = -10
+TEXT_BAND_STRENGTH = 0.66
+TEXT_BAND_TOP = 0.40
+TEXT_BAND_BOTTOM = 0.73
+
+# Audio silence control.
+# Music ducks during impact lines so the voice hits harder.
+MUSIC_BASE_VOLUME = 0.14
+MUSIC_DUCK_VOLUME = 0.055
+DUCK_FADE_SECONDS = 0.18
 
 
 # ================================================================
@@ -484,6 +503,51 @@ def pick_hook():
 def get_next_category():
     state["category_step"] += 1
     return pick_category_rotated()
+
+
+
+def get_recent_generated_categories(limit=20):
+    """
+    Backward-compatible helper used by main() and should_make_series().
+    Reads existing output filenames when available.
+    Also falls back to rotation_state.json.
+    """
+    recent = []
+
+    # First: use output filenames if outputs exist.
+    if os.path.isdir(OUTPUT_DIR):
+        files = []
+        for name in os.listdir(OUTPUT_DIR):
+            if name.endswith(".mp4") and name.startswith("reel_"):
+                full = os.path.join(OUTPUT_DIR, name)
+                try:
+                    files.append((os.path.getmtime(full), name))
+                except Exception:
+                    pass
+
+        files.sort(reverse=True)
+
+        for _, name in files[:limit]:
+            if "_series_" in name:
+                recent.append("series")
+                continue
+            if "_member_" in name:
+                recent.append("member")
+                continue
+            for cat in CATEGORY_ORDER:
+                if f"_{cat}_" in name:
+                    recent.append(cat)
+                    break
+
+    # Second: fallback to rotation memory.
+    if not recent:
+        try:
+            data = load_rotation_state()
+            recent.extend(data.get("recent_categories", [])[:limit])
+        except Exception:
+            pass
+
+    return recent[:limit]
 
 
 # ================================================================
@@ -955,10 +1019,31 @@ def make_vignette():
 
 
 def apply_contrast(frame):
+    """
+    Cinematic restraint grade:
+    - controlled contrast
+    - slight desaturation
+    - darker mood
+    - protected highlights
+    - no cartoon overprocessing
+    """
     f = frame.astype(np.float32)
-    f = (f - 128) * 1.15 + 128
-    f = f + 5
+
+    # contrast around midpoint
+    f = (f - 128) * CINEMATIC_CONTRAST + 128
+
+    # brightness / shadow control
+    f = f + CINEMATIC_BRIGHTNESS + CINEMATIC_SHADOW_LIFT
+
+    # desaturate slightly
+    gray = f.mean(axis=2, keepdims=True)
+    f = gray + (f - gray) * CINEMATIC_SATURATION
+
+    # cap highlights softly
+    f = np.minimum(f, CINEMATIC_HIGHLIGHT_CAP)
+
     return np.clip(f, 0, 255).astype(np.uint8)
+
 
 
 def composite_rgb(base, overlay, opacity=1.0, offset_y=0, scale=1.0):
@@ -986,29 +1071,44 @@ def composite_rgb(base, overlay, opacity=1.0, offset_y=0, scale=1.0):
     return np.clip(b, 0, 255).astype(np.uint8)
 
 
+def add_film_grain(frame, t):
+    """
+    Very subtle grain. It should be felt, not noticed.
+    """
+    rng = np.random.default_rng(int(t * 1000) % 100000)
+    grain = rng.normal(0, 2.1, frame.shape).astype(np.float32)
+    f = frame.astype(np.float32) + grain
+    return np.clip(f, 0, 255).astype(np.uint8)
+
+
 def subtitle_animation_values(t, start, end, event_type):
+    """
+    Text should feel like it is emerging from darkness:
+    slower fade-in, tiny upward drift, no cheap bouncing.
+    """
     local = t - start
 
-    fd = 0.08 if event_type in ["cover", "impact"] else 0.11
+    fd_in = 0.18 if event_type in ["cover", "impact"] else 0.16
+    fd_out = 0.10
 
-    if local < fd:
-        alpha = local / fd
-    elif end - t < fd:
-        alpha = (end - t) / fd
+    if local < fd_in:
+        alpha = local / fd_in
+    elif end - t < fd_out:
+        alpha = (end - t) / fd_out
     else:
         alpha = 1.0
 
     alpha = float(np.clip(alpha, 0.0, 1.0))
 
-    if local < 0.10:
-        scale = 1.0 + (0.035 * (1 - local / 0.10))
+    # Small scale breath only on entry.
+    if local < 0.18:
+        scale = 1.0 + (0.025 * (1 - local / 0.18))
     else:
         scale = 1.0
 
-    if event_type == "impact":
-        offset_y = math.sin(local * 34) * 5 if local < 0.18 else 0
-    elif event_type == "cover":
-        offset_y = math.sin(local * 28) * 3 if local < 0.20 else 0
+    # Drift upward slightly as it emerges.
+    if local < 0.22:
+        offset_y = 10 * (1 - local / 0.22)
     else:
         offset_y = 0
 
@@ -1081,6 +1181,78 @@ def make_text_events(script, voice_data, duration):
             last_end = end
 
     return events
+
+
+# ================================================================
+# AUDIO SILENCE CONTROL
+# ================================================================
+
+def build_music_duck_segments(duration, voice_data):
+    """
+    Creates volume segments for background music.
+    Music drops under impact/CTA moments.
+    This creates psychological punch without flashy editing.
+    """
+    duck_windows = []
+
+    for item in voice_data:
+        line = item.get("line", "")
+        start = float(item.get("start", 0))
+        end = start + float(item.get("duration", 0))
+
+        raw = line.upper()
+        is_impact = any(word in raw for word in [
+            "WEAK", "WEAKNESS", "QUIT", "NO EXCUSES", "DONE", "LINK IN BIO",
+            "COMMENT", "STANDARD", "DISCIPLINE", "DAY ", "STOP", "KILL",
+            "JOIN", "MEMBERS", "MANUAL", "ACCOUNTABILITY"
+        ])
+
+        if is_impact:
+            duck_windows.append((max(0, start - 0.05), min(duration, end + 0.08)))
+
+    if not duck_windows:
+        return [(0, duration, MUSIC_BASE_VOLUME)]
+
+    # Merge overlapping windows
+    duck_windows.sort()
+    merged = []
+    for s, e in duck_windows:
+        if not merged or s > merged[-1][1]:
+            merged.append([s, e])
+        else:
+            merged[-1][1] = max(merged[-1][1], e)
+
+    segments = []
+    cursor = 0.0
+    for s, e in merged:
+        if s > cursor:
+            segments.append((cursor, s, MUSIC_BASE_VOLUME))
+        segments.append((s, e, MUSIC_DUCK_VOLUME))
+        cursor = e
+
+    if cursor < duration:
+        segments.append((cursor, duration, MUSIC_BASE_VOLUME))
+
+    return segments
+
+
+def build_ducked_music(music_path, duration, voice_data):
+    """
+    Builds background music with intentional ducking.
+    No full silence unless the line needs pressure.
+    """
+    music = AudioFileClip(music_path)
+    music = afx.audio_loop(music, duration=duration)
+    music = music.audio_fadein(0.55).audio_fadeout(0.75)
+
+    clips = []
+    for s, e, vol in build_music_duck_segments(duration, voice_data):
+        if e <= s:
+            continue
+        segment = music.subclip(s, e).volumex(vol).set_start(s)
+        clips.append(segment)
+
+    return CompositeAudioClip(clips)
 
 
 # ================================================================
@@ -1172,10 +1344,12 @@ def build_video(script, bg_path, out_path):
             frame = np.clip(f, 0, 255).astype(np.uint8)
 
             band = frame.astype(np.float32)
-            y1 = int(H * 0.34)
-            y2 = int(H * 0.72)
-            band[y1:y2, :, :] *= 0.74
+            y1 = int(H * TEXT_BAND_TOP)
+            y2 = int(H * TEXT_BAND_BOTTOM)
+            band[y1:y2, :, :] *= TEXT_BAND_STRENGTH
             frame = np.clip(band, 0, 255).astype(np.uint8)
+
+            frame = add_film_grain(frame, t)
 
             if ebook_overlay is not None and ebook_start <= t < ebook_end:
                 local = t - ebook_start
@@ -1205,11 +1379,8 @@ def build_video(script, bg_path, out_path):
         final_voice = CompositeAudioClip(audio_clips)
 
         if os.path.exists(MUSIC_PATH):
-            music = AudioFileClip(MUSIC_PATH)
-            music = afx.audio_loop(music, duration=duration)
-            music = music.audio_fadein(0.35).audio_fadeout(0.50)
-            music = music.volumex(PACING[script.pacing]["music_volume"]).set_start(0)
-            final_audio = CompositeAudioClip([music, final_voice.volumex(1.22)])
+            music = build_ducked_music(MUSIC_PATH, duration, voice_data)
+            final_audio = CompositeAudioClip([music, final_voice.volumex(1.24)])
         else:
             final_audio = final_voice
 
@@ -1464,7 +1635,7 @@ def write_metadata(script, out_path, bg_path=None):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v7.4 ROTATION MEMORY")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v8 CINEMATIC CONTROL")
     print("=" * 64)
 
     print("RUN ID:", RUN_ID)
@@ -1485,7 +1656,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v74_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v8_{script.mode}_{script.category}_{date}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
