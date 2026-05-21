@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v9 CLEAN REBUILD
+# INNER DISCIPLINE â€” GROWTH ENGINE v10 DAY 7 SYSTEM
 #
 # Clean rebuild. No patch stacking.
 #
@@ -119,6 +119,7 @@ MUSIC_DUCK_VOLUME = 0.055
 EBOOK_BAIT_PROBABILITY = 0.14
 MEMBER_REEL_PROBABILITY = 0.16
 SERIES_REEL_PROBABILITY = 0.18
+DAY7_REEL_PROBABILITY = 0.18
 
 DEFAULT_SERIES_DAY = 1
 AUTO_COMMIT_STATE = True
@@ -466,6 +467,45 @@ MEMBER_CONTENT = {
     },
 }
 
+
+DAY7_CONTENT = {
+    "day7_consistency": {
+        "mood": "challenge",
+        "cover": [
+            "DAY 7",
+            "CONSISTENCY TEST",
+            "STANDARDS MATTER",
+            "QUIET DRIFT",
+            "CONTROL INPUTS",
+            "NO RESET",
+            "SYSTEMS STAY",
+        ],
+        "scripts": [
+            ["Most people quit by Day 7.", "Not because the goal was hard.", "Because their habits stayed the same.", "Discipline is structure, not emotion."],
+            ["You lose consistency quietly.", "One late morning.", "One ignored standard.", "That is how momentum dies."],
+            ["Motivation fades fast.", "Systems stay.", "The people who last longer build routines.", "Structure survives bad moods."],
+            ["Day 7 exposes the truth.", "Your habits either support discipline.", "Or slowly destroy it.", "Standards decide the outcome."],
+            ["Most people want change.", "Without changing their environment.", "Same inputs.", "Same results."],
+            ["Discipline becomes easier.", "When decisions become automatic.", "Structure removes negotiation.", "That is why consistency lasts."],
+            ["You do not lose discipline instantly.", "You slowly stop correcting yourself.", "Small compromises repeat.", "Then weakness feels normal."],
+            ["People think consistency is intensity.", "It is not.", "It is repetition under structure.", "That is the difference."],
+            ["The problem is not effort.", "The problem is unstable habits.", "Without structure.", "Discipline depends on mood."],
+            ["Day 7 is where excuses get louder.", "That is why standards matter.", "The challenge is not motivation.", "It is maintaining control."],
+            ["Weak habits create delayed consequences.", "You do not notice immediately.", "Then one day.", "Your life reflects every compromise."],
+            ["Most people restart every Monday.", "Few people build systems.", "That is why discipline stays rare.", "Consistency requires design."],
+            ["Your environment trains your behavior.", "Your inputs shape your standards.", "Your standards shape your future.", "Nothing changes accidentally."],
+            ["Discipline is not punishment.", "It is self-respect repeated daily.", "Quiet habits.", "Clear standards."],
+            ["The first week matters most.", "That is where comfort fights back.", "People who stay consistent.", "Ignore temporary feelings."],
+            ["You become reliable.", "When your actions stop depending on emotion.", "Structure creates stability.", "Stability creates discipline."],
+            ["Most people break promises quietly.", "That repetition changes identity.", "Consistency returns.", "When standards become non-negotiable."],
+            ["The Day 7 Challenge exposes weak routines early.", "Because hidden habits control everything.", "Correct the pattern.", "Before it becomes identity."],
+            ["Discipline is built privately first.", "Morning routines.", "Controlled inputs.", "Repeated structure."],
+            ["People drift when standards become flexible.", "One exception becomes a pattern.", "Patterns become identity.", "That is the real danger."],
+        ],
+    }
+}
+
+
 SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
 
 SERIES_EPISODES = [
@@ -648,6 +688,36 @@ def build_member_script():
     )
 
 
+
+def build_day7_script():
+    """
+    Calm, serious Day 7 Challenge lane.
+    Short 7-9 second style scripts.
+    No spoken CTA. No hype.
+    """
+    bank = DAY7_CONTENT["day7_consistency"]
+
+    script_options = bank["scripts"]
+    full_options = [" | ".join(x) for x in script_options]
+    selected_key = pick_unique_rotated(full_options)
+    selected_index = full_options.index(selected_key) if selected_key in full_options else 0
+    lines = list(script_options[selected_index])
+
+    cover = pick_cover_rotated(bank["cover"])
+
+    remember_rotation_item("recent_categories", "day7_consistency", 20)
+
+    return Script(
+        mode="day7",
+        category="day7_consistency",
+        mood=bank["mood"],
+        cover=cover,
+        title=f"{cover} | INNER DISCIPLINE DAY 7 CHALLENGE",
+        pacing="cold",
+        lines=lines,
+    )
+
+
 def build_series_script():
     series_data = load_series_state()
     day = int(series_data.get("next_day", DEFAULT_SERIES_DAY))
@@ -692,8 +762,12 @@ def should_make_series():
 
 
 def build_script():
-    if random.random() < MEMBER_REEL_PROBABILITY:
+    roll = random.random()
+
+    if roll < MEMBER_REEL_PROBABILITY:
         script = build_member_script()
+    elif roll < MEMBER_REEL_PROBABILITY + DAY7_REEL_PROBABILITY:
+        script = build_day7_script()
     elif should_make_series():
         script = build_series_script()
         remember_rotation_item("recent_categories", "series", 20)
@@ -1325,6 +1399,17 @@ def build_caption(script):
             "#discipline #30daychallenge #innerdiscipline #selfimprovement #accountability #mindset #noexcuses #consistency #growthmindset #hardwork",
         ])
 
+    if script.mode == "day7":
+        return "\n".join([
+            "Most people do not lose consistency loudly.",
+            "They drift through small compromises.",
+            "",
+            "Day 7 exposes the routine.",
+            "Habits. Inputs. Standards. Structure.",
+            "",
+            "#discipline #consistency #day7challenge #innerdiscipline #selfimprovement #habits #standards #mindset #noexcuses #growthmindset",
+        ])
+
     if script.mode == "member":
         return "\n".join([
             "This is not just a group.",
@@ -1544,7 +1629,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v9 CLEAN REBUILD")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v10 DAY 7 SYSTEM")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -1564,7 +1649,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v9_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v10_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
