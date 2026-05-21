@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v10 DAY 7 SYSTEM
+# INNER DISCIPLINE â€” GROWTH ENGINE v11 VIRAL HOOKS
 #
 # Clean rebuild. No patch stacking.
 #
@@ -277,40 +277,85 @@ PACING = {
 # ================================================================
 
 HOOK_FORMULAS = {
-    "accusation": [
-        "You are not lazy. You are addicted to easy.",
-        "You are not confused. You are avoiding the work.",
-        "You are not stuck. You are comfortable.",
-        "You are not tired. You are untrained.",
-        "You do not need motivation. You need consequences.",
+    "identity_pain": [
+        "The weak version is becoming permanent.",
+        "You keep feeding the version you hate.",
+        "You became soft by repetition.",
+        "Discipline is disappearing from your identity.",
+        "You are becoming what you tolerate.",
+        "The old you is winning again.",
+        "You are not behind. You are undisciplined.",
+        "Your private habits exposed you.",
+        "You are building the wrong identity daily.",
+        "You do not hate your life. You hate your patterns.",
     ],
-    "identity_attack": [
-        "You became the man you promised you would never be.",
-        "The version of you from five years ago would not respect this.",
-        "You lowered the standard and called it maturity.",
-        "You are negotiating with the weakness you should be killing.",
-        "You are living like your future is not watching.",
+    "self_awareness": [
+        "You already know you are drifting.",
+        "Nobody needs to tell you anymore.",
+        "You can feel yourself slipping.",
+        "You know exactly where you keep failing.",
+        "The problem is not hidden. You keep avoiding it.",
+        "Deep down, you know this standard is too low.",
+        "You are not confused. You are delaying the truth.",
+        "You know the habit is costing you.",
+        "You can feel your standards collapsing.",
+        "You are tired of yourself because you keep repeating yourself.",
     ],
-    "fear": [
-        "This habit is quietly ruining your future.",
-        "Five years can disappear while you keep saying tomorrow.",
-        "The scary part is not failure. It is getting used to it.",
-        "Comfort does not look dangerous until it owns you.",
+    "habit_decay": [
+        "You keep restarting your life every Monday.",
+        "Weak habits become personality.",
+        "Small compromises are training you.",
+        "You stopped correcting yourself.",
+        "Your routines are exposing you.",
+        "Your life reflects repeated compromises.",
+        "One ignored standard becomes a pattern.",
+        "Momentum dies quietly.",
+        "You did not lose control today. You trained it for months.",
+        "Your future is being built by your smallest habits.",
+    ],
+    "environment_control": [
+        "Your environment is training weakness.",
+        "Your phone is shaping your discipline.",
+        "Your inputs are lowering your standards.",
+        "You cannot build discipline in a weak environment.",
+        "Your routine is stronger than your intentions.",
+        "The room around you is deciding your behavior.",
+        "Your distractions are not harmless.",
+        "Your environment keeps voting against your future.",
+        "You keep blaming discipline while feeding distraction.",
+        "Your habits are not random. Your inputs built them.",
+    ],
+    "quiet_warning": [
+        "Comfort is quietly destroying your standards.",
+        "You lost control slowly.",
+        "Your habits already exposed your future.",
+        "Another year can disappear like this.",
+        "Nobody ruined your momentum. You did.",
         "The drift feels harmless until it becomes your life.",
+        "The danger is getting used to yourself like this.",
+        "Weakness does not arrive loudly.",
+        "You are closer to staying the same than you think.",
+        "The scariest part is how normal this feels.",
     ],
-    "contradiction": [
-        "Discipline is not your problem. Your environment is.",
-        "You do not need a new goal. You need a new standard.",
-        "Your problem is not time. It is tolerance.",
-        "You are not lacking potential. You are lacking pressure.",
-        "Your life does not change when you feel ready.",
+    "discipline_truth": [
+        "You do not need motivation. You need rules.",
+        "Discipline is not intensity. It is structure.",
+        "Consistency is designed, not wished for.",
+        "Your standards decide when your feelings disappear.",
+        "Discipline starts when negotiation ends.",
+        "Control is built before pressure arrives.",
+        "Structure does what motivation cannot.",
+        "A serious life requires serious rules.",
+        "You do not rise to goals. You fall to systems.",
+        "Self-respect is repeated behavior.",
     ],
 }
+
 
 CONTENT = {
     "wasted_potential": {
         "mood": "broken",
-        "cover": ["YOU DRIFT", "STILL WEAK", "WASTED TIME", "NO STANDARD", "QUIET FAILURE"],
+        "cover": ["YOU DRIFT", "STILL WEAK", "WASTED TIME", "NO STANDARD", "QUIET FAILURE", "WEAK HABITS", "SAME PATTERN", "COMFORT WON"],
         "problem": [
             "You wake up with plans and go to sleep with excuses.",
             "You know what to do, but you keep choosing the easiest option.",
@@ -338,7 +383,7 @@ CONTENT = {
     },
     "morning_discipline": {
         "mood": "morning",
-        "cover": ["OWN MORNING", "WAKE UP", "FIRST BATTLE", "NO SNOOZE", "WIN EARLY"],
+        "cover": ["OWN MORNING", "WAKE UP", "FIRST BATTLE", "NO SNOOZE", "WIN EARLY", "PHONE FIRST", "WEAK MORNING", "FIRST HOUR"],
         "problem": [
             "You wake up late, rush everything, and call the day stressful.",
             "You give your best energy to comfort, then give leftovers to your goals.",
@@ -366,7 +411,7 @@ CONTENT = {
     },
     "masculine_standard": {
         "mood": "dangerous",
-        "cover": ["BE THE MAN", "RAISE STANDARD", "NO EXCUSES", "LEAD YOURSELF", "REAL MAN"],
+        "cover": ["BE THE MAN", "RAISE STANDARD", "NO EXCUSES", "LEAD YOURSELF", "REAL MAN", "LOW STANDARD", "CONTROL YOURSELF", "PRIVATE PROOF"],
         "problem": [
             "You say you want to lead, but you cannot keep a promise to yourself.",
             "You confuse anger with strength and comfort with peace.",
@@ -394,7 +439,7 @@ CONTENT = {
     },
     "accountability_challenge": {
         "mood": "challenge",
-        "cover": ["STOP ALONE", "30 DAYS", "JOIN NOW", "NO HIDING", "REAL ACCOUNTABILITY"],
+        "cover": ["STOP ALONE", "30 DAYS", "JOIN NOW", "NO HIDING", "REAL ACCOUNTABILITY", "NO CONSEQUENCE", "PRIVATE PROMISES", "VISIBLE STANDARD"],
         "problem": [
             "You start strong, disappear quietly, then promise yourself next week will be different.",
             "You keep relying on willpower, and willpower keeps running out.",
@@ -479,32 +524,33 @@ DAY7_CONTENT = {
             "CONTROL INPUTS",
             "NO RESET",
             "SYSTEMS STAY",
+            "WEAK ROUTINE",
+            "STOP RESTARTING",
         ],
         "scripts": [
-            ["Most people quit by Day 7.", "Not because the goal was hard.", "Because their habits stayed the same.", "Discipline is structure, not emotion."],
-            ["You lose consistency quietly.", "One late morning.", "One ignored standard.", "That is how momentum dies."],
-            ["Motivation fades fast.", "Systems stay.", "The people who last longer build routines.", "Structure survives bad moods."],
-            ["Day 7 exposes the truth.", "Your habits either support discipline.", "Or slowly destroy it.", "Standards decide the outcome."],
-            ["Most people want change.", "Without changing their environment.", "Same inputs.", "Same results."],
-            ["Discipline becomes easier.", "When decisions become automatic.", "Structure removes negotiation.", "That is why consistency lasts."],
-            ["You do not lose discipline instantly.", "You slowly stop correcting yourself.", "Small compromises repeat.", "Then weakness feels normal."],
-            ["People think consistency is intensity.", "It is not.", "It is repetition under structure.", "That is the difference."],
-            ["The problem is not effort.", "The problem is unstable habits.", "Without structure.", "Discipline depends on mood."],
-            ["Day 7 is where excuses get louder.", "That is why standards matter.", "The challenge is not motivation.", "It is maintaining control."],
-            ["Weak habits create delayed consequences.", "You do not notice immediately.", "Then one day.", "Your life reflects every compromise."],
-            ["Most people restart every Monday.", "Few people build systems.", "That is why discipline stays rare.", "Consistency requires design."],
-            ["Your environment trains your behavior.", "Your inputs shape your standards.", "Your standards shape your future.", "Nothing changes accidentally."],
-            ["Discipline is not punishment.", "It is self-respect repeated daily.", "Quiet habits.", "Clear standards."],
-            ["The first week matters most.", "That is where comfort fights back.", "People who stay consistent.", "Ignore temporary feelings."],
-            ["You become reliable.", "When your actions stop depending on emotion.", "Structure creates stability.", "Stability creates discipline."],
-            ["Most people break promises quietly.", "That repetition changes identity.", "Consistency returns.", "When standards become non-negotiable."],
-            ["The Day 7 Challenge exposes weak routines early.", "Because hidden habits control everything.", "Correct the pattern.", "Before it becomes identity."],
-            ["Discipline is built privately first.", "Morning routines.", "Controlled inputs.", "Repeated structure."],
-            ["People drift when standards become flexible.", "One exception becomes a pattern.", "Patterns become identity.", "That is the real danger."],
+            ["You keep restarting your life every Monday.", "By Day 7, the pattern returns.", "Same habits.", "Same result."],
+            ["Your habits already exposed your future.", "Not your dreams.", "Not your plans.", "Your repeated behavior."],
+            ["You are not inconsistent by accident.", "Your inputs trained it.", "Your routine protected it.", "Your standards allowed it."],
+            ["Day 7 does not create weakness.", "It reveals it.", "The routine breaks.", "The truth appears."],
+            ["You do not lose discipline loudly.", "You stop correcting yourself.", "One small exception repeats.", "Then it becomes normal."],
+            ["Motivation fades first.", "Then structure is tested.", "Most people fail there.", "Systems decide who continues."],
+            ["Your environment is stronger than your intention.", "If nothing changes around you.", "Nothing changes inside you.", "Discipline needs design."],
+            ["The first week exposes your standard.", "Not your potential.", "Not your words.", "Your standard."],
+            ["You are not tired.", "You are overstimulated.", "Your attention is scattered.", "Your discipline follows."],
+            ["Comfort is not harmless.", "By Day 7, it starts negotiating.", "If your standard is weak.", "Comfort wins."],
+            ["The weak version does not leave quickly.", "It waits for Day 7.", "Then it asks for one exception.", "That is where discipline begins."],
+            ["Most people do not quit the challenge.", "They quit correction.", "They stop adjusting.", "Then they drift."],
+            ["Day 7 is not about energy.", "It is about structure.", "Energy changes.", "Rules stay."],
+            ["You do not need a stronger mood.", "You need fewer negotiations.", "A clear routine.", "A visible standard."],
+            ["Every reset has a pattern.", "Same trigger.", "Same excuse.", "Same collapse."],
+            ["Consistency dies when standards become flexible.", "One exception sounds harmless.", "Then it becomes identity.", "That is the cost."],
+            ["You are not failing because life is hard.", "You are failing because structure is weak.", "Fix the structure.", "Discipline follows."],
+            ["Most people underestimate Day 7.", "That is when comfort returns.", "That is when excuses sound reasonable.", "That is when standards matter."],
+            ["Your future is not waiting for motivation.", "It is waiting for proof.", "Repeated proof.", "Daily proof."],
+            ["If your discipline disappears by Day 7.", "Do not blame pressure.", "Look at your habits.", "They were never aligned."],
         ],
     }
 }
-
 
 SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
 
@@ -627,8 +673,17 @@ def pick_category_rotated():
 
 
 def pick_hook():
-    formula = random.choice(list(HOOK_FORMULAS.keys()))
-    return pick_unique_rotated(HOOK_FORMULAS[formula])
+    """
+    Viral hook engine.
+    First 1.5 seconds must create recognition, tension, or identity pain.
+    Controlled tone, not fake aggression.
+    """
+    hook_type = random.choices(
+        list(HOOK_FORMULAS.keys()),
+        weights=[0.24, 0.20, 0.18, 0.14, 0.16, 0.08],
+        k=1,
+    )[0]
+    return pick_unique_rotated(HOOK_FORMULAS[hook_type])
 
 
 def get_recent_generated_categories(limit=20):
@@ -1629,7 +1684,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v10 DAY 7 SYSTEM")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v11 VIRAL HOOKS")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -1649,7 +1704,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v10_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v11_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
