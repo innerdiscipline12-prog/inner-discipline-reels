@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v11 VIRAL HOOKS
+# INNER DISCIPLINE â€” GROWTH ENGINE v12 RETENTION SCORING
 #
 # Clean rebuild. No patch stacking.
 #
@@ -59,6 +59,7 @@ USED_LINES_FILE = os.path.join(BASE_DIR, "used_lines_v3.json")
 STATE_FILE = os.path.join(BASE_DIR, "engine_state_v3.json")
 SERIES_STATE_FILE = os.path.join(BASE_DIR, "series_state.json")
 ROTATION_STATE_FILE = os.path.join(BASE_DIR, "rotation_state.json")
+HOOK_STATE_FILE = os.path.join(BASE_DIR, "hook_state.json")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
@@ -120,6 +121,46 @@ EBOOK_BAIT_PROBABILITY = 0.14
 MEMBER_REEL_PROBABILITY = 0.16
 SERIES_REEL_PROBABILITY = 0.18
 DAY7_REEL_PROBABILITY = 0.18
+
+SILENCE_GAP_MIN = 0.15
+SILENCE_GAP_MAX = 0.45
+
+FIRST_FRAME_CONTRAST_BOOST = 1.25
+FIRST_FRAME_BRIGHTNESS_MULT = 0.90
+FIRST_FRAME_ORANGE_BOOST = 1.10
+
+MIN_RETENTION_SCORE = 7
+
+CORE_TOPICS = [
+    "discipline", "drifting", "pressure", "weak habits", "self-respect",
+    "consistency", "mental control", "routine collapse", "structure",
+    "comfort addiction", "standards", "inputs", "identity", "control",
+]
+
+BANNED_PHRASES = [
+    "never give up",
+    "keep pushing",
+    "stay motivated",
+    "you got this",
+    "believe in yourself",
+    "greatness",
+    "success mindset",
+    "dream big",
+    "hustle harder",
+]
+
+RETENTION_ENDING_LINES = [
+    "Weak habits always collect consequences.",
+    "Your standards decide your future.",
+    "Pressure exposes every weak routine.",
+    "Comfort slowly destroys structure.",
+    "Discipline is built in silence.",
+    "Your future reflects your standards.",
+    "Control returns when negotiation ends.",
+    "Structure decides who stays consistent.",
+    "Private standards create public results.",
+    "The routine always tells the truth.",
+]
 
 DEFAULT_SERIES_DAY = 1
 AUTO_COMMIT_STATE = True
@@ -277,6 +318,23 @@ PACING = {
 # ================================================================
 
 HOOK_FORMULAS = {
+    "tier1_identity_tension": [
+        "This is why you stay stuck.",
+        "Most men never fix this.",
+        "You keep breaking your own standards.",
+        "This is the part most people quit.",
+        "You are losing control slowly.",
+        "Your habits are exposing you.",
+        "You keep choosing the easier life.",
+        "This is why you never stay consistent.",
+        "Discipline is not your problem.",
+        "You keep escaping pressure.",
+        "Most people drift here.",
+        "Your mind got too comfortable.",
+        "This is what weak routines create.",
+        "You stopped correcting yourself.",
+        "This is why you feel lost.",
+    ],
     "identity_pain": [
         "The weak version is becoming permanent.",
         "You keep feeding the version you hate.",
@@ -284,7 +342,6 @@ HOOK_FORMULAS = {
         "Discipline is disappearing from your identity.",
         "You are becoming what you tolerate.",
         "The old you is winning again.",
-        "You are not behind. You are undisciplined.",
         "Your private habits exposed you.",
         "You are building the wrong identity daily.",
         "You do not hate your life. You hate your patterns.",
@@ -299,18 +356,15 @@ HOOK_FORMULAS = {
         "You are not confused. You are delaying the truth.",
         "You know the habit is costing you.",
         "You can feel your standards collapsing.",
-        "You are tired of yourself because you keep repeating yourself.",
     ],
     "habit_decay": [
         "You keep restarting your life every Monday.",
         "Weak habits become personality.",
         "Small compromises are training you.",
-        "You stopped correcting yourself.",
         "Your routines are exposing you.",
         "Your life reflects repeated compromises.",
         "One ignored standard becomes a pattern.",
         "Momentum dies quietly.",
-        "You did not lose control today. You trained it for months.",
         "Your future is being built by your smallest habits.",
     ],
     "environment_control": [
@@ -322,8 +376,6 @@ HOOK_FORMULAS = {
         "The room around you is deciding your behavior.",
         "Your distractions are not harmless.",
         "Your environment keeps voting against your future.",
-        "You keep blaming discipline while feeding distraction.",
-        "Your habits are not random. Your inputs built them.",
     ],
     "quiet_warning": [
         "Comfort is quietly destroying your standards.",
@@ -334,19 +386,15 @@ HOOK_FORMULAS = {
         "The drift feels harmless until it becomes your life.",
         "The danger is getting used to yourself like this.",
         "Weakness does not arrive loudly.",
-        "You are closer to staying the same than you think.",
-        "The scariest part is how normal this feels.",
     ],
     "discipline_truth": [
         "You do not need motivation. You need rules.",
         "Discipline is not intensity. It is structure.",
         "Consistency is designed, not wished for.",
-        "Your standards decide when your feelings disappear.",
         "Discipline starts when negotiation ends.",
         "Control is built before pressure arrives.",
         "Structure does what motivation cannot.",
         "A serious life requires serious rules.",
-        "You do not rise to goals. You fall to systems.",
         "Self-respect is repeated behavior.",
     ],
 }
@@ -602,6 +650,137 @@ class Script:
     ebook_image: str = ""
 
 
+
+# ================================================================
+# HOOK STATE + RETENTION SCORING
+# ================================================================
+
+def load_hook_state():
+    default = {"recent_hooks": [], "winning_hook_types": {}, "updated_at": ""}
+    data = safe_load_json(HOOK_STATE_FILE, default)
+    for k, v in default.items():
+        data.setdefault(k, v)
+    return data
+
+
+def save_hook_state(data):
+    data["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    save_json(HOOK_STATE_FILE, data)
+
+
+def remember_hook(hook):
+    data = load_hook_state()
+    items = data.get("recent_hooks", [])
+    key = line_key(hook)
+    if key in items:
+        items.remove(key)
+    items.insert(0, key)
+    data["recent_hooks"] = items[:40]
+    save_hook_state(data)
+
+
+def hook_available(pool):
+    recent = set(load_hook_state().get("recent_hooks", [])[:12])
+    candidates = [h for h in pool if line_key(h) not in recent]
+    return candidates if candidates else pool[:]
+
+
+def contains_banned_phrase(text):
+    low = text.lower()
+    return any(bad in low for bad in BANNED_PHRASES)
+
+
+def tension_word_count(text):
+    words = [
+        "weak", "weakness", "stuck", "quit", "control", "pressure", "drift",
+        "standards", "habits", "routine", "comfort", "discipline", "exposing",
+        "identity", "lost", "consistent", "consequence", "structure",
+        "negotiation", "future", "private", "truth",
+    ]
+    low = text.lower()
+    return sum(1 for w in words if w in low)
+
+
+def core_topic_count(text):
+    low = text.lower()
+    return sum(1 for topic in CORE_TOPICS if topic in low)
+
+
+def score_script(script):
+    joined = " ".join(script.lines)
+    hook = script.lines[0] if script.lines else ""
+    score = 0
+
+    hook_words = len(hook.split())
+    if hook_words <= 8:
+        score += 2
+    if tension_word_count(hook) >= 1:
+        score += 2
+    if any(x in hook.lower() for x in ["you", "your", "most people", "most men", "this is why"]):
+        score += 2
+
+    if tension_word_count(joined) >= 4:
+        score += 2
+    if core_topic_count(joined) >= 2:
+        score += 2
+
+    lengths = [len(x.split()) for x in script.lines]
+    if lengths and min(lengths) <= 4 and max(lengths) >= 7:
+        score += 1
+    if len(script.lines) in [4, 5]:
+        score += 1
+
+    final_line = script.lines[-1] if script.lines else ""
+    if tension_word_count(final_line) >= 1 or core_topic_count(final_line) >= 1:
+        score += 1
+
+    if any(contains_banned_phrase(x) for x in script.lines):
+        score -= 5
+    if hook_words > 12:
+        score -= 2
+    if len(set(line_key(x) for x in script.lines)) != len(script.lines):
+        score -= 2
+
+    return score
+
+
+def apply_retention_ending(lines):
+    if random.random() < 0.55:
+        lines = list(lines)
+        lines[-1] = pick_unique_rotated(RETENTION_ENDING_LINES)
+    return lines
+
+
+def rhythm_refine(lines):
+    refined = [clean_text(x) for x in lines if clean_text(x)]
+    if len(refined) > 5:
+        refined = refined[:5]
+    refined = [x for x in refined if not contains_banned_phrase(x)]
+    if refined and len(refined[-1].split()) > 12:
+        refined[-1] = pick_unique_rotated(RETENTION_ENDING_LINES)
+    return refined
+
+
+def enforce_retention_quality(script, max_attempts=8):
+    best = script
+    best_score = score_script(script)
+
+    for _ in range(max_attempts):
+        if best_score >= MIN_RETENTION_SCORE:
+            break
+
+        candidate = build_regular_script_raw()
+        candidate_score = score_script(candidate)
+        if candidate_score > best_score:
+            best = candidate
+            best_score = candidate_score
+
+    print("RETENTION SCORE:", best_score)
+    if best_score < MIN_RETENTION_SCORE:
+        print("RETENTION WARNING: accepted best available script, but score is below target.")
+    return best
+
+
 # ================================================================
 # TEXT UTILS / ROTATION
 # ================================================================
@@ -674,16 +853,18 @@ def pick_category_rotated():
 
 def pick_hook():
     """
-    Viral hook engine.
-    First 1.5 seconds must create recognition, tension, or identity pain.
-    Controlled tone, not fake aggression.
+    v12 Hook intensity engine.
+    Biases heavily toward identity tension because analytics showed that wins.
     """
-    hook_type = random.choices(
-        list(HOOK_FORMULAS.keys()),
-        weights=[0.24, 0.20, 0.18, 0.14, 0.16, 0.08],
-        k=1,
-    )[0]
-    return pick_unique_rotated(HOOK_FORMULAS[hook_type])
+    keys = list(HOOK_FORMULAS.keys())
+    weights = [0.34, 0.19, 0.16, 0.12, 0.08, 0.08, 0.03]
+    hook_type = random.choices(keys, weights=weights, k=1)[0]
+    pool = hook_available(HOOK_FORMULAS[hook_type])
+    hook = pick_unique_rotated(pool)
+    remember_hook(hook)
+    print("HOOK TYPE:", hook_type)
+    print("HOOK:", hook)
+    return hook
 
 
 def get_recent_generated_categories(limit=20):
@@ -694,7 +875,7 @@ def get_recent_generated_categories(limit=20):
 # SCRIPT BUILDERS
 # ================================================================
 
-def build_regular_script():
+def build_regular_script_raw():
     category = pick_category_rotated()
     bank = CONTENT[category]
     pacing = random.choices(["attack", "story", "cold"], weights=[0.60, 0.28, 0.12], k=1)[0]
@@ -707,6 +888,9 @@ def build_regular_script():
         pick_unique_rotated(bank["cta"]),
     ]
 
+    lines = apply_retention_ending(lines)
+    lines = rhythm_refine(lines)
+
     cover = pick_cover_rotated(bank["cover"])
 
     return Script(
@@ -718,6 +902,12 @@ def build_regular_script():
         pacing=pacing,
         lines=lines,
     )
+
+
+
+def build_regular_script():
+    script = build_regular_script_raw()
+    return enforce_retention_quality(script)
 
 
 def build_member_script():
@@ -1525,7 +1715,7 @@ def build_video(script, bg_path, out_path):
 
         voice_data = []
         cursor = 0.95
-        gap = PACING[script.pacing]["gap"]
+        gap = random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
 
         print("Generating voice lines...")
         for i, line in enumerate(script.lines):
@@ -1565,10 +1755,12 @@ def build_video(script, bg_path, out_path):
 
         bg_clip = prepare_background(bg_path, duration)
 
+        reel_zoom_strength = random.uniform(0.055, 0.095)
+
         def make_frame(t):
             frame = bg_clip.get_frame(t).astype(np.uint8)
 
-            zoom = 1.0 + ZOOM_STRENGTH * (t / max(duration, 0.001))
+            zoom = 1.0 + reel_zoom_strength * (t / max(duration, 0.001))
             if zoom > 1.001:
                 new_w = int(W / zoom)
                 new_h = int(H / zoom)
@@ -1584,6 +1776,14 @@ def build_video(script, bg_path, out_path):
                 frame = np.roll(frame, shift=(dy, dx), axis=(0, 1))
 
             frame = apply_cinematic_grade(frame)
+
+            # First-frame pressure boost: first 0.55 sec must feel visually heavier.
+            if t < 0.55:
+                ff = frame.astype(np.float32)
+                ff = (ff - 128) * FIRST_FRAME_CONTRAST_BOOST + 128
+                ff *= FIRST_FRAME_BRIGHTNESS_MULT
+                ff[:, :, 0] *= FIRST_FRAME_ORANGE_BOOST
+                frame = np.clip(ff, 0, 255).astype(np.uint8)
 
             f = frame.astype(np.float32)
             f[:, :, 0] *= vignette
@@ -1684,12 +1884,13 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v11 VIRAL HOOKS")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v12 RETENTION SCORING")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
     print("SERIES NEXT DAY:", load_series_state().get("next_day"))
     print("ROTATION STATE FILE:", ROTATION_STATE_FILE)
+    print("HOOK STATE FILE:", HOOK_STATE_FILE)
     print("RECENT ROTATION CATEGORIES:", load_rotation_state().get("recent_categories", [])[:5])
     print("RECENT ROTATION BACKGROUNDS:", load_rotation_state().get("recent_backgrounds", [])[:5])
     print("EBOOK ROOT:", EBOOK_ROOT)
@@ -1704,7 +1905,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v11_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v12_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
