@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v14 NEXT EVOLUTION
+# INNER DISCIPLINE â€” GROWTH ENGINE v15 SEQUENCE ROTATION FIX
 #
 # Clean rebuild. No patch stacking.
 #
@@ -120,6 +120,11 @@ MUSIC_DUCK_VOLUME = 0.055
 EBOOK_BAIT_PROBABILITY = 0.14
 MEMBER_REEL_PROBABILITY = 0.16
 SERIES_REEL_PROBABILITY = 0.18
+
+SERIES_PRIORITY_MODE = True
+GLOBAL_BACKGROUND_ROTATION = True
+RECENT_BACKGROUND_BLOCK = 8
+RECENT_LINE_BLOCK = 70
 DAY7_REEL_PROBABILITY = 0.18
 
 SILENCE_GAP_MIN = 0.15
@@ -211,12 +216,9 @@ def save_state():
 
 def load_series_state():
     """
-    Reads series_state.json.
-
-    Professional sequence logic:
-    - If the file does not exist, start from DEFAULT_SERIES_DAY.
-    - DEFAULT_SERIES_DAY is 2 because Day 1 was already generated.
-    - After the first saved state, initialized=True prevents accidental resets.
+    v15 sequence fix:
+    If no state file exists, start at Day 2 because Day 1 is already done.
+    If old state says Day 1 and was not initialized by this system, move to Day 2.
     """
     data = safe_load_json(
         SERIES_STATE_FILE,
@@ -876,12 +878,14 @@ def remember_rotation_item(key, value, max_items=80):
     save_rotation_state(data)
 
 
-def pick_unique_rotated(pool, memory_key="recent_line_keys", max_recent=80):
+def pick_unique_rotated(pool, memory_key="recent_line_keys", max_recent=RECENT_LINE_BLOCK):
     data = load_rotation_state()
     recent = set(data.get(memory_key, [])[:max_recent])
+
     candidates = [x for x in pool if line_key(x) not in recent]
     if not candidates:
         candidates = pool[:]
+
     choice = random.choice(candidates)
     remember_rotation_item(memory_key, line_key(choice), max_recent)
     return choice
@@ -1070,6 +1074,13 @@ def build_series_script():
 
 
 def should_make_series():
+    """
+    v15 sequence priority.
+    If true, the next run generates the next challenge day.
+    """
+    if SERIES_PRIORITY_MODE:
+        return True
+
     recent = get_recent_generated_categories(limit=5)
     if recent and recent[0] == "series":
         return False
@@ -1077,17 +1088,25 @@ def should_make_series():
 
 
 def build_script():
-    roll = random.random()
-
-    if roll < MEMBER_REEL_PROBABILITY:
-        script = build_member_script()
-    elif roll < MEMBER_REEL_PROBABILITY + DAY7_REEL_PROBABILITY:
-        script = build_day7_script()
-    elif should_make_series():
+    """
+    v15 selector.
+    Series priority fixes the Day 2 problem.
+    """
+    if SERIES_PRIORITY_MODE and should_make_series():
         script = build_series_script()
         remember_rotation_item("recent_categories", "series", 20)
     else:
-        script = build_regular_script()
+        roll = random.random()
+
+        if roll < MEMBER_REEL_PROBABILITY:
+            script = build_member_script()
+        elif roll < MEMBER_REEL_PROBABILITY + DAY7_REEL_PROBABILITY:
+            script = build_day7_script()
+        elif should_make_series():
+            script = build_series_script()
+            remember_rotation_item("recent_categories", "series", 20)
+        else:
+            script = build_regular_script()
 
     script = maybe_add_save_share_signal(script)
 
@@ -1122,32 +1141,35 @@ def root_bg_files():
 
 
 def get_background_pool(mood=None):
+    """
+    v15 global background pool.
+    Scans every background folder so the engine rotates all 15-20 clips,
+    instead of getting trapped inside one mood folder.
+    """
     pool = []
 
-    if mood:
-        mood_folder = os.path.join(BG_ROOT, mood)
-        if os.path.isdir(mood_folder):
-            pool.extend(scan_video_files(mood_folder))
-
-    generic_folder = os.path.join(BG_ROOT, "generic")
-    if os.path.isdir(generic_folder):
-        pool.extend(scan_video_files(generic_folder))
-
-    pool.extend(root_bg_files())
-
-    if not pool and os.path.isdir(BG_ROOT):
+    if os.path.isdir(BG_ROOT):
         for folder, _, _ in os.walk(BG_ROOT):
             pool.extend(scan_video_files(folder))
+
+    pool.extend(root_bg_files())
 
     return sorted(list(set(pool)))
 
 
 def choose_background_rotated(mood=None):
+    """
+    v15 true background rotation:
+    - one global cursor across the whole library
+    - avoids recent backgrounds
+    - forces use of more clips before repeating
+    """
     pool = get_background_pool(mood)
 
     print("BASE DIR:", BASE_DIR)
     print("BG ROOT:", BG_ROOT)
     print("REQUESTED MOOD:", mood)
+    print("TOTAL BACKGROUNDS FOUND:", len(pool))
     print("BACKGROUND POOL FOUND:", pool)
 
     if not pool:
@@ -1155,24 +1177,39 @@ def choose_background_rotated(mood=None):
 
     data = load_rotation_state()
     cursor = data.get("background_cursor", {})
-    key = mood or "all"
+    key = "global" if GLOBAL_BACKGROUND_ROTATION else (mood or "all")
 
     pool_sorted = sorted(pool)
-    index = int(cursor.get(key, 0)) % len(pool_sorted)
-    chosen = pool_sorted[index]
+    recent_bg = data.get("recent_backgrounds", [])[:RECENT_BACKGROUND_BLOCK]
 
-    cursor[key] = (index + 1) % len(pool_sorted)
+    start_index = int(cursor.get(key, 0)) % len(pool_sorted)
+    chosen = None
+    chosen_index = start_index
+
+    for offset in range(len(pool_sorted)):
+        idx = (start_index + offset) % len(pool_sorted)
+        candidate = pool_sorted[idx]
+        if candidate not in recent_bg:
+            chosen = candidate
+            chosen_index = idx
+            break
+
+    if chosen is None:
+        chosen = pool_sorted[start_index]
+        chosen_index = start_index
+
+    cursor[key] = (chosen_index + 1) % len(pool_sorted)
     data["background_cursor"] = cursor
 
-    recent_bg = data.get("recent_backgrounds", [])
     if chosen in recent_bg:
         recent_bg.remove(chosen)
     recent_bg.insert(0, chosen)
-    data["recent_backgrounds"] = recent_bg[:80]
+    data["recent_backgrounds"] = recent_bg[:max(RECENT_BACKGROUND_BLOCK, 20)]
 
     save_rotation_state(data)
 
-    print("BACKGROUND ROTATION INDEX:", index)
+    print("BACKGROUND ROTATION KEY:", key)
+    print("BACKGROUND ROTATION INDEX:", chosen_index)
     print("SELECTED BACKGROUND:", chosen)
 
     return chosen
@@ -1956,7 +1993,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v14 NEXT EVOLUTION")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v15 SEQUENCE ROTATION FIX")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -1977,7 +2014,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v14_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v15_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
