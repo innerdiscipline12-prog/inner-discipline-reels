@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v12 RETENTION SCORING
+# INNER DISCIPLINE â€” GROWTH ENGINE v14 NEXT EVOLUTION
 #
 # Clean rebuild. No patch stacking.
 #
@@ -131,10 +131,15 @@ FIRST_FRAME_ORANGE_BOOST = 1.10
 
 MIN_RETENTION_SCORE = 7
 
+SAVE_SIGNAL_PROBABILITY = 0.42
+SHARE_SIGNAL_PROBABILITY = 0.35
+
 CORE_TOPICS = [
     "discipline", "drifting", "pressure", "weak habits", "self-respect",
     "consistency", "mental control", "routine collapse", "structure",
     "comfort addiction", "standards", "inputs", "identity", "control",
+    "silent decay", "wasted years", "regret", "private habits",
+    "attention", "environment", "routine", "consequence",
 ]
 
 BANNED_PHRASES = [
@@ -150,6 +155,7 @@ BANNED_PHRASES = [
 ]
 
 RETENTION_ENDING_LINES = [
+    "The routine always tells the truth.",
     "Weak habits always collect consequences.",
     "Your standards decide your future.",
     "Pressure exposes every weak routine.",
@@ -159,10 +165,14 @@ RETENTION_ENDING_LINES = [
     "Control returns when negotiation ends.",
     "Structure decides who stays consistent.",
     "Private standards create public results.",
-    "The routine always tells the truth.",
+    "Nothing changes until the routine changes.",
+    "A weak standard always becomes visible.",
+    "Discipline dies quietly first.",
+    "Time exposes every repeated compromise.",
+    "Your private habits are not private forever.",
 ]
 
-DEFAULT_SERIES_DAY = 1
+DEFAULT_SERIES_DAY = 2
 AUTO_COMMIT_STATE = True
 
 
@@ -200,21 +210,43 @@ def save_state():
 
 
 def load_series_state():
-    data = safe_load_json(SERIES_STATE_FILE, {"next_day": DEFAULT_SERIES_DAY})
+    """
+    Reads series_state.json.
+
+    Professional sequence logic:
+    - If the file does not exist, start from DEFAULT_SERIES_DAY.
+    - DEFAULT_SERIES_DAY is 2 because Day 1 was already generated.
+    - After the first saved state, initialized=True prevents accidental resets.
+    """
+    data = safe_load_json(
+        SERIES_STATE_FILE,
+        {"next_day": DEFAULT_SERIES_DAY, "initialized": False}
+    )
+
     try:
         next_day = int(data.get("next_day", DEFAULT_SERIES_DAY))
     except Exception:
         next_day = DEFAULT_SERIES_DAY
+
     if next_day < 1 or next_day > 30:
-        next_day = 1
-    return {"next_day": next_day}
+        next_day = DEFAULT_SERIES_DAY
+
+    if not data.get("initialized", False) and next_day == 1:
+        next_day = DEFAULT_SERIES_DAY
+
+    return {
+        "next_day": next_day,
+        "initialized": bool(data.get("initialized", False)),
+    }
 
 
 def save_series_state(next_day):
     if next_day < 1 or next_day > 30:
         next_day = 1
+
     data = {
         "next_day": next_day,
+        "initialized": True,
         "updated_at": datetime.now().isoformat(timespec="seconds"),
         "note": "Auto-updated by generate.py so challenge reels stay sequential."
     }
@@ -258,6 +290,7 @@ def auto_commit_state_files():
         "rotation_state.json",
         "used_lines_v3.json",
         "engine_state_v3.json",
+        "hook_state.json",
     ]
     existing = [f for f in files if os.path.exists(os.path.join(BASE_DIR, f))]
     if not existing:
@@ -297,6 +330,8 @@ def auto_commit_state_files():
             check=False,
         )
         print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
+        if push.returncode != 0:
+            print("STATE WARNING: GitHub did not allow push. Enable Actions write permission or commit state files manually.")
 
     except Exception as e:
         print(f"STATE AUTO-COMMIT FAILED: {e}")
@@ -318,84 +353,79 @@ PACING = {
 # ================================================================
 
 HOOK_FORMULAS = {
-    "tier1_identity_tension": [
-        "This is why you stay stuck.",
-        "Most men never fix this.",
-        "You keep breaking your own standards.",
-        "This is the part most people quit.",
-        "You are losing control slowly.",
-        "Your habits are exposing you.",
-        "You keep choosing the easier life.",
-        "This is why you never stay consistent.",
-        "Discipline is not your problem.",
-        "You keep escaping pressure.",
-        "Most people drift here.",
-        "Your mind got too comfortable.",
-        "This is what weak routines create.",
-        "You stopped correcting yourself.",
-        "This is why you feel lost.",
+    "silent_decay": [
+        "Most men decay quietly.",
+        "Nobody notices when discipline dies.",
+        "Weak habits look harmless at first.",
+        "You did not fall apart. You drifted.",
+        "This is how men waste years.",
+        "Your standards are disappearing slowly.",
+        "You stopped leading yourself.",
+        "The dangerous part is how normal this feels.",
+        "You are not failing loudly. You are fading quietly.",
+        "Weakness becomes normal before it becomes visible.",
+        "Your life is not stuck. Your discipline is leaking.",
+        "You are losing years in small compromises.",
     ],
-    "identity_pain": [
-        "The weak version is becoming permanent.",
-        "You keep feeding the version you hate.",
-        "You became soft by repetition.",
-        "Discipline is disappearing from your identity.",
-        "You are becoming what you tolerate.",
-        "The old you is winning again.",
-        "Your private habits exposed you.",
-        "You are building the wrong identity daily.",
-        "You do not hate your life. You hate your patterns.",
+    "identity_exposure": [
+        "Your habits are telling the truth about you.",
+        "Your routine exposed your real standard.",
+        "Your private life is building your public result.",
+        "You became reliable at breaking your own word.",
+        "You are becoming the man your habits repeat.",
+        "Your discipline disappeared before your results did.",
+        "Your standards are lower than your goals.",
+        "The man you are becoming is being built in private.",
+        "Your excuses are starting to sound like identity.",
+        "Your future is watching your routine.",
     ],
-    "self_awareness": [
-        "You already know you are drifting.",
-        "Nobody needs to tell you anymore.",
-        "You can feel yourself slipping.",
-        "You know exactly where you keep failing.",
-        "The problem is not hidden. You keep avoiding it.",
-        "Deep down, you know this standard is too low.",
-        "You are not confused. You are delaying the truth.",
-        "You know the habit is costing you.",
-        "You can feel your standards collapsing.",
+    "older_male_regret": [
+        "A man can waste years and still call it waiting.",
+        "You are old enough to know better now.",
+        "At some point, excuses become embarrassing.",
+        "The years do not warn you before they disappear.",
+        "Most men wake up late to their own life.",
+        "The cost of weak habits gets heavier with age.",
+        "You cannot keep living like time is unlimited.",
+        "One day, potential stops sounding impressive.",
+        "You are not young enough to keep restarting forever.",
+        "Regret starts as a routine you refused to fix.",
     ],
-    "habit_decay": [
-        "You keep restarting your life every Monday.",
-        "Weak habits become personality.",
-        "Small compromises are training you.",
-        "Your routines are exposing you.",
-        "Your life reflects repeated compromises.",
-        "One ignored standard becomes a pattern.",
-        "Momentum dies quietly.",
-        "Your future is being built by your smallest habits.",
-    ],
-    "environment_control": [
-        "Your environment is training weakness.",
-        "Your phone is shaping your discipline.",
-        "Your inputs are lowering your standards.",
-        "You cannot build discipline in a weak environment.",
-        "Your routine is stronger than your intentions.",
-        "The room around you is deciding your behavior.",
-        "Your distractions are not harmless.",
+    "control_and_inputs": [
+        "Your inputs are controlling your discipline.",
+        "Your phone is training your weakness.",
+        "Your attention is being spent before your day begins.",
+        "You cannot build control while feeding distraction.",
+        "Your routine is stronger than your intention.",
         "Your environment keeps voting against your future.",
+        "Your discipline is only as strong as your system.",
+        "Your mind follows what you keep consuming.",
+        "Your distractions are shaping your identity.",
+        "Your habits are not random. Your inputs built them.",
     ],
-    "quiet_warning": [
-        "Comfort is quietly destroying your standards.",
-        "You lost control slowly.",
-        "Your habits already exposed your future.",
-        "Another year can disappear like this.",
-        "Nobody ruined your momentum. You did.",
-        "The drift feels harmless until it becomes your life.",
-        "The danger is getting used to yourself like this.",
-        "Weakness does not arrive loudly.",
+    "day7_pressure": [
+        "Day 7 is where most people disappear.",
+        "This is the part most people quit.",
+        "The first week exposes the lie.",
+        "By Day 7, your real routine shows up.",
+        "Consistency does not fail loudly.",
+        "Most people lose the standard before the challenge ends.",
+        "Day 7 does not break people. It reveals them.",
+        "This is where motivation stops protecting you.",
+        "The routine always wins after the mood fades.",
+        "Your structure gets tested when comfort returns.",
     ],
-    "discipline_truth": [
-        "You do not need motivation. You need rules.",
-        "Discipline is not intensity. It is structure.",
-        "Consistency is designed, not wished for.",
-        "Discipline starts when negotiation ends.",
-        "Control is built before pressure arrives.",
+    "structure_truth": [
+        "Discipline is not emotion. It is structure.",
+        "Consistency is designed before it is repeated.",
+        "Rules protect you when feelings change.",
+        "A serious life requires serious systems.",
         "Structure does what motivation cannot.",
-        "A serious life requires serious rules.",
-        "Self-respect is repeated behavior.",
+        "Your standard must survive your mood.",
+        "Control returns when negotiation ends.",
+        "Discipline is built before pressure arrives.",
+        "Your future reflects your repeated systems.",
+        "Private structure creates public change.",
     ],
 }
 
@@ -405,10 +435,10 @@ CONTENT = {
         "mood": "broken",
         "cover": ["YOU DRIFT", "STILL WEAK", "WASTED TIME", "NO STANDARD", "QUIET FAILURE", "WEAK HABITS", "SAME PATTERN", "COMFORT WON"],
         "problem": [
-            "You wake up with plans and go to sleep with excuses.",
+            "You wake up with plans and repeat the same private weakness.",
             "You know what to do, but you keep choosing the easiest option.",
             "You lowered your standards so many times they no longer feel low.",
-            "Your life is not falling apart loudly. It is drifting quietly.",
+            "Your life is not falling apart loudly. It is fading through small compromises.",
         ],
         "mirror": [
             "And the worst part is, you can feel it.",
@@ -418,9 +448,9 @@ CONTENT = {
         ],
         "consequence": [
             "If you keep moving like this, five years will disappear and nothing will change.",
-            "Comfort is charging you interest every single day.",
+            "Comfort is collecting interest from your future every day.",
             "Every weak decision becomes a vote for the man you hate becoming.",
-            "You are not just wasting time. You are training weakness.",
+            "You are not just wasting time. You are becoming easier to control.",
         ],
         "cta": [
             "Today, kill one excuse. Comment DISCIPLINE.",
@@ -435,13 +465,13 @@ CONTENT = {
         "problem": [
             "You wake up late, rush everything, and call the day stressful.",
             "You give your best energy to comfort, then give leftovers to your goals.",
-            "The phone gets your first attention. Your future gets whatever is left.",
+            "Your phone gets your first attention. Your future gets the leftovers.",
             "You do not need a better life first. You need a better first hour.",
         ],
         "mirror": [
             "Every morning tells the truth before your mouth can lie.",
             "Nobody claps for the morning win. That is why it matters.",
-            "The man you become is built before the world sees you.",
+            "The man you become is built before anyone sees the result.",
             "Discipline is decided when nobody is watching.",
         ],
         "consequence": [
@@ -464,7 +494,7 @@ CONTENT = {
             "You say you want to lead, but you cannot keep a promise to yourself.",
             "You confuse anger with strength and comfort with peace.",
             "You are physically present but mentally absent where it matters.",
-            "You want the title of a man without the private discipline of one.",
+            "You want the respect of a man without the private discipline of one.",
         ],
         "mirror": [
             "Your actions are your real reputation.",
@@ -474,7 +504,7 @@ CONTENT = {
         ],
         "consequence": [
             "If you cannot govern yourself, the world will govern you.",
-            "A weak standard does not stay private. It leaks into everything.",
+            "A weak standard never stays private. It leaks into everything.",
             "Discipline is the price of being trusted.",
             "You rise by living cleaner, not by talking harder.",
         ],
@@ -566,36 +596,25 @@ DAY7_CONTENT = {
         "mood": "challenge",
         "cover": [
             "DAY 7",
-            "CONSISTENCY TEST",
-            "STANDARDS MATTER",
+            "MOST QUIT",
             "QUIET DRIFT",
-            "CONTROL INPUTS",
-            "NO RESET",
-            "SYSTEMS STAY",
             "WEAK ROUTINE",
-            "STOP RESTARTING",
+            "STOP RESETTING",
+            "MOOD FADED",
+            "SYSTEMS STAY",
+            "STANDARD TEST",
         ],
         "scripts": [
+            ["Day 7 is where most people disappear.", "The goal did not change.", "Their structure did.", "That is the truth."],
             ["You keep restarting your life every Monday.", "By Day 7, the pattern returns.", "Same habits.", "Same result."],
-            ["Your habits already exposed your future.", "Not your dreams.", "Not your plans.", "Your repeated behavior."],
-            ["You are not inconsistent by accident.", "Your inputs trained it.", "Your routine protected it.", "Your standards allowed it."],
-            ["Day 7 does not create weakness.", "It reveals it.", "The routine breaks.", "The truth appears."],
-            ["You do not lose discipline loudly.", "You stop correcting yourself.", "One small exception repeats.", "Then it becomes normal."],
-            ["Motivation fades first.", "Then structure is tested.", "Most people fail there.", "Systems decide who continues."],
-            ["Your environment is stronger than your intention.", "If nothing changes around you.", "Nothing changes inside you.", "Discipline needs design."],
-            ["The first week exposes your standard.", "Not your potential.", "Not your words.", "Your standard."],
+            ["Day 7 does not break people.", "It reveals the routine.", "Weak structure collapses.", "Strong standards stay."],
+            ["Most people do not quit loudly.", "They miss one day.", "Then they stop correcting themselves.", "That is how discipline dies."],
+            ["Motivation fades first.", "Then your system gets tested.", "If there is no structure.", "Comfort takes control."],
+            ["The first week exposes your standard.", "Not your goals.", "Not your plans.", "Your real standard."],
             ["You are not tired.", "You are overstimulated.", "Your attention is scattered.", "Your discipline follows."],
-            ["Comfort is not harmless.", "By Day 7, it starts negotiating.", "If your standard is weak.", "Comfort wins."],
-            ["The weak version does not leave quickly.", "It waits for Day 7.", "Then it asks for one exception.", "That is where discipline begins."],
-            ["Most people do not quit the challenge.", "They quit correction.", "They stop adjusting.", "Then they drift."],
-            ["Day 7 is not about energy.", "It is about structure.", "Energy changes.", "Rules stay."],
-            ["You do not need a stronger mood.", "You need fewer negotiations.", "A clear routine.", "A visible standard."],
-            ["Every reset has a pattern.", "Same trigger.", "Same excuse.", "Same collapse."],
-            ["Consistency dies when standards become flexible.", "One exception sounds harmless.", "Then it becomes identity.", "That is the cost."],
-            ["You are not failing because life is hard.", "You are failing because structure is weak.", "Fix the structure.", "Discipline follows."],
-            ["Most people underestimate Day 7.", "That is when comfort returns.", "That is when excuses sound reasonable.", "That is when standards matter."],
+            ["The weak version waits for Day 7.", "Then it asks for one exception.", "One exception becomes identity.", "That is the cost."],
             ["Your future is not waiting for motivation.", "It is waiting for proof.", "Repeated proof.", "Daily proof."],
-            ["If your discipline disappears by Day 7.", "Do not blame pressure.", "Look at your habits.", "They were never aligned."],
+            ["If discipline disappears by Day 7.", "Do not blame pressure.", "Look at your habits.", "They were never aligned."],
         ],
     }
 }
@@ -724,6 +743,13 @@ def score_script(script):
     if core_topic_count(joined) >= 2:
         score += 2
 
+    # older_male_regret_score_boost
+    if any(x in joined.lower() for x in ["years", "regret", "private", "quietly", "silence", "standard"]):
+        score += 2
+
+    if any(x in joined.lower() for x in ["remember this", "come back", "most men understand"]):
+        score += 1
+
     lengths = [len(x.split()) for x in script.lines]
     if lengths and min(lengths) <= 4 and max(lengths) >= 7:
         score += 1
@@ -759,6 +785,43 @@ def rhythm_refine(lines):
     if refined and len(refined[-1].split()) > 12:
         refined[-1] = pick_unique_rotated(RETENTION_ENDING_LINES)
     return refined
+
+
+
+def maybe_add_save_share_signal(script):
+    """
+    Adds subtle save/share psychology without sounding needy.
+    No spoken CTA. Lines are built to feel worth saving or sending.
+    """
+    if script.mode not in ["regular", "day7"]:
+        return script
+
+    save_lines = [
+        "Remember this when the mood disappears.",
+        "This is the line most people ignore.",
+        "Save the standard before the feeling fades.",
+        "This is the part your routine keeps exposing.",
+        "Come back to this when comfort starts talking.",
+    ]
+
+    share_lines = [
+        "Some men need to hear this quietly.",
+        "This is the truth most people avoid.",
+        "Someone is drifting and calling it patience.",
+        "Most men understand this too late.",
+        "This is why discipline dies in silence.",
+    ]
+
+    lines = list(script.lines)
+
+    if random.random() < SAVE_SIGNAL_PROBABILITY and len(lines) >= 4:
+        lines[-1] = pick_unique_rotated(save_lines)
+
+    if random.random() < SHARE_SIGNAL_PROBABILITY and len(lines) >= 4:
+        lines[-2] = pick_unique_rotated(share_lines)
+
+    script.lines = rhythm_refine(lines)
+    return script
 
 
 def enforce_retention_quality(script, max_attempts=8):
@@ -853,11 +916,12 @@ def pick_category_rotated():
 
 def pick_hook():
     """
-    v12 Hook intensity engine.
-    Biases heavily toward identity tension because analytics showed that wins.
+    v14 Next Evolution hook engine.
+    Built from analytics: older male audience, non-follower reach, comment-heavy response.
+    Prioritizes silent decay, identity exposure, wasted years, and structure.
     """
     keys = list(HOOK_FORMULAS.keys())
-    weights = [0.34, 0.19, 0.16, 0.12, 0.08, 0.08, 0.03]
+    weights = [0.24, 0.20, 0.18, 0.14, 0.12, 0.12]
     hook_type = random.choices(keys, weights=weights, k=1)[0]
     pool = hook_available(HOOK_FORMULAS[hook_type])
     hook = pick_unique_rotated(pool)
@@ -865,7 +929,6 @@ def pick_hook():
     print("HOOK TYPE:", hook_type)
     print("HOOK:", hook)
     return hook
-
 
 def get_recent_generated_categories(limit=20):
     return load_rotation_state().get("recent_categories", [])[:limit]
@@ -965,9 +1028,16 @@ def build_day7_script():
 
 def build_series_script():
     series_data = load_series_state()
-    day = int(series_data.get("next_day", DEFAULT_SERIES_DAY))
+
+    override_day = os.getenv("SERIES_NEXT_DAY", "").strip()
+    if override_day.isdigit():
+        day = int(override_day)
+        print("SERIES DAY OVERRIDE:", day)
+    else:
+        day = int(series_data.get("next_day", DEFAULT_SERIES_DAY))
+
     if day < 1 or day > 30:
-        day = 1
+        day = DEFAULT_SERIES_DAY
 
     episode = SERIES_EPISODES[day - 1]
 
@@ -1018,6 +1088,8 @@ def build_script():
         remember_rotation_item("recent_categories", "series", 20)
     else:
         script = build_regular_script()
+
+    script = maybe_add_save_share_signal(script)
 
     if should_use_ebook_bait(script):
         ebook = choose_ebook_screenshot()
@@ -1884,7 +1956,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v12 RETENTION SCORING")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v14 NEXT EVOLUTION")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -1905,7 +1977,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v12_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v14_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
