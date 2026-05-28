@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v17 DAY LOOP FIX
+# INNER DISCIPLINE â€” GROWTH ENGINE v18 CLEAN SEQUENCE
 #
 # Clean rebuild. No patch stacking.
 #
@@ -126,15 +126,8 @@ GLOBAL_BACKGROUND_ROTATION = True
 RECENT_BACKGROUND_BLOCK = 8
 RECENT_LINE_BLOCK = 70
 
-GITHUB_RUN_NUMBER_SERIES_FALLBACK = True
-SERIES_START_DAY_IF_NO_STATE = 2
+SERIES_START_DAY = 2
 SERIES_FAIL_IF_STATE_PUSH_BLOCKED = False
-
-# v17 fix:
-# v16 used the current run as the anchor, so it always reset to Day 2.
-# This fixed anchor makes GitHub's run number advance the day each run even if state is not saved.
-# Change this manually later only if you want to realign the sequence.
-SERIES_FIXED_RUN_ANCHOR = 1
 DAY7_REEL_PROBABILITY = 0.18
 
 SILENCE_GAP_MIN = 0.15
@@ -224,78 +217,98 @@ def save_state():
     save_json(STATE_FILE, state)
 
 
+def infer_next_series_day_from_outputs():
+    """
+    Reads generated metadata in outputs/ to infer the next challenge day.
+    This is a backup only. Primary source is series_state.json.
+    """
+    import re
+
+    if not os.path.isdir(OUTPUT_DIR):
+        return None
+
+    found_days = []
+
+    patterns = [
+        os.path.join(OUTPUT_DIR, "*_title.txt"),
+        os.path.join(OUTPUT_DIR, "*_caption.txt"),
+        os.path.join(OUTPUT_DIR, "*_script.txt"),
+    ]
+
+    for pattern in patterns:
+        for path in glob.glob(pattern):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    text = f.read()
+                matches = re.findall(r"\bDAY\s+(\d{1,2})\b|\bDay\s+(\d{1,2})\b", text)
+                for a, b in matches:
+                    value = a or b
+                    if value:
+                        day = int(value)
+                        if 1 <= day <= 30:
+                            found_days.append(day)
+            except Exception:
+                pass
+
+    if not found_days:
+        return None
+
+    last_day = max(found_days)
+    next_day = last_day + 1
+    if next_day > 30:
+        next_day = 1
+
+    return next_day
+
+
 def load_series_state():
     """
-    v17 Day loop fix.
+    v18 clean sequence.
 
-    The real issue:
-    GitHub is not persisting series_state.json between runs.
-    v16 fallback used the current run as anchor, so every run became Day 2 again.
+    No random fallback.
+    No GitHub run-number guessing.
+    No Day 14 jumps.
 
-    v17 fix:
-    - If series_state.json exists and is initialized, trust it.
-    - If state is not persisted, use GitHub's GITHUB_RUN_NUMBER with a FIXED anchor.
-    - Because GITHUB_RUN_NUMBER increases every workflow run, the day now advances.
-
-    Professional note:
-    Best fix is still enabling GitHub Actions write permission so series_state.json commits.
-    This fallback prevents the endless Day 2 loop.
+    Priority:
+    1. Trust series_state.json if it exists and is initialized.
+    2. If missing, infer next day from output metadata if available.
+    3. If nothing exists, start at Day 2 because Day 1 was already created.
     """
     state_exists = os.path.exists(SERIES_STATE_FILE)
 
     data = safe_load_json(
         SERIES_STATE_FILE,
-        {
-            "next_day": SERIES_START_DAY_IF_NO_STATE,
-            "initialized": False,
-        }
+        {"next_day": SERIES_START_DAY, "initialized": False}
     )
 
     try:
-        next_day = int(data.get("next_day", SERIES_START_DAY_IF_NO_STATE))
+        next_day = int(data.get("next_day", SERIES_START_DAY))
     except Exception:
-        next_day = SERIES_START_DAY_IF_NO_STATE
+        next_day = SERIES_START_DAY
 
     initialized = bool(data.get("initialized", False))
 
     if state_exists and initialized:
         if next_day < 1 or next_day > 30:
-            next_day = SERIES_START_DAY_IF_NO_STATE
+            next_day = SERIES_START_DAY
         return {
             "next_day": next_day,
-            "initialized": initialized,
+            "initialized": True,
             "source": "series_state_json",
         }
 
-    # Fallback when GitHub does not persist the state file.
-    if GITHUB_RUN_NUMBER_SERIES_FALLBACK:
-        run_number_raw = os.getenv("GITHUB_RUN_NUMBER", "").strip()
-
-        if run_number_raw.isdigit():
-            run_number = int(run_number_raw)
-
-            # Fixed-anchor formula.
-            # If run number increases, day increases.
-            day = ((run_number - SERIES_FIXED_RUN_ANCHOR) + (SERIES_START_DAY_IF_NO_STATE - 1)) % 30 + 1
-
-            if day < 1 or day > 30:
-                day = SERIES_START_DAY_IF_NO_STATE
-
-            return {
-                "next_day": day,
-                "initialized": False,
-                "source": "github_run_number_fallback",
-                "github_run_number": run_number,
-                "series_fixed_run_anchor": SERIES_FIXED_RUN_ANCHOR,
-            }
-
-    if next_day < 1 or next_day > 30:
-        next_day = SERIES_START_DAY_IF_NO_STATE
+    inferred = infer_next_series_day_from_outputs()
+    if inferred is not None:
+        return {
+            "next_day": inferred,
+            "initialized": False,
+            "source": "outputs_metadata_inference",
+        }
 
     return {
-        "next_day": next_day,
+        "next_day": SERIES_START_DAY,
         "initialized": False,
-        "source": "default_no_state",
+        "source": "default_day_2",
     }
 
 
@@ -392,9 +405,11 @@ def auto_commit_state_files():
         print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
         print("STATE PUSH RETURN CODE:", push.returncode)
         if push.returncode != 0:
-            print("STATE WARNING: GitHub did not allow push. Enable Actions write permission or commit state files manually.")
+            print("STATE WARNING: GitHub did not save series_state.json. Day sequence may repeat until Actions write permission is enabled.")
             if SERIES_FAIL_IF_STATE_PUSH_BLOCKED:
                 raise RuntimeError("State push blocked. Enable workflow permissions: contents: write.")
+        if push.returncode != 0:
+            print("STATE WARNING: GitHub did not allow push. Enable Actions write permission or commit state files manually.")
 
     except Exception as e:
         print(f"STATE AUTO-COMMIT FAILED: {e}")
@@ -1092,18 +1107,18 @@ def build_day7_script():
 
 
 def build_series_script():
+    """
+    Clean sequential challenge generator.
+    Day 2 -> Day 3 -> Day 4.
+    No random jumps.
+    """
     series_data = load_series_state()
     print("SERIES STATE SOURCE:", series_data.get("source", "unknown"))
 
-    override_day = os.getenv("SERIES_NEXT_DAY", "").strip()
-    if override_day.isdigit():
-        day = int(override_day)
-        print("SERIES DAY OVERRIDE:", day)
-    else:
-        day = int(series_data.get("next_day", DEFAULT_SERIES_DAY))
+    day = int(series_data.get("next_day", SERIES_START_DAY))
 
     if day < 1 or day > 30:
-        day = DEFAULT_SERIES_DAY
+        day = SERIES_START_DAY
 
     episode = SERIES_EPISODES[day - 1]
 
@@ -1137,8 +1152,8 @@ def build_series_script():
 
 def should_make_series():
     """
-    v15 sequence priority.
-    If true, the next run generates the next challenge day.
+    Series priority is ON so the sequence moves forward during this phase.
+    After the 30-day sequence is stable, set SERIES_PRIORITY_MODE = False.
     """
     if SERIES_PRIORITY_MODE:
         return True
@@ -2055,10 +2070,9 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v17 DAY LOOP FIX")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v18 CLEAN SEQUENCE")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
-    print("GITHUB RUN NUMBER:", os.getenv("GITHUB_RUN_NUMBER", "local"))
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
     print("SERIES STATE LOADED:", load_series_state())
     print("SERIES NEXT DAY:", load_series_state().get("next_day"))
@@ -2078,7 +2092,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v17_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v18_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
