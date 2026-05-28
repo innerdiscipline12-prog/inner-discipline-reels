@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v16 PERSISTENT SERIES FIX
+# INNER DISCIPLINE â€” GROWTH ENGINE v17 DAY LOOP FIX
 #
 # Clean rebuild. No patch stacking.
 #
@@ -129,6 +129,12 @@ RECENT_LINE_BLOCK = 70
 GITHUB_RUN_NUMBER_SERIES_FALLBACK = True
 SERIES_START_DAY_IF_NO_STATE = 2
 SERIES_FAIL_IF_STATE_PUSH_BLOCKED = False
+
+# v17 fix:
+# v16 used the current run as the anchor, so it always reset to Day 2.
+# This fixed anchor makes GitHub's run number advance the day each run even if state is not saved.
+# Change this manually later only if you want to realign the sequence.
+SERIES_FIXED_RUN_ANCHOR = 1
 DAY7_REEL_PROBABILITY = 0.18
 
 SILENCE_GAP_MIN = 0.15
@@ -220,16 +226,20 @@ def save_state():
 
 def load_series_state():
     """
-    v16 persistent series fix.
+    v17 Day loop fix.
 
-    Priority:
-    1. If series_state.json exists and is initialized, trust it.
-    2. If it does not exist because GitHub failed to save state, use GITHUB_RUN_NUMBER
-       so the sequence does not get stuck repeating Day 2 forever.
-    3. If run number is unavailable, start from SERIES_START_DAY_IF_NO_STATE.
+    The real issue:
+    GitHub is not persisting series_state.json between runs.
+    v16 fallback used the current run as anchor, so every run became Day 2 again.
 
-    Important:
-    True memory still requires GitHub Actions write permission so series_state.json can be committed.
+    v17 fix:
+    - If series_state.json exists and is initialized, trust it.
+    - If state is not persisted, use GitHub's GITHUB_RUN_NUMBER with a FIXED anchor.
+    - Because GITHUB_RUN_NUMBER increases every workflow run, the day now advances.
+
+    Professional note:
+    Best fix is still enabling GitHub Actions write permission so series_state.json commits.
+    This fallback prevents the endless Day 2 loop.
     """
     state_exists = os.path.exists(SERIES_STATE_FILE)
 
@@ -238,7 +248,6 @@ def load_series_state():
         {
             "next_day": SERIES_START_DAY_IF_NO_STATE,
             "initialized": False,
-            "anchor_run_number": None,
         }
     )
 
@@ -255,21 +264,19 @@ def load_series_state():
         return {
             "next_day": next_day,
             "initialized": initialized,
-            "anchor_run_number": data.get("anchor_run_number"),
+            "source": "series_state_json",
         }
 
+    # Fallback when GitHub does not persist the state file.
     if GITHUB_RUN_NUMBER_SERIES_FALLBACK:
         run_number_raw = os.getenv("GITHUB_RUN_NUMBER", "").strip()
+
         if run_number_raw.isdigit():
             run_number = int(run_number_raw)
 
-            anchor = data.get("anchor_run_number")
-            try:
-                anchor = int(anchor) if anchor is not None else run_number
-            except Exception:
-                anchor = run_number
-
-            day = ((run_number - anchor) + (SERIES_START_DAY_IF_NO_STATE - 1)) % 30 + 1
+            # Fixed-anchor formula.
+            # If run number increases, day increases.
+            day = ((run_number - SERIES_FIXED_RUN_ANCHOR) + (SERIES_START_DAY_IF_NO_STATE - 1)) % 30 + 1
 
             if day < 1 or day > 30:
                 day = SERIES_START_DAY_IF_NO_STATE
@@ -277,7 +284,9 @@ def load_series_state():
             return {
                 "next_day": day,
                 "initialized": False,
-                "anchor_run_number": anchor,
+                "source": "github_run_number_fallback",
+                "github_run_number": run_number,
+                "series_fixed_run_anchor": SERIES_FIXED_RUN_ANCHOR,
             }
 
     if next_day < 1 or next_day > 30:
@@ -286,7 +295,7 @@ def load_series_state():
     return {
         "next_day": next_day,
         "initialized": False,
-        "anchor_run_number": data.get("anchor_run_number"),
+        "source": "default_no_state",
     }
 
 
@@ -294,20 +303,13 @@ def save_series_state(next_day):
     if next_day < 1 or next_day > 30:
         next_day = 1
 
-    existing = safe_load_json(SERIES_STATE_FILE, {})
-    anchor = existing.get("anchor_run_number")
-
-    run_number_raw = os.getenv("GITHUB_RUN_NUMBER", "").strip()
-    if anchor is None and run_number_raw.isdigit():
-        anchor = int(run_number_raw)
-
     data = {
         "next_day": next_day,
         "initialized": True,
-        "anchor_run_number": anchor,
         "updated_at": datetime.now().isoformat(timespec="seconds"),
         "note": "Auto-updated by generate.py so challenge reels stay sequential."
     }
+
     save_json(SERIES_STATE_FILE, data)
     return data
 
@@ -1091,6 +1093,7 @@ def build_day7_script():
 
 def build_series_script():
     series_data = load_series_state()
+    print("SERIES STATE SOURCE:", series_data.get("source", "unknown"))
 
     override_day = os.getenv("SERIES_NEXT_DAY", "").strip()
     if override_day.isdigit():
@@ -2052,7 +2055,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v16 PERSISTENT SERIES FIX")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v17 DAY LOOP FIX")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("GITHUB RUN NUMBER:", os.getenv("GITHUB_RUN_NUMBER", "local"))
@@ -2075,7 +2078,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v16_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v17_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
