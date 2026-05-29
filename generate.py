@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v19 SERIES ONLY CLEAN
+# INNER DISCIPLINE â€” GROWTH ENGINE v20 SCENE MATCHED BACKGROUNDS
 #
 # Clean rebuild. No patch stacking.
 #
@@ -124,6 +124,33 @@ SERIES_REEL_PROBABILITY = 0.18
 SERIES_PRIORITY_MODE = True
 GLOBAL_BACKGROUND_ROTATION = True
 BACKGROUND_RUN_NUMBER_ROTATION = True
+SCENE_MATCHING_ENABLED = True
+
+SCENE_KEYWORDS = {
+    "broken": [
+        "avoid", "alone", "thoughts", "truth", "excuse", "excuses", "prison",
+        "disgusts", "journal", "mirror", "conversation", "weak", "weakness",
+        "lost", "drift", "wasted", "regret", "disappear",
+    ],
+    "morning": [
+        "wake", "alarm", "snooze", "morning", "first hour", "early",
+        "before the day", "start the day", "tomorrow", "night",
+    ],
+    "dangerous": [
+        "train", "training", "pressure", "hard", "body", "stairs",
+        "conditioning", "complaining", "standard", "standards", "respect",
+        "control", "craving", "move", "brutal",
+    ],
+    "rebuild": [
+        "bed", "room", "space", "clean", "fix", "reset", "prepare",
+        "deep work", "work", "undistracted", "build", "structure",
+        "goal", "environment", "future",
+    ],
+    "challenge": [
+        "day", "challenge", "done", "accountability", "report back",
+        "30", "thirty", "finish", "complete", "task",
+    ],
+}
 RECENT_BACKGROUND_BLOCK = 8
 RECENT_LINE_BLOCK = 70
 
@@ -700,7 +727,7 @@ DAY7_CONTENT = {
 
 SERIES_TASK_INTROS = [
     "Your task is simple.",
-    "Todays rule is simple.",
+    "Todayâ€™s rule is simple.",
     "The work is simple.",
     "Your standard today is simple.",
     "Do this without negotiation.",
@@ -1240,6 +1267,184 @@ def get_background_pool(mood=None):
 
     return sorted(list(set(pool)))
 
+
+
+def folder_video_pool(folder_name):
+    folder = os.path.join(BG_ROOT, folder_name)
+    if not os.path.isdir(folder):
+        return []
+    return scan_video_files(folder)
+
+
+def score_scene_folder(script, folder_name):
+    """
+    Scores how strongly the script matches a background folder.
+    Higher score = better visual meaning match.
+    """
+    text = " ".join([
+        str(script.mode),
+        str(script.category),
+        str(script.mood),
+        str(script.cover),
+        str(script.title),
+        " ".join(script.lines),
+        str(script.task),
+    ]).lower()
+
+    score = 0
+
+    # Mood from the episode is the strongest signal.
+    if script.mood == folder_name:
+        score += 12
+
+    # Series task/title keywords.
+    for kw in SCENE_KEYWORDS.get(folder_name, []):
+        if kw in text:
+            score += 3
+
+    # Extra specific rules for the 30-day sequence.
+    if script.mode == "series":
+        if any(x in text for x in ["snooze", "phone", "first hour", "wake", "alarm"]):
+            if folder_name == "morning":
+                score += 10
+
+        if any(x in text for x in ["train", "stairs", "conditioning", "pressure", "craving", "body"]):
+            if folder_name == "dangerous":
+                score += 10
+
+        if any(x in text for x in ["clean", "bed", "space", "reset", "fix", "work", "prepare"]):
+            if folder_name == "rebuild":
+                score += 10
+
+        if any(x in text for x in ["journal", "truth", "mirror", "alone", "conversation", "avoid"]):
+            if folder_name == "broken":
+                score += 10
+
+        if any(x in text for x in ["done", "challenge", "report back", "day "]):
+            if folder_name == "challenge":
+                score += 4
+
+    return score
+
+
+def choose_scene_folder(script):
+    """
+    Chooses the best folder based on what is being said.
+    Not random. Meaning first, rotation second.
+    """
+    available_folders = []
+    for folder in ["broken", "morning", "dangerous", "rebuild", "challenge", "generic"]:
+        if folder_video_pool(folder):
+            available_folders.append(folder)
+
+    if not available_folders:
+        return None, []
+
+    scored = []
+    for folder in available_folders:
+        scored.append((score_scene_folder(script, folder), folder))
+
+    scored.sort(reverse=True)
+    best_score, best_folder = scored[0]
+
+    if best_score <= 0 and "generic" in available_folders:
+        best_folder = "generic"
+
+    # Fallback chain keeps meaning close before going fully global.
+    fallback_order = [best_folder]
+    for folder in [script.mood, "challenge", "generic", "broken", "rebuild", "dangerous", "morning"]:
+        if folder in available_folders and folder not in fallback_order:
+            fallback_order.append(folder)
+
+    print("SCENE FOLDER SCORES:", scored)
+    print("SCENE SELECTED FOLDER:", best_folder)
+
+    return best_folder, fallback_order
+
+
+def choose_background_from_pool(pool, rotation_key):
+    """
+    Rotates within the selected scene folder.
+    This keeps relevance while still preventing repetition.
+    """
+    if not pool:
+        return None
+
+    pool_sorted = sorted(list(set(pool)))
+    data = load_rotation_state()
+    cursor = data.get("background_cursor", {})
+    recent_bg = data.get("recent_backgrounds", [])[:RECENT_BACKGROUND_BLOCK]
+
+    start_index = int(cursor.get(rotation_key, 0)) % len(pool_sorted)
+
+    chosen = None
+    chosen_index = start_index
+
+    for offset in range(len(pool_sorted)):
+        idx = (start_index + offset) % len(pool_sorted)
+        candidate = pool_sorted[idx]
+        if candidate not in recent_bg:
+            chosen = candidate
+            chosen_index = idx
+            break
+
+    if chosen is None:
+        chosen = pool_sorted[start_index]
+        chosen_index = start_index
+
+    cursor[rotation_key] = (chosen_index + 1) % len(pool_sorted)
+    data["background_cursor"] = cursor
+
+    if chosen in recent_bg:
+        recent_bg.remove(chosen)
+    recent_bg.insert(0, chosen)
+    data["recent_backgrounds"] = recent_bg[:max(RECENT_BACKGROUND_BLOCK, 20)]
+
+    save_rotation_state(data)
+
+    print("BACKGROUND ROTATION KEY:", rotation_key)
+    print("BACKGROUND ROTATION INDEX:", chosen_index)
+    print("SELECTED BACKGROUND:", chosen)
+
+    return chosen
+
+
+def choose_background_for_script(script):
+    """
+    Scene-matched background selector.
+
+    Step 1: read the script meaning.
+    Step 2: choose the best matching folder.
+    Step 3: rotate inside that folder.
+    Step 4: only fallback if that folder is empty.
+
+    This replaces blind/random background choice.
+    """
+    if not SCENE_MATCHING_ENABLED:
+        return choose_background_rotated(script.mood)
+
+    selected_folder, fallback_order = choose_scene_folder(script)
+
+    print("REQUESTED MOOD:", script.mood)
+    print("BACKGROUND FALLBACK ORDER:", fallback_order)
+
+    for folder in fallback_order:
+        pool = folder_video_pool(folder)
+        if pool:
+            print("BACKGROUND MATCHED FOLDER:", folder)
+            print("MATCHED FOLDER POOL:", pool)
+            chosen = choose_background_from_pool(pool, f"scene_{folder}")
+            if chosen:
+                return chosen
+
+    # Last emergency fallback: all backgrounds.
+    pool = get_background_pool(script.mood)
+    print("BACKGROUND EMERGENCY GLOBAL POOL:", pool)
+    chosen = choose_background_from_pool(pool, "scene_global")
+    if chosen:
+        return chosen
+
+    raise Exception("No background videos found.")
 
 def choose_background_rotated(mood=None):
     """
@@ -2086,7 +2291,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v19 SERIES ONLY CLEAN")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v20 SCENE MATCHED BACKGROUNDS")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -2108,7 +2313,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v19_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v20_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
