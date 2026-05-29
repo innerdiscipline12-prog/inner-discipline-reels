@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v18 CLEAN SEQUENCE
+# INNER DISCIPLINE â€” GROWTH ENGINE v19 SERIES ONLY CLEAN
 #
 # Clean rebuild. No patch stacking.
 #
@@ -123,6 +123,7 @@ SERIES_REEL_PROBABILITY = 0.18
 
 SERIES_PRIORITY_MODE = True
 GLOBAL_BACKGROUND_ROTATION = True
+BACKGROUND_RUN_NUMBER_ROTATION = True
 RECENT_BACKGROUND_BLOCK = 8
 RECENT_LINE_BLOCK = 70
 
@@ -697,6 +698,30 @@ DAY7_CONTENT = {
     }
 }
 
+SERIES_TASK_INTROS = [
+    "Your task is simple.",
+    "Todays rule is simple.",
+    "The work is simple.",
+    "Your standard today is simple.",
+    "Do this without negotiation.",
+]
+
+SERIES_STANDARD_LINES = [
+    "Do not negotiate with the weak version of you.",
+    "Do not let comfort rewrite the rule.",
+    "Keep the standard when the mood changes.",
+    "The task is small. The standard is not.",
+    "This is where discipline becomes identity.",
+]
+
+SERIES_DONE_LINES = [
+    "Comment DONE when you finish it.",
+    "Comment DONE when the task is complete.",
+    "Finish it, then comment DONE.",
+    "Complete the task before you speak.",
+    "Let the action come first.",
+]
+
 SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
 
 SERIES_EPISODES = [
@@ -1108,9 +1133,11 @@ def build_day7_script():
 
 def build_series_script():
     """
-    Clean sequential challenge generator.
-    Day 2 -> Day 3 -> Day 4.
+    v19 clean sequential challenge generator.
     No random jumps.
+    No mixed reels.
+    Uses series_state.json first.
+    Starts at Day 2 only if no real state exists.
     """
     series_data = load_series_state()
     print("SERIES STATE SOURCE:", series_data.get("source", "unknown"))
@@ -1122,12 +1149,16 @@ def build_series_script():
 
     episode = SERIES_EPISODES[day - 1]
 
+    intro = pick_unique_rotated(SERIES_TASK_INTROS, memory_key="recent_series_intros", max_recent=10)
+    standard_line = pick_unique_rotated(SERIES_STANDARD_LINES, memory_key="recent_series_standards", max_recent=10)
+    done_line = pick_unique_rotated(SERIES_DONE_LINES, memory_key="recent_series_done_lines", max_recent=10)
+
     lines = [
         f"Day {episode['day']} of 30. {episode['title']}.",
         episode["pain"],
-        f"Your task is simple. {episode['task']}",
-        "Do not negotiate with the weak version of you.",
-        "Comment DONE when you finish it.",
+        f"{intro} {episode['task']}",
+        standard_line,
+        done_line,
     ]
 
     script = Script(
@@ -1152,47 +1183,23 @@ def build_series_script():
 
 def should_make_series():
     """
-    Series priority is ON so the sequence moves forward during this phase.
-    After the 30-day sequence is stable, set SERIES_PRIORITY_MODE = False.
+    Series-only phase.
     """
-    if SERIES_PRIORITY_MODE:
-        return True
-
-    recent = get_recent_generated_categories(limit=5)
-    if recent and recent[0] == "series":
-        return False
-    return random.random() < SERIES_REEL_PROBABILITY
+    return True
 
 
 def build_script():
     """
-    v15 selector.
-    Series priority fixes the Day 2 problem.
+    v19 SERIES ONLY MODE.
+
+    Generates ONLY the next 30-day challenge reel.
+    No regular reels.
+    No member reels.
+    No Day 7 side reels.
+    No ebook bait reels.
     """
-    if SERIES_PRIORITY_MODE and should_make_series():
-        script = build_series_script()
-        remember_rotation_item("recent_categories", "series", 20)
-    else:
-        roll = random.random()
-
-        if roll < MEMBER_REEL_PROBABILITY:
-            script = build_member_script()
-        elif roll < MEMBER_REEL_PROBABILITY + DAY7_REEL_PROBABILITY:
-            script = build_day7_script()
-        elif should_make_series():
-            script = build_series_script()
-            remember_rotation_item("recent_categories", "series", 20)
-        else:
-            script = build_regular_script()
-
-    script = maybe_add_save_share_signal(script)
-
-    if should_use_ebook_bait(script):
-        ebook = choose_ebook_screenshot()
-        if ebook:
-            script.ebook_image = ebook
-            print("EBOOK BAIT IMAGE:", ebook)
-
+    script = build_series_script()
+    remember_rotation_item("recent_categories", "series", 20)
     return script
 
 
@@ -1236,10 +1243,11 @@ def get_background_pool(mood=None):
 
 def choose_background_rotated(mood=None):
     """
-    v15 true background rotation:
-    - one global cursor across the whole library
-    - avoids recent backgrounds
-    - forces use of more clips before repeating
+    v19 true background rotation.
+
+    Uses the full background library across all folders.
+    If GitHub state does not persist, GITHUB_RUN_NUMBER still rotates backgrounds.
+    This prevents the engine from getting stuck on only 2 clips.
     """
     pool = get_background_pool(mood)
 
@@ -1252,14 +1260,21 @@ def choose_background_rotated(mood=None):
     if not pool:
         raise Exception("No background videos found.")
 
+    pool_sorted = sorted(pool)
     data = load_rotation_state()
     cursor = data.get("background_cursor", {})
     key = "global" if GLOBAL_BACKGROUND_ROTATION else (mood or "all")
-
-    pool_sorted = sorted(pool)
     recent_bg = data.get("recent_backgrounds", [])[:RECENT_BACKGROUND_BLOCK]
 
-    start_index = int(cursor.get(key, 0)) % len(pool_sorted)
+    run_number_raw = os.getenv("GITHUB_RUN_NUMBER", "").strip()
+
+    if BACKGROUND_RUN_NUMBER_ROTATION and run_number_raw.isdigit():
+        source = "github_run_number"
+        start_index = int(run_number_raw) % len(pool_sorted)
+    else:
+        source = "rotation_state_cursor"
+        start_index = int(cursor.get(key, 0)) % len(pool_sorted)
+
     chosen = None
     chosen_index = start_index
 
@@ -1285,6 +1300,7 @@ def choose_background_rotated(mood=None):
 
     save_rotation_state(data)
 
+    print("BACKGROUND ROTATION SOURCE:", source)
     print("BACKGROUND ROTATION KEY:", key)
     print("BACKGROUND ROTATION INDEX:", chosen_index)
     print("SELECTED BACKGROUND:", chosen)
@@ -1325,11 +1341,11 @@ def choose_ebook_screenshot():
 
 
 def should_use_ebook_bait(script):
-    if script.mode == "series":
-        return False
-    if script.category in ["member_accountability", "ebook_bait"]:
-        return True
-    return random.random() < EBOOK_BAIT_PROBABILITY
+    """
+    Series-only phase: no ebook overlays.
+    Keep the challenge clean and sequential.
+    """
+    return False
 
 
 def prepare_ebook_overlay(image_path):
@@ -2070,7 +2086,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v18 CLEAN SEQUENCE")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v19 SERIES ONLY CLEAN")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -2092,7 +2108,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v18_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v19_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
