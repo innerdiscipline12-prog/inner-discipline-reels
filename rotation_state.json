@@ -2,16 +2,18 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "curiosity",
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4"
   ],
   "background_cursor": {
-    "global": 13
+    "global": 14
   },
-  "updated_at": "2026-05-30T09:39:53",
+  "updated_at": "2026-05-30T10:07:20",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -23,5 +25,11 @@
   "recent_series_done_lines": [
     "complete the task before you speak.",
     "comment done when you finish it."
+  ],
+  "recent_viral_retention_scripts": [
+    "read this twice. | structure protects you. | when feelings start lying."
+  ],
+  "recent_viral_covers": [
+    "watch this"
   ]
 }
