@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” VIRAL RETENTION ENGINE v23
+# INNER DISCIPLINE â€” VIRAL RETENTION ENGINE v24 COVER RESET
 #
 # Clean rebuild. No patch stacking.
 #
@@ -84,6 +84,14 @@ RETENTION_MIN_SECONDS = 6.8
 RETENTION_MAX_SECONDS = 8.8
 RETENTION_LINE_COUNT_MIN = 3
 RETENTION_LINE_COUNT_MAX = 4
+
+BANNED_COVERS_V24 = [
+    "THIS CHANGES",
+    "WATCH THIS",
+    "HIDDEN COST",
+    "READ THIS",
+]
+
 
 REEL_SECONDS = 20.0
 
@@ -764,135 +772,164 @@ SERIES_DONE_LINES = [
 ]
 
 VIRAL_RETENTION_BANK = {
-    "self_recognition": {
-        "mood": "broken",
+    "identity_hooks": {
+        "mood": "dangerous",
+        "cover_style": "identity",
         "covers": [
-            "THIS IS WHY",
-            "YOU KEEP FAILING",
-            "MOST MISS THIS",
-            "THIS IS WHERE",
-            "PAY ATTENTION",
+            "YOUR STANDARD SHOWS",
+            "YOU KEEP DOING THIS",
+            "THIS IS THE PROBLEM",
+            "THIS IS WHY YOU FAIL",
+            "MOST MEN MISS THIS",
+            "YOU TRAINED THIS",
+            "YOUR ROUTINE EXPOSED YOU",
+            "PRIVATE PROOF",
+            "WEAK WORD",
+            "FIX THIS",
+        ],
+        "scripts": [
+            ["YOUR STANDARD SHOWS.", "Every decision exposes it.", "Even the small ones."],
+            ["YOU KEEP DOING THIS.", "Breaking your own word.", "Then calling it pressure."],
+            ["THIS IS THE PROBLEM.", "You negotiate.", "With things already decided."],
+            ["THIS IS WHY YOU FAIL.", "Your standards change.", "When your mood changes."],
+            ["MOST MEN MISS THIS.", "Discipline dies first.", "In private routines."],
+            ["YOU TRAINED THIS.", "One excuse.", "Repeated until it felt normal."],
+            ["YOUR ROUTINE EXPOSED YOU.", "Not your words.", "Your repeated behavior."],
+            ["PRIVATE PROOF MATTERS.", "Nobody sees it.", "But everything reflects it."],
+            ["YOUR WORD GOT WEAK.", "Not suddenly.", "Repeatedly."],
+            ["FIX THIS FIRST.", "Stop negotiating.", "With your own standard."],
+        ],
+    },
+    "consequence_hooks": {
+        "mood": "broken",
+        "cover_style": "consequence",
+        "covers": [
+            "THIS COSTS YOU YEARS",
+            "YOU ARE LOSING TIME",
+            "THIS GETS WORSE",
+            "DAMAGE STARTS HERE",
+            "YOU WILL FEEL THIS",
+            "YEARS DISAPPEAR",
+            "BAD HABITS CHARGE",
+            "COMFORT WINS",
+            "WEAKNESS COMPOUNDS",
+            "TIME DOES NOT WAIT",
+        ],
+        "scripts": [
+            ["THIS COSTS YOU YEARS.", "Not one mistake.", "Repeated weak routines."],
+            ["YOU ARE LOSING TIME.", "Quietly.", "Through habits you defend."],
+            ["THIS GETS WORSE.", "When you ignore it.", "Long enough."],
+            ["THE DAMAGE STARTS HERE.", "One excuse.", "Repeated often enough."],
+            ["YOU WILL FEEL THIS LATER.", "Weak habits.", "Always collect consequences."],
+            ["YEARS DISAPPEAR QUIETLY.", "Small compromises.", "Repeated daily."],
+            ["BAD HABITS CHARGE INTEREST.", "Every day.", "Your future pays."],
+            ["COMFORT WINS QUIETLY.", "One compromise.", "At a time."],
+            ["WEAKNESS COMPOUNDS.", "First in private.", "Then in results."],
+            ["TIME DOES NOT WAIT.", "Your routine.", "Is already deciding."],
+        ],
+    },
+    "self_recognition_hooks": {
+        "mood": "broken",
+        "cover_style": "recognition",
+        "covers": [
+            "BE HONEST",
+            "YOU KNOW THIS",
+            "YOU HAVE DONE THIS",
+            "THIS IS YOU",
+            "LOOK CLOSER",
+            "YOU FEEL IT",
+            "STOP LYING",
+            "YOU ALREADY KNOW",
+            "THIS IS FAMILIAR",
             "READ THIS TWICE",
         ],
         "scripts": [
-            ["THIS IS WHERE YOU LOSE.", "Not in failure.", "In the excuses before it.", "Weakness starts early."],
-            ["MOST PEOPLE MISS THIS.", "Your habits vote daily.", "Your future simply counts.", "That is the truth."],
-            ["YOU DO NOT HAVE A TIME PROBLEM.", "You have a priority problem.", "The results prove it."],
-            ["THIS IS WHY YOU KEEP FAILING.", "You keep negotiating.", "With things already decided.", "Discipline hates negotiation."],
-            ["PAY ATTENTION.", "Your routine is not neutral.", "It is training you.", "Every day."],
-            ["READ THIS TWICE.", "The life you want.", "Requires the habits you avoid."],
+            ["BE HONEST.", "You know exactly.", "Where discipline keeps breaking."],
+            ["YOU KNOW THIS FEELING.", "The drift starts.", "Before the failure."],
+            ["YOU HAVE DONE THIS.", "Promised change.", "Protected the same routine."],
+            ["THIS IS YOU.", "Not because you are weak.", "Because you stopped correcting it."],
+            ["LOOK CLOSER.", "The problem is not hidden.", "You keep avoiding it."],
+            ["YOU FEEL IT.", "Your standards slipping.", "Before anyone notices."],
+            ["STOP LYING.", "You are not confused.", "You are delaying the truth."],
+            ["YOU ALREADY KNOW.", "The habit costing you.", "And you still feed it."],
+            ["THIS IS FAMILIAR.", "Start strong.", "Drift quietly.", "Restart again."],
+            ["READ THIS TWICE.", "Your future follows.", "What you repeat."],
         ],
     },
-    "identity_attack": {
-        "mood": "dangerous",
-        "covers": [
-            "STANDARD SHOWS",
-            "WEAK HABITS",
-            "SELF CONTROL",
-            "THIS REVEALS",
-            "PRIVATE PROOF",
-            "NO CONTROL",
-        ],
-        "scripts": [
-            ["YOUR STANDARD IS SHOWING.", "Every decision exposes it.", "Even the small ones."],
-            ["A DISCIPLINED MAN KNOWS THIS.", "Feelings change.", "Standards stay."],
-            ["WEAK HABITS LEAVE CLUES.", "In your routine.", "Before they appear in results."],
-            ["THIS REVEALS EVERYTHING.", "Not what you want.", "What you repeat."],
-            ["SELF CONTROL STARTS HERE.", "One clear rule.", "Obeyed when mood changes."],
-            ["YOUR PRIVATE LIFE SPEAKS.", "Before your results do.", "Listen closely."],
-        ],
-    },
-    "curiosity": {
-        "mood": "challenge",
-        "covers": [
-            "NOBODY SAYS",
-            "THIS CHANGES",
-            "WATCH THIS",
-            "HIDDEN COST",
-            "THE REAL TEST",
-            "READ THIS",
-        ],
-        "scripts": [
-            ["NOBODY TALKS ABOUT THIS.", "Discipline is easier.", "When decisions happen once."],
-            ["THIS CHANGES EVERYTHING.", "Stop relying on motivation.", "Start relying on structure."],
-            ["WATCH WHAT HAPPENS.", "When comfort gets a vote.", "Your standards disappear."],
-            ["HERE IS THE TRUTH.", "You do not need more energy.", "You need fewer negotiations."],
-            ["THE REAL TEST IS QUIET.", "No audience.", "No applause.", "Just your standard."],
-            ["READ THIS TWICE.", "Structure protects you.", "When feelings start lying."],
-        ],
-    },
-    "consequence": {
-        "mood": "broken",
-        "covers": [
-            "DAMAGE STARTS",
-            "THIS COSTS",
-            "TRAINING FAILURE",
-            "COMFORT WINS",
-            "WEAK ROUTINE",
-            "YEARS LOST",
-        ],
-        "scripts": [
-            ["THE DAMAGE STARTS HERE.", "One excuse.", "Repeated often enough."],
-            ["THIS COSTS MORE THAN YOU THINK.", "Bad habits charge interest.", "Every day."],
-            ["YOU ARE TRAINING FAILURE.", "Every time you break.", "Your own word."],
-            ["COMFORT WINS QUIETLY.", "Not all at once.", "One compromise at a time."],
-            ["WEAK ROUTINES COMPOUND.", "First in private.", "Then in results."],
-            ["THIS IS HOW YEARS DISAPPEAR.", "Small excuses.", "Repeated daily."],
-        ],
-    },
-    "men_35_44": {
+    "men_35_44_regret": {
         "mood": "rebuild",
+        "cover_style": "regret",
         "covers": [
-            "TIME MOVES",
-            "POTENTIAL EXPIRES",
             "YEARS MOVED",
-            "ONLY PROOF",
+            "POTENTIAL EXPIRES",
             "WAKE UP",
             "NO RESET",
+            "ONLY PROOF",
+            "TIME MOVES",
+            "TOO MANY EXCUSES",
+            "LATER IS COSTLY",
+            "THE COST IS REAL",
+            "YOU KNOW BETTER",
         ],
         "scripts": [
             ["ONE DAY YOU NOTICE.", "The years moved.", "But you did not."],
             ["POTENTIAL EXPIRES.", "Eventually.", "Only proof remains."],
+            ["WAKE UP.", "Time is moving.", "With or without discipline."],
+            ["NO RESET IS FREE.", "Every restart.", "Still costs time."],
+            ["ONLY PROOF REMAINS.", "Not plans.", "Not intentions."],
             ["TIME MOVES ANYWAY.", "The question is.", "Will you?"],
-            ["AT SOME POINT.", "Excuses stop sounding valid.", "And start sounding embarrassing."],
-            ["YOU ARE OLD ENOUGH.", "To know the cost.", "Of that habit."],
-            ["THE YEARS DO NOT WARN YOU.", "Before they disappear.", "Your routine decides."],
+            ["TOO MANY EXCUSES.", "Eventually.", "Become embarrassing."],
+            ["LATER IS COSTLY.", "Weak habits.", "Do not pause."],
+            ["THE COST IS REAL.", "Even when.", "The excuse feels reasonable."],
+            ["YOU KNOW BETTER.", "That is why.", "This feels heavy."],
         ],
     },
-    "authority": {
-        "mood": "dangerous",
+    "structure_authority": {
+        "mood": "challenge",
+        "cover_style": "authority",
         "covers": [
             "RULES STAY",
             "STRUCTURE WINS",
             "NO NEGOTIATION",
             "CONTROL FIRST",
-            "DISCIPLINE BUILT",
             "STANDARDS STAY",
+            "SYSTEMS WIN",
+            "MOOD FADES",
+            "DISCIPLINE BUILT",
+            "DECIDE ONCE",
+            "NO DEBATE",
         ],
         "scripts": [
-            ["DISCIPLINE IS NOT INTENSITY.", "It is structure.", "Repeated without emotion."],
-            ["RULES PROTECT YOU.", "When feelings change.", "That is why they matter."],
-            ["CONTROL RETURNS.", "When negotiation ends.", "Decide once."],
-            ["A SERIOUS LIFE.", "Requires serious systems.", "Not better moods."],
-            ["YOUR STANDARD MUST SURVIVE.", "Your mood.", "Or it was never standard."],
-            ["DISCIPLINE IS BUILT QUIETLY.", "Before pressure arrives.", "Before anyone sees."],
+            ["RULES STAY.", "When feelings change.", "That is why they matter."],
+            ["STRUCTURE WINS.", "Because motivation.", "Does not last."],
+            ["NO NEGOTIATION.", "Decide once.", "Repeat daily."],
+            ["CONTROL FIRST.", "Then consistency.", "Then identity."],
+            ["STANDARDS STAY.", "Or they were never.", "Standards."],
+            ["SYSTEMS WIN.", "When your mood.", "Starts lying."],
+            ["MOOD FADES.", "Your routine.", "Must not."],
+            ["DISCIPLINE IS BUILT.", "Before pressure.", "Arrives."],
+            ["DECIDE ONCE.", "Stop reopening.", "The same battle."],
+            ["NO DEBATE.", "Your standard.", "Is the decision."],
         ],
     },
-    "group_promo_soft": {
+    "soft_group_promo": {
         "mood": "challenge",
+        "cover_style": "promo",
         "covers": [
             "NO HIDING",
             "REAL PRESSURE",
-            "THE ROOM",
-            "PRIVATE STANDARD",
+            "VISIBLE STANDARD",
+            "THE RIGHT ROOM",
             "ACCOUNTABILITY",
-            "JOIN THE ROOM",
+            "STOP ALONE",
         ],
         "scripts": [
-            ["PRIVATE PROMISES BREAK EASILY.", "Visible standards hit different.", "That is why accountability works."],
-            ["SOME PEOPLE NEED PRESSURE.", "Not more motivation.", "A room that keeps the standard visible."],
-            ["YOU KEEP RESTARTING ALONE.", "That is the pattern.", "Structure changes behavior."],
-            ["THE RIGHT ROOM MATTERS.", "Excuses get exposed.", "Standards get protected."],
+            ["PRIVATE PROMISES BREAK.", "Visible standards.", "Hit different."],
+            ["REAL PRESSURE HELPS.", "Not more hype.", "More accountability."],
+            ["VISIBLE STANDARDS WORK.", "Excuses get exposed.", "Structure stays."],
+            ["THE RIGHT ROOM MATTERS.", "Weak routines.", "Get challenged."],
+            ["ACCOUNTABILITY CHANGES THINGS.", "Because hiding.", "Gets harder."],
+            ["STOP RESTARTING ALONE.", "That pattern.", "Is already familiar."],
         ],
     },
 }
@@ -1310,33 +1347,30 @@ def build_day7_script():
 
 def build_retention_reel_script():
     """
-    v23 VIRAL RETENTION ENGINE.
+    v24 VIRAL RETENTION ENGINE.
+
+    Purpose:
+    Stop repeating weak/generic covers like "THIS CHANGES".
 
     Structure:
     HOOK
-    -> pattern interrupt
+    -> self-recognition / consequence
     -> truth
     -> punchline
 
-    80% viral retention
-    15% authority
-    5% soft group promo
-
-    7-9 seconds max.
-    No Day 30 sequence.
-    No long task explanation.
-    No spoken CTA.
+    Cover logic:
+    Identity + consequence + self-recognition hooks dominate.
+    Authority and promo stay rare.
     """
     categories = list(VIRAL_RETENTION_BANK.keys())
 
     weights_by_category = {
-        "self_recognition": 0.24,
-        "identity_attack": 0.20,
-        "curiosity": 0.16,
-        "consequence": 0.20,
-        "men_35_44": 0.15,
-        "authority": 0.04,
-        "group_promo_soft": 0.01,
+        "identity_hooks": 0.25,
+        "consequence_hooks": 0.25,
+        "self_recognition_hooks": 0.22,
+        "men_35_44_regret": 0.16,
+        "structure_authority": 0.10,
+        "soft_group_promo": 0.02,
     }
 
     weights = [weights_by_category.get(c, 0.10) for c in categories]
@@ -1348,15 +1382,14 @@ def build_retention_reel_script():
 
     selected_key = pick_unique_rotated(
         script_keys,
-        memory_key="recent_viral_retention_scripts",
-        max_recent=80,
+        memory_key="recent_viral_retention_scripts_v24",
+        max_recent=120,
     )
 
     selected_index = script_keys.index(selected_key) if selected_key in script_keys else 0
     lines = list(script_options[selected_index])
     lines = rhythm_refine(lines)
 
-    # Hard cap: 3-4 lines only.
     if len(lines) > RETENTION_LINE_COUNT_MAX:
         lines = lines[:RETENTION_LINE_COUNT_MAX]
 
@@ -1364,21 +1397,32 @@ def build_retention_reel_script():
         lines.append(
             pick_unique_rotated(
                 RETENTION_ENDING_LINES,
-                memory_key="recent_viral_endings",
-                max_recent=40,
+                memory_key="recent_viral_endings_v24",
+                max_recent=60,
             )
         )
 
     cover = pick_unique_rotated(
         bank["covers"],
-        memory_key="recent_viral_covers",
-        max_recent=60,
+        memory_key="recent_viral_covers_v24",
+        max_recent=100,
     )
 
-    remember_rotation_item("recent_categories", category, 40)
+    if cover in BANNED_COVERS_V24:
+        safe_covers = [c for c in bank["covers"] if c not in BANNED_COVERS_V24]
+        if safe_covers:
+            cover = pick_unique_rotated(
+                safe_covers,
+                memory_key="recent_viral_safe_covers_v24",
+                max_recent=100,
+            )
 
-    print("VIRAL RETENTION CATEGORY:", category)
-    print("VIRAL RETENTION SCRIPT:", " | ".join(lines))
+    remember_rotation_item("recent_categories", category, 60)
+
+    print("V24 CATEGORY:", category)
+    print("V24 COVER STYLE:", bank.get("cover_style", "default"))
+    print("V24 COVER:", cover)
+    print("V24 SCRIPT:", " | ".join(lines))
 
     return Script(
         mode="viral_retention",
@@ -2536,7 +2580,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” VIRAL RETENTION ENGINE v23")
+    print("\nINNER DISCIPLINE â€” VIRAL RETENTION ENGINE v24 COVER RESET")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -2558,7 +2602,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v23_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v24_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
