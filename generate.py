@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” GROWTH ENGINE v20 SCENE MATCHED BACKGROUNDS
+# INNER DISCIPLINE â€” GROWTH ENGINE v21 STATE LOCK
 #
 # Clean rebuild. No patch stacking.
 #
@@ -211,6 +211,11 @@ RETENTION_ENDING_LINES = [
 DEFAULT_SERIES_DAY = 2
 AUTO_COMMIT_STATE = True
 
+# v21:
+# If this cannot save state back to GitHub, the next run has no memory.
+# So the script fails loudly instead of silently repeating Day 2 / same background.
+STRICT_STATE_SEQUENCE = True
+
 
 # ================================================================
 # STATE
@@ -291,16 +296,12 @@ def infer_next_series_day_from_outputs():
 
 def load_series_state():
     """
-    v18 clean sequence.
+    v21 clean state logic.
 
-    No random fallback.
-    No GitHub run-number guessing.
-    No Day 14 jumps.
-
-    Priority:
-    1. Trust series_state.json if it exists and is initialized.
-    2. If missing, infer next day from output metadata if available.
-    3. If nothing exists, start at Day 2 because Day 1 was already created.
+    No run-number day guessing.
+    If series_state.json exists, use it.
+    If it does not exist, start at Day 2.
+    After generation, auto_commit_state_files() must push Day 3 back to GitHub.
     """
     state_exists = os.path.exists(SERIES_STATE_FILE)
 
@@ -314,29 +315,13 @@ def load_series_state():
     except Exception:
         next_day = SERIES_START_DAY
 
-    initialized = bool(data.get("initialized", False))
-
-    if state_exists and initialized:
-        if next_day < 1 or next_day > 30:
-            next_day = SERIES_START_DAY
-        return {
-            "next_day": next_day,
-            "initialized": True,
-            "source": "series_state_json",
-        }
-
-    inferred = infer_next_series_day_from_outputs()
-    if inferred is not None:
-        return {
-            "next_day": inferred,
-            "initialized": False,
-            "source": "outputs_metadata_inference",
-        }
+    if next_day < 1 or next_day > 30:
+        next_day = SERIES_START_DAY
 
     return {
-        "next_day": SERIES_START_DAY,
-        "initialized": False,
-        "source": "default_day_2",
+        "next_day": next_day,
+        "initialized": bool(data.get("initialized", False)),
+        "source": "series_state_json" if state_exists else "default_day_2_no_state_file",
     }
 
 
@@ -383,8 +368,14 @@ def save_rotation_state(data):
 
 
 def auto_commit_state_files():
+    """
+    Commits state memory files back to GitHub.
+
+    If this fails, the next workflow run cannot know the next day or next background.
+    """
     if not AUTO_COMMIT_STATE:
-        return
+        print("STATE COMMIT DISABLED.")
+        return False
 
     files = [
         "series_state.json",
@@ -393,14 +384,24 @@ def auto_commit_state_files():
         "engine_state_v3.json",
         "hook_state.json",
     ]
+
     existing = [f for f in files if os.path.exists(os.path.join(BASE_DIR, f))]
     if not existing:
-        return
+        print("STATE COMMIT: no state files found.")
+        return False
 
     try:
         subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=BASE_DIR, check=False)
         subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=BASE_DIR, check=False)
-        subprocess.run(["git", "add"] + existing, cwd=BASE_DIR, check=False)
+
+        add = subprocess.run(
+            ["git", "add"] + existing,
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        print("STATE ADD:", add.stdout.strip() or add.stderr.strip() or "ok")
 
         status = subprocess.run(
             ["git", "status", "--porcelain"] + existing,
@@ -412,7 +413,7 @@ def auto_commit_state_files():
 
         if not status.stdout.strip():
             print("STATE COMMIT: no changes.")
-            return
+            return True
 
         commit = subprocess.run(
             ["git", "commit", "-m", "Update generator state"],
@@ -423,6 +424,10 @@ def auto_commit_state_files():
         )
         print("STATE COMMIT:", commit.stdout.strip() or commit.stderr.strip())
 
+        if commit.returncode != 0:
+            print("STATE ERROR: commit failed.")
+            return False
+
         push = subprocess.run(
             ["git", "push"],
             cwd=BASE_DIR,
@@ -430,17 +435,20 @@ def auto_commit_state_files():
             capture_output=True,
             check=False,
         )
+
         print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
         print("STATE PUSH RETURN CODE:", push.returncode)
+
         if push.returncode != 0:
-            print("STATE WARNING: GitHub did not save series_state.json. Day sequence may repeat until Actions write permission is enabled.")
-            if SERIES_FAIL_IF_STATE_PUSH_BLOCKED:
-                raise RuntimeError("State push blocked. Enable workflow permissions: contents: write.")
-        if push.returncode != 0:
-            print("STATE WARNING: GitHub did not allow push. Enable Actions write permission or commit state files manually.")
+            print("STATE ERROR: GitHub did not save series_state.json or rotation_state.json.")
+            print("FIX: Settings > Actions > General > Workflow permissions > Read and write permissions.")
+            return False
+
+        return True
 
     except Exception as e:
         print(f"STATE AUTO-COMMIT FAILED: {e}")
+        return False
 
 
 # ================================================================
@@ -1364,8 +1372,10 @@ def choose_scene_folder(script):
 
 def choose_background_from_pool(pool, rotation_key):
     """
-    Rotates within the selected scene folder.
-    This keeps relevance while still preventing repetition.
+    Rotates inside the selected scene folder.
+
+    Meaning match stays intact.
+    The clip changes only inside the matching folder.
     """
     if not pool:
         return None
@@ -1376,7 +1386,6 @@ def choose_background_from_pool(pool, rotation_key):
     recent_bg = data.get("recent_backgrounds", [])[:RECENT_BACKGROUND_BLOCK]
 
     start_index = int(cursor.get(rotation_key, 0)) % len(pool_sorted)
-
     chosen = None
     chosen_index = start_index
 
@@ -2291,7 +2300,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v20 SCENE MATCHED BACKGROUNDS")
+    print("\nINNER DISCIPLINE â€” GROWTH ENGINE v21 STATE LOCK")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -2313,7 +2322,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v20_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v21_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
@@ -2327,7 +2336,9 @@ def main():
         print(f"Cover:   {cover}")
 
     save_state()
-    auto_commit_state_files()
+    state_saved_ok = auto_commit_state_files()
+    if STRICT_STATE_SEQUENCE and not state_saved_ok:
+        raise RuntimeError('State was not saved to GitHub. Enable Settings > Actions > General > Workflow permissions > Read and write permissions. Without this, Day 2 and the same background will repeat.')
 
     if os.path.exists(TEMP_DIR):
         shutil.rmtree(TEMP_DIR)
