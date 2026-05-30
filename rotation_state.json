@@ -6,14 +6,15 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4"
   ],
   "background_cursor": {
-    "global": 14
+    "global": 15
   },
-  "updated_at": "2026-05-30T10:07:20",
+  "updated_at": "2026-05-30T10:13:16",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -27,9 +28,11 @@
     "comment done when you finish it."
   ],
   "recent_viral_retention_scripts": [
+    "this changes everything. | stop relying on motivation. | start relying on structure.",
     "read this twice. | structure protects you. | when feelings start lying."
   ],
   "recent_viral_covers": [
+    "this changes",
     "watch this"
   ]
 }
