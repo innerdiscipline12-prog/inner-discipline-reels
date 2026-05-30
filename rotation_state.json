@@ -2,19 +2,21 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence_hooks",
     "curiosity",
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4"
   ],
   "background_cursor": {
-    "global": 15
+    "global": 16
   },
-  "updated_at": "2026-05-30T10:13:16",
+  "updated_at": "2026-05-30T10:30:51",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -34,5 +36,11 @@
   "recent_viral_covers": [
     "this changes",
     "watch this"
+  ],
+  "recent_viral_retention_scripts_v24": [
+    "comfort wins quietly. | one compromise. | at a time."
+  ],
+  "recent_viral_covers_v24": [
+    "years disappear"
   ]
 }
