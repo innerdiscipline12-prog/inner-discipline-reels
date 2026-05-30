@@ -5,19 +5,23 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4"
   ],
   "background_cursor": {
-    "global": 12
+    "global": 13
   },
-  "updated_at": "2026-05-30T09:30:26",
+  "updated_at": "2026-05-30T09:39:53",
   "recent_series_intros": [
+    "the work is simple.",
     "do this without negotiation."
   ],
   "recent_series_standards": [
+    "do not let comfort rewrite the rule.",
     "the task is small. the standard is not."
   ],
   "recent_series_done_lines": [
+    "complete the task before you speak.",
     "comment done when you finish it."
   ]
 }
