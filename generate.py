@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” VIRAL RETENTION ENGINE v24 COVER RESET
+# INNER DISCIPLINE â€” VIRAL RETENTION ENGINE v25 CAPTION ROTATION
 #
 # Clean rebuild. No patch stacking.
 #
@@ -91,6 +91,70 @@ BANNED_COVERS_V24 = [
     "HIDDEN COST",
     "READ THIS",
 ]
+
+
+CAPTION_BANK_V25 = {
+    "reflection": [
+        "Most people lose discipline long before they lose results.\n\nResults simply reveal what habits already decided.",
+        "The routine always speaks first.\n\nThe result only arrives later.",
+        "Discipline does not disappear loudly.\n\nIt fades through small decisions repeated too often.",
+        "You do not need a new life first.\n\nYou need a new standard repeated long enough.",
+    ],
+    "identity": [
+        "Discipline is not something you do once.\n\nEventually, it becomes who you are.",
+        "Your identity is being trained daily.\n\nBy what you repeat when nobody is watching.",
+        "A man becomes what he keeps allowing.\n\nStandards are not private forever.",
+        "Your habits are voting for a version of you.\n\nMake sure you respect who they are building.",
+    ],
+    "accountability": [
+        "Be honest.\n\nWhat excuse have you repeated so many times it now feels true?",
+        "Look at the pattern.\n\nNot the intention. The pattern.",
+        "The question is not what you want.\n\nThe question is what you keep proving.",
+        "Accountability begins when the excuse stops sounding reasonable.",
+    ],
+    "consequence": [
+        "The cost of weak habits is rarely immediate.\n\nThat is why most people keep paying it.",
+        "Small compromises do not look dangerous at first.\n\nThat is what makes them dangerous.",
+        "Weak routines charge interest.\n\nEventually, the bill becomes visible.",
+        "Comfort feels cheap in the moment.\n\nThe long-term price is always higher.",
+    ],
+    "regret": [
+        "Years pass whether you build yourself or not.\n\nTime is moving either way.",
+        "Regret rarely starts as a disaster.\n\nIt starts as a routine you refused to fix.",
+        "One day, potential stops sounding impressive.\n\nOnly proof remains.",
+        "You are not too late.\n\nBut you are too old to keep pretending time is free.",
+    ],
+    "structure": [
+        "Motivation is unstable.\n\nStructure is what keeps moving when feelings change.",
+        "Rules protect you from your weakest mood.",
+        "Discipline becomes easier when decisions stop reopening every day.",
+        "A serious life requires serious systems.\n\nNot better moods.",
+    ],
+    "community": [
+        "Quiet work.\n\nClear standards.\n\nNo negotiation.",
+        "Private discipline first.\n\nPublic results later.",
+        "The standard is simple.\n\nDo what you said when the mood changes.",
+        "Control yourself quietly.\n\nLet the results speak later.",
+    ],
+    "soft_promo": [
+        "Accountability changes behavior.\n\nStructure beats motivation.",
+        "Some people do not need more advice.\n\nThey need a standard they cannot hide from.",
+        "A serious room changes how you move.\n\nExcuses get exposed faster.",
+        "Private promises break easily.\n\nVisible standards hit different.",
+    ],
+}
+
+HASHTAG_PACKS_V25 = [
+    "#discipline #selfdiscipline #consistency #mindset #growth",
+    "#discipline #habits #accountability #selfcontrol #standards",
+    "#mentalstrength #discipline #focus #routine #success",
+    "#innerdiscipline #consistency #dailyhabits #selfmastery #growthmindset",
+    "#disciplinechallenge #discipline #accountability #mentalcontrol #habits",
+    "#selfcontrol #discipline #mensmindset #standards #growth",
+    "#disciplineovermotivation #habits #mindsetshift #consistency #focus",
+    "#mentalcontrol #discipline #routine #selfrespect #innerdiscipline",
+]
+
 
 
 REEL_SECONDS = 20.0
@@ -2310,71 +2374,47 @@ def export_cover(script, out_path, bg_path=None):
 # METADATA
 # ================================================================
 
+def choose_caption_type_v25(script):
+    category = str(getattr(script, "category", "")).lower()
+    cover = str(getattr(script, "cover", "")).lower()
+    joined = " ".join(getattr(script, "lines", [])).lower()
+    text = " ".join([category, cover, joined])
+
+    if "promo" in category or "accountability" in text or "room" in text:
+        return "soft_promo"
+    if any(x in text for x in ["years", "time", "potential", "regret", "old enough"]):
+        return "regret"
+    if any(x in text for x in ["cost", "damage", "charge", "interest", "consequence", "worse"]):
+        return "consequence"
+    if any(x in text for x in ["standard", "identity", "private", "habit", "routine"]):
+        return "identity"
+    if any(x in text for x in ["structure", "rules", "systems", "negotiation", "motivation"]):
+        return "structure"
+    if any(x in text for x in ["be honest", "you know", "this is you", "stop lying"]):
+        return "accountability"
+    return random.choice(["reflection", "identity", "consequence", "structure", "community"])
+
+
+def build_caption_v25(script):
+    caption_type = choose_caption_type_v25(script)
+    caption_pool = CAPTION_BANK_V25.get(caption_type, CAPTION_BANK_V25["reflection"])
+
+    caption = pick_unique_rotated(caption_pool, memory_key="recent_captions_v25", max_recent=80)
+    hashtags = pick_unique_rotated(HASHTAG_PACKS_V25, memory_key="recent_hashtags_v25", max_recent=20)
+
+    print("CAPTION TYPE:", caption_type)
+    print("CAPTION:", caption.replace("\n", " / "))
+    print("HASHTAGS:", hashtags)
+
+    return caption + "\n\n" + hashtags
+
+
 def build_caption(script):
-    if script.mode == "viral_retention":
-        return "\n".join([
-            "Quiet discipline. Clear standards. No negotiation.",
-            "",
-            "#discipline #selfdiscipline #consistency #innerdiscipline #mentalcontrol #habits #standards #selfimprovement #mindset #growth",
-        ])
-
-    if script.mode == "retention":
-        return "\n".join([
-            "Quiet discipline. Clear standards. No negotiation.",
-            "",
-            "#discipline #selfdiscipline #consistency #innerdiscipline #mentalcontrol #habits #standards #selfimprovement #mindset #growth",
-        ])
-
-    if script.mode == "series":
-        return "\n".join([
-            SERIES_NAME,
-            "",
-            f"Day {script.day}: {script.title.replace(' | INNER DISCIPLINE', '')}",
-            "",
-            f"Task: {script.task}",
-            "",
-            "Comment DONE when you finish it.",
-            "Save this and come back tomorrow.",
-            "",
-            "#discipline #30daychallenge #innerdiscipline #selfimprovement #accountability #mindset #noexcuses #consistency #growthmindset #hardwork",
-        ])
-
-    if script.mode == "day7":
-        return "\n".join([
-            "Most people do not lose consistency loudly.",
-            "They drift through small compromises.",
-            "",
-            "Day 7 exposes the routine.",
-            "Habits. Inputs. Standards. Structure.",
-            "",
-            "#discipline #consistency #day7challenge #innerdiscipline #selfimprovement #habits #standards #mindset #noexcuses #growthmindset",
-        ])
-
-    if script.mode == "member":
-        return "\n".join([
-            "This is not just a group.",
-            "It is the room where the standard stays visible.",
-            "",
-            "Join the Inner Discipline 30 Day Challenge.",
-            "Members unlock the Discipline Manual inside the group.",
-            "",
-            "Link in bio.",
-            "",
-            "#discipline #accountability #30daychallenge #innerdiscipline #selfimprovement #mindset #noexcuses #growthmindset #hardwork",
-        ])
-
-    return "\n".join([
-        "Most people do not fail loudly. They drift quietly.",
-        "",
-        f'"{script.lines[0]}"',
-        "",
-        script.lines[2],
-        "",
-        "-",
-        script.lines[-1],
-        "",
-        "#discipline #selfimprovement #mindset #noexcuses #innerdiscipline #accountability #growthmindset #hardwork",
-    ])
+    """
+    V25 caption rotation.
+    No more repeated caption/hashtag pack.
+    """
+    return build_caption_v25(script)
 
 
 def write_metadata(script, out_path, bg_path=None):
@@ -2580,7 +2620,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” VIRAL RETENTION ENGINE v24 COVER RESET")
+    print("\nINNER DISCIPLINE â€” VIRAL RETENTION ENGINE v25 CAPTION ROTATION")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -2602,7 +2642,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v24_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v25_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
