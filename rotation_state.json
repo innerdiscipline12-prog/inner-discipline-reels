@@ -2,6 +2,7 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "completion_consequence",
     "identity_clarity",
     "topic_authority",
     "identity_hooks",
@@ -11,6 +12,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
@@ -18,13 +20,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
   ],
   "background_cursor": {
-    "global": 23
+    "global": 24
   },
-  "updated_at": "2026-06-01T06:35:44",
+  "updated_at": "2026-06-01T06:54:46",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -76,11 +77,19 @@
     "#mentalcontrol #discipline #routine #selfrespect #innerdiscipline"
   ],
   "recent_meta_optimized_scripts_v26": [
+    "this costs you years. | not one mistake. | repeated weak routines. | protected by reasonable excuses.",
     "habits do not lie. | they show what you respect. | what you allow. | and what you are becoming.",
     "rules stay. | when feelings change. | that is why serious people use them. | they remove negotiation."
   ],
   "recent_meta_covers_v26": [
+    "later gets expensive",
     "no one is coming",
     "no negotiation"
+  ],
+  "recent_captions_v26": [
+    "weak habits feel small until they compound."
+  ],
+  "recent_hashtags_v26": [
+    "#discipline #routine #focus #mindset #selfrespect"
   ]
 }
