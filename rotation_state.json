@@ -2,6 +2,7 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "standards",
     "completion_regret",
     "completion_consequence",
     "identity_clarity",
@@ -13,6 +14,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
@@ -20,13 +22,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 25
+    "global": 26
   },
-  "updated_at": "2026-06-01T07:13:37",
+  "updated_at": "2026-06-01T11:19:13",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -96,5 +97,17 @@
   "recent_hashtags_v26": [
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect"
+  ],
+  "recent_identity_engine_scripts_v27": [
+    "no standard. | that is why everything depends. | on how you feel. | every day."
+  ],
+  "recent_identity_covers_v27": [
+    "standards create results"
+  ],
+  "recent_captions_v27": [
+    "a standard that changes with mood is not a standard."
+  ],
+  "recent_hashtags_v27": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ]
 }
