@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” META OPTIMIZED ENGINE v26
+# INNER DISCIPLINE â€” META OPTIMIZED ENGINE v26.1 PACING FIX
 #
 # Clean rebuild. No patch stacking.
 #
@@ -585,6 +585,15 @@ def auto_commit_state_files():
 # ================================================================
 
 PACING = {
+    "controlled": {
+        "line_pause": 0.18,
+        "sentence_pause": 0.28,
+        "voice_speed": 1.02,
+        "min_line_duration": 1.35,
+        "max_line_duration": 2.45,
+        "subtitle_hold": 0.12,
+    },
+
     "attack": {"rate": "-4%", "pitch": "-35Hz", "chunk_size": 2, "gap": 0.16},
     "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
     "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
@@ -1463,7 +1472,7 @@ def build_retention_reel_script():
         mood=bank["mood"],
         cover=cover,
         title=f"{cover} | INNER DISCIPLINE",
-        pacing="controlled",
+        pacing="cold",
         lines=lines,
     )
 
@@ -1915,7 +1924,7 @@ async def tts_async(text, filename, rate, pitch):
 
 
 def generate_voice(text, filename, pacing):
-    mode = PACING[pacing]
+    mode = PACING.get(pacing, PACING.get('cold', list(PACING.values())[0]))
     asyncio.run(tts_async(text, filename, mode["rate"], mode["pitch"]))
 
 
@@ -2486,7 +2495,7 @@ def build_video(script, bg_path, out_path):
                 "line": line,
                 "duration": dur,
                 "start": cursor,
-                "chunk_size": PACING[script.pacing]["chunk_size"],
+                "chunk_size": PACING.get(script.pacing, PACING.get('cold', list(PACING.values())[0]))["chunk_size"],
             })
 
             cursor += dur + (gap if i < len(script.lines) - 1 else 0.24)
@@ -2638,7 +2647,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” META OPTIMIZED ENGINE v26")
+    print("\nINNER DISCIPLINE â€” META OPTIMIZED ENGINE v26.1 PACING FIX")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -2660,7 +2669,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v26_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v26_1_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
