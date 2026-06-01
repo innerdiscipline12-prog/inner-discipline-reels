@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” META OPTIMIZED ENGINE v26.1 PACING FIX
+# INNER DISCIPLINE â€” IDENTITY ENGINE v27
 #
 # Clean rebuild. No patch stacking.
 #
@@ -81,9 +81,15 @@ W, H = 1080, 1920
 FPS = 30
 RETENTION_REEL_MODE = True
 RETENTION_MIN_SECONDS = 10.0
-RETENTION_MAX_SECONDS = 13.8
+RETENTION_MAX_SECONDS = 13.5
 RETENTION_LINE_COUNT_MIN = 4
 RETENTION_LINE_COUNT_MAX = 5
+
+IDENTITY_ENGINE_MODE = True
+PUBLIC_REELS_ONLY = True
+DISABLE_DAY_SEQUENCE_PUBLIC = True
+IDENTITY_ENGINE_VERSION = "v27"
+
 
 META_MONETIZATION_MIN_SECONDS = 10.0
 META_RETENTION_TARGET_SECONDS = 12.0
@@ -223,10 +229,10 @@ TEXT_CENTER_Y = 0.585
 TEXT_HOOK_Y = 0.535
 
 LOGO_OPACITY = 0.38
-LOGO_SIZE = 46
+LOGO_SIZE = 50
 LOGO_BOTTOM_MARGIN = 100
 
-COVER_LOGO_SIZE = 46
+COVER_LOGO_SIZE = 50
 COVER_DARKEN = 0.36
 COVER_BLUR_RADIUS = 18
 
@@ -896,98 +902,158 @@ SERIES_DONE_LINES = [
 ]
 
 VIRAL_RETENTION_BANK = {
-    "identity_clarity": {
+    "identity": {
         "mood": "dangerous",
         "cover_style": "identity",
         "covers": [
-            "DISCIPLINE IS FREEDOM", "NO ONE IS COMING", "STANDARDS CREATE RESULTS",
-            "HABITS DO NOT LIE", "SELF CONTROL WINS", "YOUR ROUTINE TELLS",
-            "PRIVATE PROOF", "RESULTS REVEAL TRUTH",
+            "YOU SAID YOU WOULD", "DISCIPLINED PEOPLE DON'T", "YOUR HABITS VOTED",
+            "YOU KNOW THE TRUTH", "THE STANDARD DROPPED", "MOST PEOPLE QUIT HERE",
+            "NO ONE IS COMING", "DISCIPLINE IS FREEDOM", "PRIVATE PROOF",
+            "WHO ARE YOU", "YOU CHOSE THIS", "RESULTS DON'T LIE",
         ],
         "scripts": [
-            ["DISCIPLINE IS FREEDOM.", "Not because it feels easy.", "Because it removes the chaos.", "That weak choices keep creating."],
+            ["YOU SAID YOU WOULD.", "Then the mood changed.", "That is where discipline begins.", "Not before."],
+            ["DISCIPLINED PEOPLE DON'T.", "Wait to feel ready.", "They move by standard.", "Not emotion."],
+            ["YOUR HABITS VOTED.", "Your results counted them.", "That is why life looks honest.", "Even when words do not."],
+            ["YOU KNOW THE TRUTH.", "The problem is not hidden.", "You keep protecting the routine.", "That is costing you."],
+            ["THE STANDARD DROPPED.", "Not in public.", "In the small private choices.", "Nobody saw."],
+            ["MOST PEOPLE QUIT HERE.", "Not at failure.", "At discomfort.", "Before the work gets real."],
             ["NO ONE IS COMING.", "Not to fix your habits.", "Not to rescue your standards.", "You move first."],
-            ["STANDARDS CREATE RESULTS.", "Not wishes.", "Not moods.", "Repeated standards."],
-            ["HABITS DO NOT LIE.", "They show what you respect.", "What you allow.", "And what you are becoming."],
-            ["SELF CONTROL WINS.", "Quietly.", "Before the result.", "Before anyone sees it."],
-            ["YOUR ROUTINE TELLS THE TRUTH.", "Even when your mouth does not.", "The pattern always speaks.", "The result only confirms it."],
+            ["DISCIPLINE IS FREEDOM.", "Because it removes the chaos.", "That weak choices keep creating.", "Every day."],
             ["PRIVATE PROOF MATTERS.", "Nobody sees the choice.", "But your future feels it.", "Every time."],
-            ["RESULTS REVEAL TRUTH.", "Not potential.", "Not intention.", "Repeated behavior."],
+            ["WHO ARE YOU.", "When nobody is watching.", "When the mood is gone.", "When comfort calls."],
+            ["YOU CHOSE THIS.", "Not once.", "Repeatedly.", "Through what you kept allowing."],
+            ["RESULTS DON'T LIE.", "They repeat back.", "The habits you practiced.", "In private."],
         ],
     },
-    "completion_consequence": {
+    "consequence": {
         "mood": "broken",
         "cover_style": "consequence",
         "covers": [
-            "COMFORT HAS A PRICE", "EXCUSES HAVE INTEREST", "THIS COSTS YOU YEARS",
-            "WEAKNESS COMPOUNDS", "TIME DOES NOT WAIT", "THE BILL ARRIVES",
-            "SMALL EXCUSES COST", "LATER GETS EXPENSIVE",
+            "SKIPPING COSTS MORE", "YEARS DISAPPEAR FAST", "WEAKNESS COMPOUNDS",
+            "THE DAMAGE GROWS", "ONE DAY BECOMES YEARS", "COMFORT HAS A PRICE",
+            "EXCUSES HAVE INTEREST", "THE BILL ARRIVES", "THIS COSTS YOU",
+            "LATER GETS EXPENSIVE", "TIME DOES NOT WAIT", "SMALL EXCUSES COST",
         ],
         "scripts": [
-            ["COMFORT HAS A PRICE.", "You think you are avoiding pain.", "You are only delaying it.", "The bill always arrives.", "Usually with interest."],
-            ["EXCUSES HAVE INTEREST.", "They feel cheap today.", "Then they charge your future.", "One delayed action at a time."],
-            ["THIS COSTS YOU YEARS.", "Not one mistake.", "Repeated weak routines.", "Protected by reasonable excuses."],
+            ["SKIPPING COSTS MORE.", "It feels cheap today.", "Then your future pays.", "With interest."],
+            ["YEARS DISAPPEAR FAST.", "Especially when your routine stays weak.", "You do not feel it daily.", "You feel it later."],
             ["WEAKNESS COMPOUNDS.", "First in private.", "Then in habits.", "Then in results."],
-            ["TIME DOES NOT WAIT.", "Your mood can change tomorrow.", "But today still counts.", "So does every excuse."],
-            ["THE BILL ARRIVES.", "For every habit you ignore.", "For every standard you lower.", "Nothing stays free."],
-            ["SMALL EXCUSES COST MORE.", "Because they look harmless.", "Until they become normal.", "Then they become identity."],
+            ["THE DAMAGE GROWS.", "When you keep excusing it.", "Small habits become identity.", "That is the danger."],
+            ["ONE DAY BECOMES YEARS.", "When the excuse stays the same.", "That is how drift becomes life."],
+            ["COMFORT HAS A PRICE.", "You think you are avoiding pain.", "You are only delaying it.", "The bill always arrives."],
+            ["EXCUSES HAVE INTEREST.", "They feel harmless now.", "Then they charge your future.", "Every day."],
+            ["THE BILL ARRIVES.", "For every standard you lower.", "For every habit you ignore.", "Nothing stays free."],
+            ["THIS COSTS YOU.", "Not because one day went wrong.", "Because the same weakness kept winning."],
             ["LATER GETS EXPENSIVE.", "Weak habits do not pause.", "While you wait to feel ready.", "They keep building."],
+            ["TIME DOES NOT WAIT.", "Your mood can change tomorrow.", "But today still counts.", "So does every excuse."],
+            ["SMALL EXCUSES COST MORE.", "Because they look harmless.", "Until they become normal.", "Then they become identity."],
         ],
     },
-    "share_triggers": {
-        "mood": "challenge",
-        "cover_style": "share",
-        "covers": [
-            "MOST MEN NEED THIS", "SOMEONE NEEDS THIS", "THIS HITS LATE",
-            "READ THIS TWICE", "A MAN MUST KNOW", "THIS IS THE STANDARD",
-            "QUIET TRUTH",
-        ],
-        "scripts": [
-            ["MOST MEN NEED THIS.", "Not more advice.", "Not another plan.", "A standard they stop negotiating with."],
-            ["SOMEONE NEEDS THIS.", "The problem is not talent.", "It is the habit of quitting quietly.", "Before pressure even arrives."],
-            ["THIS HITS LATE.", "You do not notice weak habits immediately.", "You notice them when results stop moving.", "That is the warning."],
-            ["READ THIS TWICE.", "The life you want.", "Requires the habits you avoid.", "There is no shortcut around that."],
-            ["A MAN MUST KNOW THIS.", "Feelings change.", "Pressure changes.", "Standards should not."],
-            ["THIS IS THE STANDARD.", "Do what you said.", "When the mood is gone.", "That is discipline."],
-            ["QUIET TRUTH.", "Nobody sees the private battle.", "But everyone eventually sees the result."],
-        ],
-    },
-    "completion_regret": {
-        "mood": "rebuild",
-        "cover_style": "regret",
-        "covers": [
-            "YEARS MOVE FAST", "POTENTIAL EXPIRES", "YOU KNOW BETTER",
-            "ONLY PROOF REMAINS", "WAKE UP", "NO RESET IS FREE",
-            "TIME MOVES ANYWAY", "REGRET STARTS QUIET",
-        ],
-        "scripts": [
-            ["YEARS MOVE FAST.", "Especially when your routine stays the same.", "You do not feel it daily.", "You feel it later."],
-            ["POTENTIAL EXPIRES.", "Eventually.", "People stop asking what you could become.", "They look at what you built."],
-            ["YOU KNOW BETTER.", "That is why this feels heavy.", "The habit is not confusing.", "It is just comfortable."],
-            ["ONLY PROOF REMAINS.", "Not plans.", "Not intentions.", "Not the version you keep imagining.", "Proof."],
-            ["WAKE UP.", "Time is moving.", "With or without your discipline.", "Your routine is already deciding."],
-            ["NO RESET IS FREE.", "Every restart still costs time.", "Every delay leaves a mark.", "Build before regret teaches you."],
-            ["TIME MOVES ANYWAY.", "The question is not whether life changes.", "The question is whether you change with it."],
-            ["REGRET STARTS QUIETLY.", "As one routine you refuse to fix.", "Then another.", "Then years."],
-        ],
-    },
-    "topic_authority": {
+    "standards": {
         "mood": "dangerous",
-        "cover_style": "authority",
+        "cover_style": "standards",
         "covers": [
-            "STRUCTURE WINS", "RULES STAY", "NO NEGOTIATION",
-            "CONTROL FIRST", "MOOD FADES", "SYSTEMS WIN",
-            "DECIDE ONCE", "DISCIPLINE BUILT",
+            "STANDARDS CREATE RESULTS", "NO STANDARD", "RAISE THE STANDARD",
+            "THE STANDARD STAYED", "STANDARD OVER MOOD", "RULES STAY",
+            "NO NEGOTIATION", "DECIDE ONCE", "STRUCTURE WINS", "MOOD FADES",
         ],
         "scripts": [
-            ["STRUCTURE WINS.", "Because motivation changes.", "Because moods lie.", "Because pressure always returns."],
+            ["STANDARDS CREATE RESULTS.", "Not wishes.", "Not moods.", "Repeated standards."],
+            ["NO STANDARD.", "That is why everything depends.", "On how you feel.", "Every day."],
+            ["RAISE THE STANDARD.", "Not the speech.", "Not the plan.", "The repeated behavior."],
+            ["THE STANDARD STAYED.", "Even when the mood left.", "That is discipline.", "That is control."],
+            ["STANDARD OVER MOOD.", "Because mood changes.", "Your life cannot depend.", "On unstable emotion."],
             ["RULES STAY.", "When feelings change.", "That is why serious people use them.", "They remove negotiation."],
             ["NO NEGOTIATION.", "Decide once.", "Repeat daily.", "Stop reopening the same battle."],
-            ["CONTROL FIRST.", "Then consistency.", "Then identity.", "Then results."],
-            ["MOOD FADES.", "Your routine must not.", "That is the difference.", "Between wanting and becoming."],
-            ["SYSTEMS WIN.", "Not because they are exciting.", "Because they keep working.", "When you do not feel like it."],
             ["DECIDE ONCE.", "The more you debate the standard.", "The weaker the standard becomes."],
-            ["DISCIPLINE IS BUILT.", "Before pressure arrives.", "Before the result.", "Before anyone claps."],
+            ["STRUCTURE WINS.", "Because motivation changes.", "Because moods lie.", "Because pressure returns."],
+            ["MOOD FADES.", "Your routine must not.", "That is the difference.", "Between wanting and becoming."],
+        ],
+    },
+    "accountability": {
+        "mood": "challenge",
+        "cover_style": "accountability",
+        "covers": [
+            "BE HONEST", "LOOK AT THE PATTERN", "YOU KEEP RESTARTING",
+            "THE PATTERN SPEAKS", "ACCOUNTABILITY WINS", "NO HIDING",
+            "PRIVATE PROMISES BREAK", "VISIBLE STANDARDS", "STOP RESTARTING",
+            "YOU ALREADY KNOW",
+        ],
+        "scripts": [
+            ["BE HONEST.", "You know exactly.", "Where discipline keeps breaking.", "Start there."],
+            ["LOOK AT THE PATTERN.", "Not the intention.", "Not the excuse.", "The pattern."],
+            ["YOU KEEP RESTARTING.", "Because the system never changed.", "Only the emotion did."],
+            ["THE PATTERN SPEAKS.", "Even when you explain it well.", "Your routine tells the truth."],
+            ["ACCOUNTABILITY WINS.", "Because hiding gets harder.", "Excuses lose power.", "Standards stay visible."],
+            ["NO HIDING.", "Your private habits.", "Eventually become public results."],
+            ["PRIVATE PROMISES BREAK.", "When there is no structure.", "No pressure.", "No standard."],
+            ["VISIBLE STANDARDS WORK.", "Because excuses get exposed.", "Before they become identity."],
+            ["STOP RESTARTING.", "Build the system.", "Protect the standard.", "Repeat it."],
+            ["YOU ALREADY KNOW.", "The habit costing you.", "You just keep defending it."],
+        ],
+    },
+    "self_control": {
+        "mood": "rebuild",
+        "cover_style": "self_control",
+        "covers": [
+            "SELF CONTROL WINS", "CONTROL FIRST", "CONTROL YOURSELF",
+            "THE URGE PASSES", "DO NOT FEED IT", "PHONE FIRST",
+            "INPUTS CONTROL", "ATTENTION LEAKS", "CONTROL RETURNS", "FIX THE INPUTS",
+        ],
+        "scripts": [
+            ["SELF CONTROL WINS.", "Quietly.", "Before the result.", "Before anyone sees it."],
+            ["CONTROL FIRST.", "Then consistency.", "Then identity.", "Then results."],
+            ["CONTROL YOURSELF.", "Not when it is easy.", "When the urge is loud.", "That is the test."],
+            ["THE URGE PASSES.", "But the choice remains.", "That is what builds you.", "Or breaks you."],
+            ["DO NOT FEED IT.", "The habit grows.", "Every time you obey it."],
+            ["PHONE FIRST.", "Then your mind follows.", "Then your day follows.", "That is the trap."],
+            ["INPUTS CONTROL YOU.", "If you do not control them.", "Your attention follows.", "Your life follows."],
+            ["ATTENTION LEAKS.", "Then discipline weakens.", "Then results slow down."],
+            ["CONTROL RETURNS.", "When negotiation ends.", "Decide once.", "Move."],
+            ["FIX THE INPUTS.", "Before you blame discipline.", "Your environment is training you."],
+        ],
+    },
+    "habits": {
+        "mood": "rebuild",
+        "cover_style": "habits",
+        "covers": [
+            "HABITS DO NOT LIE", "YOUR ROUTINE TELLS", "HABITS VOTE DAILY",
+            "THE ROUTINE WON", "SMALL HABITS DECIDE", "REPEAT THIS",
+            "ROUTINE EXPOSES YOU", "WHAT YOU REPEAT", "THE HABIT STAYS", "PROOF IS DAILY",
+        ],
+        "scripts": [
+            ["HABITS DO NOT LIE.", "They show what you respect.", "What you allow.", "And what you are becoming."],
+            ["YOUR ROUTINE TELLS THE TRUTH.", "Even when your mouth does not.", "The pattern always speaks."],
+            ["HABITS VOTE DAILY.", "Your future counts them.", "That is why repetition matters."],
+            ["THE ROUTINE WON.", "Not because you wanted it.", "Because you kept repeating it."],
+            ["SMALL HABITS DECIDE.", "What big goals cannot save.", "When the standard is weak."],
+            ["REPEAT THIS.", "Your life follows.", "What you practice.", "Not what you promise."],
+            ["ROUTINE EXPOSES YOU.", "Not once.", "Every day.", "Quietly."],
+            ["WHAT YOU REPEAT.", "Becomes what you trust.", "Then what you become."],
+            ["THE HABIT STAYS.", "Until the standard changes.", "Not the speech.", "The standard."],
+            ["PROOF IS DAILY.", "Not dramatic.", "Not loud.", "Repeated."],
+        ],
+    },
+    "masculinity": {
+        "mood": "dangerous",
+        "cover_style": "masculinity",
+        "covers": [
+            "BE RELIABLE", "A MAN MUST KNOW", "REAL MEN BUILD", "QUIET STRENGTH",
+            "KEEP YOUR WORD", "NO WEAK WORD", "PROVE IT QUIETLY",
+            "BE THE STANDARD", "MEN NEED STRUCTURE", "CONTROL IS RESPECT",
+        ],
+        "scripts": [
+            ["BE RELIABLE.", "Not only when life is easy.", "When pressure arrives.", "When nobody claps."],
+            ["A MAN MUST KNOW THIS.", "Feelings change.", "Pressure changes.", "Standards should not."],
+            ["REAL MEN BUILD.", "Quietly.", "Repeatedly.", "Without needing applause."],
+            ["QUIET STRENGTH.", "Is keeping your standard.", "When comfort offers a way out."],
+            ["KEEP YOUR WORD.", "Especially to yourself.", "That is where respect starts."],
+            ["NO WEAK WORD.", "Say less.", "Prove more.", "Repeat it."],
+            ["PROVE IT QUIETLY.", "No announcement.", "No performance.", "Just the work."],
+            ["BE THE STANDARD.", "Not the excuse.", "Not the speech.", "The standard."],
+            ["MEN NEED STRUCTURE.", "Not more noise.", "Not more hype.", "A rule they obey."],
+            ["CONTROL IS RESPECT.", "For your time.", "Your word.", "Your future."],
         ],
     },
 }
@@ -1405,23 +1471,22 @@ def build_day7_script():
 
 def build_retention_reel_script():
     """
-    v26 META OPTIMIZED ENGINE.
+    v27 IDENTITY ENGINE.
 
-    Meta signals:
-    - Reels should be 10+ seconds for monetization eligibility.
-    - Completion rate matters.
-    - Like rate matters.
-    - Original, topic-relevant content matters.
-    - No engagement bait.
+    Public reels only. No Day 1, Day 2, Day 30, or challenge sequence.
+    Rotates identity, consequence, standards, accountability,
+    self-control, habits, and masculinity.
     """
     categories = list(VIRAL_RETENTION_BANK.keys())
 
     weights_by_category = {
-        "identity_clarity": 0.30,
-        "completion_consequence": 0.25,
-        "share_triggers": 0.18,
-        "completion_regret": 0.17,
-        "topic_authority": 0.10,
+        "identity": 0.20,
+        "consequence": 0.18,
+        "standards": 0.16,
+        "accountability": 0.14,
+        "self_control": 0.12,
+        "habits": 0.12,
+        "masculinity": 0.08,
     }
 
     weights = [weights_by_category.get(c, 0.10) for c in categories]
@@ -1433,8 +1498,8 @@ def build_retention_reel_script():
 
     selected_key = pick_unique_rotated(
         script_keys,
-        memory_key="recent_meta_optimized_scripts_v26",
-        max_recent=140,
+        memory_key="recent_identity_engine_scripts_v27",
+        max_recent=180,
     )
 
     selected_index = script_keys.index(selected_key) if selected_key in script_keys else 0
@@ -1448,26 +1513,26 @@ def build_retention_reel_script():
         lines.append(
             pick_unique_rotated(
                 RETENTION_ENDING_LINES,
-                memory_key="recent_meta_endings_v26",
+                memory_key="recent_identity_endings_v27",
                 max_recent=80,
             )
         )
 
     cover = pick_unique_rotated(
         bank["covers"],
-        memory_key="recent_meta_covers_v26",
-        max_recent=120,
+        memory_key="recent_identity_covers_v27",
+        max_recent=160,
     )
 
-    remember_rotation_item("recent_categories", category, 80)
+    remember_rotation_item("recent_categories", category, 100)
 
-    print("V26 CATEGORY:", category)
-    print("V26 COVER STYLE:", bank.get("cover_style", "default"))
-    print("V26 COVER:", cover)
-    print("V26 SCRIPT:", " | ".join(lines))
+    print("V27 CATEGORY:", category)
+    print("V27 COVER STYLE:", bank.get("cover_style", "default"))
+    print("V27 COVER:", cover)
+    print("V27 SCRIPT:", " | ".join(lines))
 
     return Script(
-        mode="meta_optimized",
+        mode="identity_engine",
         category=category,
         mood=bank["mood"],
         cover=cover,
@@ -1530,19 +1595,18 @@ def build_series_script():
 
 def should_make_series():
     """
-    Series-only phase.
+    v27: Day sequence is disabled for public reels.
     """
-    return True
+    return False
 
 
 def build_script():
     """
-    v26 META OPTIMIZED MODE.
+    v27 PUBLIC IDENTITY ENGINE.
 
-    Generates original, topic-relevant, 10-14 second completion reels.
-    No Day 30 sequence.
-    No engagement bait.
-    No ebook overlay.
+    No Day 1. No Day 2. No Day 30. No challenge sequence.
+    Only public reels built around identity, consequence, standards,
+    accountability, self-control, habits, and masculinity.
     """
     return build_retention_reel_script()
 
@@ -1865,8 +1929,7 @@ def choose_ebook_screenshot():
 
 def should_use_ebook_bait(script):
     """
-    V26: no ebook overlays in public growth reels.
-    Keeps originality and completion clean.
+    v27: no ebook overlays in public reels.
     """
     return False
 
@@ -2434,14 +2497,105 @@ def build_caption_v26(script):
     return caption + "\n\n" + hashtags
 
 
+
+CAPTION_BANK_V27 = {
+    "identity": [
+        "Identity is built in private before it is seen in public.",
+        "Your standards are not what you say. They are what you repeat.",
+        "The routine tells the truth before the result arrives.",
+        "Discipline is not a mood. It is a standard.",
+    ],
+    "consequence": [
+        "Weak choices feel small until they compound.",
+        "Comfort is never free. The cost arrives later.",
+        "The bill for avoided discipline always comes.",
+        "Small excuses become expensive when repeated.",
+    ],
+    "standards": [
+        "Raise the standard before you chase the result.",
+        "A standard that changes with mood is not a standard.",
+        "Rules protect you from your weakest mood.",
+        "No negotiation. Decide once. Repeat daily.",
+    ],
+    "accountability": [
+        "Look at the pattern. That is where the truth is.",
+        "Accountability begins where the excuse ends.",
+        "Your private habits eventually become public results.",
+        "Stop explaining the pattern. Correct it.",
+    ],
+    "self_control": [
+        "Control starts with the first small choice.",
+        "The urge passes. The choice remains.",
+        "Protect your attention. It is training your life.",
+        "Self-control is quiet proof.",
+    ],
+    "habits": [
+        "Habits vote daily. Your future counts them.",
+        "What you repeat becomes what you trust.",
+        "The routine wins when the standard is weak.",
+        "Small habits decide more than big speeches.",
+    ],
+    "masculinity": [
+        "Keep your word. Especially to yourself.",
+        "Be reliable when pressure arrives.",
+        "Quiet strength does not need applause.",
+        "A serious man protects his standard.",
+    ],
+}
+
+HASHTAG_PACKS_V27 = [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+    "#discipline #habits #standards #selfcontrol #growth",
+    "#discipline #routine #focus #mindset #selfrespect",
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
+    "#discipline #accountability #mentalcontrol #standards #focus",
+    "#selfcontrol #discipline #mensmindset #consistency #growth",
+]
+
+def choose_caption_type_v27(script):
+    category = str(getattr(script, "category", "")).lower()
+    text = " ".join([
+        category,
+        str(getattr(script, "cover", "")),
+        " ".join(getattr(script, "lines", [])),
+    ]).lower()
+
+    if category in CAPTION_BANK_V27:
+        return category
+    if any(x in text for x in ["cost", "bill", "interest", "comfort", "damage", "years"]):
+        return "consequence"
+    if any(x in text for x in ["standard", "rules", "negotiation", "structure"]):
+        return "standards"
+    if any(x in text for x in ["pattern", "honest", "excuse", "accountability"]):
+        return "accountability"
+    if any(x in text for x in ["control", "urge", "attention", "inputs"]):
+        return "self_control"
+    if any(x in text for x in ["habit", "routine", "repeat"]):
+        return "habits"
+    if any(x in text for x in ["man", "men", "word", "reliable"]):
+        return "masculinity"
+    return "identity"
+
+
+def build_caption_v27(script):
+    caption_type = choose_caption_type_v27(script)
+    caption_pool = CAPTION_BANK_V27.get(caption_type, CAPTION_BANK_V27["identity"])
+    caption = pick_unique_rotated(caption_pool, memory_key="recent_captions_v27", max_recent=120)
+    hashtags = pick_unique_rotated(HASHTAG_PACKS_V27, memory_key="recent_hashtags_v27", max_recent=40)
+
+    print("CAPTION TYPE V27:", caption_type)
+    print("CAPTION V27:", caption)
+    print("HASHTAGS V27:", hashtags)
+
+    return caption + "\n\n" + hashtags
+
+
+
 def build_caption(script):
     """
-    V26 short relevant captions.
-    No long unrelated captions.
-    No engagement bait.
-    10 or fewer hashtags.
+    V27 captions matched to identity/consequence/standards/accountability/self-control/habits/masculinity.
     """
-    return build_caption_v26(script)
+    return build_caption_v27(script)
 
 
 def write_metadata(script, out_path, bg_path=None):
@@ -2647,7 +2801,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” META OPTIMIZED ENGINE v26.1 PACING FIX")
+    print("\nINNER DISCIPLINE â€” IDENTITY ENGINE v27")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -2669,7 +2823,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v26_1_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v27_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
