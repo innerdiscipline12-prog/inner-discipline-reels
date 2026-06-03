@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "masculinity",
     "habits",
+    "masculinity",
     "standards",
     "completion_regret",
     "completion_consequence",
@@ -16,6 +16,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
@@ -23,13 +24,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4"
   ],
   "background_cursor": {
-    "global": 0
+    "global": 1
   },
-  "updated_at": "2026-06-01T13:30:35",
+  "updated_at": "2026-06-03T17:40:03",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -101,6 +101,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_identity_engine_scripts_v27": [
+    "habits vote daily. | your future counts them. | that is why repetition matters.",
     "no weak word. | say less. | prove more. | repeat it.",
     "repeat this. | your life follows. | what you practice. | not what you promise.",
     "what you repeat. | becomes what you trust. | then what you become.",
@@ -109,6 +110,7 @@
     "no standard. | that is why everything depends. | on how you feel. | every day."
   ],
   "recent_identity_covers_v27": [
+    "proof is daily",
     "be reliable",
     "the habit stays",
     "small habits decide",
@@ -117,6 +119,7 @@
     "standards create results"
   ],
   "recent_captions_v27": [
+    "what you repeat becomes what you trust.",
     "keep your word. especially to yourself.",
     "habits vote daily. your future counts them.",
     "the routine wins when the standard is weak.",
@@ -133,6 +136,7 @@
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ],
   "recent_identity_endings_v27": [
+    "private standards create public results.",
     "discipline dies quietly first."
   ]
 }
