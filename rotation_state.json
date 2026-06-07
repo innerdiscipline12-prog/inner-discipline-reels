@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "masculinity",
     "identity",
+    "masculinity",
     "consequence",
     "self_control",
     "habits",
@@ -19,6 +19,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
@@ -26,13 +27,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4"
   ],
   "background_cursor": {
-    "global": 10
+    "global": 11
   },
-  "updated_at": "2026-06-07T09:22:24",
+  "updated_at": "2026-06-07T18:23:31",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -168,5 +168,17 @@
   "recent_identity_endings_v27": [
     "private standards create public results.",
     "discipline dies quietly first."
+  ],
+  "recent_identity_dominance_scripts_v28": [
+    "you know the truth. | the problem is not hidden. | you felt it before the result changed. | you just kept explaining it away."
+  ],
+  "recent_identity_dominance_covers_v28": [
+    "you know the truth"
+  ],
+  "recent_captions_v28": [
+    "what you repeat becomes proof."
+  ],
+  "recent_hashtags_v28": [
+    "#discipline #routine #focus #mindset #selfrespect"
   ]
 }
