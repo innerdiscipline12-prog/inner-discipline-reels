@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "identity",
     "standards",
     "identity_open_loop",
-    "identity",
     "masculinity",
     "consequence",
     "self_control",
@@ -20,6 +20,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
@@ -27,13 +28,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4"
   ],
   "background_cursor": {
-    "global": 20
+    "global": 21
   },
-  "updated_at": "2026-06-10T03:51:55",
+  "updated_at": "2026-06-10T16:45:54",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -171,6 +171,7 @@
     "discipline dies quietly first."
   ],
   "recent_identity_dominance_scripts_v28": [
+    "you said you would. | the promise was not the problem. | what happened after was. | that is where discipline begins.",
     "the bar dropped. | not in one big failure. | in the small private choices. | you stopped correcting.",
     "they never came. | not the perfect moment. | not the easy mood. | not the rescue you kept waiting for.",
     "the drift started. | long before failure. | it started when small excuses. | stopped bothering you.",
@@ -183,6 +184,7 @@
     "you know the truth. | the problem is not hidden. | you felt it before the result changed. | you just kept explaining it away."
   ],
   "recent_identity_dominance_covers_v28": [
+    "the pattern returned",
     "no negotiation",
     "the routine won",
     "the promise broke",
@@ -195,6 +197,7 @@
     "you know the truth"
   ],
   "recent_captions_v28": [
+    "private choices become public results.",
     "your mood cannot own your standard.",
     "the old pattern always leaves clues.",
     "you usually notice it before anyone else does.",
