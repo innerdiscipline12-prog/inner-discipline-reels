@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "identity_open_loop",
     "identity",
     "standards",
-    "identity_open_loop",
     "masculinity",
     "consequence",
     "self_control",
@@ -20,6 +20,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
@@ -27,13 +28,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4"
   ],
   "background_cursor": {
-    "global": 24
+    "global": 25
   },
-  "updated_at": "2026-06-10T17:23:37",
+  "updated_at": "2026-06-11T03:55:44",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -171,6 +171,7 @@
     "discipline dies quietly first."
   ],
   "recent_identity_dominance_scripts_v28": [
+    "look closer. | the problem is not motivation. | it is the standard. | that keeps moving.",
     "you felt it. | that quiet drop in self-respect. | before the result changed. | that was the warning.",
     "the excuse won. | not because it was true. | because you let it speak louder. | than your standard.",
     "most people quit here. | not at failure. | at discomfort. | before the real work even starts.",
@@ -187,6 +188,7 @@
     "you know the truth. | the problem is not hidden. | you felt it before the result changed. | you just kept explaining it away."
   ],
   "recent_identity_dominance_covers_v28": [
+    "you kept waiting",
     "your habits voted",
     "most people quit here",
     "the excuse won",
@@ -203,6 +205,7 @@
     "you know the truth"
   ],
   "recent_captions_v28": [
+    "the promise was not the hard part.",
     "what you repeat becomes proof.",
     "the pattern tells the truth.",
     "your routine is already voting.",
@@ -216,10 +219,10 @@
     "decide once. repeat daily."
   ],
   "recent_hashtags_v28": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #accountability #mentalcontrol #standards #focus",
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ]
 }
