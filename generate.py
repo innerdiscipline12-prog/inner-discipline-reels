@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” COMPLETION ENGINE v29
+# INNER DISCIPLINE â€” MIRROR ENGINE v30
 #
 # Clean rebuild. No patch stacking.
 #
@@ -80,23 +80,27 @@ random.seed(f"{RUN_ID}_{time.time_ns()}")
 W, H = 1080, 1920
 FPS = 30
 RETENTION_REEL_MODE = True
-RETENTION_MIN_SECONDS = 10.5
-RETENTION_MAX_SECONDS = 14.8
+RETENTION_MIN_SECONDS = 11.0
+RETENTION_MAX_SECONDS = 15.2
 RETENTION_LINE_COUNT_MIN = 5
 RETENTION_LINE_COUNT_MAX = 5
 
 IDENTITY_ENGINE_MODE = True
 IDENTITY_DOMINANCE_ENGINE_MODE = True
 COMPLETION_ENGINE_MODE = True
-V29_WEIGHTING = "60_identity_20_open_loop_10_consequence_10_standards"
-V29_GOAL = "increase_view_completion_rate"
+MIRROR_ENGINE_MODE = True
+V30_STRUCTURE = "hook_curiosity_resolution"
+V30_PRIMARY_GOAL = "make_viewer_feel_personally_addressed"
+
+V30_WEIGHTING = "70_mirror_15_identity_10_consequence_5_standards"
+V30_GOAL = "increase_completion_with_self_confrontation"
 
 OPEN_LOOP_SCRIPTING = True
 WATCH_TIME_TARGET_SECONDS = 10.0
 V28_IDENTITY_WEIGHT_TARGET = 0.70
 PUBLIC_REELS_ONLY = True
 DISABLE_DAY_SEQUENCE_PUBLIC = True
-IDENTITY_ENGINE_VERSION = "v29"
+IDENTITY_ENGINE_VERSION = "v30"
 
 
 META_MONETIZATION_MIN_SECONDS = 10.0
@@ -910,72 +914,96 @@ SERIES_DONE_LINES = [
 ]
 
 VIRAL_RETENTION_BANK = {
+    "mirror": {
+        "mood": "dangerous",
+        "cover_style": "mirror",
+        "covers": [
+            "YOU KNOW THIS ALREADY",
+            "YOU FELT THE WARNING",
+            "YOU KEEP NEGOTIATING",
+            "YOU'RE NOT CONFUSED",
+            "YOU KNOW WHAT TO DO",
+            "THE STANDARD SLIPPED",
+            "YOU WATCHED IT HAPPEN",
+            "YOU CALLED IT TOMORROW",
+            "YOU SAW IT COMING",
+            "YOU KEEP EXPLAINING",
+            "YOU FELT THAT DROP",
+            "YOU BROKE IT QUIETLY",
+            "YOU LET IT SLIDE",
+            "YOU KNOW THE PATTERN",
+            "YOU'RE AVOIDING IT",
+            "YOU SAID TOMORROW",
+        ],
+        "scripts": [
+            ["YOU KNOW THIS ALREADY.", "The problem is not information.", "It is the moment you ignore.", "What you already know.", "Because comfort is louder."],
+            ["YOU FELT THE WARNING.", "Before the result changed.", "Before anyone noticed.", "Before the habit looked serious.", "That was the moment."],
+            ["YOU KEEP NEGOTIATING.", "With the same standard.", "You already decided.", "That is why the result.", "Keeps looking familiar."],
+            ["YOU'RE NOT CONFUSED.", "You know what needs to change.", "The hard part is not knowing.", "It is obeying the truth.", "When comfort argues."],
+            ["YOU KNOW WHAT TO DO.", "That is why it bothers you.", "Not because life is unclear.", "Because your standard.", "Keeps losing to mood."],
+            ["THE STANDARD SLIPPED.", "Not in one big failure.", "In the small choices.", "You stopped correcting.", "Because nobody saw."],
+            ["YOU WATCHED IT HAPPEN.", "The routine got weaker.", "The excuses got easier.", "And you called it temporary.", "Until it became normal."],
+            ["YOU CALLED IT TOMORROW.", "Then tomorrow became a pattern.", "Then the pattern became proof.", "That is how discipline.", "Quietly disappears."],
+            ["YOU SAW IT COMING.", "The warning was there.", "The drop was there.", "The old habit was there.", "You just delayed the truth."],
+            ["YOU KEEP EXPLAINING.", "The same pattern.", "With better words.", "But the routine still knows.", "What really happened."],
+            ["YOU FELT THAT DROP.", "That small loss of respect.", "After you broke your word.", "That feeling was not random.", "It was feedback."],
+            ["YOU BROKE IT QUIETLY.", "Not your life.", "Your word.", "Then your standard.", "Then your trust in yourself."],
+            ["YOU LET IT SLIDE.", "Once.", "Then again.", "Then it stopped feeling wrong.", "That is how standards fall."],
+            ["YOU KNOW THE PATTERN.", "Strong start.", "Private compromise.", "Silent guilt.", "Then another restart."],
+            ["YOU'RE AVOIDING IT.", "Not because it is impossible.", "Because it demands proof.", "And proof removes excuses.", "That is why it feels heavy."],
+            ["YOU SAID TOMORROW.", "Again.", "The problem is not time.", "It is the standard.", "That keeps moving."],
+        ],
+    },
+    "mirror_two_stage": {
+        "mood": "broken",
+        "cover_style": "mirror",
+        "covers": [
+            "THE HARDEST PART",
+            "THE MOMENT YOU STOP",
+            "THIS IS THE PART",
+            "THE REAL PROBLEM",
+            "THE PART YOU AVOID",
+            "WHERE IT BREAKS",
+            "THIS IS WHY",
+            "THE QUIET TRUTH",
+            "THE FIRST CRACK",
+            "THE REAL TEST",
+        ],
+        "scripts": [
+            ["THE HARDEST PART.", "Is not starting.", "It is continuing.", "When nobody is watching.", "And no mood is helping."],
+            ["THE MOMENT YOU STOP.", "Lying to yourself.", "Is the moment.", "You finally start changing.", "For real."],
+            ["THIS IS THE PART.", "Most people avoid.", "They want the result.", "But not the standard.", "That creates it."],
+            ["THE REAL PROBLEM.", "Is not lack of motivation.", "It is the routine.", "You keep protecting.", "With excuses."],
+            ["THE PART YOU AVOID.", "Is the part that changes you.", "Not the plan.", "Not the quote.", "The proof."],
+            ["WHERE IT BREAKS.", "Is not the goal.", "It is the private choice.", "After the emotion fades.", "That is the test."],
+            ["THIS IS WHY.", "You keep restarting.", "The emotion comes back.", "But the system never changed.", "So the pattern returns."],
+            ["THE QUIET TRUTH.", "Nobody has to see it.", "For it to matter.", "Your future still counts it.", "Every time."],
+            ["THE FIRST CRACK.", "Is not failure.", "It is permission.", "One excuse.", "You stop challenging."],
+            ["THE REAL TEST.", "Is not the beginning.", "It is the repetition.", "When comfort starts talking.", "And nobody is watching."],
+        ],
+    },
     "identity": {
         "mood": "dangerous",
         "cover_style": "identity",
         "covers": [
-            "YOU SAID YOU WOULD",
-            "YOU KNOW THE TRUTH",
-            "YOUR HABITS VOTED",
-            "THE STANDARD DROPPED",
             "NO ONE IS COMING",
             "DISCIPLINE IS FREEDOM",
             "MOST PEOPLE QUIT HERE",
             "WHO ARE YOU",
             "RESULTS DON'T LIE",
             "PRIVATE PROOF",
-            "YOU CHOSE AGAIN",
             "THE EXCUSE WON",
-            "YOU ALREADY KNEW",
             "THE TRUTH SHOWED",
         ],
         "scripts": [
-            ["YOU SAID YOU WOULD.", "That was not the hard part.", "The hard part came later.", "When the mood left.", "That is where discipline starts."],
-            ["YOU KNOW THE TRUTH.", "The problem is not hidden.", "You felt it first.", "Then you explained it away.", "That is the pattern."],
-            ["YOUR HABITS VOTED.", "Every small choice counted.", "Your results counted them too.", "That is why life looks honest.", "Even when words do not."],
-            ["THE STANDARD DROPPED.", "Not loudly.", "Not in public.", "In one small private choice.", "Then another."],
-            ["NO ONE IS COMING.", "Not to fix your habits.", "Not to rescue your standards.", "Not to force your discipline.", "You move first."],
-            ["DISCIPLINE IS FREEDOM.", "Not because it feels easy.", "Because it removes the chaos.", "That weak choices keep creating.", "Every day."],
+            ["NO ONE IS COMING.", "Not to fix your habits.", "Not to rescue your standards.", "Not to force discipline.", "You move first."],
+            ["DISCIPLINE IS FREEDOM.", "Not because it feels easy.", "Because it removes the chaos.", "That weak choices create.", "Every day."],
             ["MOST PEOPLE QUIT HERE.", "Not at failure.", "Not at the final loss.", "At discomfort.", "Before the work gets real."],
             ["WHO ARE YOU.", "When nobody is watching.", "When the mood leaves.", "When comfort calls.", "That is the real answer."],
             ["RESULTS DON'T LIE.", "They repeat back.", "The private habits.", "You practiced quietly.", "Before anyone noticed."],
             ["PRIVATE PROOF MATTERS.", "Nobody saw the choice.", "Nobody clapped.", "But your future felt it.", "Every time."],
-            ["YOU CHOSE AGAIN.", "Not once.", "Not by accident.", "Through what you allowed.", "Repeatedly."],
             ["THE EXCUSE WON.", "Not because it was true.", "Because you let it speak louder.", "Than your standard.", "That is the loss."],
-            ["YOU ALREADY KNEW.", "What needed to change.", "That was not the issue.", "The delay became the habit.", "Not the solution."],
             ["THE TRUTH SHOWED.", "Not in your words.", "In your routine.", "That is where life gets honest.", "Every day."],
-        ],
-    },
-    "open_loop_identity": {
-        "mood": "broken",
-        "cover_style": "open_loop",
-        "covers": [
-            "YOU FELT IT",
-            "THE PATTERN STARTED",
-            "YOU SAW THE SIGN",
-            "THIS IS WHERE IT BEGAN",
-            "THE FIRST WARNING",
-            "YOU ALREADY KNEW",
-            "THE DRIFT STARTED",
-            "THE PROMISE BROKE",
-            "THE OLD YOU WON",
-            "THE QUIET LOSS",
-            "LOOK CLOSER",
-            "SAME PATTERN",
-        ],
-        "scripts": [
-            ["YOU FELT IT.", "Before the result appeared.", "Before the habit looked serious.", "Before anyone else noticed.", "That was the warning."],
-            ["THE PATTERN STARTED.", "Not when everything collapsed.", "It started earlier.", "With one excuse.", "You stopped correcting."],
-            ["YOU SAW THE SIGN.", "The routine was slipping.", "The standard was moving.", "The result had not changed yet.", "But you knew."],
-            ["THIS IS WHERE IT BEGAN.", "Not with failure.", "With permission.", "One small excuse.", "That stopped bothering you."],
-            ["THE FIRST WARNING.", "Was not the bad result.", "It was the broken word.", "You accepted too quickly.", "That was the signal."],
-            ["YOU ALREADY KNEW.", "The habit was costing you.", "The delay was not confusion.", "It was comfort.", "Protected by excuses."],
-            ["THE DRIFT STARTED.", "Long before failure.", "It started when small excuses.", "Stopped feeling wrong.", "That is dangerous."],
-            ["THE PROMISE BROKE.", "Not when you failed.", "When you started negotiating.", "With what you already decided.", "That is where it cracked."],
-            ["THE OLD YOU WON.", "For one reason.", "You fed the same routine.", "While expecting a different life.", "That never works."],
-            ["THE QUIET LOSS.", "Was not the skipped day.", "It was the self-respect.", "You gave away with it.", "That is the cost."],
-            ["LOOK CLOSER.", "The problem is not motivation.", "It is the standard.", "That keeps moving.", "When pressure arrives."],
-            ["SAME PATTERN.", "Strong start.", "Weak follow-through.", "Silent guilt.", "Then another restart."],
         ],
     },
     "consequence": {
@@ -985,25 +1013,21 @@ VIRAL_RETENTION_BANK = {
             "LATER GETS EXPENSIVE",
             "YEARS DISAPPEAR",
             "THE DAMAGE GROWS",
-            "IT ADDS UP",
             "THE BILL ARRIVES",
             "NOTHING STAYS SMALL",
-            "TIME DOES NOT WAIT",
             "WEAKNESS COMPOUNDS",
-            "SKIPPING COSTS MORE",
             "EXCUSES HAVE INTEREST",
+            "TIME DOES NOT WAIT",
         ],
         "scripts": [
             ["LATER GETS EXPENSIVE.", "Most people miss the cost.", "Because it does not arrive immediately.", "It arrives as a pattern.", "Then as a life."],
             ["YEARS DISAPPEAR.", "Not all at once.", "One repeated excuse.", "One delayed decision.", "One weak routine."],
             ["THE DAMAGE GROWS.", "When you keep excusing it.", "Small habits become normal.", "Normal becomes identity.", "That is the danger."],
-            ["IT ADDS UP.", "The skipped days.", "The weak choices.", "The quiet compromises.", "The standard you stopped protecting."],
             ["THE BILL ARRIVES.", "For every habit you ignored.", "For every standard you lowered.", "Nothing stays free.", "Not even comfort."],
             ["NOTHING STAYS SMALL.", "Not the excuse.", "Not the delay.", "Not the habit.", "If you keep feeding it."],
-            ["TIME DOES NOT WAIT.", "Your mood can change tomorrow.", "But today still counts.", "So does every excuse.", "So does every choice."],
             ["WEAKNESS COMPOUNDS.", "First in private.", "Then in routine.", "Then in identity.", "Then in results."],
-            ["SKIPPING COSTS MORE.", "It feels cheap today.", "Then your future pays.", "With interest.", "That is how habits work."],
             ["EXCUSES HAVE INTEREST.", "They feel harmless now.", "Then they charge your future.", "One repeated delay.", "At a time."],
+            ["TIME DOES NOT WAIT.", "Your mood can change tomorrow.", "But today still counts.", "So does every excuse.", "So does every choice."],
         ],
     },
     "standards": {
@@ -1013,25 +1037,17 @@ VIRAL_RETENTION_BANK = {
             "THE STANDARD MOVED",
             "YOU LOWERED IT",
             "THE BAR DROPPED",
-            "RESULTS FOLLOW STANDARDS",
             "DECIDE ONCE",
             "NO NEGOTIATION",
             "STANDARD OVER MOOD",
-            "RULES STAY",
-            "STRUCTURE WINS",
-            "RAISE THE STANDARD",
         ],
         "scripts": [
             ["THE STANDARD MOVED.", "Not because life changed.", "Because the mood changed.", "And you let it lead.", "That is the problem."],
             ["YOU LOWERED IT.", "Quietly.", "One exception at a time.", "Until weakness felt normal.", "That is how standards die."],
             ["THE BAR DROPPED.", "Not in one big failure.", "In the small private choices.", "You stopped correcting.", "That is where it happened."],
-            ["RESULTS FOLLOW STANDARDS.", "Not speeches.", "Not intentions.", "Not moods.", "Repeated standards."],
             ["DECIDE ONCE.", "Stop reopening the same battle.", "Every time your mood changes.", "That is not discipline.", "That is negotiation."],
             ["NO NEGOTIATION.", "The standard is the decision.", "The mood is just noise.", "Move anyway.", "That is control."],
             ["STANDARD OVER MOOD.", "Because mood changes.", "Your life cannot depend.", "On unstable emotion.", "Your standard must survive it."],
-            ["RULES STAY.", "When feelings change.", "That is why serious people use them.", "They remove negotiation.", "They protect the standard."],
-            ["STRUCTURE WINS.", "Because motivation changes.", "Because moods lie.", "Because pressure returns.", "Structure stays."],
-            ["RAISE THE STANDARD.", "Not the speech.", "Not the plan.", "The repeated behavior.", "That is the real upgrade."],
         ],
     },
 }
@@ -1449,25 +1465,28 @@ def build_day7_script():
 
 def build_retention_reel_script():
     """
-    v29 COMPLETION ENGINE.
+    v30 MIRROR ENGINE.
 
-    Requested weighting:
-    - 60% Identity
-    - 20% Open Loop Identity
+    Meta signal:
+    - Topic match is recognized.
+    - View completion rate is the bottleneck.
+    - Winning posts are self-confrontation posts.
+
+    Weighting:
+    - 45% Mirror self-confrontation
+    - 25% Two-stage mirror hooks
+    - 15% Identity
     - 10% Consequence
-    - 10% Standards
-
-    Purpose:
-    Improve view completion rate by making viewers stay
-    for the final sentence.
+    - 5% Standards
     """
     categories = list(VIRAL_RETENTION_BANK.keys())
 
     weights_by_category = {
-        "identity": 0.60,
-        "open_loop_identity": 0.20,
+        "mirror": 0.45,
+        "mirror_two_stage": 0.25,
+        "identity": 0.15,
         "consequence": 0.10,
-        "standards": 0.10,
+        "standards": 0.05,
     }
 
     weights = [weights_by_category.get(c, 0.0) for c in categories]
@@ -1482,8 +1501,8 @@ def build_retention_reel_script():
 
     selected_key = pick_unique_rotated(
         script_keys,
-        memory_key="recent_completion_engine_scripts_v29",
-        max_recent=240,
+        memory_key="recent_mirror_engine_scripts_v30",
+        max_recent=260,
     )
 
     selected_index = script_keys.index(selected_key) if selected_key in script_keys else 0
@@ -1497,26 +1516,26 @@ def build_retention_reel_script():
         lines.append(
             pick_unique_rotated(
                 RETENTION_ENDING_LINES,
-                memory_key="recent_completion_endings_v29",
-                max_recent=120,
+                memory_key="recent_mirror_endings_v30",
+                max_recent=140,
             )
         )
 
     cover = pick_unique_rotated(
         bank["covers"],
-        memory_key="recent_completion_covers_v29",
-        max_recent=220,
+        memory_key="recent_mirror_covers_v30",
+        max_recent=240,
     )
 
-    remember_rotation_item("recent_categories", category, 120)
+    remember_rotation_item("recent_categories", category, 140)
 
-    print("V29 CATEGORY:", category)
-    print("V29 COVER STYLE:", bank.get("cover_style", "default"))
-    print("V29 COVER:", cover)
-    print("V29 SCRIPT:", " | ".join(lines))
+    print("V30 CATEGORY:", category)
+    print("V30 COVER STYLE:", bank.get("cover_style", "default"))
+    print("V30 COVER:", cover)
+    print("V30 SCRIPT:", " | ".join(lines))
 
     return Script(
-        mode="completion_engine",
+        mode="mirror_engine",
         category=category,
         mood=bank["mood"],
         cover=cover,
@@ -1579,23 +1598,21 @@ def build_series_script():
 
 def should_make_series():
     """
-    v29: public reels do not use the Day system.
+    v30: public reels do not use the Day system.
     """
     return False
 
 
 def build_script():
     """
-    v29 COMPLETION ENGINE.
+    v30 MIRROR ENGINE.
 
     No Day system.
     No challenge sequence.
     No ebook overlay.
 
-    60% Identity
-    20% Open Loop Identity
-    10% Consequence
-    10% Standards
+    Built to improve view completion rate through:
+    Hook -> curiosity -> personal mirror -> resolution.
     """
     return build_retention_reel_script()
 
@@ -1918,7 +1935,7 @@ def choose_ebook_screenshot():
 
 def should_use_ebook_bait(script):
     """
-    v29: no ebook overlays in public growth reels.
+    v30: no ebook overlays in public growth reels.
     """
     return False
 
@@ -2706,11 +2723,99 @@ def build_caption_v29(script):
 
 
 
+
+CAPTION_BANK_V30 = {
+    "mirror": [
+        "You usually feel the warning before the result changes. The question is whether you correct it early or explain it away.",
+        "Most patterns do not surprise you. You saw the first sign. You just waited too long to act.",
+        "The standard rarely disappears loudly. It slips through small private choices.",
+        "You are not lacking information. You are avoiding the moment that demands proof.",
+    ],
+    "mirror_two_stage": [
+        "The hardest part is rarely starting. It is continuing when there is no emotion left.",
+        "Change begins when the explanation stops protecting the pattern.",
+        "The real test is not the beginning. It is the repetition after the mood fades.",
+        "Most people do not lose discipline suddenly. They lose it quietly, then call it temporary.",
+    ],
+    "identity": [
+        "Identity is built in private before it is seen in public.",
+        "Your routine tells the truth before your results do.",
+        "The promise is not the hard part. Keeping it when the mood changes is.",
+        "Private choices become public results.",
+    ],
+    "consequence": [
+        "Nothing stays small when repeated. Not excuses. Not comfort. Not avoidance.",
+        "The cost usually arrives later. That delay is what makes weak habits dangerous.",
+        "Weak choices feel small until they compound.",
+        "Time keeps score even when nobody else is watching.",
+    ],
+    "standards": [
+        "A standard that changes with mood cannot build a stable life.",
+        "The more you negotiate with the standard, the weaker it becomes.",
+        "Structure protects you when motivation disappears.",
+        "Raise the standard before you chase the result.",
+    ],
+}
+
+HASHTAG_PACKS_V30 = [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+    "#discipline #habits #standards #selfcontrol #growth",
+    "#discipline #routine #focus #mindset #selfrespect",
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
+    "#discipline #accountability #mentalcontrol #standards #focus",
+]
+
+def choose_caption_type_v30(script):
+    category = str(getattr(script, "category", "")).lower()
+    if category in CAPTION_BANK_V30:
+        return category
+
+    text = " ".join([
+        category,
+        str(getattr(script, "cover", "")),
+        " ".join(getattr(script, "lines", [])),
+    ]).lower()
+
+    if "mirror" in category or "warning" in text or "felt" in text or "tomorrow" in text:
+        return "mirror"
+    if "hardest" in text or "moment" in text or "part" in text:
+        return "mirror_two_stage"
+    if "cost" in text or "bill" in text or "years" in text or "damage" in text:
+        return "consequence"
+    if "standard" in text or "rules" in text or "structure" in text:
+        return "standards"
+    return "identity"
+
+
+def build_caption_v30(script):
+    caption_type = choose_caption_type_v30(script)
+    caption_pool = CAPTION_BANK_V30.get(caption_type, CAPTION_BANK_V30["mirror"])
+
+    caption = pick_unique_rotated(
+        caption_pool,
+        memory_key="recent_captions_v30",
+        max_recent=200,
+    )
+
+    hashtags = pick_unique_rotated(
+        HASHTAG_PACKS_V30,
+        memory_key="recent_hashtags_v30",
+        max_recent=60,
+    )
+
+    print("CAPTION TYPE V30:", caption_type)
+    print("CAPTION V30:", caption)
+    print("HASHTAGS V30:", hashtags)
+
+    return caption + "\n\n" + hashtags
+
+
+
 def build_caption(script):
     """
-    V29 captions: clear, relevant, contextual, no engagement bait.
+    V30 captions: clear, relevant, self-confrontational, no engagement bait.
     """
-    return build_caption_v29(script)
+    return build_caption_v30(script)
 
 
 def write_metadata(script, out_path, bg_path=None):
@@ -2916,7 +3021,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” COMPLETION ENGINE v29")
+    print("\nINNER DISCIPLINE â€” MIRROR ENGINE v30")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -2938,7 +3043,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v29_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v30_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
