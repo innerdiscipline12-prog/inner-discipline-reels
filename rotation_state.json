@@ -23,6 +23,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
@@ -30,13 +31,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4"
   ],
   "background_cursor": {
-    "global": 16
+    "global": 17
   },
-  "updated_at": "2026-06-15T17:50:30",
+  "updated_at": "2026-06-15T18:34:05",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -312,5 +312,20 @@
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #accountability #mentalcontrol #standards #focus",
     "#discipline #habits #standards #selfcontrol #growth"
+  ],
+  "recent_fullscreen_mirror_scripts_v30_1": [
+    "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins."
+  ],
+  "recent_fullscreen_mirror_endings_v30_1": [
+    "your standards decide your future."
+  ],
+  "recent_fullscreen_mirror_covers_v30_1": [
+    "the real test"
+  ],
+  "recent_captions_v30_1": [
+    "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
+  ],
+  "recent_hashtags_v30_1": [
+    "#discipline #accountability #mentalcontrol #standards #focus"
   ]
 }
