@@ -23,6 +23,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
@@ -30,13 +31,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4"
   ],
   "background_cursor": {
-    "global": 22
+    "global": 23
   },
-  "updated_at": "2026-06-16T17:32:02",
+  "updated_at": "2026-06-17T07:03:02",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -351,5 +351,21 @@
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
+  ],
+  "recent_completion_scripts_v31": [
+    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens."
+  ],
+  "recent_completion_endings_v31": [
+    "discipline dies quietly first.",
+    "time exposes every repeated compromise."
+  ],
+  "recent_completion_covers_v31": [
+    "you said tomorrow"
+  ],
+  "recent_captions_v31": [
+    "most patterns do not surprise you. you saw the first sign. you just waited too long to act."
+  ],
+  "recent_hashtags_v31": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ]
 }
