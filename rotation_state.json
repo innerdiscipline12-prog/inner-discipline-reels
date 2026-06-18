@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 25
+    "global": 26
   },
-  "updated_at": "2026-06-17T14:24:20",
+  "updated_at": "2026-06-18T07:48:26",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -354,11 +354,14 @@
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_completion_scripts_v31": [
+    "you keep explaining. | the same pattern. | with better words. | you can make the excuse sound intelligent. | you can make delay sound strategic. | but the routine still knows. | what really happened. | so do you.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
     "you felt that drop. | that small loss of respect. | after you broke your word. | after you chose comfort. | after you said tomorrow again. | that feeling was feedback. | not weakness. | listen to it.",
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens."
   ],
   "recent_completion_endings_v31": [
+    "nothing changes until the routine changes.",
+    "the routine always tells the truth.",
     "discipline is built in silence.",
     "private standards create public results.",
     "weak habits always collect consequences.",
@@ -367,16 +370,19 @@
     "time exposes every repeated compromise."
   ],
   "recent_completion_covers_v31": [
+    "you watched it happen",
     "the first crack",
     "you keep explaining",
     "you said tomorrow"
   ],
   "recent_captions_v31": [
+    "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left.",
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act."
   ],
   "recent_hashtags_v31": [
+    "#discipline #accountability #mentalcontrol #standards #focus",
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
