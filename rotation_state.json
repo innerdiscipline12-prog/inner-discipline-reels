@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 28
+    "global": 29
   },
-  "updated_at": "2026-06-18T15:45:04",
+  "updated_at": "2026-06-19T03:25:45",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -354,6 +354,7 @@
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_completion_scripts_v31": [
+    "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
     "the part that matters. | is not what you say. | it is what you repeat. | when pressure returns. | when comfort calls. | when nobody checks. | that is the real standard. | that is the proof.",
     "the hardest part. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping.",
     "you keep explaining. | the same pattern. | with better words. | you can make the excuse sound intelligent. | you can make delay sound strategic. | but the routine still knows. | what really happened. | so do you.",
@@ -362,6 +363,8 @@
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens."
   ],
   "recent_completion_endings_v31": [
+    "your standards decide your future.",
+    "a weak standard always becomes visible.",
     "your private habits are not private forever.",
     "pressure exposes every weak routine.",
     "comfort slowly destroys structure.",
@@ -376,6 +379,7 @@
     "time exposes every repeated compromise."
   ],
   "recent_completion_covers_v31": [
+    "you're not confused",
     "where it breaks",
     "the part you avoid",
     "you watched it happen",
@@ -384,6 +388,7 @@
     "you said tomorrow"
   ],
   "recent_captions_v31": [
+    "you are not lacking information. you are avoiding the moment that demands proof.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary.",
     "the part that changes you is not the plan. it is the proof repeated quietly.",
     "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
@@ -392,10 +397,10 @@
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act."
   ],
   "recent_hashtags_v31": [
+    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #accountability #mentalcontrol #standards #focus",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #habits #standards #selfcontrol #growth",
-    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ]
 }
