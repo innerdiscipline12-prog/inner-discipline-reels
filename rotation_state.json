@@ -2,12 +2,12 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence",
     "two_stage_payoff",
     "mirror",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
-    "consequence",
     "standards",
     "identity_open_loop",
     "masculinity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4"
   ],
   "background_cursor": {
-    "global": 0
+    "global": 1
   },
-  "updated_at": "2026-06-20T17:04:49",
+  "updated_at": "2026-06-20T17:42:01",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -354,6 +354,7 @@
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_completion_scripts_v31": [
+    "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
     "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
     "you said tomorrow. | again. | then again. | the problem is not time. | the problem is not knowledge. | the problem is the standard. | that keeps moving. | stop moving it.",
     "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
@@ -365,6 +366,8 @@
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens."
   ],
   "recent_completion_endings_v31": [
+    "the routine always tells the truth.",
+    "discipline dies quietly first.",
     "control returns when negotiation ends.",
     "structure decides who stays consistent.",
     "time exposes every repeated compromise.",
@@ -374,14 +377,13 @@
     "pressure exposes every weak routine.",
     "comfort slowly destroys structure.",
     "nothing changes until the routine changes.",
-    "the routine always tells the truth.",
     "discipline is built in silence.",
     "private standards create public results.",
     "weak habits always collect consequences.",
-    "your future reflects your standards.",
-    "discipline dies quietly first."
+    "your future reflects your standards."
   ],
   "recent_completion_covers_v31": [
+    "years disappear",
     "what most people miss",
     "you know the pattern",
     "you're not confused",
@@ -393,6 +395,7 @@
     "you said tomorrow"
   ],
   "recent_captions_v31": [
+    "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
     "the real test is not the beginning. it is the repetition after the mood fades.",
     "discipline starts where the explanation stops protecting the pattern.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
@@ -404,10 +407,10 @@
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act."
   ],
   "recent_hashtags_v31": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #accountability #mentalcontrol #standards #focus",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ]
 }
