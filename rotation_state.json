@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4"
   ],
   "background_cursor": {
-    "global": 5
+    "global": 6
   },
-  "updated_at": "2026-06-21T17:55:36",
+  "updated_at": "2026-06-21T18:02:59",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -354,6 +354,7 @@
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_completion_scripts_v31": [
+    "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
     "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it.",
     "you felt the warning. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
     "you keep negotiating. | with the same standard. | you already decided. | then the mood changed. | then the excuse sounded reasonable. | then the standard moved again. | that is why the result looks familiar. | nothing changed at the root.",
@@ -370,14 +371,14 @@
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens."
   ],
   "recent_completion_endings_v31": [
+    "discipline dies quietly first.",
+    "comfort slowly destroys structure.",
     "control returns when negotiation ends.",
     "private standards create public results.",
     "your standards decide your future.",
     "weak habits always collect consequences.",
-    "comfort slowly destroys structure.",
     "nothing changes until the routine changes.",
     "the routine always tells the truth.",
-    "discipline dies quietly first.",
     "structure decides who stays consistent.",
     "time exposes every repeated compromise.",
     "a weak standard always becomes visible.",
@@ -387,6 +388,7 @@
     "your future reflects your standards."
   ],
   "recent_completion_covers_v31": [
+    "you called it tomorrow",
     "you're avoiding it",
     "you keep negotiating",
     "you know this already",
@@ -415,8 +417,8 @@
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act."
   ],
   "recent_hashtags_v31": [
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #accountability #mentalcontrol #standards #focus",
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect"
