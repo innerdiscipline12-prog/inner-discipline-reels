@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4"
   ],
   "background_cursor": {
-    "global": 3
+    "global": 4
   },
-  "updated_at": "2026-06-21T16:49:36",
+  "updated_at": "2026-06-21T17:00:49",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -354,6 +354,7 @@
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_completion_scripts_v31": [
+    "you felt the warning. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
     "you keep negotiating. | with the same standard. | you already decided. | then the mood changed. | then the excuse sounded reasonable. | then the standard moved again. | that is why the result looks familiar. | nothing changed at the root.",
     "you let it slide. | once. | then again. | then it stopped feeling wrong. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
     "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
@@ -368,6 +369,8 @@
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens."
   ],
   "recent_completion_endings_v31": [
+    "your standards decide your future.",
+    "weak habits always collect consequences.",
     "comfort slowly destroys structure.",
     "nothing changes until the routine changes.",
     "private standards create public results.",
@@ -376,15 +379,14 @@
     "control returns when negotiation ends.",
     "structure decides who stays consistent.",
     "time exposes every repeated compromise.",
-    "your standards decide your future.",
     "a weak standard always becomes visible.",
     "your private habits are not private forever.",
     "pressure exposes every weak routine.",
     "discipline is built in silence.",
-    "weak habits always collect consequences.",
     "your future reflects your standards."
   ],
   "recent_completion_covers_v31": [
+    "you keep negotiating",
     "you know this already",
     "you know what to do",
     "years disappear",
@@ -399,6 +401,7 @@
     "you said tomorrow"
   ],
   "recent_captions_v31": [
+    "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
     "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
@@ -406,15 +409,14 @@
     "discipline starts where the explanation stops protecting the pattern.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary.",
     "the part that changes you is not the plan. it is the proof repeated quietly.",
-    "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act."
   ],
   "recent_hashtags_v31": [
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #accountability #mentalcontrol #standards #focus",
     "#discipline #habits #standards #selfcontrol #growth",
-    "#discipline #routine #focus #mindset #selfrespect",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
+    "#discipline #routine #focus #mindset #selfrespect"
   ]
 }
