@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence",
     "two_stage_payoff",
     "mirror",
-    "consequence",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 12
+    "global": 13
   },
-  "updated_at": "2026-07-02T07:05:21",
+  "updated_at": "2026-07-02T07:45:31",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -435,6 +435,22 @@
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
+    "#discipline #routine #focus #mindset #selfrespect"
+  ],
+  "recent_smart_completion_scripts_v31_1": [
+    "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early."
+  ],
+  "recent_smart_endings_v31_1": [
+    "time exposes every repeated compromise.",
+    "control returns when negotiation ends."
+  ],
+  "recent_smart_covers_v31_1": [
+    "time does not wait"
+  ],
+  "recent_captions_v31_1": [
+    "nothing stays small when repeated. not excuses. not comfort. not avoidance."
+  ],
+  "recent_hashtags_v31_1": [
     "#discipline #routine #focus #mindset #selfrespect"
   ]
 }
