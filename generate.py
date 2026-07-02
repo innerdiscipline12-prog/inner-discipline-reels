@@ -22,7 +22,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” COMPLETION ENGINE v31
+# INNER DISCIPLINE â€” SMART COMPLETION ENGINE v31.1
 #
 # Clean rebuild. No patch stacking.
 #
@@ -80,8 +80,8 @@ random.seed(f"{RUN_ID}_{time.time_ns()}")
 W, H = 1080, 1920
 FPS = 30
 RETENTION_REEL_MODE = True
-RETENTION_MIN_SECONDS = 18.5
-RETENTION_MAX_SECONDS = 24.0
+RETENTION_MIN_SECONDS = 18.0
+RETENTION_MAX_SECONDS = 23.5
 RETENTION_LINE_COUNT_MIN = 7
 RETENTION_LINE_COUNT_MAX = 8
 
@@ -1419,81 +1419,172 @@ def build_day7_script():
     )
 
 
+
+# ================================================================
+# V31.1 SMART EXECUTION HELPERS
+# ================================================================
+SMART_COMPLETION_ENGINE_V31_1_MODE = True
+V31_1_UPGRADES = "scene_tags_auto_pacing_hook_variation_clean_subtitle_timing"
+
+SCENE_TAG_KEYWORDS_V31_1 = {
+    "mirror": ["mirror", "face", "closeup", "dark", "alone", "room", "night", "shadow", "reflection", "eyes", "pressure"],
+    "two_stage_payoff": ["walking", "rain", "street", "road", "stairs", "city", "night", "alone", "silhouette", "slow"],
+    "consequence": ["broken", "empty", "dark", "rain", "road", "lonely", "damage", "shadow", "fog", "drift"],
+}
+SCRIPT_SCENE_TRIGGERS_V31_1 = {
+    "mirror": ["you", "warning", "confused", "explaining", "felt", "saw", "knew", "pattern"],
+    "road": ["tomorrow", "later", "time", "years", "cost", "arrives", "future"],
+    "gym": ["proof", "standard", "discipline", "routine", "repeat", "pressure", "control"],
+    "broken": ["crack", "damage", "weakness", "excuse", "regret", "loss", "drift"],
+    "rain": ["hard", "nobody", "watching", "comfort", "quiet", "alone"],
+}
+MIRROR_HOOK_VARIANTS_V31_1 = {
+    "YOU KNOW THIS ALREADY.": ["YOU KNOW THIS ALREADY.", "YOU ALREADY KNOW.", "YOU KNEW THIS FIRST."],
+    "YOU FELT THE WARNING.": ["YOU FELT THE WARNING.", "YOU FELT IT EARLY.", "THE WARNING CAME EARLY."],
+    "YOU KEEP NEGOTIATING.": ["YOU KEEP NEGOTIATING.", "YOU KEEP MOVING THE LINE.", "YOU MADE IT NEGOTIABLE."],
+    "THE HARDEST PART.": ["THE HARDEST PART.", "THIS IS THE HARD PART.", "THE PART THAT BREAKS MOST PEOPLE."],
+    "THE REAL PROBLEM.": ["THE REAL PROBLEM.", "THIS IS THE REAL PROBLEM.", "THE PROBLEM IS DEEPER."],
+    "THIS IS WHY.": ["THIS IS WHY.", "THIS IS THE REASON.", "THIS IS WHAT KEEPS HAPPENING."],
+    "LATER GETS EXPENSIVE.": ["LATER GETS EXPENSIVE.", "LATER COSTS MORE.", "DELAY GETS EXPENSIVE."],
+    "WEAKNESS COMPOUNDS.": ["WEAKNESS COMPOUNDS.", "WEAKNESS ADDS UP.", "WEAKNESS DOES NOT STAY SMALL."],
+    "THE BILL ARRIVES.": ["THE BILL ARRIVES.", "THE COST ARRIVES.", "THE PRICE COMES LATER."],
+}
+
+def scene_signature_v31_1(script):
+    category=str(getattr(script,'category','')).lower(); cover=str(getattr(script,'cover','')).lower(); text=(category+' '+cover+' '+' '.join(getattr(script,'lines',[]))).lower()
+    tags=set(SCENE_TAG_KEYWORDS_V31_1.get(category,[]))
+    for tag,triggers in SCRIPT_SCENE_TRIGGERS_V31_1.items():
+        if any(t in text for t in triggers): tags.add(tag)
+    if any(x in text for x in ['tomorrow','later','time','cost']): tags.update(['road','walking','future'])
+    if any(x in text for x in ['warning','felt','knew']): tags.update(['closeup','mirror','reflection','face'])
+    if any(x in text for x in ['standard','proof','discipline']): tags.update(['gym','training','routine'])
+    if any(x in text for x in ['nobody','watching','quiet']): tags.update(['alone','night','silhouette','rain'])
+    if any(x in text for x in ['crack','damage','weakness']): tags.update(['broken','dark','empty','shadow'])
+    return sorted(tags)
+
+def score_background_v31_1(path, script):
+    p=str(path).lower().replace('\\\\','/'); tags=scene_signature_v31_1(script); score=sum(5 for tag in tags if tag in p)
+    category=str(getattr(script,'category','')).lower(); mood=str(getattr(script,'mood','')).lower()
+    if mood and f'/{mood}/' in p: score += 12
+    if category=='mirror':
+        if '/dangerous/' in p: score += 8
+        if '/broken/' in p: score += 5
+    elif category=='two_stage_payoff':
+        if '/broken/' in p: score += 10
+        if '/dangerous/' in p: score += 4
+    elif category=='consequence':
+        if '/broken/' in p: score += 12
+        if '/dangerous/' in p: score += 5
+        if '/morning/' in p: score -= 3
+    recent=load_state().get('recent_backgrounds_v31_1',[])
+    if str(path) in recent[-6:]: score -= 50
+    elif str(path) in recent[-14:]: score -= 18
+    return score
+
+def pick_best_background_v31_1(candidates, script):
+    if not candidates: return None
+    scored=sorted([(score_background_v31_1(p,script),p) for p in candidates], key=lambda x:x[0], reverse=True)
+    best=scored[0][0]; shortlist=[p for s,p in scored if s>=best-4][:5] or [scored[0][1]]
+    chosen=pick_unique_rotated([str(x) for x in shortlist], memory_key='recent_backgrounds_v31_1', max_recent=50)
+    print('V31.1 SCENE TAGS:', scene_signature_v31_1(script)); print('V31.1 BACKGROUND CHOSEN:', chosen)
+    return chosen
+
+def vary_hook_v31_1(lines):
+    if not lines: return lines
+    first=str(lines[0]).strip(); variants=MIRROR_HOOK_VARIANTS_V31_1.get(first)
+    if not variants: return lines
+    out=list(lines); out[0]=pick_unique_rotated(variants, memory_key='recent_hook_variants_v31_1', max_recent=160)
+    print('V31.1 HOOK VARIANT:', first, '=>', out[0])
+    return out
+
+def line_weight_v31_1(line):
+    words=len(str(line).replace('.','').split()); return max(1.0,min(3.0,0.55+words*0.23))
+
+def build_line_timings_v31_1(lines, min_total=18.0, max_total=23.5):
+    clean=[str(x).strip() for x in lines if str(x).strip()]
+    if not clean: return [], min_total
+    weights=[line_weight_v31_1(x) for x in clean]; weights[0]*=1.28; weights[-1]*=1.35
+    target=min(max_total,max(min_total,len(clean)*2.55+2.5)); total_weight=sum(weights); timings=[]; cursor=0.0
+    for i,(line,w) in enumerate(zip(clean,weights)):
+        dur=max(1.75,target*(w/total_weight));
+        if i==0: dur=max(dur,2.35)
+        if i==len(clean)-1: dur=max(dur,2.65)
+        timings.append({'line':line,'start':round(cursor,3),'end':round(cursor+dur,3),'duration':round(dur,3)}); cursor+=dur
+    if cursor>max_total:
+        scale=max_total/cursor; cursor=0.0; scaled=[]
+        for t in timings:
+            dur=max(1.55,t['duration']*scale); scaled.append({**t,'start':round(cursor,3),'end':round(cursor+dur,3),'duration':round(dur,3)}); cursor+=dur
+        timings=scaled
+    total=timings[-1]['end'] if timings else min_total
+    print('V31.1 LINE TIMINGS:', timings); print('V31.1 TARGET DURATION:', total)
+    return timings,total
+
+def apply_smart_pacing_v31_1(script):
+    timings,total=build_line_timings_v31_1(getattr(script,'lines',[]), RETENTION_MIN_SECONDS, RETENTION_MAX_SECONDS)
+    try:
+        script.line_timings=timings; script.smart_duration=total; script.duration=total
+    except Exception: pass
+    return script
+
+def active_line_v31_1(script,t):
+    timings=getattr(script,'line_timings',None)
+    if not timings:
+        lines=getattr(script,'lines',[])
+        if not lines: return ''
+        idx=min(len(lines)-1,int((t/max(1,getattr(script,'smart_duration',RETENTION_MIN_SECONDS)))*len(lines)))
+        return lines[idx]
+    for item in timings:
+        if item['start'] <= t < item['end']: return item['line']
+    return timings[-1]['line'] if timings else ''
+
+def subtitle_opacity_v31_1(script,t):
+    timings=getattr(script,'line_timings',None)
+    if not timings: return 1.0
+    for item in timings:
+        if item['start'] <= t < item['end']:
+            local=t-item['start']; rem=item['end']-t; fade=0.22
+            return max(0.0,min(1.0,local/fade,rem/fade))
+    return 0.0
+
 def build_retention_reel_script():
     """
-    v31 COMPLETION ENGINE.
+    v31.1 SMART COMPLETION ENGINE.
 
-    Current data:
-    - Topic match is solved.
-    - Best length is 15-30 seconds.
-    - View completion rate is the bottleneck.
-    - Winning content = self-confrontation + delayed payoff.
-
-    Weighting:
+    Same V31 strategy, smarter execution:
     - 50% Mirror
     - 30% Two-stage payoff
     - 20% Consequence
+    - scene-tag background matching support
+    - script-length-aware pacing
+    - hook variation
+    - clean subtitle timing support
     """
     categories = list(VIRAL_RETENTION_BANK.keys())
-    weights_by_category = {
-        "mirror": 0.50,
-        "two_stage_payoff": 0.30,
-        "consequence": 0.20,
-    }
-
+    weights_by_category = {"mirror": 0.50, "two_stage_payoff": 0.30, "consequence": 0.20}
     weights = [weights_by_category.get(c, 0.0) for c in categories]
     if sum(weights) <= 0:
         weights = [1 for _ in categories]
-
     category = random.choices(categories, weights=weights, k=1)[0]
     bank = VIRAL_RETENTION_BANK[category]
     script_options = bank["scripts"]
     script_keys = [" | ".join(x) for x in script_options]
-
-    selected_key = pick_unique_rotated(
-        script_keys,
-        memory_key="recent_completion_scripts_v31",
-        max_recent=360,
-    )
-
+    selected_key = pick_unique_rotated(script_keys, memory_key="recent_smart_completion_scripts_v31_1", max_recent=420)
     selected_index = script_keys.index(selected_key) if selected_key in script_keys else 0
     lines = list(script_options[selected_index])
     lines = rhythm_refine(lines)
-
+    lines = vary_hook_v31_1(lines)
     if len(lines) > RETENTION_LINE_COUNT_MAX:
         lines = lines[:RETENTION_LINE_COUNT_MAX]
-
     while len(lines) < RETENTION_LINE_COUNT_MIN:
-        lines.append(
-            pick_unique_rotated(
-                RETENTION_ENDING_LINES,
-                memory_key="recent_completion_endings_v31",
-                max_recent=180,
-            )
-        )
-
-    cover = pick_unique_rotated(
-        bank["covers"],
-        memory_key="recent_completion_covers_v31",
-        max_recent=300,
-    )
-
-    remember_rotation_item("recent_categories", category, 180)
-
-    print("V31 CATEGORY:", category)
-    print("V31 COVER STYLE:", bank.get("cover_style", "default"))
-    print("V31 COVER:", cover)
-    print("V31 SCRIPT:", " | ".join(lines))
-
-    return Script(
-        mode="completion_engine_v31",
-        category=category,
-        mood=bank["mood"],
-        cover=cover,
-        title=f"{cover} | INNER DISCIPLINE",
-        pacing="cold",
-        lines=lines,
-    )
+        lines.append(pick_unique_rotated(RETENTION_ENDING_LINES, memory_key="recent_smart_endings_v31_1", max_recent=220))
+    cover = pick_unique_rotated(bank["covers"], memory_key="recent_smart_covers_v31_1", max_recent=380)
+    remember_rotation_item("recent_categories", category, 220)
+    print("V31.1 CATEGORY:", category)
+    print("V31.1 COVER STYLE:", bank.get("cover_style", "default"))
+    print("V31.1 COVER:", cover)
+    print("V31.1 SCRIPT:", " | ".join(lines))
+    script = Script(mode="smart_completion_engine_v31_1", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
+    return apply_smart_pacing_v31_1(script)
 
 
 
@@ -1556,17 +1647,14 @@ def should_make_series():
 
 def build_script():
     """
-    v31 COMPLETION ENGINE.
+    v31.1 SMART COMPLETION ENGINE.
 
-    No Day system.
-    No challenge sequence.
-    No ebook overlay.
-    No bordered/panel-style public reels.
-
-    Built for 18-24 second full-screen completion reels:
-    50% Mirror
-    30% Two-stage payoff
-    20% Consequence
+    Same V31 strategy, smarter execution:
+    - scene-tag background matching
+    - script-length-aware pacing
+    - hook variation
+    - clean subtitle timing
+    - fullscreen no-border reels
     """
     return build_retention_reel_script()
 
@@ -2929,10 +3017,40 @@ def build_caption_v31(script):
 
 
 def build_caption(script):
-    """
-    V31 captions: clear, relevant, self-confrontational, no engagement bait.
-    """
-    return build_caption_v31(script)
+    """V31.1 captions: clear, relevant, completion-focused, no engagement bait."""
+    category = str(getattr(script, "category", "mirror")).lower()
+    bank = {
+        "mirror": [
+            "You usually feel the warning before the result changes. The real question is whether you correct it early or explain it away.",
+            "Most patterns do not surprise you. You saw the first sign. You just waited too long to act.",
+            "The standard rarely disappears loudly. It slips through small private choices until weakness feels normal.",
+            "You are not lacking information. You are avoiding the moment that demands proof.",
+        ],
+        "two_stage_payoff": [
+            "The hardest part is rarely starting. It is continuing when there is no emotion left.",
+            "The real test is not the beginning. It is the repetition after the mood fades.",
+            "Most people do not lose discipline suddenly. They lose it quietly, then call it temporary.",
+            "The first crack is usually one excuse you stop challenging.",
+        ],
+        "consequence": [
+            "Nothing stays small when repeated. Not excuses. Not comfort. Not avoidance.",
+            "The cost usually arrives later. That delay is what makes weak habits dangerous.",
+            "Weak choices feel small until they compound into a life you did not mean to build.",
+            "Comfort feels harmless until it becomes the standard.",
+        ],
+    }
+    if category not in bank: category = "mirror"
+    cap = pick_unique_rotated(bank[category], memory_key="recent_captions_v31_1", max_recent=320)
+    tags = pick_unique_rotated([
+        "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+        "#discipline #habits #standards #selfcontrol #growth",
+        "#discipline #routine #focus #mindset #selfrespect",
+        "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
+    ], memory_key="recent_hashtags_v31_1", max_recent=120)
+    print("CAPTION TYPE V31.1:", category)
+    print("CAPTION V31.1:", cap)
+    print("HASHTAGS V31.1:", tags)
+    return cap + "\n\n" + tags
 
 
 def write_metadata(script, out_path, bg_path=None):
@@ -3138,7 +3256,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” COMPLETION ENGINE v31")
+    print("\nINNER DISCIPLINE â€” SMART COMPLETION ENGINE v31.1")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -3160,7 +3278,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v31_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v31_1_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
