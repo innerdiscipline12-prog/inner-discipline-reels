@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence",
     "two_stage_payoff",
     "mirror",
-    "consequence",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 1
+    "global": 2
   },
-  "updated_at": "2026-07-09T17:07:17",
+  "updated_at": "2026-07-10T16:08:54",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "weakness compounds. | first in private. | then in routine. | then in identity. | then in results. | then in regret. | that is the sequence. | stop it early.",
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real.",
     "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
     "you felt the warning. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
@@ -460,23 +461,24 @@
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early."
   ],
   "recent_smart_endings_v31_1": [
+    "private standards create public results.",
+    "time exposes every repeated compromise.",
     "comfort slowly destroys structure.",
     "your private habits are not private forever.",
     "discipline dies quietly first.",
     "pressure exposes every weak routine.",
     "discipline is built in silence.",
-    "time exposes every repeated compromise.",
     "nothing changes until the routine changes.",
     "your standards decide your future.",
     "the routine always tells the truth.",
     "your future reflects your standards.",
-    "private standards create public results.",
     "control returns when negotiation ends.",
     "structure decides who stays consistent.",
     "a weak standard always becomes visible.",
     "weak habits always collect consequences."
   ],
   "recent_smart_covers_v31_1": [
+    "the bill arrives",
     "the real problem",
     "you felt that drop",
     "you know what to do",
@@ -499,6 +501,7 @@
     "time does not wait"
   ],
   "recent_captions_v31_1": [
+    "weak choices feel small until they compound into a life you did not mean to build.",
     "the first crack is usually one excuse you stop challenging.",
     "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
@@ -511,12 +514,13 @@
     "nothing stays small when repeated. not excuses. not comfort. not avoidance."
   ],
   "recent_hashtags_v31_1": [
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth"
   ],
   "recent_hook_variants_v31_1": [
+    "weakness adds up.",
     "you felt the warning.",
     "you knew this first.",
     "you made it negotiable.",
