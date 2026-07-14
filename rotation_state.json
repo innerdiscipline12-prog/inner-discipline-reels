@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4"
   ],
   "background_cursor": {
-    "global": 15
+    "global": 16
   },
-  "updated_at": "2026-07-14T08:11:42",
+  "updated_at": "2026-07-14T11:13:42",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "you know this already. | the problem is not information. | you already saw the habit. | you already felt the warning. | you already knew the cost. | the part you avoid is obedience. | especially when comfort gets loud. | that is where discipline begins.",
     "you keep explaining. | the same pattern. | with better words. | you can make the excuse sound intelligent. | you can make delay sound strategic. | but the routine still knows. | what really happened. | so do you.",
     "the quiet truth. | nobody has to see it. | for it to matter. | nobody has to clap. | for it to count. | your future still records it. | your identity still feels it. | every time.",
@@ -454,7 +455,6 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real.",
     "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
     "you felt the warning. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
-    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "where it breaks. | is not the goal. | it is the private choice. | after the emotion fades. | after comfort speaks. | after nobody is watching. | that moment reveals the standard. | every time.",
     "you felt that drop. | that small loss of respect. | after you broke your word. | after you chose comfort. | after you said tomorrow again. | that feeling was feedback. | not weakness. | listen to it.",
     "you let it slide. | once. | then again. | then it stopped feeling wrong. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
@@ -472,6 +472,8 @@
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early."
   ],
   "recent_smart_endings_v31_1": [
+    "structure decides who stays consistent.",
+    "your private habits are not private forever.",
     "weak habits always collect consequences.",
     "your standards decide your future.",
     "the routine always tells the truth.",
@@ -480,15 +482,14 @@
     "discipline dies quietly first.",
     "time exposes every repeated compromise.",
     "pressure exposes every weak routine.",
-    "your private habits are not private forever.",
     "control returns when negotiation ends.",
-    "structure decides who stays consistent.",
     "a weak standard always becomes visible.",
     "discipline is built in silence.",
     "comfort slowly destroys structure.",
     "nothing changes until the routine changes."
   ],
   "recent_smart_covers_v31_1": [
+    "you watched it happen",
     "you know what to do",
     "you know this already",
     "you felt the warning",
@@ -517,7 +518,6 @@
     "you called it tomorrow",
     "you're avoiding it",
     "the standard slipped",
-    "you watched it happen",
     "the cost finds you",
     "the first crack",
     "time does not wait"
