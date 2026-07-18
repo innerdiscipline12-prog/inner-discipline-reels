@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence",
     "mirror",
     "two_stage_payoff",
-    "consequence",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 25
+    "global": 26
   },
-  "updated_at": "2026-07-18T04:24:05",
+  "updated_at": "2026-07-18T04:32:15",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
     "you felt that drop. | that small loss of respect. | after you broke your word. | after you chose comfort. | after you said tomorrow again. | that feeling was feedback. | not weakness. | listen to it.",
     "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
     "you keep moving it. | the line. | the rule. | the standard. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
@@ -475,8 +476,9 @@
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early."
   ],
   "recent_smart_endings_v31_1": [
-    "structure decides who stays consistent.",
     "comfort slowly destroys structure.",
+    "discipline dies quietly first.",
+    "structure decides who stays consistent.",
     "a weak standard always becomes visible.",
     "your future reflects your standards.",
     "discipline is built in silence.",
@@ -488,10 +490,10 @@
     "pressure exposes every weak routine.",
     "your private habits are not private forever.",
     "weak habits always collect consequences.",
-    "private standards create public results.",
-    "discipline dies quietly first."
+    "private standards create public results."
   ],
   "recent_smart_covers_v31_1": [
+    "nothing stays small",
     "you keep negotiating",
     "you saw it coming",
     "you know the pattern",
@@ -529,6 +531,7 @@
     "time does not wait"
   ],
   "recent_captions_v31_1": [
+    "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
     "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
@@ -536,15 +539,14 @@
     "comfort feels harmless until it becomes the standard.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary.",
-    "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
     "the first crack is usually one excuse you stop challenging.",
     "weak choices feel small until they compound into a life you did not mean to build.",
     "the cost usually arrives later. that delay is what makes weak habits dangerous.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left."
   ],
   "recent_hashtags_v31_1": [
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #habits #standards #selfcontrol #growth",
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ],
