@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "mirror",
     "two_stage_payoff",
     "consequence",
-    "mirror",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 1
+    "global": 2
   },
-  "updated_at": "2026-07-19T12:31:36",
+  "updated_at": "2026-07-19T17:14:40",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
     "later gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
     "the bill arrives. | for every habit you ignored. | for every standard you lowered. | for every promise you delayed. | nothing stays free. | not even comfort. | not forever. | the bill always comes.",
@@ -454,7 +455,6 @@
     "the part that matters. | is not what you say. | it is what you repeat. | when pressure returns. | when comfort calls. | when nobody checks. | that is the real standard. | that is the proof.",
     "comfort has a cost. | it feels safe now. | it feels easy now. | it feels harmless now. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
     "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
-    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "you keep explaining. | the same pattern. | with better words. | you can make the excuse sound intelligent. | you can make delay sound strategic. | but the routine still knows. | what really happened. | so do you.",
     "the quiet truth. | nobody has to see it. | for it to matter. | nobody has to clap. | for it to count. | your future still records it. | your identity still feels it. | every time.",
     "excuses have interest. | they feel harmless now. | then they charge your future. | one repeated delay. | one weak decision. | one comfortable lie. | at a time. | that is the trap.",
@@ -480,6 +480,7 @@
   ],
   "recent_smart_endings_v31_1": [
     "structure decides who stays consistent.",
+    "your future reflects your standards.",
     "the routine always tells the truth.",
     "your private habits are not private forever.",
     "discipline is built in silence.",
@@ -490,12 +491,12 @@
     "comfort slowly destroys structure.",
     "discipline dies quietly first.",
     "a weak standard always becomes visible.",
-    "your future reflects your standards.",
     "time exposes every repeated compromise.",
     "pressure exposes every weak routine.",
     "private standards create public results."
   ],
   "recent_smart_covers_v31_1": [
+    "you know what to do",
     "the moment you stop",
     "weakness compounds",
     "excuses have interest",
@@ -510,7 +511,6 @@
     "you let it slide",
     "the quiet truth",
     "you watched it happen",
-    "you know what to do",
     "you know this already",
     "what most people miss",
     "later gets expensive",
@@ -537,10 +537,10 @@
     "time does not wait"
   ],
   "recent_captions_v31_1": [
+    "you are not lacking information. you are avoiding the moment that demands proof.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left.",
     "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
     "weak choices feel small until they compound into a life you did not mean to build.",
-    "you are not lacking information. you are avoiding the moment that demands proof.",
     "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "the cost usually arrives later. that delay is what makes weak habits dangerous.",
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away.",
@@ -551,8 +551,8 @@
     "the first crack is usually one excuse you stop challenging."
   ],
   "recent_hashtags_v31_1": [
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect"
   ],
