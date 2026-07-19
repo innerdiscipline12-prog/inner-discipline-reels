@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4"
   ],
   "background_cursor": {
-    "global": 30
+    "global": 0
   },
-  "updated_at": "2026-07-18T06:08:16",
+  "updated_at": "2026-07-19T07:08:19",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "later gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
     "the bill arrives. | for every habit you ignored. | for every standard you lowered. | for every promise you delayed. | nothing stays free. | not even comfort. | not forever. | the bill always comes.",
     "you know what to do. | that is why it bothers you. | not because life is unclear. | not because the answer is hidden. | because the standard is obvious. | and you keep letting mood vote. | that is the weakness. | correct it.",
     "you keep negotiating. | with the same standard. | you already decided. | then the mood changed. | then the excuse sounded reasonable. | then the standard moved again. | that is why the result looks familiar. | nothing changed at the root.",
@@ -473,19 +474,18 @@
     "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before.",
     "you broke it quietly. | not your life. | not all at once. | you broke your word first. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
     "you saw it coming. | the warning was there. | the drop was there. | the old habit was there. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
-    "later gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
     "this is the part. | most people avoid. | they want the result. | they want the identity. | they want the respect. | but not the standard. | that creates all of it. | that is the trade.",
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early."
   ],
   "recent_smart_endings_v31_1": [
+    "your private habits are not private forever.",
+    "discipline is built in silence.",
     "control returns when negotiation ends.",
     "your standards decide your future.",
     "the routine always tells the truth.",
     "weak habits always collect consequences.",
-    "your private habits are not private forever.",
     "nothing changes until the routine changes.",
     "structure decides who stays consistent.",
-    "discipline is built in silence.",
     "comfort slowly destroys structure.",
     "discipline dies quietly first.",
     "a weak standard always becomes visible.",
@@ -495,6 +495,7 @@
     "private standards create public results."
   ],
   "recent_smart_covers_v31_1": [
+    "weakness compounds",
     "excuses have interest",
     "you felt that drop",
     "you felt the warning",
@@ -506,7 +507,6 @@
     "this is the part",
     "you let it slide",
     "the quiet truth",
-    "weakness compounds",
     "you watched it happen",
     "you know what to do",
     "you know this already",
@@ -535,11 +535,11 @@
     "time does not wait"
   ],
   "recent_captions_v31_1": [
+    "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
     "weak choices feel small until they compound into a life you did not mean to build.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
     "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "the cost usually arrives later. that delay is what makes weak habits dangerous.",
-    "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
     "the real test is not the beginning. it is the repetition after the mood fades.",
@@ -549,12 +549,13 @@
     "the hardest part is rarely starting. it is continuing when there is no emotion left."
   ],
   "recent_hashtags_v31_1": [
-    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_hook_variants_v31_1": [
+    "later costs more.",
     "the price comes later.",
     "you keep negotiating.",
     "you already know.",
