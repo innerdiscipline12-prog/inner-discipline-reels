@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 8
+    "global": 9
   },
-  "updated_at": "2026-07-21T11:13:33",
+  "updated_at": "2026-07-21T17:37:13",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,11 +438,11 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
     "you felt the warning. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
     "you keep moving it. | the line. | the rule. | the standard. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
     "you broke it quietly. | not your life. | not all at once. | you broke your word first. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
     "years disappear. | not all at once. | one repeated excuse. | one delayed decision. | one weak routine. | one lowered standard. | until normal becomes regret. | that is how time goes.",
-    "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
     "later gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
@@ -479,6 +479,8 @@
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early."
   ],
   "recent_smart_endings_v31_1": [
+    "discipline dies quietly first.",
+    "the routine always tells the truth.",
     "private standards create public results.",
     "nothing changes until the routine changes.",
     "time exposes every repeated compromise.",
@@ -488,14 +490,13 @@
     "weak habits always collect consequences.",
     "structure decides who stays consistent.",
     "your future reflects your standards.",
-    "the routine always tells the truth.",
     "discipline is built in silence.",
     "your standards decide your future.",
     "comfort slowly destroys structure.",
-    "discipline dies quietly first.",
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_1": [
+    "you let it slide",
     "you know what to do",
     "you know this already",
     "time does not wait",
@@ -511,7 +512,6 @@
     "you saw it coming",
     "you know the pattern",
     "this is the part",
-    "you let it slide",
     "the quiet truth",
     "you watched it happen",
     "what most people miss",
@@ -551,8 +551,8 @@
     "the first crack is usually one excuse you stop challenging."
   ],
   "recent_hashtags_v31_1": [
-    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
+    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ],
