@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence",
     "two_stage_payoff",
     "mirror",
-    "consequence",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 14
+    "global": 15
   },
-  "updated_at": "2026-07-24T06:58:24",
+  "updated_at": "2026-07-25T07:30:12",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
     "this is the part. | most people avoid. | they want the result. | they want the identity. | they want the respect. | but not the standard. | that creates all of it. | that is the trade.",
     "you saw it coming. | the warning was there. | the drop was there. | the old habit was there. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
@@ -454,7 +455,6 @@
     "the bill arrives. | for every habit you ignored. | for every standard you lowered. | for every promise you delayed. | nothing stays free. | not even comfort. | not forever. | the bill always comes.",
     "you know what to do. | that is why it bothers you. | not because life is unclear. | not because the answer is hidden. | because the standard is obvious. | and you keep letting mood vote. | that is the weakness. | correct it.",
     "you keep negotiating. | with the same standard. | you already decided. | then the mood changed. | then the excuse sounded reasonable. | then the standard moved again. | that is why the result looks familiar. | nothing changed at the root.",
-    "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
     "you felt that drop. | that small loss of respect. | after you broke your word. | after you chose comfort. | after you said tomorrow again. | that feeling was feedback. | not weakness. | listen to it.",
     "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
     "you know this already. | the problem is not information. | you already saw the habit. | you already felt the warning. | you already knew the cost. | the part you avoid is obedience. | especially when comfort gets loud. | that is where discipline begins.",
@@ -480,23 +480,24 @@
     "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before."
   ],
   "recent_smart_endings_v31_1": [
+    "weak habits always collect consequences.",
+    "your future reflects your standards.",
     "control returns when negotiation ends.",
     "your private habits are not private forever.",
     "your standards decide your future.",
     "discipline dies quietly first.",
     "time exposes every repeated compromise.",
     "the routine always tells the truth.",
-    "your future reflects your standards.",
     "discipline is built in silence.",
     "private standards create public results.",
     "nothing changes until the routine changes.",
     "pressure exposes every weak routine.",
-    "weak habits always collect consequences.",
     "structure decides who stays consistent.",
     "comfort slowly destroys structure.",
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_1": [
+    "later gets expensive",
     "the first crack",
     "you know this already",
     "nothing stays small",
@@ -519,7 +520,6 @@
     "the quiet truth",
     "you watched it happen",
     "what most people miss",
-    "later gets expensive",
     "comfort has a cost",
     "the part that matters",
     "the real test",
@@ -539,12 +539,12 @@
     "the cost finds you"
   ],
   "recent_captions_v31_1": [
+    "the cost usually arrives later. that delay is what makes weak habits dangerous.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
     "comfort feels harmless until it becomes the standard.",
     "the real test is not the beginning. it is the repetition after the mood fades.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left.",
-    "the cost usually arrives later. that delay is what makes weak habits dangerous.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
     "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
     "weak choices feel small until they compound into a life you did not mean to build.",
@@ -553,9 +553,9 @@
     "the first crack is usually one excuse you stop challenging."
   ],
   "recent_hashtags_v31_1": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_1": [
