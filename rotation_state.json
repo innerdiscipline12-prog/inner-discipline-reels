@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4"
   ],
   "background_cursor": {
-    "global": 17
+    "global": 18
   },
-  "updated_at": "2026-07-26T07:58:54",
+  "updated_at": "2026-07-27T06:56:39",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it.",
     "this is the part. | most people avoid. | they want the result. | they want the identity. | they want the respect. | but not the standard. | that creates all of it. | that is the trade.",
     "you know this already. | the problem is not information. | you already saw the habit. | you already felt the warning. | you already knew the cost. | the part you avoid is obedience. | especially when comfort gets loud. | that is where discipline begins.",
     "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
@@ -459,7 +460,6 @@
     "you felt that drop. | that small loss of respect. | after you broke your word. | after you chose comfort. | after you said tomorrow again. | that feeling was feedback. | not weakness. | listen to it.",
     "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
     "the hardest part. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping.",
-    "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it.",
     "the part that matters. | is not what you say. | it is what you repeat. | when pressure returns. | when comfort calls. | when nobody checks. | that is the real standard. | that is the proof.",
     "comfort has a cost. | it feels safe now. | it feels easy now. | it feels harmless now. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
     "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
@@ -480,6 +480,8 @@
     "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before."
   ],
   "recent_smart_endings_v31_1": [
+    "discipline dies quietly first.",
+    "time exposes every repeated compromise.",
     "discipline is built in silence.",
     "your future reflects your standards.",
     "control returns when negotiation ends.",
@@ -487,8 +489,6 @@
     "weak habits always collect consequences.",
     "your private habits are not private forever.",
     "your standards decide your future.",
-    "discipline dies quietly first.",
-    "time exposes every repeated compromise.",
     "the routine always tells the truth.",
     "private standards create public results.",
     "pressure exposes every weak routine.",
@@ -497,6 +497,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_1": [
+    "you saw it coming",
     "the hardest part",
     "you're not confused",
     "later gets expensive",
@@ -516,7 +517,6 @@
     "you felt that drop",
     "you felt the warning",
     "the damage grows",
-    "you saw it coming",
     "you know the pattern",
     "this is the part",
     "the quiet truth",
@@ -539,11 +539,11 @@
     "the cost finds you"
   ],
   "recent_captions_v31_1": [
+    "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
     "the first crack is usually one excuse you stop challenging.",
     "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "the cost usually arrives later. that delay is what makes weak habits dangerous.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary.",
-    "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
     "comfort feels harmless until it becomes the standard.",
     "the real test is not the beginning. it is the repetition after the mood fades.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left.",
@@ -553,9 +553,9 @@
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away."
   ],
   "recent_hashtags_v31_1": [
+    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth",
-    "#discipline #routine #focus #mindset #selfrespect",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_1": [
