@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4"
   ],
   "background_cursor": {
-    "global": 20
+    "global": 21
   },
-  "updated_at": "2026-07-28T17:49:22",
+  "updated_at": "2026-07-29T09:45:36",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "you watched it happen. | the routine got weaker. | the excuses got easier. | the standard moved lower. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it.",
@@ -452,7 +453,6 @@
     "you keep moving it. | the line. | the rule. | the standard. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
     "you broke it quietly. | not your life. | not all at once. | you broke your word first. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
     "years disappear. | not all at once. | one repeated excuse. | one delayed decision. | one weak routine. | one lowered standard. | until normal becomes regret. | that is how time goes.",
-    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
     "later gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
     "the bill arrives. | for every habit you ignored. | for every standard you lowered. | for every promise you delayed. | nothing stays free. | not even comfort. | not forever. | the bill always comes.",
@@ -480,10 +480,11 @@
     "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before."
   ],
   "recent_smart_endings_v31_1": [
+    "time exposes every repeated compromise.",
+    "a weak standard always becomes visible.",
     "comfort slowly destroys structure.",
     "discipline dies quietly first.",
     "your private habits are not private forever.",
-    "time exposes every repeated compromise.",
     "discipline is built in silence.",
     "your future reflects your standards.",
     "control returns when negotiation ends.",
@@ -493,10 +494,10 @@
     "the routine always tells the truth.",
     "private standards create public results.",
     "pressure exposes every weak routine.",
-    "structure decides who stays consistent.",
-    "a weak standard always becomes visible."
+    "structure decides who stays consistent."
   ],
   "recent_smart_covers_v31_1": [
+    "you keep moving it",
     "the real test",
     "you know this already",
     "you saw it coming",
@@ -530,7 +531,6 @@
     "you knew earlier",
     "the bill arrives",
     "the real problem",
-    "you keep moving it",
     "where it breaks",
     "you broke it quietly",
     "you called it tomorrow",
@@ -539,9 +539,9 @@
     "the cost finds you"
   ],
   "recent_captions_v31_1": [
+    "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "the first crack is usually one excuse you stop challenging.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
-    "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "the cost usually arrives later. that delay is what makes weak habits dangerous.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary.",
     "comfort feels harmless until it becomes the standard.",
@@ -553,10 +553,10 @@
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away."
   ],
   "recent_hashtags_v31_1": [
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#discipline #habits #standards #selfcontrol #growth",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
+    "#discipline #habits #standards #selfcontrol #growth"
   ],
   "recent_hook_variants_v31_1": [
     "you knew this first.",
