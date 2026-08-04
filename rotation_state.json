@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 28
+    "global": 29
   },
-  "updated_at": "2026-08-04T08:26:34",
+  "updated_at": "2026-08-04T11:43:17",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -438,6 +438,7 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_smart_completion_scripts_v31_1": [
+    "you felt the warning. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real.",
     "you know what to do. | that is why it bothers you. | not because life is unclear. | not because the answer is hidden. | because the standard is obvious. | and you keep letting mood vote. | that is the weakness. | correct it.",
     "the real problem. | is not motivation. | motivation comes and goes. | the real problem is the routine. | you keep protecting. | with excuses. | that sound reasonable. | but still cost you.",
@@ -453,7 +454,6 @@
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
     "this is why. | you keep restarting. | the emotion returns. | the plan looks new. | the promise sounds serious. | but the system stays the same. | so the pattern returns. | every time.",
     "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
-    "you felt the warning. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
     "you keep moving it. | the line. | the rule. | the standard. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
     "you broke it quietly. | not your life. | not all at once. | you broke your word first. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
     "years disappear. | not all at once. | one repeated excuse. | one delayed decision. | one weak routine. | one lowered standard. | until normal becomes regret. | that is how time goes.",
@@ -480,12 +480,13 @@
     "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before."
   ],
   "recent_smart_endings_v31_1": [
+    "pressure exposes every weak routine.",
+    "your future reflects your standards.",
     "the routine always tells the truth.",
     "discipline is built in silence.",
     "weak habits always collect consequences.",
     "a weak standard always becomes visible.",
     "discipline dies quietly first.",
-    "your future reflects your standards.",
     "control returns when negotiation ends.",
     "your standards decide your future.",
     "structure decides who stays consistent.",
@@ -493,10 +494,10 @@
     "comfort slowly destroys structure.",
     "your private habits are not private forever.",
     "nothing changes until the routine changes.",
-    "private standards create public results.",
-    "pressure exposes every weak routine."
+    "private standards create public results."
   ],
   "recent_smart_covers_v31_1": [
+    "you know what to do",
     "what most people miss",
     "you know this already",
     "the part you avoid",
@@ -512,7 +513,6 @@
     "nothing stays small",
     "this is why",
     "you let it slide",
-    "you know what to do",
     "time does not wait",
     "you keep negotiating",
     "you keep explaining",
@@ -539,6 +539,7 @@
     "the cost finds you"
   ],
   "recent_captions_v31_1": [
+    "you are not lacking information. you are avoiding the moment that demands proof.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
     "the real test is not the beginning. it is the repetition after the mood fades.",
@@ -547,18 +548,18 @@
     "the first crack is usually one excuse you stop challenging.",
     "the cost usually arrives later. that delay is what makes weak habits dangerous.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary.",
-    "you are not lacking information. you are avoiding the moment that demands proof.",
     "nothing stays small when repeated. not excuses. not comfort. not avoidance.",
     "weak choices feel small until they compound into a life you did not mean to build.",
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away."
   ],
   "recent_hashtags_v31_1": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ],
   "recent_hook_variants_v31_1": [
+    "the warning came early.",
     "this is the real problem.",
     "you knew this first.",
     "this is what keeps happening.",
