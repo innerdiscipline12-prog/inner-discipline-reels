@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "mirror",
     "two_stage_payoff",
+    "mirror",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 4
+    "global": 5
   },
-  "updated_at": "2026-09-22T05:13:11",
+  "updated_at": "2026-09-22T17:53:17",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -576,5 +576,21 @@
     "you felt the warning.",
     "you made it negotiable.",
     "delay gets expensive."
+  ],
+  "recent_smart_completion_scripts_v31_2": [
+    "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
+  ],
+  "recent_smart_endings_v31_2": [
+    "weak habits always collect consequences.",
+    "a weak standard always becomes visible."
+  ],
+  "recent_smart_covers_v31_2": [
+    "the moment you stop"
+  ],
+  "recent_captions_v31_2": [
+    "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
+  ],
+  "recent_hashtags_v31_2": [
+    "#discipline #habits #standards #selfcontrol #growth"
   ]
 }
