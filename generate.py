@@ -1,3 +1,8 @@
+# ================================================================
+# INNER DISCIPLINE V31.2 â€” CONTENT RENEWAL
+# Same engine logic. Same bank sizes. Fresh wording only.
+# Covers: 2-word default / 3-word open-loop secondary.
+# ================================================================
 import os
 import glob
 import random
@@ -22,7 +27,7 @@ import edge_tts
 
 
 # ================================================================
-# INNER DISCIPLINE â€” SMART COMPLETION ENGINE v31.1
+# INNER DISCIPLINE Ã¢â‚¬â€ SMART COMPLETION ENGINE v31.2
 #
 # Clean rebuild. No patch stacking.
 #
@@ -132,7 +137,6 @@ BANNED_COVERS_V24 = [
 ]
 
 
-
 CAPTION_BANK_V26 = {
     "identity": [
         "Your routine tells the truth before your results do.",
@@ -237,7 +241,6 @@ HASHTAG_PACKS_V25 = [
     "#disciplineovermotivation #habits #mindsetshift #consistency #focus",
     "#mentalcontrol #discipline #routine #selfrespect #innerdiscipline",
 ]
-
 
 
 REEL_SECONDS = 20.0
@@ -773,7 +776,7 @@ CONTENT = {
     },
     "masculine_standard": {
         "mood": "dangerous",
-        "cover": ["BE THE MAN", "RAISE STANDARD", "NO EXCUSES", "LEAD YOURSELF", "REAL MAN", "LOW STANDARD", "CONTROL YOURSELF", "PRIVATE PROOF"],
+        "cover": ["BE THE MAN", "RAISE STANDARD", "LOWER STANDARDS", "LEAD YOURSELF", "REAL MAN", "LOW STANDARD", "CONTROL YOURSELF", "PRIVATE PROOF"],
         "problem": [
             "You say you want to lead, but you cannot keep a promise to yourself.",
             "You confuse anger with strength and comfort with peace.",
@@ -880,7 +883,7 @@ DAY7_CONTENT = {
         "mood": "challenge",
         "cover": [
             "DAY 7",
-            "MOST QUIT",
+            "QUIET FAILURE",
             "QUIET DRIFT",
             "WEAK ROUTINE",
             "STOP RESETTING",
@@ -905,7 +908,7 @@ DAY7_CONTENT = {
 
 SERIES_TASK_INTROS = [
     "Your task is simple.",
-    "Todayâ€™s rule is simple.",
+    "TodayÃ¢â‚¬â„¢s rule is simple.",
     "The work is simple.",
     "Your standard today is simple.",
     "Do this without negotiation.",
@@ -940,9 +943,9 @@ VIRAL_RETENTION_BANK = {
             "YOU SAID TOMORROW", "YOU KEEP MOVING IT", "YOU KNEW EARLIER"
         ],
         "scripts": [
-            ["YOU KNOW THIS ALREADY.", "The problem is not information.", "You already saw the habit.", "You already felt the warning.", "You already knew the cost.", "The part you avoid is obedience.", "Especially when comfort gets loud.", "That is where discipline begins."],
-            ["YOU FELT THE WARNING.", "Before the result changed.", "Before anyone noticed.", "Before the habit looked serious.", "Something in you already knew.", "That was not random.", "That was the first signal.", "Most people ignore it."],
-            ["YOU KEEP NEGOTIATING.", "With the same standard.", "You already decided.", "Then the mood changed.", "Then the excuse sounded reasonable.", "Then the standard moved again.", "That is why the result looks familiar.", "Nothing changed at the root."],
+            ["YOU KNOW WHAT THIS IS.", "The problem is not information.", "You already saw the habit.", "You already felt the warning.", "You already knew the cost.", "The part you avoid is obedience.", "Especially when comfort gets loud.", "That is where discipline begins."],
+            ["YOU FELT THE SHIFT.", "Before the result changed.", "Before anyone noticed.", "Before the habit looked serious.", "Something in you already knew.", "That was not random.", "That was the first signal.", "Most people ignore it."],
+            ["YOU KEEP LOWERING IT.", "With the same standard.", "You already decided.", "Then the mood changed.", "Then the excuse sounded reasonable.", "Then the standard moved again.", "That is why the result looks familiar.", "Nothing changed at the root."],
             ["YOU'RE NOT CONFUSED.", "You know what needs to change.", "You know what keeps costing you.", "The hard part is not knowing.", "It is obeying the truth.", "When comfort argues back.", "That moment decides everything.", "Not the speech."],
             ["YOU KNOW WHAT TO DO.", "That is why it bothers you.", "Not because life is unclear.", "Not because the answer is hidden.", "Because the standard is obvious.", "And you keep letting mood vote.", "That is the weakness.", "Correct it."],
             ["THE STANDARD SLIPPED.", "Not in one big failure.", "Not where people could see it.", "It slipped in small private choices.", "One exception became two.", "Two became normal.", "Normal became identity.", "That is how it happens."],
@@ -970,9 +973,9 @@ VIRAL_RETENTION_BANK = {
             "THE MOMENT YOU STOP", "WHAT MOST PEOPLE MISS", "THE PART THAT MATTERS"
         ],
         "scripts": [
-            ["THE HARDEST PART.", "Is not starting.", "Starting feels good.", "Starting gives you hope.", "Starting makes you feel changed.", "The hardest part is continuing.", "When nobody is watching.", "And no mood is helping."],
-            ["THE REAL PROBLEM.", "Is not motivation.", "Motivation comes and goes.", "The real problem is the routine.", "You keep protecting.", "With excuses.", "That sound reasonable.", "But still cost you."],
-            ["THIS IS WHY.", "You keep restarting.", "The emotion returns.", "The plan looks new.", "The promise sounds serious.", "But the system stays the same.", "So the pattern returns.", "Every time."],
+            ["THE HARD PART STARTS HERE.", "Is not starting.", "Starting feels good.", "Starting gives you hope.", "Starting makes you feel changed.", "The hardest part is continuing.", "When nobody is watching.", "And no mood is helping."],
+            ["THE REAL PROBLEM IS QUIETER.", "Is not motivation.", "Motivation comes and goes.", "The real problem is the routine.", "You keep protecting.", "With excuses.", "That sound reasonable.", "But still cost you."],
+            ["THIS IS WHAT HAPPENS.", "You keep restarting.", "The emotion returns.", "The plan looks new.", "The promise sounds serious.", "But the system stays the same.", "So the pattern returns.", "Every time."],
             ["THIS IS THE PART.", "Most people avoid.", "They want the result.", "They want the identity.", "They want the respect.", "But not the standard.", "That creates all of it.", "That is the trade."],
             ["THE PART YOU AVOID.", "Is the part that changes you.", "Not the plan.", "Not the quote.", "Not the announcement.", "The proof.", "Repeated quietly.", "When nobody claps."],
             ["WHERE IT BREAKS.", "Is not the goal.", "It is the private choice.", "After the emotion fades.", "After comfort speaks.", "After nobody is watching.", "That moment reveals the standard.", "Every time."],
@@ -994,9 +997,9 @@ VIRAL_RETENTION_BANK = {
             "THE COST FINDS YOU"
         ],
         "scripts": [
-            ["LATER GETS EXPENSIVE.", "Most people miss the cost.", "Because it does not arrive immediately.", "It arrives as a pattern.", "Then as a result.", "Then as a life.", "That delay is dangerous.", "That is why today matters."],
-            ["WEAKNESS COMPOUNDS.", "First in private.", "Then in routine.", "Then in identity.", "Then in results.", "Then in regret.", "That is the sequence.", "Stop it early."],
-            ["THE BILL ARRIVES.", "For every habit you ignored.", "For every standard you lowered.", "For every promise you delayed.", "Nothing stays free.", "Not even comfort.", "Not forever.", "The bill always comes."],
+            ["DELAY GETS EXPENSIVE.", "Most people miss the cost.", "Because it does not arrive immediately.", "It arrives as a pattern.", "Then as a result.", "Then as a life.", "That delay is dangerous.", "That is why today matters."],
+            ["SMALL WEAKNESS COMPOUNDS.", "First in private.", "Then in routine.", "Then in identity.", "Then in results.", "Then in regret.", "That is the sequence.", "Stop it early."],
+            ["THE COST EVENTUALLY ARRIVES.", "For every habit you ignored.", "For every standard you lowered.", "For every promise you delayed.", "Nothing stays free.", "Not even comfort.", "Not forever.", "The bill always comes."],
             ["YEARS DISAPPEAR.", "Not all at once.", "One repeated excuse.", "One delayed decision.", "One weak routine.", "One lowered standard.", "Until normal becomes regret.", "That is how time goes."],
             ["THE DAMAGE GROWS.", "When you keep excusing it.", "Small habits become normal.", "Normal becomes identity.", "Identity becomes results.", "Then you call it life.", "That is the danger.", "Correct it early."],
             ["NOTHING STAYS SMALL.", "Not the excuse.", "Not the delay.", "Not the habit.", "Not the compromise.", "If you keep feeding it.", "It grows.", "Quietly."],
@@ -1007,7 +1010,6 @@ VIRAL_RETENTION_BANK = {
         ]
     }
 }
-
 
 
 SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
@@ -1022,7 +1024,7 @@ SERIES_EPISODES = [
     {"day": 7, "title": "WRITE THE TRUTH", "mood": "broken", "task": "Journal one honest page.", "pain": "You cannot fix what you refuse to face."},
     {"day": 8, "title": "COLD START", "mood": "morning", "task": "Start the day with discomfort.", "pain": "Comfort has been making your decisions."},
     {"day": 9, "title": "ONE HARD THING", "mood": "dangerous", "task": "Do the hardest task first.", "pain": "You keep giving your best energy to easy things."},
-    {"day": 10, "title": "NO EXCUSES", "mood": "challenge", "task": "Complete today with zero excuses.", "pain": "Your excuses are shrinking you."},
+    {"day": 10, "title": "LOWER STANDARDS", "mood": "challenge", "task": "Complete today with zero excuses.", "pain": "Your excuses are shrinking you."},
     {"day": 11, "title": "SILENT WORK", "mood": "rebuild", "task": "Work for 45 minutes without announcing it.", "pain": "You keep wanting credit before the result."},
     {"day": 12, "title": "FACE THE MIRROR", "mood": "broken", "task": "Say the truth out loud to yourself.", "pain": "The mirror knows when you are lying."},
     {"day": 13, "title": "RUN THE STAIRS", "mood": "dangerous", "task": "Do a short brutal conditioning session.", "pain": "Your mind keeps quitting before your body needs to."},
@@ -1058,7 +1060,6 @@ class Script:
     day: int = 0
     task: str = ""
     ebook_image: str = ""
-
 
 
 # ================================================================
@@ -1176,7 +1177,6 @@ def rhythm_refine(lines):
     if refined and len(refined[-1].split()) > 12:
         refined[-1] = pick_unique_rotated(RETENTION_ENDING_LINES)
     return refined
-
 
 
 def maybe_add_save_share_signal(script):
@@ -1360,7 +1360,6 @@ def build_regular_script_raw():
     )
 
 
-
 def build_regular_script():
     script = build_regular_script_raw()
     return enforce_retention_quality(script)
@@ -1387,7 +1386,6 @@ def build_member_script():
         pacing=random.choice(["attack", "story"]),
         lines=lines,
     )
-
 
 
 def build_day7_script():
@@ -1419,41 +1417,40 @@ def build_day7_script():
     )
 
 
-
 # ================================================================
-# V31.1 SMART EXECUTION HELPERS
+# V31.2 SMART EXECUTION HELPERS
 # ================================================================
-SMART_COMPLETION_ENGINE_V31_1_MODE = True
-V31_1_UPGRADES = "scene_tags_auto_pacing_hook_variation_clean_subtitle_timing"
+SMART_COMPLETION_ENGINE_V31_2_MODE = True
+V31_2_UPGRADES = "scene_tags_auto_pacing_hook_variation_clean_subtitle_timing"
 
-SCENE_TAG_KEYWORDS_V31_1 = {
+SCENE_TAG_KEYWORDS_V31_2 = {
     "mirror": ["mirror", "face", "closeup", "dark", "alone", "room", "night", "shadow", "reflection", "eyes", "pressure"],
     "two_stage_payoff": ["walking", "rain", "street", "road", "stairs", "city", "night", "alone", "silhouette", "slow"],
     "consequence": ["broken", "empty", "dark", "rain", "road", "lonely", "damage", "shadow", "fog", "drift"],
 }
-SCRIPT_SCENE_TRIGGERS_V31_1 = {
+SCRIPT_SCENE_TRIGGERS_V31_2 = {
     "mirror": ["you", "warning", "confused", "explaining", "felt", "saw", "knew", "pattern"],
     "road": ["tomorrow", "later", "time", "years", "cost", "arrives", "future"],
     "gym": ["proof", "standard", "discipline", "routine", "repeat", "pressure", "control"],
     "broken": ["crack", "damage", "weakness", "excuse", "regret", "loss", "drift"],
     "rain": ["hard", "nobody", "watching", "comfort", "quiet", "alone"],
 }
-MIRROR_HOOK_VARIANTS_V31_1 = {
-    "YOU KNOW THIS ALREADY.": ["YOU KNOW THIS ALREADY.", "YOU ALREADY KNOW.", "YOU KNEW THIS FIRST."],
-    "YOU FELT THE WARNING.": ["YOU FELT THE WARNING.", "YOU FELT IT EARLY.", "THE WARNING CAME EARLY."],
-    "YOU KEEP NEGOTIATING.": ["YOU KEEP NEGOTIATING.", "YOU KEEP MOVING THE LINE.", "YOU MADE IT NEGOTIABLE."],
-    "THE HARDEST PART.": ["THE HARDEST PART.", "THIS IS THE HARD PART.", "THE PART THAT BREAKS MOST PEOPLE."],
-    "THE REAL PROBLEM.": ["THE REAL PROBLEM.", "THIS IS THE REAL PROBLEM.", "THE PROBLEM IS DEEPER."],
-    "THIS IS WHY.": ["THIS IS WHY.", "THIS IS THE REASON.", "THIS IS WHAT KEEPS HAPPENING."],
-    "LATER GETS EXPENSIVE.": ["LATER GETS EXPENSIVE.", "LATER COSTS MORE.", "DELAY GETS EXPENSIVE."],
-    "WEAKNESS COMPOUNDS.": ["WEAKNESS COMPOUNDS.", "WEAKNESS ADDS UP.", "WEAKNESS DOES NOT STAY SMALL."],
-    "THE BILL ARRIVES.": ["THE BILL ARRIVES.", "THE COST ARRIVES.", "THE PRICE COMES LATER."],
+MIRROR_HOOK_VARIANTS_V31_2 = {
+    "YOU KNOW WHAT THIS IS.": ["YOU KNOW WHAT THIS IS.", "YOU SAW THIS COMING.", "YOU KNEW BEFORE IT HURT."],
+    "YOU FELT THE SHIFT.": ["YOU FELT THE SHIFT.", "YOU NOTICED IT EARLY.", "THE SIGNAL WAS THERE."],
+    "YOU KEEP LOWERING IT.": ["YOU KEEP LOWERING IT.", "YOU KEEP LOWERING IT.", "YOU MADE THE STANDARD OPTIONAL."],
+    "THE HARD PART STARTS HERE.": ["THE HARD PART STARTS HERE.", "THIS PART REVEALS YOU.", "THIS IS WHERE PEOPLE DRIFT."],
+    "THE REAL PROBLEM IS QUIETER.": ["THE REAL PROBLEM IS QUIETER.", "THIS IS THE REAL PROBLEM IS QUIETER.", "THE PATTERN GOES DEEPER."],
+    "THIS IS WHAT HAPPENS.": ["THIS IS WHAT HAPPENS.", "HERE IS WHAT CHANGED.", "THIS IS THE PATTERN."],
+    "DELAY GETS EXPENSIVE.": ["DELAY GETS EXPENSIVE.", "WAITING COSTS MORE.", "DELAY GETS EXPENSIVE."],
+    "SMALL WEAKNESS COMPOUNDS.": ["SMALL WEAKNESS COMPOUNDS.", "SMALL CHOICES ADD UP.", "WEAKNESS DOES NOT STAY SMALL."],
+    "THE COST EVENTUALLY ARRIVES.": ["THE COST EVENTUALLY ARRIVES.", "THE RESULT CATCHES UP.", "THE PRICE SHOWS UP LATER."],
 }
 
-def scene_signature_v31_1(script):
+def scene_signature_v31_2(script):
     category=str(getattr(script,'category','')).lower(); cover=str(getattr(script,'cover','')).lower(); text=(category+' '+cover+' '+' '.join(getattr(script,'lines',[]))).lower()
-    tags=set(SCENE_TAG_KEYWORDS_V31_1.get(category,[]))
-    for tag,triggers in SCRIPT_SCENE_TRIGGERS_V31_1.items():
+    tags=set(SCENE_TAG_KEYWORDS_V31_2.get(category,[]))
+    for tag,triggers in SCRIPT_SCENE_TRIGGERS_V31_2.items():
         if any(t in text for t in triggers): tags.add(tag)
     if any(x in text for x in ['tomorrow','later','time','cost']): tags.update(['road','walking','future'])
     if any(x in text for x in ['warning','felt','knew']): tags.update(['closeup','mirror','reflection','face'])
@@ -1462,8 +1459,8 @@ def scene_signature_v31_1(script):
     if any(x in text for x in ['crack','damage','weakness']): tags.update(['broken','dark','empty','shadow'])
     return sorted(tags)
 
-def score_background_v31_1(path, script):
-    p=str(path).lower().replace('\\\\','/'); tags=scene_signature_v31_1(script); score=sum(5 for tag in tags if tag in p)
+def score_background_v31_2(path, script):
+    p=str(path).lower().replace('\\\\','/'); tags=scene_signature_v31_2(script); score=sum(5 for tag in tags if tag in p)
     category=str(getattr(script,'category','')).lower(); mood=str(getattr(script,'mood','')).lower()
     if mood and f'/{mood}/' in p: score += 12
     if category=='mirror':
@@ -1476,34 +1473,34 @@ def score_background_v31_1(path, script):
         if '/broken/' in p: score += 12
         if '/dangerous/' in p: score += 5
         if '/morning/' in p: score -= 3
-    recent=load_state().get('recent_backgrounds_v31_1',[])
+    recent=load_state().get('recent_backgrounds_v31_2',[])
     if str(path) in recent[-6:]: score -= 50
     elif str(path) in recent[-14:]: score -= 18
     return score
 
-def pick_best_background_v31_1(candidates, script):
+def pick_best_background_v31_2(candidates, script):
     if not candidates: return None
-    scored=sorted([(score_background_v31_1(p,script),p) for p in candidates], key=lambda x:x[0], reverse=True)
+    scored=sorted([(score_background_v31_2(p,script),p) for p in candidates], key=lambda x:x[0], reverse=True)
     best=scored[0][0]; shortlist=[p for s,p in scored if s>=best-4][:5] or [scored[0][1]]
-    chosen=pick_unique_rotated([str(x) for x in shortlist], memory_key='recent_backgrounds_v31_1', max_recent=50)
-    print('V31.1 SCENE TAGS:', scene_signature_v31_1(script)); print('V31.1 BACKGROUND CHOSEN:', chosen)
+    chosen=pick_unique_rotated([str(x) for x in shortlist], memory_key='recent_backgrounds_v31_2', max_recent=50)
+    print('V31.2 SCENE TAGS:', scene_signature_v31_2(script)); print('V31.2 BACKGROUND CHOSEN:', chosen)
     return chosen
 
-def vary_hook_v31_1(lines):
+def vary_hook_v31_2(lines):
     if not lines: return lines
-    first=str(lines[0]).strip(); variants=MIRROR_HOOK_VARIANTS_V31_1.get(first)
+    first=str(lines[0]).strip(); variants=MIRROR_HOOK_VARIANTS_V31_2.get(first)
     if not variants: return lines
-    out=list(lines); out[0]=pick_unique_rotated(variants, memory_key='recent_hook_variants_v31_1', max_recent=160)
-    print('V31.1 HOOK VARIANT:', first, '=>', out[0])
+    out=list(lines); out[0]=pick_unique_rotated(variants, memory_key='recent_hook_variants_v31_2', max_recent=160)
+    print('V31.2 HOOK VARIANT:', first, '=>', out[0])
     return out
 
-def line_weight_v31_1(line):
+def line_weight_v31_2(line):
     words=len(str(line).replace('.','').split()); return max(1.0,min(3.0,0.55+words*0.23))
 
-def build_line_timings_v31_1(lines, min_total=18.0, max_total=23.5):
+def build_line_timings_v31_2(lines, min_total=18.0, max_total=23.5):
     clean=[str(x).strip() for x in lines if str(x).strip()]
     if not clean: return [], min_total
-    weights=[line_weight_v31_1(x) for x in clean]; weights[0]*=1.28; weights[-1]*=1.35
+    weights=[line_weight_v31_2(x) for x in clean]; weights[0]*=1.28; weights[-1]*=1.35
     target=min(max_total,max(min_total,len(clean)*2.55+2.5)); total_weight=sum(weights); timings=[]; cursor=0.0
     for i,(line,w) in enumerate(zip(clean,weights)):
         dur=max(1.75,target*(w/total_weight));
@@ -1516,17 +1513,17 @@ def build_line_timings_v31_1(lines, min_total=18.0, max_total=23.5):
             dur=max(1.55,t['duration']*scale); scaled.append({**t,'start':round(cursor,3),'end':round(cursor+dur,3),'duration':round(dur,3)}); cursor+=dur
         timings=scaled
     total=timings[-1]['end'] if timings else min_total
-    print('V31.1 LINE TIMINGS:', timings); print('V31.1 TARGET DURATION:', total)
+    print('V31.2 LINE TIMINGS:', timings); print('V31.2 TARGET DURATION:', total)
     return timings,total
 
-def apply_smart_pacing_v31_1(script):
-    timings,total=build_line_timings_v31_1(getattr(script,'lines',[]), RETENTION_MIN_SECONDS, RETENTION_MAX_SECONDS)
+def apply_smart_pacing_v31_2(script):
+    timings,total=build_line_timings_v31_2(getattr(script,'lines',[]), RETENTION_MIN_SECONDS, RETENTION_MAX_SECONDS)
     try:
         script.line_timings=timings; script.smart_duration=total; script.duration=total
     except Exception: pass
     return script
 
-def active_line_v31_1(script,t):
+def active_line_v31_2(script,t):
     timings=getattr(script,'line_timings',None)
     if not timings:
         lines=getattr(script,'lines',[])
@@ -1537,7 +1534,7 @@ def active_line_v31_1(script,t):
         if item['start'] <= t < item['end']: return item['line']
     return timings[-1]['line'] if timings else ''
 
-def subtitle_opacity_v31_1(script,t):
+def subtitle_opacity_v31_2(script,t):
     timings=getattr(script,'line_timings',None)
     if not timings: return 1.0
     for item in timings:
@@ -1548,7 +1545,7 @@ def subtitle_opacity_v31_1(script,t):
 
 def build_retention_reel_script():
     """
-    v31.1 SMART COMPLETION ENGINE.
+    v31.2 SMART COMPLETION ENGINE.
 
     Same V31 strategy, smarter execution:
     - 50% Mirror
@@ -1568,24 +1565,23 @@ def build_retention_reel_script():
     bank = VIRAL_RETENTION_BANK[category]
     script_options = bank["scripts"]
     script_keys = [" | ".join(x) for x in script_options]
-    selected_key = pick_unique_rotated(script_keys, memory_key="recent_smart_completion_scripts_v31_1", max_recent=420)
+    selected_key = pick_unique_rotated(script_keys, memory_key="recent_smart_completion_scripts_v31_2", max_recent=420)
     selected_index = script_keys.index(selected_key) if selected_key in script_keys else 0
     lines = list(script_options[selected_index])
     lines = rhythm_refine(lines)
-    lines = vary_hook_v31_1(lines)
+    lines = vary_hook_v31_2(lines)
     if len(lines) > RETENTION_LINE_COUNT_MAX:
         lines = lines[:RETENTION_LINE_COUNT_MAX]
     while len(lines) < RETENTION_LINE_COUNT_MIN:
-        lines.append(pick_unique_rotated(RETENTION_ENDING_LINES, memory_key="recent_smart_endings_v31_1", max_recent=220))
-    cover = pick_unique_rotated(bank["covers"], memory_key="recent_smart_covers_v31_1", max_recent=380)
+        lines.append(pick_unique_rotated(RETENTION_ENDING_LINES, memory_key="recent_smart_endings_v31_2", max_recent=220))
+    cover = pick_unique_rotated(bank["covers"], memory_key="recent_smart_covers_v31_2", max_recent=380)
     remember_rotation_item("recent_categories", category, 220)
-    print("V31.1 CATEGORY:", category)
-    print("V31.1 COVER STYLE:", bank.get("cover_style", "default"))
-    print("V31.1 COVER:", cover)
-    print("V31.1 SCRIPT:", " | ".join(lines))
-    script = Script(mode="smart_completion_engine_v31_1", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
-    return apply_smart_pacing_v31_1(script)
-
+    print("V31.2 CATEGORY:", category)
+    print("V31.2 COVER STYLE:", bank.get("cover_style", "default"))
+    print("V31.2 COVER:", cover)
+    print("V31.2 SCRIPT:", " | ".join(lines))
+    script = Script(mode="smart_completion_engine_v31_2", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
+    return apply_smart_pacing_v31_2(script)
 
 
 def build_series_script():
@@ -1647,7 +1643,7 @@ def should_make_series():
 
 def build_script():
     """
-    v31.1 SMART COMPLETION ENGINE.
+    v31.2 SMART COMPLETION ENGINE.
 
     Same V31 strategy, smarter execution:
     - scene-tag background matching
@@ -1695,7 +1691,6 @@ def get_background_pool(mood=None):
     pool.extend(root_bg_files())
 
     return sorted(list(set(pool)))
-
 
 
 def folder_video_pool(folder_name):
@@ -2324,7 +2319,7 @@ def build_music_duck_segments(duration, voice_data):
         raw = line.upper()
 
         is_impact = any(word in raw for word in [
-            "WEAK", "WEAKNESS", "QUIT", "NO EXCUSES", "DONE", "LINK IN BIO",
+            "WEAK", "WEAKNESS", "QUIT", "LOWER STANDARDS", "DONE", "LINK IN BIO",
             "COMMENT", "STANDARD", "DISCIPLINE", "DAY ", "STOP", "KILL",
             "JOIN", "MEMBERS", "MANUAL", "ACCOUNTABILITY"
         ])
@@ -2545,7 +2540,6 @@ def build_caption_v26(script):
     return caption + "\n\n" + hashtags
 
 
-
 CAPTION_BANK_V27 = {
     "identity": [
         "Identity is built in private before it is seen in public.",
@@ -2638,7 +2632,6 @@ def build_caption_v27(script):
     return caption + "\n\n" + hashtags
 
 
-
 CAPTION_BANK_V28 = {
     "identity": ["The pattern tells the truth.", "Your routine is already voting.", "Identity is built when nobody is watching.", "What you repeat becomes proof.", "Private choices become public results."],
     "identity_open_loop": ["The drift starts quietly.", "The promise was not the hard part.", "The old pattern always leaves clues.", "The routine tells you before the result does.", "You usually notice it before anyone else does."],
@@ -2683,7 +2676,6 @@ def build_caption_v28(script):
     print("CAPTION V28:", caption)
     print("HASHTAGS V28:", hashtags)
     return caption + "\n\n" + hashtags
-
 
 
 CAPTION_BANK_V29 = {
@@ -2762,8 +2754,6 @@ def build_caption_v29(script):
     print("HASHTAGS V29:", hashtags)
 
     return caption + "\n\n" + hashtags
-
-
 
 
 CAPTION_BANK_V30 = {
@@ -2852,8 +2842,6 @@ def build_caption_v30(script):
     return caption + "\n\n" + hashtags
 
 
-
-
 CAPTION_BANK_V30_1 = {
     "mirror": [
         "You usually feel the warning before the result changes. The question is whether you correct it early or explain it away.",
@@ -2940,8 +2928,6 @@ def build_caption_v30_1(script):
     return caption + "\n\n" + hashtags
 
 
-
-
 CAPTION_BANK_V31 = {
     "mirror": [
         "You usually feel the warning before the result changes. The real question is whether you correct it early or explain it away.",
@@ -3015,9 +3001,8 @@ def build_caption_v31(script):
     return caption + "\\n\\n" + hashtags
 
 
-
 def build_caption(script):
-    """V31.1 captions: clear, relevant, completion-focused, no engagement bait."""
+    """V31.2 captions: clear, relevant, completion-focused, no engagement bait."""
     category = str(getattr(script, "category", "mirror")).lower()
     bank = {
         "mirror": [
@@ -3040,16 +3025,16 @@ def build_caption(script):
         ],
     }
     if category not in bank: category = "mirror"
-    cap = pick_unique_rotated(bank[category], memory_key="recent_captions_v31_1", max_recent=320)
+    cap = pick_unique_rotated(bank[category], memory_key="recent_captions_v31_2", max_recent=320)
     tags = pick_unique_rotated([
         "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
         "#discipline #habits #standards #selfcontrol #growth",
         "#discipline #routine #focus #mindset #selfrespect",
         "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    ], memory_key="recent_hashtags_v31_1", max_recent=120)
-    print("CAPTION TYPE V31.1:", category)
-    print("CAPTION V31.1:", cap)
-    print("HASHTAGS V31.1:", tags)
+    ], memory_key="recent_hashtags_v31_2", max_recent=120)
+    print("CAPTION TYPE V31.2:", category)
+    print("CAPTION V31.2:", cap)
+    print("HASHTAGS V31.2:", tags)
     return cap + "\n\n" + tags
 
 
@@ -3256,7 +3241,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE â€” SMART COMPLETION ENGINE v31.1")
+    print("\nINNER DISCIPLINE Ã¢â‚¬â€ SMART COMPLETION ENGINE v31.2")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -3278,7 +3263,7 @@ def main():
     bg = choose_background_rotated(script.mood)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v31_1_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v31_2_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
