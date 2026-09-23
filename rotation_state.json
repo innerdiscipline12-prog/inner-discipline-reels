@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4"
   ],
   "background_cursor": {
-    "global": 5
+    "global": 6
   },
-  "updated_at": "2026-09-22T17:53:17",
+  "updated_at": "2026-09-23T17:30:12",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,19 +578,25 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you saw it coming. | the warning was there. | the drop was there. | the old habit was there. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "structure decides who stays consistent.",
+    "nothing changes until the routine changes.",
     "weak habits always collect consequences.",
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you broke it quietly",
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "you are not lacking information. you are avoiding the moment that demands proof.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #habits #standards #selfcontrol #growth"
   ]
 }
