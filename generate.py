@@ -1,8 +1,3 @@
-# ================================================================
-# INNER DISCIPLINE V31.2 â€” CONTENT RENEWAL
-# Same engine logic. Same bank sizes. Fresh wording only.
-# Covers: 2-word default / 3-word open-loop secondary.
-# ================================================================
 import os
 import glob
 import random
@@ -137,6 +132,7 @@ BANNED_COVERS_V24 = [
 ]
 
 
+
 CAPTION_BANK_V26 = {
     "identity": [
         "Your routine tells the truth before your results do.",
@@ -241,6 +237,7 @@ HASHTAG_PACKS_V25 = [
     "#disciplineovermotivation #habits #mindsetshift #consistency #focus",
     "#mentalcontrol #discipline #routine #selfrespect #innerdiscipline",
 ]
+
 
 
 REEL_SECONDS = 20.0
@@ -355,21 +352,21 @@ BANNED_PHRASES = [
 ]
 
 RETENTION_ENDING_LINES = [
-    "The routine always tells the truth.",
-    "Weak habits always collect consequences.",
-    "Your standards decide your future.",
-    "Pressure exposes every weak routine.",
-    "Comfort slowly destroys structure.",
-    "Discipline is built in silence.",
-    "Your future reflects your standards.",
-    "Control returns when negotiation ends.",
-    "Structure decides who stays consistent.",
-    "Private standards create public results.",
-    "Nothing changes until the routine changes.",
-    "A weak standard always becomes visible.",
-    "Discipline dies quietly first.",
-    "Time exposes every repeated compromise.",
-    "Your private habits are not private forever.",
+    'The pattern always reveals the standard.',
+    'Your private choices become visible eventually.',
+    'Discipline begins where negotiation ends.',
+    'Small permissions create large consequences.',
+    'Your routine keeps telling the truth.',
+    'The standard survives only when enforced.',
+    'Comfort becomes expensive when repeated.',
+    'Time exposes what repetition built.',
+    'Your actions settle every argument.',
+    'Drift stops when correction becomes immediate.',
+    'The habit becomes the evidence.',
+    'Consistency remains after emotion leaves.',
+    'Your future inherits repeated choices.',
+    'One honest decision can interrupt the pattern.',
+    'The result eventually matches the routine.'
 ]
 
 DEFAULT_SERIES_DAY = 2
@@ -776,7 +773,7 @@ CONTENT = {
     },
     "masculine_standard": {
         "mood": "dangerous",
-        "cover": ["BE THE MAN", "RAISE STANDARD", "LOWER STANDARDS", "LEAD YOURSELF", "REAL MAN", "LOW STANDARD", "CONTROL YOURSELF", "PRIVATE PROOF"],
+        "cover": ["BE THE MAN", "RAISE STANDARD", "NO EXCUSES", "LEAD YOURSELF", "REAL MAN", "LOW STANDARD", "CONTROL YOURSELF", "PRIVATE PROOF"],
         "problem": [
             "You say you want to lead, but you cannot keep a promise to yourself.",
             "You confuse anger with strength and comfort with peace.",
@@ -883,7 +880,7 @@ DAY7_CONTENT = {
         "mood": "challenge",
         "cover": [
             "DAY 7",
-            "QUIET FAILURE",
+            "MOST QUIT",
             "QUIET DRIFT",
             "WEAK ROUTINE",
             "STOP RESETTING",
@@ -930,86 +927,8 @@ SERIES_DONE_LINES = [
     "Let the action come first.",
 ]
 
-VIRAL_RETENTION_BANK = {
-    "mirror": {
-        "mood": "dangerous",
-        "cover_style": "mirror",
-        "covers": [
-            "YOU KNOW THIS ALREADY", "YOU FELT THE WARNING", "YOU KEEP NEGOTIATING",
-            "YOU'RE NOT CONFUSED", "YOU KNOW WHAT TO DO", "THE STANDARD SLIPPED",
-            "YOU WATCHED IT HAPPEN", "YOU CALLED IT TOMORROW", "YOU SAW IT COMING",
-            "YOU KEEP EXPLAINING", "YOU FELT THAT DROP", "YOU BROKE IT QUIETLY",
-            "YOU LET IT SLIDE", "YOU KNOW THE PATTERN", "YOU'RE AVOIDING IT",
-            "YOU SAID TOMORROW", "YOU KEEP MOVING IT", "YOU KNEW EARLIER"
-        ],
-        "scripts": [
-            ["YOU KNOW WHAT THIS IS.", "The problem is not information.", "You already saw the habit.", "You already felt the warning.", "You already knew the cost.", "The part you avoid is obedience.", "Especially when comfort gets loud.", "That is where discipline begins."],
-            ["YOU FELT THE SHIFT.", "Before the result changed.", "Before anyone noticed.", "Before the habit looked serious.", "Something in you already knew.", "That was not random.", "That was the first signal.", "Most people ignore it."],
-            ["YOU KEEP LOWERING IT.", "With the same standard.", "You already decided.", "Then the mood changed.", "Then the excuse sounded reasonable.", "Then the standard moved again.", "That is why the result looks familiar.", "Nothing changed at the root."],
-            ["YOU'RE NOT CONFUSED.", "You know what needs to change.", "You know what keeps costing you.", "The hard part is not knowing.", "It is obeying the truth.", "When comfort argues back.", "That moment decides everything.", "Not the speech."],
-            ["YOU KNOW WHAT TO DO.", "That is why it bothers you.", "Not because life is unclear.", "Not because the answer is hidden.", "Because the standard is obvious.", "And you keep letting mood vote.", "That is the weakness.", "Correct it."],
-            ["THE STANDARD SLIPPED.", "Not in one big failure.", "Not where people could see it.", "It slipped in small private choices.", "One exception became two.", "Two became normal.", "Normal became identity.", "That is how it happens."],
-            ["YOU WATCHED IT HAPPEN.", "The routine got weaker.", "The excuses got easier.", "The standard moved lower.", "You noticed it early.", "Then you called it temporary.", "Temporary became normal.", "That is how drift wins."],
-            ["YOU CALLED IT TOMORROW.", "Again.", "Then again.", "Then tomorrow became a pattern.", "Then the pattern became proof.", "The problem is not time.", "It is the standard.", "That keeps moving."],
-            ["YOU SAW IT COMING.", "The warning was there.", "The drop was there.", "The old habit was there.", "You did not lack clarity.", "You delayed the truth.", "Then the result spoke.", "That is the lesson."],
-            ["YOU KEEP EXPLAINING.", "The same pattern.", "With better words.", "You can make the excuse sound intelligent.", "You can make delay sound strategic.", "But the routine still knows.", "What really happened.", "So do you."],
-            ["YOU FELT THAT DROP.", "That small loss of respect.", "After you broke your word.", "After you chose comfort.", "After you said tomorrow again.", "That feeling was feedback.", "Not weakness.", "Listen to it."],
-            ["YOU BROKE IT QUIETLY.", "Not your life.", "Not all at once.", "You broke your word first.", "Then the standard moved.", "Then trust got weaker.", "Then discipline felt harder.", "That is the cost."],
-            ["YOU LET IT SLIDE.", "Once.", "Then again.", "Then it stopped feeling wrong.", "Then the habit got stronger.", "Then the standard got weaker.", "Then the result made sense.", "That is how it happens."],
-            ["YOU KNOW THE PATTERN.", "Strong start.", "Private compromise.", "Silent guilt.", "Another explanation.", "Another restart.", "Same routine.", "Different week."],
-            ["YOU'RE AVOIDING IT.", "Not because it is impossible.", "Because it demands proof.", "And proof removes excuses.", "That is why it feels heavy.", "But that is also why it works.", "Start with the truth.", "Then repeat it."],
-            ["YOU SAID TOMORROW.", "Again.", "Then again.", "The problem is not time.", "The problem is not knowledge.", "The problem is the standard.", "That keeps moving.", "Stop moving it."],
-            ["YOU KEEP MOVING IT.", "The line.", "The rule.", "The standard.", "Every time the mood changes.", "Then you wonder why discipline feels unstable.", "It is unstable because you made it negotiable.", "Decide again."],
-            ["YOU KNEW EARLIER.", "Before the fall.", "Before the result.", "Before the excuse became normal.", "You knew when the first standard slipped.", "That is the place to return to.", "That is where you rebuild.", "Quietly."]
-        ]
-    },
-    "two_stage_payoff": {
-        "mood": "broken",
-        "cover_style": "two_stage",
-        "covers": [
-            "THE HARDEST PART", "THE REAL PROBLEM", "THIS IS WHY",
-            "THIS IS THE PART", "THE PART YOU AVOID", "WHERE IT BREAKS",
-            "THE QUIET TRUTH", "THE FIRST CRACK", "THE REAL TEST",
-            "THE MOMENT YOU STOP", "WHAT MOST PEOPLE MISS", "THE PART THAT MATTERS"
-        ],
-        "scripts": [
-            ["THE HARD PART STARTS HERE.", "Is not starting.", "Starting feels good.", "Starting gives you hope.", "Starting makes you feel changed.", "The hardest part is continuing.", "When nobody is watching.", "And no mood is helping."],
-            ["THE REAL PROBLEM IS QUIETER.", "Is not motivation.", "Motivation comes and goes.", "The real problem is the routine.", "You keep protecting.", "With excuses.", "That sound reasonable.", "But still cost you."],
-            ["THIS IS WHAT HAPPENS.", "You keep restarting.", "The emotion returns.", "The plan looks new.", "The promise sounds serious.", "But the system stays the same.", "So the pattern returns.", "Every time."],
-            ["THIS IS THE PART.", "Most people avoid.", "They want the result.", "They want the identity.", "They want the respect.", "But not the standard.", "That creates all of it.", "That is the trade."],
-            ["THE PART YOU AVOID.", "Is the part that changes you.", "Not the plan.", "Not the quote.", "Not the announcement.", "The proof.", "Repeated quietly.", "When nobody claps."],
-            ["WHERE IT BREAKS.", "Is not the goal.", "It is the private choice.", "After the emotion fades.", "After comfort speaks.", "After nobody is watching.", "That moment reveals the standard.", "Every time."],
-            ["THE QUIET TRUTH.", "Nobody has to see it.", "For it to matter.", "Nobody has to clap.", "For it to count.", "Your future still records it.", "Your identity still feels it.", "Every time."],
-            ["THE FIRST CRACK.", "Is not failure.", "It is permission.", "One excuse.", "One lowered standard.", "One compromise.", "You stop challenging.", "Then it gets normal."],
-            ["THE REAL TEST.", "Is not the beginning.", "It is the repetition.", "After the mood fades.", "After comfort speaks.", "After nobody is watching.", "That is where identity forms.", "Not before."],
-            ["THE MOMENT YOU STOP.", "Lying to yourself.", "Is the moment things change.", "Not because life gets easier.", "But because the excuse loses power.", "And the standard becomes visible.", "That is where control begins.", "For real."],
-            ["WHAT MOST PEOPLE MISS.", "Is the first warning.", "Not the final failure.", "Not the public result.", "The small private slip.", "That stopped bothering them.", "That is where the damage starts."],
-            ["THE PART THAT MATTERS.", "Is not what you say.", "It is what you repeat.", "When pressure returns.", "When comfort calls.", "When nobody checks.", "That is the real standard.", "That is the proof."]
-        ]
-    },
-    "consequence": {
-        "mood": "broken",
-        "cover_style": "consequence",
-        "covers": [
-            "LATER GETS EXPENSIVE", "WEAKNESS COMPOUNDS", "THE BILL ARRIVES",
-            "YEARS DISAPPEAR", "THE DAMAGE GROWS", "NOTHING STAYS SMALL",
-            "EXCUSES HAVE INTEREST", "TIME DOES NOT WAIT", "COMFORT HAS A COST",
-            "THE COST FINDS YOU"
-        ],
-        "scripts": [
-            ["DELAY GETS EXPENSIVE.", "Most people miss the cost.", "Because it does not arrive immediately.", "It arrives as a pattern.", "Then as a result.", "Then as a life.", "That delay is dangerous.", "That is why today matters."],
-            ["SMALL WEAKNESS COMPOUNDS.", "First in private.", "Then in routine.", "Then in identity.", "Then in results.", "Then in regret.", "That is the sequence.", "Stop it early."],
-            ["THE COST EVENTUALLY ARRIVES.", "For every habit you ignored.", "For every standard you lowered.", "For every promise you delayed.", "Nothing stays free.", "Not even comfort.", "Not forever.", "The bill always comes."],
-            ["YEARS DISAPPEAR.", "Not all at once.", "One repeated excuse.", "One delayed decision.", "One weak routine.", "One lowered standard.", "Until normal becomes regret.", "That is how time goes."],
-            ["THE DAMAGE GROWS.", "When you keep excusing it.", "Small habits become normal.", "Normal becomes identity.", "Identity becomes results.", "Then you call it life.", "That is the danger.", "Correct it early."],
-            ["NOTHING STAYS SMALL.", "Not the excuse.", "Not the delay.", "Not the habit.", "Not the compromise.", "If you keep feeding it.", "It grows.", "Quietly."],
-            ["EXCUSES HAVE INTEREST.", "They feel harmless now.", "Then they charge your future.", "One repeated delay.", "One weak decision.", "One comfortable lie.", "At a time.", "That is the trap."],
-            ["TIME DOES NOT WAIT.", "Your mood can change tomorrow.", "Your plan can improve tomorrow.", "But today still counts.", "So does every excuse.", "So does every choice.", "That is the truth.", "Act like it."],
-            ["COMFORT HAS A COST.", "It feels safe now.", "It feels easy now.", "It feels harmless now.", "But repeated comfort becomes weakness.", "Repeated weakness becomes regret.", "That is the price.", "Pay attention."],
-            ["THE COST FINDS YOU.", "Even when nobody sees the choice.", "Even when the excuse sounds valid.", "Even when you call it temporary.", "The pattern still records it.", "The result still follows.", "That is why discipline matters.", "Before it hurts."]
-        ]
-    }
-}
+VIRAL_RETENTION_BANK = {'mirror': {'mood': 'dangerous', 'cover_style': 'mirror', 'covers': ['YOU KNOW THE PATTERN', 'YOU KEEP DELAYING', 'YOU BROKE YOUR WORD', 'YOU LOWERED THE BAR', 'YOU CHOSE COMFORT', 'YOU SAW THE SHIFT', 'YOU KNOW THE COST', 'YOU KEEP RESETTING', 'YOU MADE IT EASY', 'YOU CALLED IT NORMAL', 'YOU HID THE TRUTH', 'YOU KEEP RETURNING', 'YOU LOST THE EDGE', 'YOU STOPPED PUSHING', 'YOU MADE AN EXCEPTION', 'YOU KNOW WHAT SLIPPED', 'YOU KEEP POSTPONING', 'YOU HEARD YOURSELF'], 'scripts': [['YOU KEEP DELAYING.', 'Not because the answer is missing.', 'You know what needs to move.', 'You have known for longer than you admit.', 'The delay feels harmless today.', 'But every delay trains the same response.', 'Eventually hesitation becomes familiar.', 'That is the part to confront.'], ['YOU BROKE YOUR WORD.', 'Maybe nobody else noticed.', 'You noticed.', 'The promise became optional.', 'Then the exception became easier.', 'Then easier became normal.', 'Your standard did not disappear.', 'You stopped enforcing it.'], ['YOU LOWERED THE BAR.', 'Quietly.', 'One small exception at a time.', 'Nothing looked serious at first.', 'That is how standards usually disappear.', 'Not through one dramatic failure.', 'Through repeated permission.', 'Take the permission back.'], ['YOU CHOSE COMFORT.', 'And called it recovery.', 'Then you called it timing.', 'Then you called it tomorrow.', 'The explanation kept changing.', 'The choice stayed the same.', 'Comfort was making the decision.', 'You were only defending it.'], ['YOU SAW THE SHIFT.', 'The routine changed first.', 'Then the energy changed.', 'Then the excuses became easier.', 'You noticed before the result showed.', 'That was the moment to act.', 'You waited for proof.', 'The proof eventually arrived.'], ['YOU KNOW THE COST.', 'You have paid part of it already.', 'Another missed morning.', 'Another promise moved forward.', 'Another standard softened.', 'The cost rarely arrives at once.', 'It accumulates quietly.', 'Until quiet becomes expensive.'], ['YOU KEEP RESETTING.', 'New plan.', 'New promise.', 'New beginning.', 'But the same decision returns.', 'The problem is not starting again.', 'It is protecting what you started.', 'That requires a higher standard.'], ['YOU MADE IT EASY.', 'The excuse was convenient.', 'The rule became flexible.', 'The hard choice became optional.', 'Nothing broke immediately.', 'That made the choice feel safe.', 'But discipline weakens that way.', 'Quietly, then completely.'], ['YOU CALLED IT NORMAL.', 'But you knew it was drift.', 'The routine was weaker.', 'The effort was smaller.', 'The standard was negotiable.', 'Normal is not always healthy.', 'Familiar is not always right.', 'You already know the difference.'], ['YOU HID THE TRUTH.', 'Not from everyone.', 'Mostly from yourself.', 'You renamed the problem.', 'You softened the consequence.', 'You made the pattern sound reasonable.', 'But the result kept telling you.', 'The truth was never missing.'], ['YOU KEEP DELAYING.', 'Not because the answer is missing.', 'You know what needs to move.', 'You have known for longer than you admit.', 'The delay feels harmless today.', 'But every delay trains the same response.', 'Eventually hesitation becomes familiar.', 'That is the part to confront.'], ['YOU BROKE YOUR WORD.', 'Maybe nobody else noticed.', 'You noticed.', 'The promise became optional.', 'Then the exception became easier.', 'Then easier became normal.', 'Your standard did not disappear.', 'You stopped enforcing it.'], ['YOU LOWERED THE BAR.', 'Quietly.', 'One small exception at a time.', 'Nothing looked serious at first.', 'That is how standards usually disappear.', 'Not through one dramatic failure.', 'Through repeated permission.', 'Take the permission back.'], ['YOU CHOSE COMFORT.', 'And called it recovery.', 'Then you called it timing.', 'Then you called it tomorrow.', 'The explanation kept changing.', 'The choice stayed the same.', 'Comfort was making the decision.', 'You were only defending it.'], ['YOU SAW THE SHIFT.', 'The routine changed first.', 'Then the energy changed.', 'Then the excuses became easier.', 'You noticed before the result showed.', 'That was the moment to act.', 'You waited for proof.', 'The proof eventually arrived.'], ['YOU KNOW THE COST.', 'You have paid part of it already.', 'Another missed morning.', 'Another promise moved forward.', 'Another standard softened.', 'The cost rarely arrives at once.', 'It accumulates quietly.', 'Until quiet becomes expensive.'], ['YOU KEEP RESETTING.', 'New plan.', 'New promise.', 'New beginning.', 'But the same decision returns.', 'The problem is not starting again.', 'It is protecting what you started.', 'That requires a higher standard.'], ['YOU MADE IT EASY.', 'The excuse was convenient.', 'The rule became flexible.', 'The hard choice became optional.', 'Nothing broke immediately.', 'That made the choice feel safe.', 'But discipline weakens that way.', 'Quietly, then completely.']]}, 'two_stage_payoff': {'mood': 'broken', 'cover_style': 'two_stage', 'covers': ['YOU SAID TOMORROW', 'THE REAL COST', 'THIS PART MATTERS', 'READ THAT AGAIN', 'THEN IT CHANGED', 'LOOK CLOSER', 'IT STARTS QUIETLY', 'THEN IT GROWS', 'THIS IS WHERE', 'YOU KEEP WAITING', 'MOST MISS THIS', 'NOT WHAT YOU THINK'], 'scripts': [['YOU SAID TOMORROW.', 'Again.', 'Then tomorrow became a habit.', 'The habit became a pattern.', 'The pattern became your normal.', 'The problem was never tomorrow.', 'It was the permission.', 'You kept giving yourself another day.'], ['THE REAL COST.', 'Is rarely the first missed day.', 'It is what that day teaches you.', 'That you can break the promise.', 'That the standard can move.', 'That comfort gets the final vote.', 'Then the lesson repeats.', 'Until the cost becomes visible.'], ['IT STARTS QUIETLY.', 'A little less effort.', 'A little more comfort.', 'One small exception.', 'Nothing looks broken.', 'That is why you keep it.', 'Then the exceptions become the routine.', 'And the routine becomes the result.'], ['READ THAT AGAIN.', 'The first decision is rarely the loud one.', 'It is the one nobody sees.', 'You choose the easier response.', 'Then you repeat it.', 'Soon the response feels automatic.', 'That is how a choice becomes a habit.', 'And a habit becomes your standard.'], ['THEN IT CHANGED.', 'Not overnight.', 'The routine weakened first.', 'The excuses followed.', 'The standard became flexible.', 'You still looked fine from outside.', 'Inside, the agreement had changed.', 'That is where drift begins.'], ['LOOK CLOSER.', 'The problem may not be the missed day.', 'It may be what you permit after it.', 'One mistake is recoverable.', 'Repeating the permission is different.', 'That creates a pattern.', 'The pattern creates momentum.', 'Choose what gets repeated.'], ['IT STARTS QUIETLY.', 'No dramatic failure.', 'Just less attention.', 'Less effort.', 'Less resistance to the easy option.', 'Then the easy option becomes expected.', 'Eventually discipline feels unfamiliar.', 'That is the warning.'], ['THEN IT GROWS.', 'The small thing you ignored.', 'The habit you kept excusing.', 'The standard you kept adjusting.', 'Nothing felt urgent.', 'That is exactly why it survived.', 'Small permission creates larger consequences.', 'Eventually the pattern speaks.'], ['THIS IS WHERE.', 'Most people think the battle is won.', 'But the real test comes after the first decision.', 'When nobody is checking.', 'When the mood changes.', 'When the reward disappears.', 'That is when the standard becomes real.', 'Not when it is easy.'], ['YOU KEEP WAITING.', 'For motivation.', 'For the right mood.', 'For the perfect window.', 'Meanwhile the standard stays untouched.', 'You think waiting protects you.', 'It only protects the old pattern.', 'Action is what breaks it.'], ['MOST MISS THIS.', 'They think discipline is the hard action.', 'Sometimes it is.', 'But the deeper battle happens earlier.', 'When you decide whether the excuse gets a vote.', 'That decision happens quietly.', 'Before anyone sees the result.', 'That is where discipline lives.'], ['NOT WHAT YOU THINK.', 'The problem is not always lack of effort.', 'Sometimes effort is inconsistent.', 'Strong one day.', 'Missing the next.', 'The real weakness is the gap between intention and repetition.', 'Close that gap.', 'The result starts changing.']]}, 'consequence': {'mood': 'broken', 'cover_style': 'consequence', 'covers': ['SMALL SLIPS', 'TIME COMPOUNDS', 'DELAY COSTS', 'DRIFT GROWS', 'COMFORT COSTS', 'YEARS DISAPPEAR', 'CHOICES COMPOUND', 'REGRET BUILDS', 'STANDARDS FALL', 'THE GAP GROWS'], 'scripts': [['SMALL SLIPS.', 'They rarely feel important.', 'That is why they survive.', 'One missed standard becomes another.', 'One exception becomes permission.', 'Permission becomes routine.', 'Routine becomes identity.', 'Small choices are never only small.'], ['TIME COMPOUNDS.', 'So do neglected decisions.', 'What you avoid today does not vanish.', 'It waits.', 'The unfinished thing follows you.', 'The weaker habit gets more practice.', 'The cost becomes harder to see.', 'Until the years make it obvious.'], ['DELAY COSTS.', 'Usually later than you expect.', 'That is what makes it dangerous.', 'The first delay feels harmless.', 'The second feels familiar.', 'Eventually waiting becomes your default.', 'Then the opportunity has moved.', 'And you call it bad timing.'], ['DRIFT GROWS.', 'Not because you choose failure.', 'Because you stop correcting small things.', 'The routine gets softer.', 'The standard gets quieter.', 'The excuse gets stronger.', 'Then the distance feels normal.', 'That is how drift becomes direction.'], ['COMFORT COSTS.', 'Not immediately.', 'That is the trap.', 'You trade effort for ease.', 'Then you repeat the trade.', 'Soon the easy choice feels deserved.', 'Meanwhile the harder life gets.', 'Comfort was never free.'], ['YEARS DISAPPEAR.', 'Not all at once.', 'They leave through ordinary days.', 'Days you keep postponing.', 'Weeks you keep restarting.', 'Months you call temporary.', 'Then you look back.', 'And realize temporary became years.'], ['CHOICES COMPOUND.', 'The same way habits do.', 'One decision teaches the next.', 'One standard becomes the baseline.', 'One exception changes what feels normal.', "Your future inherits today's pattern.", 'That is why small choices matter.', 'They are rehearsals for what follows.'], ['REGRET BUILDS.', 'Quietly.', 'Usually after the opportunity passes.', 'Before that, the excuse feels useful.', 'The delay feels justified.', 'The standard feels flexible.', 'Then the moment is gone.', 'And justification cannot bring it back.'], ['STANDARDS FALL.', 'Usually before results do.', 'The routine weakens first.', 'The promise becomes flexible.', 'The exception feels harmless.', 'Then the new lower level feels normal.', 'Results eventually follow.', 'They always expose the standard.'], ['THE GAP GROWS.', 'Between what you know and what you do.', 'At first it feels small.', 'Then the distance becomes familiar.', 'Your intention stays strong in your head.', 'Your actions tell another story.', 'That gap is the real work.', 'Close it with repetition.']]}}
+
 
 
 SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
@@ -1024,7 +943,7 @@ SERIES_EPISODES = [
     {"day": 7, "title": "WRITE THE TRUTH", "mood": "broken", "task": "Journal one honest page.", "pain": "You cannot fix what you refuse to face."},
     {"day": 8, "title": "COLD START", "mood": "morning", "task": "Start the day with discomfort.", "pain": "Comfort has been making your decisions."},
     {"day": 9, "title": "ONE HARD THING", "mood": "dangerous", "task": "Do the hardest task first.", "pain": "You keep giving your best energy to easy things."},
-    {"day": 10, "title": "LOWER STANDARDS", "mood": "challenge", "task": "Complete today with zero excuses.", "pain": "Your excuses are shrinking you."},
+    {"day": 10, "title": "NO EXCUSES", "mood": "challenge", "task": "Complete today with zero excuses.", "pain": "Your excuses are shrinking you."},
     {"day": 11, "title": "SILENT WORK", "mood": "rebuild", "task": "Work for 45 minutes without announcing it.", "pain": "You keep wanting credit before the result."},
     {"day": 12, "title": "FACE THE MIRROR", "mood": "broken", "task": "Say the truth out loud to yourself.", "pain": "The mirror knows when you are lying."},
     {"day": 13, "title": "RUN THE STAIRS", "mood": "dangerous", "task": "Do a short brutal conditioning session.", "pain": "Your mind keeps quitting before your body needs to."},
@@ -1060,6 +979,7 @@ class Script:
     day: int = 0
     task: str = ""
     ebook_image: str = ""
+
 
 
 # ================================================================
@@ -1179,6 +1099,7 @@ def rhythm_refine(lines):
     return refined
 
 
+
 def maybe_add_save_share_signal(script):
     """
     Adds subtle save/share psychology without sounding needy.
@@ -1188,19 +1109,19 @@ def maybe_add_save_share_signal(script):
         return script
 
     save_lines = [
-        "Remember this when the mood disappears.",
-        "This is the line most people ignore.",
-        "Save the standard before the feeling fades.",
-        "This is the part your routine keeps exposing.",
-        "Come back to this when comfort starts talking.",
+        "Remember what you promised yourself.",
+        "Notice where you keep making exceptions.",
+        "Keep this standard when the mood fades.",
+        "Return to this when comfort starts negotiating.",
+        "Use this as a check before you delay again.",
     ]
 
     share_lines = [
-        "Some men need to hear this quietly.",
-        "This is the truth most people avoid.",
-        "Someone is drifting and calling it patience.",
-        "Most men understand this too late.",
-        "This is why discipline dies in silence.",
+        "Someone you know may be making the same trade.",
+        "This is the part people usually rationalize.",
+        "Someone is calling delay a strategy.",
+        "Most people notice the cost after the pattern.",
+        "This is what quiet drift eventually reveals.",
     ]
 
     lines = list(script.lines)
@@ -1360,6 +1281,7 @@ def build_regular_script_raw():
     )
 
 
+
 def build_regular_script():
     script = build_regular_script_raw()
     return enforce_retention_quality(script)
@@ -1386,6 +1308,7 @@ def build_member_script():
         pacing=random.choice(["attack", "story"]),
         lines=lines,
     )
+
 
 
 def build_day7_script():
@@ -1417,6 +1340,7 @@ def build_day7_script():
     )
 
 
+
 # ================================================================
 # V31.2 SMART EXECUTION HELPERS
 # ================================================================
@@ -1436,15 +1360,15 @@ SCRIPT_SCENE_TRIGGERS_V31_2 = {
     "rain": ["hard", "nobody", "watching", "comfort", "quiet", "alone"],
 }
 MIRROR_HOOK_VARIANTS_V31_2 = {
-    "YOU KNOW WHAT THIS IS.": ["YOU KNOW WHAT THIS IS.", "YOU SAW THIS COMING.", "YOU KNEW BEFORE IT HURT."],
-    "YOU FELT THE SHIFT.": ["YOU FELT THE SHIFT.", "YOU NOTICED IT EARLY.", "THE SIGNAL WAS THERE."],
-    "YOU KEEP LOWERING IT.": ["YOU KEEP LOWERING IT.", "YOU KEEP LOWERING IT.", "YOU MADE THE STANDARD OPTIONAL."],
-    "THE HARD PART STARTS HERE.": ["THE HARD PART STARTS HERE.", "THIS PART REVEALS YOU.", "THIS IS WHERE PEOPLE DRIFT."],
-    "THE REAL PROBLEM IS QUIETER.": ["THE REAL PROBLEM IS QUIETER.", "THIS IS THE REAL PROBLEM IS QUIETER.", "THE PATTERN GOES DEEPER."],
-    "THIS IS WHAT HAPPENS.": ["THIS IS WHAT HAPPENS.", "HERE IS WHAT CHANGED.", "THIS IS THE PATTERN."],
-    "DELAY GETS EXPENSIVE.": ["DELAY GETS EXPENSIVE.", "WAITING COSTS MORE.", "DELAY GETS EXPENSIVE."],
-    "SMALL WEAKNESS COMPOUNDS.": ["SMALL WEAKNESS COMPOUNDS.", "SMALL CHOICES ADD UP.", "WEAKNESS DOES NOT STAY SMALL."],
-    "THE COST EVENTUALLY ARRIVES.": ["THE COST EVENTUALLY ARRIVES.", "THE RESULT CATCHES UP.", "THE PRICE SHOWS UP LATER."],
+    "YOU KNOW THIS ALREADY.": ["YOU KNOW THIS ALREADY.", "YOU ALREADY KNOW.", "YOU KNEW THIS FIRST."],
+    "YOU FELT THE WARNING.": ["YOU FELT THE WARNING.", "YOU FELT IT EARLY.", "THE WARNING CAME EARLY."],
+    "YOU KEEP NEGOTIATING.": ["YOU KEEP NEGOTIATING.", "YOU KEEP MOVING THE LINE.", "YOU MADE IT NEGOTIABLE."],
+    "THE HARDEST PART.": ["THE HARDEST PART.", "THIS IS THE HARD PART.", "THE PART THAT BREAKS MOST PEOPLE."],
+    "THE REAL PROBLEM.": ["THE REAL PROBLEM.", "THIS IS THE REAL PROBLEM.", "THE PROBLEM IS DEEPER."],
+    "THIS IS WHY.": ["THIS IS WHY.", "THIS IS THE REASON.", "THIS IS WHAT KEEPS HAPPENING."],
+    "LATER GETS EXPENSIVE.": ["LATER GETS EXPENSIVE.", "LATER COSTS MORE.", "DELAY GETS EXPENSIVE."],
+    "WEAKNESS COMPOUNDS.": ["WEAKNESS COMPOUNDS.", "WEAKNESS ADDS UP.", "WEAKNESS DOES NOT STAY SMALL."],
+    "THE BILL ARRIVES.": ["THE BILL ARRIVES.", "THE COST ARRIVES.", "THE PRICE COMES LATER."],
 }
 
 def scene_signature_v31_2(script):
@@ -1584,6 +1508,7 @@ def build_retention_reel_script():
     return apply_smart_pacing_v31_2(script)
 
 
+
 def build_series_script():
     """
     v19 clean sequential challenge generator.
@@ -1691,6 +1616,7 @@ def get_background_pool(mood=None):
     pool.extend(root_bg_files())
 
     return sorted(list(set(pool)))
+
 
 
 def folder_video_pool(folder_name):
@@ -2319,7 +2245,7 @@ def build_music_duck_segments(duration, voice_data):
         raw = line.upper()
 
         is_impact = any(word in raw for word in [
-            "WEAK", "WEAKNESS", "QUIT", "LOWER STANDARDS", "DONE", "LINK IN BIO",
+            "WEAK", "WEAKNESS", "QUIT", "NO EXCUSES", "DONE", "LINK IN BIO",
             "COMMENT", "STANDARD", "DISCIPLINE", "DAY ", "STOP", "KILL",
             "JOIN", "MEMBERS", "MANUAL", "ACCOUNTABILITY"
         ])
@@ -2540,6 +2466,7 @@ def build_caption_v26(script):
     return caption + "\n\n" + hashtags
 
 
+
 CAPTION_BANK_V27 = {
     "identity": [
         "Identity is built in private before it is seen in public.",
@@ -2632,6 +2559,7 @@ def build_caption_v27(script):
     return caption + "\n\n" + hashtags
 
 
+
 CAPTION_BANK_V28 = {
     "identity": ["The pattern tells the truth.", "Your routine is already voting.", "Identity is built when nobody is watching.", "What you repeat becomes proof.", "Private choices become public results."],
     "identity_open_loop": ["The drift starts quietly.", "The promise was not the hard part.", "The old pattern always leaves clues.", "The routine tells you before the result does.", "You usually notice it before anyone else does."],
@@ -2676,6 +2604,7 @@ def build_caption_v28(script):
     print("CAPTION V28:", caption)
     print("HASHTAGS V28:", hashtags)
     return caption + "\n\n" + hashtags
+
 
 
 CAPTION_BANK_V29 = {
@@ -2754,6 +2683,8 @@ def build_caption_v29(script):
     print("HASHTAGS V29:", hashtags)
 
     return caption + "\n\n" + hashtags
+
+
 
 
 CAPTION_BANK_V30 = {
@@ -2842,6 +2773,8 @@ def build_caption_v30(script):
     return caption + "\n\n" + hashtags
 
 
+
+
 CAPTION_BANK_V30_1 = {
     "mirror": [
         "You usually feel the warning before the result changes. The question is whether you correct it early or explain it away.",
@@ -2928,6 +2861,8 @@ def build_caption_v30_1(script):
     return caption + "\n\n" + hashtags
 
 
+
+
 CAPTION_BANK_V31 = {
     "mirror": [
         "You usually feel the warning before the result changes. The real question is whether you correct it early or explain it away.",
@@ -3001,30 +2936,32 @@ def build_caption_v31(script):
     return caption + "\\n\\n" + hashtags
 
 
+
 def build_caption(script):
-    """V31.2 captions: clear, relevant, completion-focused, no engagement bait."""
+    """V31.2 captions: renewed wording, same structure and rotation behavior."""
     category = str(getattr(script, "category", "mirror")).lower()
     bank = {
         "mirror": [
-            "You usually feel the warning before the result changes. The real question is whether you correct it early or explain it away.",
-            "Most patterns do not surprise you. You saw the first sign. You just waited too long to act.",
-            "The standard rarely disappears loudly. It slips through small private choices until weakness feels normal.",
-            "You are not lacking information. You are avoiding the moment that demands proof.",
+            "You usually notice the shift before anyone else does. The question is whether you correct it while it is still small.",
+            "Some truths do not need more explanation. They need a decision followed by repetition.",
+            "The habit rarely changes all at once. It changes through the private choices you keep allowing.",
+            "You know the pattern because you have lived it. Awareness matters only when it changes what you do next.",
         ],
         "two_stage_payoff": [
-            "The hardest part is rarely starting. It is continuing when there is no emotion left.",
-            "The real test is not the beginning. It is the repetition after the mood fades.",
-            "Most people do not lose discipline suddenly. They lose it quietly, then call it temporary.",
-            "The first crack is usually one excuse you stop challenging.",
+            "The first decision is visible. The harder decision comes later, when the feeling that started it has disappeared.",
+            "Starting can feel powerful. Repeating the standard when nobody cares is where the real test begins.",
+            "The answer is often obvious. What is difficult is accepting what the answer requires from you.",
+            "Most people focus on the first step. Identity is built by what happens after the first step.",
         ],
         "consequence": [
-            "Nothing stays small when repeated. Not excuses. Not comfort. Not avoidance.",
-            "The cost usually arrives later. That delay is what makes weak habits dangerous.",
-            "Weak choices feel small until they compound into a life you did not mean to build.",
-            "Comfort feels harmless until it becomes the standard.",
+            "Small choices become expensive when they are repeated long enough. The cost is usually delayed, not absent.",
+            "Comfort feels harmless when measured in minutes. Measure it across months and the trade becomes easier to see.",
+            "Time does not erase repeated choices. It multiplies their effect until the pattern becomes difficult to ignore.",
+            "Regret often begins as permission. One more delay feels small until enough delays become a direction.",
         ],
     }
-    if category not in bank: category = "mirror"
+    if category not in bank:
+        category = "mirror"
     cap = pick_unique_rotated(bank[category], memory_key="recent_captions_v31_2", max_recent=320)
     tags = pick_unique_rotated([
         "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
