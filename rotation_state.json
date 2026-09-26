@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "consequence",
     "mirror",
+    "consequence",
     "two_stage_payoff",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 8
+    "global": 9
   },
-  "updated_at": "2026-09-26T05:56:12",
+  "updated_at": "2026-09-26T06:13:50",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,12 +578,15 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you know the cost. | you have paid part of it already. | another missed morning. | another promise moved forward. | another standard softened. | the cost rarely arrives at once. | it accumulates quietly. | until quiet becomes expensive.",
     "small slips. | they rarely feel important. | that is why they survive. | one missed standard becomes another. | one exception becomes permission. | permission becomes routine. | routine becomes identity. | small choices are never only small.",
     "you keep resetting. | new plan. | new promise. | new beginning. | but the same decision returns. | the problem is not starting again. | it is protecting what you started. | that requires a higher standard.",
     "you saw it coming. | the warning was there. | the drop was there. | the old habit was there. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "drift stops when correction becomes immediate.",
+    "the result eventually matches the routine.",
     "the habit becomes the evidence.",
     "small permissions create large consequences.",
     "consistency remains after emotion leaves.",
@@ -594,21 +597,23 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you stopped pushing",
     "choices compound",
     "you keep resetting",
     "you broke it quietly",
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "some truths do not need more explanation. they need a decision followed by repetition.",
     "small choices become expensive when they are repeated long enough. the cost is usually delayed, not absent.",
     "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #habits #standards #selfcontrol #growth"
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ]
 }
