@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "mirror",
     "consequence",
+    "mirror",
     "two_stage_payoff",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4"
   ],
   "background_cursor": {
-    "global": 13
+    "global": 14
   },
-  "updated_at": "2026-09-27T14:07:12",
+  "updated_at": "2026-09-27T14:19:00",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "regret builds. | quietly. | usually after the opportunity passes. | before that, the excuse feels useful. | the delay feels justified. | the standard feels flexible. | then the moment is gone. | and justification cannot bring it back.",
     "you called it normal. | but you knew it was drift. | the routine was weaker. | the effort was smaller. | the standard was negotiable. | normal is not always healthy. | familiar is not always right. | you already know the difference.",
     "the gap grows. | between what you know and what you do. | at first it feels small. | then the distance becomes familiar. | your intention stays strong in your head. | your actions tell another story. | that gap is the real work. | close it with repetition.",
     "you lowered the bar. | quietly. | one small exception at a time. | nothing looked serious at first. | that is how standards usually disappear. | not through one dramatic failure. | through repeated permission. | take the permission back.",
@@ -589,6 +590,8 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "the result eventually matches the routine.",
+    "your future inherits repeated choices.",
     "discipline begins where negotiation ends.",
     "one honest decision can interrupt the pattern.",
     "time exposes what repetition built.",
@@ -598,7 +601,6 @@
     "your private choices become visible eventually.",
     "your routine keeps telling the truth.",
     "drift stops when correction becomes immediate.",
-    "the result eventually matches the routine.",
     "the habit becomes the evidence.",
     "small permissions create large consequences.",
     "consistency remains after emotion leaves.",
@@ -609,6 +611,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "small slips",
     "you made an exception",
     "the gap grows",
     "you made it easy",
@@ -620,6 +623,7 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
     "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "regret often begins as permission. one more delay feels small until enough delays become a direction.",
     "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
@@ -630,9 +634,9 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#discipline #routine #focus #mindset #selfrespect",
-    "#discipline #habits #standards #selfcontrol #growth"
+    "#discipline #routine #focus #mindset #selfrespect"
   ]
 }
