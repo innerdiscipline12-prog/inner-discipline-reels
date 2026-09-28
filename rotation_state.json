@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "consequence",
     "mirror",
+    "consequence",
     "two_stage_payoff",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 14
+    "global": 15
   },
-  "updated_at": "2026-09-27T14:19:00",
+  "updated_at": "2026-09-28T12:06:58",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you chose comfort. | and called it recovery. | then you called it timing. | then you called it tomorrow. | the explanation kept changing. | the choice stayed the same. | comfort was making the decision. | you were only defending it.",
     "regret builds. | quietly. | usually after the opportunity passes. | before that, the excuse feels useful. | the delay feels justified. | the standard feels flexible. | then the moment is gone. | and justification cannot bring it back.",
     "you called it normal. | but you knew it was drift. | the routine was weaker. | the effort was smaller. | the standard was negotiable. | normal is not always healthy. | familiar is not always right. | you already know the difference.",
     "the gap grows. | between what you know and what you do. | at first it feels small. | then the distance becomes familiar. | your intention stays strong in your head. | your actions tell another story. | that gap is the real work. | close it with repetition.",
@@ -590,10 +591,11 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "one honest decision can interrupt the pattern.",
+    "consistency remains after emotion leaves.",
     "the result eventually matches the routine.",
     "your future inherits repeated choices.",
     "discipline begins where negotiation ends.",
-    "one honest decision can interrupt the pattern.",
     "time exposes what repetition built.",
     "the standard survives only when enforced.",
     "the pattern always reveals the standard.",
@@ -603,7 +605,6 @@
     "drift stops when correction becomes immediate.",
     "the habit becomes the evidence.",
     "small permissions create large consequences.",
-    "consistency remains after emotion leaves.",
     "your actions settle every argument.",
     "structure decides who stays consistent.",
     "nothing changes until the routine changes.",
@@ -611,6 +612,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you called it normal",
     "small slips",
     "you made an exception",
     "the gap grows",
@@ -623,11 +625,11 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
     "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "regret often begins as permission. one more delay feels small until enough delays become a direction.",
     "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
-    "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "some truths do not need more explanation. they need a decision followed by repetition.",
     "small choices become expensive when they are repeated long enough. the cost is usually delayed, not absent.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
