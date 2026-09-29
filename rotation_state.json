@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4"
   ],
   "background_cursor": {
-    "global": 19
+    "global": 20
   },
-  "updated_at": "2026-09-29T11:30:34",
+  "updated_at": "2026-09-29T13:50:07",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you keep delaying. | not because the answer is missing. | you know what needs to move. | you have known for longer than you admit. | the delay feels harmless today. | but every delay trains the same response. | eventually hesitation becomes familiar. | that is the part to confront.",
     "you hid the truth. | not from everyone. | mostly from yourself. | you renamed the problem. | you softened the consequence. | you made the pattern sound reasonable. | but the result kept telling you. | the truth was never missing.",
     "most miss this. | they think discipline is the hard action. | sometimes it is. | but the deeper battle happens earlier. | when you decide whether the excuse gets a vote. | that decision happens quietly. | before anyone sees the result. | that is where discipline lives.",
     "read that again. | the first decision is rarely the loud one. | it is the one nobody sees. | you choose the easier response. | then you repeat it. | soon the response feels automatic. | that is how a choice becomes a habit. | and a habit becomes your standard.",
@@ -616,6 +617,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you lost the edge",
     "you keep delaying",
     "this part matters",
     "you keep waiting",
@@ -647,9 +649,9 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect"
   ]
 }
