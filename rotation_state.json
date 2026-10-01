@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4"
   ],
   "background_cursor": {
-    "global": 24
+    "global": 25
   },
-  "updated_at": "2026-10-01T06:56:24",
+  "updated_at": "2026-10-01T16:47:08",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you made it easy. | the excuse was convenient. | the rule became flexible. | the hard choice became optional. | nothing broke immediately. | that made the choice feel safe. | but discipline weakens that way. | quietly, then completely.",
     "you broke your word. | maybe nobody else noticed. | you noticed. | the promise became optional. | then the exception became easier. | then easier became normal. | your standard did not disappear. | you stopped enforcing it.",
     "drift grows. | not because you choose failure. | because you stop correcting small things. | the routine gets softer. | the standard gets quieter. | the excuse gets stronger. | then the distance feels normal. | that is how drift becomes direction.",
     "the real cost. | is rarely the first missed day. | it is what that day teaches you. | that you can break the promise. | that the standard can move. | that comfort gets the final vote. | then the lesson repeats. | until the cost becomes visible.",
@@ -600,6 +601,8 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "discipline begins where negotiation ends.",
+    "comfort becomes expensive when repeated.",
     "your routine keeps telling the truth.",
     "consistency remains after emotion leaves.",
     "the result eventually matches the routine.",
@@ -607,9 +610,7 @@
     "the habit becomes the evidence.",
     "the standard survives only when enforced.",
     "time exposes what repetition built.",
-    "comfort becomes expensive when repeated.",
     "your future inherits repeated choices.",
-    "discipline begins where negotiation ends.",
     "the pattern always reveals the standard.",
     "your private choices become visible eventually.",
     "drift stops when correction becomes immediate.",
@@ -621,6 +622,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you chose comfort",
     "you keep postponing",
     "time compounds",
     "this is where",
@@ -643,6 +645,7 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
     "most people focus on the first step. identity is built by what happens after the first step.",
@@ -650,7 +653,6 @@
     "the answer is often obvious. what is difficult is accepting what the answer requires from you.",
     "the first decision is visible. the harder decision comes later, when the feeling that started it has disappeared.",
     "comfort feels harmless when measured in minutes. measure it across months and the trade becomes easier to see.",
-    "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "regret often begins as permission. one more delay feels small until enough delays become a direction.",
     "some truths do not need more explanation. they need a decision followed by repetition.",
@@ -659,8 +661,8 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
-    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
+    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ]
