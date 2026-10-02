@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 25
+    "global": 26
   },
-  "updated_at": "2026-10-01T16:47:08",
+  "updated_at": "2026-10-02T05:04:06",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,12 +578,12 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you keep delaying. | not because the answer is missing. | you know what needs to move. | you have known for longer than you admit. | the delay feels harmless today. | but every delay trains the same response. | eventually hesitation becomes familiar. | that is the part to confront.",
     "you made it easy. | the excuse was convenient. | the rule became flexible. | the hard choice became optional. | nothing broke immediately. | that made the choice feel safe. | but discipline weakens that way. | quietly, then completely.",
     "you broke your word. | maybe nobody else noticed. | you noticed. | the promise became optional. | then the exception became easier. | then easier became normal. | your standard did not disappear. | you stopped enforcing it.",
     "drift grows. | not because you choose failure. | because you stop correcting small things. | the routine gets softer. | the standard gets quieter. | the excuse gets stronger. | then the distance feels normal. | that is how drift becomes direction.",
     "the real cost. | is rarely the first missed day. | it is what that day teaches you. | that you can break the promise. | that the standard can move. | that comfort gets the final vote. | then the lesson repeats. | until the cost becomes visible.",
     "look closer. | the problem may not be the missed day. | it may be what you permit after it. | one mistake is recoverable. | repeating the permission is different. | that creates a pattern. | the pattern creates momentum. | choose what gets repeated.",
-    "you keep delaying. | not because the answer is missing. | you know what needs to move. | you have known for longer than you admit. | the delay feels harmless today. | but every delay trains the same response. | eventually hesitation becomes familiar. | that is the part to confront.",
     "you hid the truth. | not from everyone. | mostly from yourself. | you renamed the problem. | you softened the consequence. | you made the pattern sound reasonable. | but the result kept telling you. | the truth was never missing.",
     "most miss this. | they think discipline is the hard action. | sometimes it is. | but the deeper battle happens earlier. | when you decide whether the excuse gets a vote. | that decision happens quietly. | before anyone sees the result. | that is where discipline lives.",
     "read that again. | the first decision is rarely the loud one. | it is the one nobody sees. | you choose the easier response. | then you repeat it. | soon the response feels automatic. | that is how a choice becomes a habit. | and a habit becomes your standard.",
@@ -601,9 +601,10 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "the pattern always reveals the standard.",
+    "your routine keeps telling the truth.",
     "discipline begins where negotiation ends.",
     "comfort becomes expensive when repeated.",
-    "your routine keeps telling the truth.",
     "consistency remains after emotion leaves.",
     "the result eventually matches the routine.",
     "one honest decision can interrupt the pattern.",
@@ -611,7 +612,6 @@
     "the standard survives only when enforced.",
     "time exposes what repetition built.",
     "your future inherits repeated choices.",
-    "the pattern always reveals the standard.",
     "your private choices become visible eventually.",
     "drift stops when correction becomes immediate.",
     "small permissions create large consequences.",
@@ -622,6 +622,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you hid the truth",
     "you chose comfort",
     "you keep postponing",
     "time compounds",
@@ -645,6 +646,7 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
@@ -653,7 +655,6 @@
     "the answer is often obvious. what is difficult is accepting what the answer requires from you.",
     "the first decision is visible. the harder decision comes later, when the feeling that started it has disappeared.",
     "comfort feels harmless when measured in minutes. measure it across months and the trade becomes easier to see.",
-    "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "regret often begins as permission. one more delay feels small until enough delays become a direction.",
     "some truths do not need more explanation. they need a decision followed by repetition.",
     "small choices become expensive when they are repeated long enough. the cost is usually delayed, not absent.",
@@ -661,9 +662,9 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ]
 }
