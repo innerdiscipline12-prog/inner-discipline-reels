@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "two_stage_payoff",
     "consequence",
     "mirror",
-    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 28
+    "global": 29
   },
-  "updated_at": "2026-10-03T04:31:31",
+  "updated_at": "2026-10-03T12:08:15",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "then it grows. | the small thing you ignored. | the habit you kept excusing. | the standard you kept adjusting. | nothing felt urgent. | that is exactly why it survived. | small permission creates larger consequences. | eventually the pattern speaks.",
     "delay costs. | usually later than you expect. | that is what makes it dangerous. | the first delay feels harmless. | the second feels familiar. | eventually waiting becomes your default. | then the opportunity has moved. | and you call it bad timing.",
     "choices compound. | the same way habits do. | one decision teaches the next. | one standard becomes the baseline. | one exception changes what feels normal. | your future inherits today's pattern. | that is why small choices matter. | they are rehearsals for what follows.",
     "you keep delaying. | not because the answer is missing. | you know what needs to move. | you have known for longer than you admit. | the delay feels harmless today. | but every delay trains the same response. | eventually hesitation becomes familiar. | that is the part to confront.",
@@ -603,16 +604,16 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "time exposes what repetition built.",
+    "the habit becomes the evidence.",
     "your future inherits repeated choices.",
     "your routine keeps telling the truth.",
-    "time exposes what repetition built.",
     "the pattern always reveals the standard.",
     "discipline begins where negotiation ends.",
     "comfort becomes expensive when repeated.",
     "consistency remains after emotion leaves.",
     "the result eventually matches the routine.",
     "one honest decision can interrupt the pattern.",
-    "the habit becomes the evidence.",
     "the standard survives only when enforced.",
     "your private choices become visible eventually.",
     "drift stops when correction becomes immediate.",
@@ -624,6 +625,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "most miss this",
     "regret builds",
     "years disappear",
     "you hid the truth",
@@ -650,13 +652,13 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "starting can feel powerful. repeating the standard when nobody cares is where the real test begins.",
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
     "small choices become expensive when they are repeated long enough. the cost is usually delayed, not absent.",
     "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
     "most people focus on the first step. identity is built by what happens after the first step.",
-    "starting can feel powerful. repeating the standard when nobody cares is where the real test begins.",
     "the answer is often obvious. what is difficult is accepting what the answer requires from you.",
     "the first decision is visible. the harder decision comes later, when the feeling that started it has disappeared.",
     "comfort feels harmless when measured in minutes. measure it across months and the trade becomes easier to see.",
@@ -666,9 +668,9 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth"
   ]
 }
