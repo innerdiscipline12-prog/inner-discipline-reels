@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4"
   ],
   "background_cursor": {
-    "global": 3
+    "global": 4
   },
-  "updated_at": "2026-10-05T13:58:12",
+  "updated_at": "2026-10-07T11:44:26",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you lowered the bar. | quietly. | one small exception at a time. | nothing looked serious at first. | that is how standards usually disappear. | not through one dramatic failure. | through repeated permission. | take the permission back.",
     "you broke your word. | maybe nobody else noticed. | you noticed. | the promise became optional. | then the exception became easier. | then easier became normal. | your standard did not disappear. | you stopped enforcing it.",
     "you made it easy. | the excuse was convenient. | the rule became flexible. | the hard choice became optional. | nothing broke immediately. | that made the choice feel safe. | but discipline weakens that way. | quietly, then completely.",
     "standards fall. | usually before results do. | the routine weakens first. | the promise becomes flexible. | the exception feels harmless. | then the new lower level feels normal. | results eventually follow. | they always expose the standard.",
@@ -597,7 +598,6 @@
     "regret builds. | quietly. | usually after the opportunity passes. | before that, the excuse feels useful. | the delay feels justified. | the standard feels flexible. | then the moment is gone. | and justification cannot bring it back.",
     "you called it normal. | but you knew it was drift. | the routine was weaker. | the effort was smaller. | the standard was negotiable. | normal is not always healthy. | familiar is not always right. | you already know the difference.",
     "the gap grows. | between what you know and what you do. | at first it feels small. | then the distance becomes familiar. | your intention stays strong in your head. | your actions tell another story. | that gap is the real work. | close it with repetition.",
-    "you lowered the bar. | quietly. | one small exception at a time. | nothing looked serious at first. | that is how standards usually disappear. | not through one dramatic failure. | through repeated permission. | take the permission back.",
     "you saw the shift. | the routine changed first. | then the energy changed. | then the excuses became easier. | you noticed before the result showed. | that was the moment to act. | you waited for proof. | the proof eventually arrived.",
     "you know the cost. | you have paid part of it already. | another missed morning. | another promise moved forward. | another standard softened. | the cost rarely arrives at once. | it accumulates quietly. | until quiet becomes expensive.",
     "small slips. | they rarely feel important. | that is why they survive. | one missed standard becomes another. | one exception becomes permission. | permission becomes routine. | routine becomes identity. | small choices are never only small.",
@@ -605,6 +605,8 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "the habit becomes the evidence.",
+    "time exposes what repetition built.",
     "consistency remains after emotion leaves.",
     "the result eventually matches the routine.",
     "the pattern always reveals the standard.",
@@ -613,8 +615,6 @@
     "your future inherits repeated choices.",
     "one honest decision can interrupt the pattern.",
     "your private choices become visible eventually.",
-    "time exposes what repetition built.",
-    "the habit becomes the evidence.",
     "comfort becomes expensive when repeated.",
     "the standard survives only when enforced.",
     "drift stops when correction becomes immediate.",
@@ -626,6 +626,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you know the cost",
     "you broke your word",
     "you know what slipped",
     "comfort costs",
@@ -658,12 +659,12 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
     "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "small choices become expensive when they are repeated long enough. the cost is usually delayed, not absent.",
     "starting can feel powerful. repeating the standard when nobody cares is where the real test begins.",
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
     "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
-    "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
     "most people focus on the first step. identity is built by what happens after the first step.",
     "the answer is often obvious. what is difficult is accepting what the answer requires from you.",
     "the first decision is visible. the harder decision comes later, when the feeling that started it has disappeared.",
@@ -674,9 +675,9 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ]
 }
