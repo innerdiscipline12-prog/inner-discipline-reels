@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "two_stage_payoff",
     "mirror",
     "consequence",
-    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4"
   ],
   "background_cursor": {
-    "global": 5
+    "global": 6
   },
-  "updated_at": "2026-10-08T07:39:13",
+  "updated_at": "2026-10-08T17:53:55",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "not what you think. | the problem is not always lack of effort. | sometimes effort is inconsistent. | strong one day. | missing the next. | the real weakness is the gap between intention and repetition. | close that gap. | the result starts changing.",
     "you chose comfort. | and called it recovery. | then you called it timing. | then you called it tomorrow. | the explanation kept changing. | the choice stayed the same. | comfort was making the decision. | you were only defending it.",
     "you lowered the bar. | quietly. | one small exception at a time. | nothing looked serious at first. | that is how standards usually disappear. | not through one dramatic failure. | through repeated permission. | take the permission back.",
     "you broke your word. | maybe nobody else noticed. | you noticed. | the promise became optional. | then the exception became easier. | then easier became normal. | your standard did not disappear. | you stopped enforcing it.",
@@ -626,6 +627,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "then it grows",
     "you know the pattern",
     "you know the cost",
     "you broke your word",
@@ -660,13 +662,13 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "most people focus on the first step. identity is built by what happens after the first step.",
     "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
     "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "small choices become expensive when they are repeated long enough. the cost is usually delayed, not absent.",
     "starting can feel powerful. repeating the standard when nobody cares is where the real test begins.",
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
-    "most people focus on the first step. identity is built by what happens after the first step.",
     "the answer is often obvious. what is difficult is accepting what the answer requires from you.",
     "the first decision is visible. the harder decision comes later, when the feeling that started it has disappeared.",
     "comfort feels harmless when measured in minutes. measure it across months and the trade becomes easier to see.",
@@ -676,9 +678,9 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #routine #focus #mindset #selfrespect",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #habits #standards #selfcontrol #growth",
-    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ]
 }
