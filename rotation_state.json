@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 6
+    "global": 7
   },
-  "updated_at": "2026-10-08T17:53:55",
+  "updated_at": "2026-10-09T05:56:45",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,11 +578,11 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you made it easy. | the excuse was convenient. | the rule became flexible. | the hard choice became optional. | nothing broke immediately. | that made the choice feel safe. | but discipline weakens that way. | quietly, then completely.",
     "not what you think. | the problem is not always lack of effort. | sometimes effort is inconsistent. | strong one day. | missing the next. | the real weakness is the gap between intention and repetition. | close that gap. | the result starts changing.",
     "you chose comfort. | and called it recovery. | then you called it timing. | then you called it tomorrow. | the explanation kept changing. | the choice stayed the same. | comfort was making the decision. | you were only defending it.",
     "you lowered the bar. | quietly. | one small exception at a time. | nothing looked serious at first. | that is how standards usually disappear. | not through one dramatic failure. | through repeated permission. | take the permission back.",
     "you broke your word. | maybe nobody else noticed. | you noticed. | the promise became optional. | then the exception became easier. | then easier became normal. | your standard did not disappear. | you stopped enforcing it.",
-    "you made it easy. | the excuse was convenient. | the rule became flexible. | the hard choice became optional. | nothing broke immediately. | that made the choice feel safe. | but discipline weakens that way. | quietly, then completely.",
     "standards fall. | usually before results do. | the routine weakens first. | the promise becomes flexible. | the exception feels harmless. | then the new lower level feels normal. | results eventually follow. | they always expose the standard.",
     "you keep resetting. | new plan. | new promise. | new beginning. | but the same decision returns. | the problem is not starting again. | it is protecting what you started. | that requires a higher standard.",
     "you keep delaying. | not because the answer is missing. | you know what needs to move. | you have known for longer than you admit. | the delay feels harmless today. | but every delay trains the same response. | eventually hesitation becomes familiar. | that is the part to confront.",
@@ -606,10 +606,10 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
-    "your actions settle every argument.",
-    "the standard survives only when enforced.",
     "the habit becomes the evidence.",
     "time exposes what repetition built.",
+    "your actions settle every argument.",
+    "the standard survives only when enforced.",
     "consistency remains after emotion leaves.",
     "the result eventually matches the routine.",
     "the pattern always reveals the standard.",
@@ -627,6 +627,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you saw the shift",
     "then it grows",
     "you know the pattern",
     "you know the cost",
@@ -662,10 +663,10 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "most people focus on the first step. identity is built by what happens after the first step.",
     "you usually notice the shift before anyone else does. the question is whether you correct it while it is still small.",
     "the habit rarely changes all at once. it changes through the private choices you keep allowing.",
-    "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "small choices become expensive when they are repeated long enough. the cost is usually delayed, not absent.",
     "starting can feel powerful. repeating the standard when nobody cares is where the real test begins.",
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
@@ -678,9 +679,9 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #routine #focus #mindset #selfrespect",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #habits #standards #selfcontrol #growth",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
+    "#discipline #habits #standards #selfcontrol #growth"
   ]
 }
