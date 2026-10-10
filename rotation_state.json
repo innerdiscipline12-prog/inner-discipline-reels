@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence",
     "two_stage_payoff",
     "mirror",
-    "consequence",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 8
+    "global": 9
   },
-  "updated_at": "2026-10-09T10:04:50",
+  "updated_at": "2026-10-10T05:07:28",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "years disappear. | not all at once. | they leave through ordinary days. | days you keep postponing. | weeks you keep restarting. | months you call temporary. | then you look back. | and realize temporary became years.",
     "then it changed. | not overnight. | the routine weakened first. | the excuses followed. | the standard became flexible. | you still looked fine from outside. | inside, the agreement had changed. | that is where drift begins.",
     "you made it easy. | the excuse was convenient. | the rule became flexible. | the hard choice became optional. | nothing broke immediately. | that made the choice feel safe. | but discipline weakens that way. | quietly, then completely.",
     "not what you think. | the problem is not always lack of effort. | sometimes effort is inconsistent. | strong one day. | missing the next. | the real weakness is the gap between intention and repetition. | close that gap. | the result starts changing.",
@@ -607,9 +608,10 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "comfort becomes expensive when repeated.",
+    "the habit becomes the evidence.",
     "your private choices become visible eventually.",
     "drift stops when correction becomes immediate.",
-    "the habit becomes the evidence.",
     "time exposes what repetition built.",
     "your actions settle every argument.",
     "the standard survives only when enforced.",
@@ -620,7 +622,6 @@
     "your routine keeps telling the truth.",
     "your future inherits repeated choices.",
     "one honest decision can interrupt the pattern.",
-    "comfort becomes expensive when repeated.",
     "small permissions create large consequences.",
     "structure decides who stays consistent.",
     "nothing changes until the routine changes.",
@@ -628,6 +629,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "drift grows",
     "the real cost",
     "you saw the shift",
     "then it grows",
@@ -665,6 +667,7 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "regret often begins as permission. one more delay feels small until enough delays become a direction.",
     "the first decision is visible. the harder decision comes later, when the feeling that started it has disappeared.",
     "you know the pattern because you have lived it. awareness matters only when it changes what you do next.",
     "most people focus on the first step. identity is built by what happens after the first step.",
@@ -675,15 +678,14 @@
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
     "the answer is often obvious. what is difficult is accepting what the answer requires from you.",
     "comfort feels harmless when measured in minutes. measure it across months and the trade becomes easier to see.",
-    "regret often begins as permission. one more delay feels small until enough delays become a direction.",
     "some truths do not need more explanation. they need a decision followed by repetition.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #routine #focus #mindset #selfrespect",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #habits #standards #selfcontrol #growth"
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ]
 }
