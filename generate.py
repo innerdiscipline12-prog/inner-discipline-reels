@@ -2030,42 +2030,49 @@ async def tts_async(text, filename, rate, pitch):
 
 
 def generate_voice(text, filename, pacing):
-    """Use Edge TTS first; retry temporary failures, then fall back to Google TTS."""
+    """Use the configured male Edge voice, then a male Edge fallback voice."""
     mode = PACING.get(pacing, PACING.get('cold', list(PACING.values())[0]))
     last_error = None
+    voices_to_try = [VOICE]
+    # Keep the INNER Discipline narration masculine even when the primary
+    # Edge voice endpoint temporarily fails. Google gTTS has no voice selector
+    # and may return a female-sounding voice, so it is intentionally not used.
+    male_fallback = "en-US-ChristopherNeural"
+    if male_fallback.lower() != VOICE.lower():
+        voices_to_try.append(male_fallback)
 
-    for attempt in range(2):
-        try:
-            if os.path.exists(filename):
-                os.remove(filename)
-            asyncio.run(tts_async(text, filename, mode["rate"], mode["pitch"]))
-            if os.path.isfile(filename) and os.path.getsize(filename) > 0:
-                return
-            raise RuntimeError("Edge TTS did not create a non-empty audio file")
-        except Exception as exc:
-            last_error = exc
-            print(f"EDGE TTS attempt {attempt + 1}/2 failed: {exc}")
+    for voice_index, voice_name in enumerate(voices_to_try):
+        for attempt in range(2):
             try:
                 if os.path.exists(filename):
                     os.remove(filename)
-            except OSError:
-                pass
-            if attempt == 0:
-                time.sleep(1.5)
+                communicate = edge_tts.Communicate(
+                    clean_text(text), voice_name,
+                    rate=mode["rate"], pitch=mode["pitch"], volume=VOLUME
+                )
+                asyncio.run(communicate.save(filename))
+                if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+                    print(f"VOICE SUCCESS: {voice_name}")
+                    return
+                raise RuntimeError("Edge TTS did not create a non-empty audio file")
+            except Exception as exc:
+                last_error = exc
+                print(
+                    f"EDGE TTS voice {voice_name}, attempt {attempt + 1}/2 "
+                    f"failed: {exc}"
+                )
+                try:
+                    if os.path.exists(filename):
+                        os.remove(filename)
+                except OSError:
+                    pass
+                if attempt == 0:
+                    time.sleep(1.5)
 
-    try:
-        from gtts import gTTS
-        print("Falling back to Google TTS...")
-        gTTS(text=clean_text(text), lang="en", slow=False).save(filename)
-        if os.path.isfile(filename) and os.path.getsize(filename) > 0:
-            print("Google TTS fallback succeeded.")
-            return
-        raise RuntimeError("Google TTS did not create a non-empty audio file")
-    except Exception as fallback_error:
-        raise RuntimeError(
-            f"Speech generation failed. Edge TTS error: {last_error}; "
-            f"Google TTS fallback error: {fallback_error}"
-        ) from fallback_error
+    raise RuntimeError(
+        f"Male voice generation failed for all configured Edge TTS voices. "
+        f"Last error: {last_error}"
+    )
 
 # ================================================================
 # TEXT RENDERING
