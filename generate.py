@@ -2030,8 +2030,44 @@ async def tts_async(text, filename, rate, pitch):
 
 
 def generate_voice(text, filename, pacing):
+    """Generate speech with Edge TTS, then fall back to Google TTS if Edge rejects the request."""
     mode = PACING.get(pacing, PACING.get('cold', list(PACING.values())[0]))
-    asyncio.run(tts_async(text, filename, mode["rate"], mode["pitch"]))
+    last_error = None
+
+    # Edge TTS can temporarily reject WebSocket requests (including HTTP 403).
+    for attempt in range(2):
+        try:
+            if os.path.exists(filename):
+                os.remove(filename)
+            asyncio.run(tts_async(text, filename, mode["rate"], mode["pitch"]))
+            if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+                return
+            raise RuntimeError("Edge TTS returned without creating an audio file")
+        except Exception as exc:
+            last_error = exc
+            print(f"EDGE TTS attempt {attempt + 1}/2 failed: {exc}")
+            if os.path.exists(filename):
+                try:
+                    os.remove(filename)
+                except OSError:
+                    pass
+            if attempt == 0:
+                time.sleep(1.5)
+
+    # Fallback avoids a dead run when Microsoft's speech endpoint returns 403.
+    try:
+        from gtts import gTTS
+        print("Falling back to Google TTS...")
+        gTTS(text=clean_text(text), lang="en", slow=False).save(filename)
+        if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+            print("Google TTS fallback succeeded.")
+            return
+        raise RuntimeError("Google TTS returned without creating an audio file")
+    except Exception as fallback_error:
+        raise RuntimeError(
+            f"All speech providers failed. Edge TTS error: {last_error}; "
+            f"Google TTS fallback error: {fallback_error}"
+        ) from fallback_error
 
 
 # ================================================================
@@ -3266,6 +3302,13 @@ def main():
     out_path = os.path.join(OUTPUT_DIR, f"reel_v31_2_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
+
+    # Never report success or commit rotation state when rendering failed.
+    if not ok or not os.path.isfile(out_path) or os.path.getsize(out_path) == 0:
+        raise RuntimeError(
+            "REEL GENERATION FAILED: no valid MP4 was created. "
+            "Check the voice-generation/rendering errors above."
+        )
 
     if ok:
         cover = write_metadata(script, out_path, bg)
