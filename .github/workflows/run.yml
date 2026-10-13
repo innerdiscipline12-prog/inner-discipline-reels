@@ -36,7 +36,17 @@ jobs:
         if: ${{ github.event.inputs.script == 'promo' }}
         run: python promo.py
 
+      - name: Verify generated video exists
+        if: ${{ github.event.inputs.script == 'generate' }}
+        run: |
+          test -d outputs
+          test -n "$(find outputs -maxdepth 1 -type f -name '*.mp4' -size +0c -print -quit)" || {
+            echo "ERROR: generate.py finished without creating a non-empty MP4 in outputs/."
+            exit 1
+          }
+
       - uses: actions/upload-artifact@v4
         with:
           name: outputs
           path: outputs/
+          if-no-files-found: error
