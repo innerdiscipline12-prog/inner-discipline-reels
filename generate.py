@@ -2030,11 +2030,10 @@ async def tts_async(text, filename, rate, pitch):
 
 
 def generate_voice(text, filename, pacing):
-    """Generate speech with Edge TTS, then fall back to Google TTS if Edge rejects the request."""
+    """Use Edge TTS first; retry temporary failures, then fall back to Google TTS."""
     mode = PACING.get(pacing, PACING.get('cold', list(PACING.values())[0]))
     last_error = None
 
-    # Edge TTS can temporarily reject WebSocket requests (including HTTP 403).
     for attempt in range(2):
         try:
             if os.path.exists(filename):
@@ -2042,19 +2041,18 @@ def generate_voice(text, filename, pacing):
             asyncio.run(tts_async(text, filename, mode["rate"], mode["pitch"]))
             if os.path.isfile(filename) and os.path.getsize(filename) > 0:
                 return
-            raise RuntimeError("Edge TTS returned without creating an audio file")
+            raise RuntimeError("Edge TTS did not create a non-empty audio file")
         except Exception as exc:
             last_error = exc
             print(f"EDGE TTS attempt {attempt + 1}/2 failed: {exc}")
-            if os.path.exists(filename):
-                try:
+            try:
+                if os.path.exists(filename):
                     os.remove(filename)
-                except OSError:
-                    pass
+            except OSError:
+                pass
             if attempt == 0:
                 time.sleep(1.5)
 
-    # Fallback avoids a dead run when Microsoft's speech endpoint returns 403.
     try:
         from gtts import gTTS
         print("Falling back to Google TTS...")
@@ -2062,13 +2060,12 @@ def generate_voice(text, filename, pacing):
         if os.path.isfile(filename) and os.path.getsize(filename) > 0:
             print("Google TTS fallback succeeded.")
             return
-        raise RuntimeError("Google TTS returned without creating an audio file")
+        raise RuntimeError("Google TTS did not create a non-empty audio file")
     except Exception as fallback_error:
         raise RuntimeError(
-            f"All speech providers failed. Edge TTS error: {last_error}; "
+            f"Speech generation failed. Edge TTS error: {last_error}; "
             f"Google TTS fallback error: {fallback_error}"
         ) from fallback_error
-
 
 # ================================================================
 # TEXT RENDERING
