@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg7.mp4"
   ],
   "background_cursor": {
-    "global": 22
+    "global": 23
   },
-  "updated_at": "2026-10-14T16:42:28",
+  "updated_at": "2026-10-15T04:28:07",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "you let it slide. | once. | then again. | then it stopped feeling wrong. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
     "you said tomorrow. | again. | then again. | the problem is not time. | the problem is not knowledge. | the problem is the standard. | that keeps moving. | stop moving it.",
     "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it.",
     "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
@@ -616,13 +617,13 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "time exposes every repeated compromise.",
+    "your future reflects your standards.",
     "weak habits always collect consequences.",
     "discipline dies quietly first.",
-    "time exposes every repeated compromise.",
     "private standards create public results.",
     "control returns when negotiation ends.",
     "pressure exposes every weak routine.",
-    "your future reflects your standards.",
     "comfort slowly destroys structure.",
     "the routine always tells the truth.",
     "your private habits are not private forever.",
@@ -648,6 +649,7 @@
     "a weak standard always becomes visible."
   ],
   "recent_smart_covers_v31_2": [
+    "you're avoiding it",
     "you keep moving it",
     "you're not confused",
     "you keep negotiating",
@@ -694,10 +696,10 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
     "the standard rarely disappears loudly. it slips through small private choices until weakness feels normal.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
-    "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away.",
     "the first decision is visible. the harder decision comes later, when the feeling that started it has disappeared.",
     "comfort feels harmless when measured in minutes. measure it across months and the trade becomes easier to see.",
     "regret often begins as permission. one more delay feels small until enough delays become a direction.",
@@ -713,9 +715,9 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_hook_variants_v31_2": [
