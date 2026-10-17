@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "mirror",
     "two_stage_payoff",
+    "mirror",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
   ],
   "background_cursor": {
-    "global": 25
+    "global": 26
   },
-  "updated_at": "2026-10-16T13:52:07",
+  "updated_at": "2026-10-17T05:46:06",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
     "you watched it happen. | the routine got weaker. | the excuses got easier. | the standard moved lower. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you felt the shift. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
     "you let it slide. | once. | then again. | then it stopped feeling wrong. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
@@ -619,13 +620,13 @@
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_endings_v31_2": [
+    "weak habits always collect consequences.",
+    "discipline is built in silence.",
     "the routine always tells the truth.",
     "a weak standard always becomes visible.",
-    "discipline is built in silence.",
     "discipline dies quietly first.",
     "time exposes every repeated compromise.",
     "your future reflects your standards.",
-    "weak habits always collect consequences.",
     "private standards create public results.",
     "control returns when negotiation ends.",
     "pressure exposes every weak routine.",
@@ -651,6 +652,7 @@
     "nothing changes until the routine changes."
   ],
   "recent_smart_covers_v31_2": [
+    "the real test",
     "you watched it happen",
     "you saw it coming",
     "you're avoiding it",
@@ -700,6 +702,7 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "the hardest part is rarely starting. it is continuing when there is no emotion left.",
     "most patterns do not surprise you. you saw the first sign. you just waited too long to act.",
     "you usually feel the warning before the result changes. the real question is whether you correct it early or explain it away.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
@@ -719,10 +722,10 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#discipline #habits #standards #selfcontrol #growth"
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ],
   "recent_hook_variants_v31_2": [
     "you felt the shift.",
