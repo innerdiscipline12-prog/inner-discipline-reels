@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "consequence",
     "two_stage_payoff",
+    "consequence",
     "mirror",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg1.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/generic/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/morning/bg1.mp4"
   ],
   "background_cursor": {
-    "global": 28
+    "global": 29
   },
-  "updated_at": "2026-10-17T12:57:06",
+  "updated_at": "2026-10-17T18:34:44",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "the quiet truth. | nobody has to see it. | for it to matter. | nobody has to clap. | for it to count. | your future still records it. | your identity still feels it. | every time.",
     "small weakness compounds. | first in private. | then in routine. | then in identity. | then in results. | then in regret. | that is the sequence. | stop it early.",
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real.",
     "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
@@ -623,6 +624,7 @@
   ],
   "recent_smart_endings_v31_2": [
     "nothing changes until the routine changes.",
+    "comfort slowly destroys structure.",
     "the routine always tells the truth.",
     "discipline dies quietly first.",
     "pressure exposes every weak routine.",
@@ -633,7 +635,6 @@
     "your future reflects your standards.",
     "private standards create public results.",
     "control returns when negotiation ends.",
-    "comfort slowly destroys structure.",
     "your private habits are not private forever.",
     "your standards decide your future.",
     "one honest decision can interrupt the pattern.",
@@ -654,6 +655,7 @@
     "structure decides who stays consistent."
   ],
   "recent_smart_covers_v31_2": [
+    "the first crack",
     "later gets expensive",
     "the hardest part",
     "the real test",
@@ -706,6 +708,7 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "the first crack is usually one excuse you stop challenging.",
     "comfort feels harmless until it becomes the standard.",
     "the real test is not the beginning. it is the repetition after the mood fades.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left.",
@@ -728,10 +731,10 @@
     "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_2": [
     "small weakness compounds.",
