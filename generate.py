@@ -85,8 +85,8 @@ random.seed(f"{RUN_ID}_{time.time_ns()}")
 W, H = 1080, 1920
 FPS = 30
 RETENTION_REEL_MODE = True
-RETENTION_MIN_SECONDS = 18.0
-RETENTION_MAX_SECONDS = 23.5
+RETENTION_MIN_SECONDS = 12.0
+RETENTION_MAX_SECONDS = 15.0
 RETENTION_LINE_COUNT_MIN = 7
 RETENTION_LINE_COUNT_MAX = 8
 
@@ -103,8 +103,8 @@ V31_VISUAL_RULE = "fullscreen_no_borders_no_panels"
 
 NO_BORDERED_VIDEO = True
 NO_BLACK_PANELS = True
-TARGET_REEL_SECONDS_MIN = 18.0
-TARGET_REEL_SECONDS_MAX = 22.5
+TARGET_REEL_SECONDS_MIN = 12.0
+TARGET_REEL_SECONDS_MAX = 15.0
 TEXT_SCREEN_COVERAGE_TARGET = 0.40
 ONE_LINE_AT_A_TIME = True
 
@@ -243,7 +243,7 @@ HASHTAG_PACKS_V25 = [
 ]
 
 
-REEL_SECONDS = 20.0
+REEL_SECONDS = 15.0
 
 VOICE = "en-US-GuyNeural"
 VOLUME = "+0%"
@@ -1497,24 +1497,33 @@ def vary_hook_v31_2(lines):
 def line_weight_v31_2(line):
     words=len(str(line).replace('.','').split()); return max(1.0,min(3.0,0.55+words*0.23))
 
-def build_line_timings_v31_2(lines, min_total=18.0, max_total=23.5):
-    clean=[str(x).strip() for x in lines if str(x).strip()]
-    if not clean: return [], min_total
-    weights=[line_weight_v31_2(x) for x in clean]; weights[0]*=1.28; weights[-1]*=1.35
-    target=min(max_total,max(min_total,len(clean)*2.55+2.5)); total_weight=sum(weights); timings=[]; cursor=0.0
-    for i,(line,w) in enumerate(zip(clean,weights)):
-        dur=max(1.75,target*(w/total_weight));
-        if i==0: dur=max(dur,2.35)
-        if i==len(clean)-1: dur=max(dur,2.65)
-        timings.append({'line':line,'start':round(cursor,3),'end':round(cursor+dur,3),'duration':round(dur,3)}); cursor+=dur
-    if cursor>max_total:
-        scale=max_total/cursor; cursor=0.0; scaled=[]
-        for t in timings:
-            dur=max(1.55,t['duration']*scale); scaled.append({**t,'start':round(cursor,3),'end':round(cursor+dur,3),'duration':round(dur,3)}); cursor+=dur
-        timings=scaled
-    total=timings[-1]['end'] if timings else min_total
-    print('V31.2 LINE TIMINGS:', timings); print('V31.2 TARGET DURATION:', total)
-    return timings,total
+def build_line_timings_v31_2(lines, min_total=12.0, max_total=15.0):
+    clean = [str(x).strip() for x in lines if str(x).strip()]
+    if not clean:
+        return [], min_total
+    weights = [line_weight_v31_2(x) for x in clean]
+    weights[0] *= 1.20
+    weights[-1] *= 1.30
+    target = min(max_total, max(min_total, 13.5))
+    total_weight = sum(weights)
+    timings = []
+    cursor = 0.0
+    for line, weight in zip(clean, weights):
+        dur = target * (weight / total_weight)
+        start = cursor
+        cursor += dur
+        timings.append({
+            "line": line,
+            "start": round(start, 3),
+            "end": round(cursor, 3),
+            "duration": round(dur, 3),
+        })
+    if timings:
+        timings[-1]["end"] = round(target, 3)
+        timings[-1]["duration"] = round(target - timings[-1]["start"], 3)
+    print("V31.2 LINE TIMINGS:", timings)
+    print("V31.2 TARGET DURATION:", target)
+    return timings, target
 
 def apply_smart_pacing_v31_2(script):
     timings,total=build_line_timings_v31_2(getattr(script,'lines',[]), RETENTION_MIN_SECONDS, RETENTION_MAX_SECONDS)
@@ -1570,10 +1579,36 @@ def build_retention_reel_script():
     lines = list(script_options[selected_index])
     lines = rhythm_refine(lines)
     lines = vary_hook_v31_2(lines)
-    if len(lines) > RETENTION_LINE_COUNT_MAX:
-        lines = lines[:RETENTION_LINE_COUNT_MAX]
-    while len(lines) < RETENTION_LINE_COUNT_MIN:
-        lines.append(pick_unique_rotated(RETENTION_ENDING_LINES, memory_key="recent_smart_endings_v31_2", max_recent=220))
+
+    # Short-form adaptation: preserve the hook and final payoff, fitting the
+    # strongest middle lines into a strict spoken-word budget before TTS.
+    original_lines = [str(line).strip() for line in lines if str(line).strip()]
+    if len(original_lines) > 5:
+        middle_index = max(1, len(original_lines) // 2)
+        original_lines = [
+            original_lines[0], original_lines[1], original_lines[middle_index],
+            original_lines[-2], original_lines[-1],
+        ]
+    if original_lines:
+        first_line = original_lines[0]
+        final_line = original_lines[-1] if len(original_lines) > 1 else ""
+        selected_lines = [first_line]
+        word_count = len(first_line.split())
+        final_words = len(final_line.split()) if final_line else 0
+        budget = 32
+        for candidate in original_lines[1:-1]:
+            candidate_words = len(candidate.split())
+            if word_count + candidate_words + final_words <= budget:
+                selected_lines.append(candidate)
+                word_count += candidate_words
+        if final_line and final_line not in selected_lines:
+            if word_count + final_words <= budget:
+                selected_lines.append(final_line)
+            else:
+                selected_lines = [first_line, final_line]
+        lines = selected_lines
+    if len(lines) > 5:
+        lines = lines[:5]
     cover = pick_unique_rotated(bank["covers"], memory_key="recent_smart_covers_v31_2", max_recent=380)
     remember_rotation_item("recent_categories", category, 220)
     print("V31.2 CATEGORY:", category)
@@ -3110,8 +3145,9 @@ def build_video(script, bg_path, out_path):
         print(f"Cover: {script.cover}")
 
         voice_data = []
-        cursor = 0.95
-        gap = random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
+        short_retention_mode = getattr(script, "mode", "") == "smart_completion_engine_v31_2"
+        cursor = 0.35 if short_retention_mode else 0.95
+        gap = 0.12 if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
 
         print("Generating voice lines...")
         for i, line in enumerate(script.lines):
@@ -3132,10 +3168,18 @@ def build_video(script, bg_path, out_path):
                 "chunk_size": PACING.get(script.pacing, PACING.get('cold', list(PACING.values())[0]))["chunk_size"],
             })
 
-            cursor += dur + (gap if i < len(script.lines) - 1 else 0.24)
+            cursor += dur + (gap if i < len(script.lines) - 1 else (0.12 if short_retention_mode else 0.24))
 
-        duration = min(cursor, REEL_SECONDS)
-        duration = min(RETENTION_MAX_SECONDS, max(RETENTION_MIN_SECONDS, duration))
+        # Never truncate speech to satisfy a target duration. A too-long voiceover
+        # must fail visibly so the script can be corrected instead of clipping audio.
+        if short_retention_mode and cursor > RETENTION_MAX_SECONDS:
+            raise RuntimeError(
+                f"Short-form voiceover is {cursor:.2f}s, exceeding the "
+                f"{RETENTION_MAX_SECONDS:.0f}s limit. Shorten the script; audio will not be clipped."
+            )
+        duration = max(RETENTION_MIN_SECONDS, cursor) if short_retention_mode else min(cursor, REEL_SECONDS)
+        if not short_retention_mode:
+            duration = min(RETENTION_MAX_SECONDS, max(RETENTION_MIN_SECONDS, duration))
         print(f"Video duration: {duration:.2f}s")
 
         for item in voice_data:
