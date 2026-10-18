@@ -87,8 +87,8 @@ FPS = 30
 RETENTION_REEL_MODE = True
 RETENTION_MIN_SECONDS = 12.0
 RETENTION_MAX_SECONDS = 15.0
-RETENTION_LINE_COUNT_MIN = 7
-RETENTION_LINE_COUNT_MAX = 8
+RETENTION_LINE_COUNT_MIN = 3
+RETENTION_LINE_COUNT_MAX = 5
 
 IDENTITY_ENGINE_MODE = True
 IDENTITY_DOMINANCE_ENGINE_MODE = True
@@ -98,7 +98,7 @@ FULLSCREEN_RETENTION_MODE = True
 COMPLETION_ENGINE_V31_MODE = True
 V31_WEIGHTING = "50_mirror_30_two_stage_20_consequence"
 V31_PRIMARY_GOAL = "completion_rate"
-V31_TARGET_LENGTH = "18_to_24_seconds"
+V31_TARGET_LENGTH = "12_to_15_seconds"
 V31_VISUAL_RULE = "fullscreen_no_borders_no_panels"
 
 NO_BORDERED_VIDEO = True
@@ -1595,7 +1595,7 @@ def build_retention_reel_script():
         selected_lines = [first_line]
         word_count = len(first_line.split())
         final_words = len(final_line.split()) if final_line else 0
-        budget = 32
+        budget = 27
         for candidate in original_lines[1:-1]:
             candidate_words = len(candidate.split())
             if word_count + candidate_words + final_words <= budget:
