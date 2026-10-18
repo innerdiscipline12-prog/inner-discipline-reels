@@ -1,6 +1,9 @@
 name: Inner Discipline
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       script:
@@ -29,11 +32,11 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Run generate.py
-        if: ${{ github.event.inputs.script == 'generate' }}
+        if: ${{ github.event_name == 'push' || github.event.inputs.script == 'generate' }}
         run: python generate.py
 
       - name: Run promo.py
-        if: ${{ github.event.inputs.script == 'promo' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.script == 'promo' }}
         run: python promo.py
 
       - name: Verify generated video exists
