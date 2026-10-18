@@ -632,6 +632,8 @@ PACING = {
     "attack": {"rate": "-4%", "pitch": "-35Hz", "chunk_size": 2, "gap": 0.16},
     "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
     "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
+    # Retention engine needs a controlled but faster delivery to fit the short format.
+    "smart_cold": {"rate": "-2%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.12},
 }
 
 
