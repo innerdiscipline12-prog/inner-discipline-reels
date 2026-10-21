@@ -1443,7 +1443,7 @@ MIRROR_HOOK_VARIANTS_V31_2 = {
     "YOU FELT THE SHIFT.": ["YOU FELT THE SHIFT.", "YOU NOTICED IT EARLY.", "THE SIGNAL WAS THERE."],
     "YOU KEEP LOWERING IT.": ["YOU KEEP LOWERING IT.", "YOU MADE THE STANDARD OPTIONAL."],
     "THE HARD PART STARTS HERE.": ["THE HARD PART STARTS HERE.", "THIS PART REVEALS YOU.", "THIS IS WHERE PEOPLE DRIFT."],
-    "THE REAL PROBLEM IS QUIETER.": ["THE REAL PROBLEM IS QUIETER.", "THIS IS THE REAL PROBLEM IS QUIETER.", "THE PATTERN GOES DEEPER."],
+    "THE REAL PROBLEM IS QUIETER.": ["THE REAL PROBLEM IS QUIETER.", "THE REAL ISSUE IS QUIETER.", "THE PATTERN GOES DEEPER."],
     "THIS IS WHAT HAPPENS.": ["THIS IS WHAT HAPPENS.", "HERE IS WHAT CHANGED.", "THIS IS THE PATTERN."],
     "DELAY GETS EXPENSIVE.": ["DELAY GETS EXPENSIVE.", "WAITING COSTS MORE."],
     "SMALL WEAKNESS COMPOUNDS.": ["SMALL WEAKNESS COMPOUNDS.", "SMALL CHOICES ADD UP.", "WEAKNESS DOES NOT STAY SMALL."],
@@ -1491,7 +1491,7 @@ def pick_best_background_v31_2(candidates, script):
 
 def vary_hook_v31_2(lines):
     if not lines: return lines
-    first=str(lines[0]).strip(); variants=MIRROR_HOOK_VARIANTS_V31_2.get(first)
+    first=str(lines[0]).strip(); variants=list(dict.fromkeys(MIRROR_HOOK_VARIANTS_V31_2.get(first, [])))
     if not variants: return lines
     out=list(lines); out[0]=pick_unique_rotated(variants, memory_key='recent_hook_variants_v31_2', max_recent=160)
     print('V31.2 HOOK VARIANT:', first, '=>', out[0])
