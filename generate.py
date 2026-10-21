@@ -1,7 +1,6 @@
 # ================================================================
-# INNER DISCIPLINE V31.2 â€” CONTENT RENEWAL
-# Same engine logic. Same bank sizes. Fresh wording only.
-# Covers: 2-word default / 3-word open-loop secondary.
+# INNER DISCIPLINE V32.0 â€” ORIGINALITY + SCENE MATCHING UPGRADE
+# Preserve the proven visual/rendering engine; reduce idea-level repetition.
 # ================================================================
 import os
 import glob
@@ -24,6 +23,8 @@ from moviepy.audio.fx import all as afx
 from moviepy.video.fx import all as vfx
 
 import edge_tts
+
+from originality import select_novel_candidate
 
 
 # ================================================================
@@ -1440,11 +1441,11 @@ SCRIPT_SCENE_TRIGGERS_V31_2 = {
 MIRROR_HOOK_VARIANTS_V31_2 = {
     "YOU KNOW WHAT THIS IS.": ["YOU KNOW WHAT THIS IS.", "YOU SAW THIS COMING.", "YOU KNEW BEFORE IT HURT."],
     "YOU FELT THE SHIFT.": ["YOU FELT THE SHIFT.", "YOU NOTICED IT EARLY.", "THE SIGNAL WAS THERE."],
-    "YOU KEEP LOWERING IT.": ["YOU KEEP LOWERING IT.", "YOU KEEP LOWERING IT.", "YOU MADE THE STANDARD OPTIONAL."],
+    "YOU KEEP LOWERING IT.": ["YOU KEEP LOWERING IT.", "YOU MADE THE STANDARD OPTIONAL."],
     "THE HARD PART STARTS HERE.": ["THE HARD PART STARTS HERE.", "THIS PART REVEALS YOU.", "THIS IS WHERE PEOPLE DRIFT."],
     "THE REAL PROBLEM IS QUIETER.": ["THE REAL PROBLEM IS QUIETER.", "THIS IS THE REAL PROBLEM IS QUIETER.", "THE PATTERN GOES DEEPER."],
     "THIS IS WHAT HAPPENS.": ["THIS IS WHAT HAPPENS.", "HERE IS WHAT CHANGED.", "THIS IS THE PATTERN."],
-    "DELAY GETS EXPENSIVE.": ["DELAY GETS EXPENSIVE.", "WAITING COSTS MORE.", "DELAY GETS EXPENSIVE."],
+    "DELAY GETS EXPENSIVE.": ["DELAY GETS EXPENSIVE.", "WAITING COSTS MORE."],
     "SMALL WEAKNESS COMPOUNDS.": ["SMALL WEAKNESS COMPOUNDS.", "SMALL CHOICES ADD UP.", "WEAKNESS DOES NOT STAY SMALL."],
     "THE COST EVENTUALLY ARRIVES.": ["THE COST EVENTUALLY ARRIVES.", "THE RESULT CATCHES UP.", "THE PRICE SHOWS UP LATER."],
 }
@@ -1576,8 +1577,20 @@ def build_retention_reel_script():
     bank = VIRAL_RETENTION_BANK[category]
     script_options = bank["scripts"]
     script_keys = [" | ".join(x) for x in script_options]
-    selected_key = pick_unique_rotated(script_keys, memory_key="recent_smart_completion_scripts_v31_2", max_recent=420)
+    rotation = load_rotation_state()
+    selected_key, concept, novelty_score, originality_fallback = select_novel_candidate(
+        script_keys,
+        recent_scripts=rotation.get("recent_smart_scripts_v32", [])[:80],
+        recent_concepts=rotation.get("recent_smart_concepts_v32", [])[:12],
+    )
     selected_index = script_keys.index(selected_key) if selected_key in script_keys else 0
+    remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 80)
+    if concept and concept != "general":
+        remember_rotation_item("recent_smart_concepts_v32", concept, 12)
+    print("V32.0 ORIGINALITY CONCEPT:", concept)
+    print("V32.0 NOVELTY SCORE:", round(novelty_score, 3))
+    if originality_fallback:
+        print("V32.0 ORIGINALITY WARNING: all available options were close to recent concepts; selected the least-repetitive fallback.")
     lines = list(script_options[selected_index])
     lines = rhythm_refine(lines)
     lines = vary_hook_v31_2(lines)
@@ -1613,10 +1626,10 @@ def build_retention_reel_script():
         lines = lines[:5]
     cover = pick_unique_rotated(bank["covers"], memory_key="recent_smart_covers_v31_2", max_recent=380)
     remember_rotation_item("recent_categories", category, 220)
-    print("V31.2 CATEGORY:", category)
-    print("V31.2 COVER STYLE:", bank.get("cover_style", "default"))
-    print("V31.2 COVER:", cover)
-    print("V31.2 SCRIPT:", " | ".join(lines))
+    print("V32.0 CATEGORY:", category)
+    print("V32.0 COVER STYLE:", bank.get("cover_style", "default"))
+    print("V32.0 COVER:", cover)
+    print("V32.0 SCRIPT:", " | ".join(lines)
     script = Script(mode="smart_completion_engine_v31_2", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
     return apply_smart_pacing_v31_2(script)
 
@@ -3327,7 +3340,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE Ã¢â‚¬â€ SMART COMPLETION ENGINE v31.2")
+    print("\nINNER DISCIPLINE — SMART COMPLETION ENGINE v32.0")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -3346,10 +3359,10 @@ def main():
     print("SELECTED CATEGORY:", script.category)
     print("SELECTED MOOD:", script.mood)
 
-    bg = choose_background_rotated(script.mood)
+    bg = choose_background_for_script(script)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v31_2_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v32_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
