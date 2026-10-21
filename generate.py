@@ -3115,7 +3115,18 @@ def build_caption(script):
         ],
     }
     if category not in bank: category = "mirror"
-    cap = pick_unique_rotated(bank[category], memory_key="recent_captions_v31_2", max_recent=320)
+    rotation = load_rotation_state()
+    cap, caption_concept, caption_score, caption_fallback = select_novel_candidate(
+        bank[category],
+        recent_scripts=rotation.get("recent_captions_v32", [])[:60],
+        recent_concepts=rotation.get("recent_caption_concepts_v32", [])[:10],
+    )
+    remember_rotation_item("recent_captions_v32", line_key(cap), 60)
+    if caption_concept and caption_concept != "general":
+        remember_rotation_item("recent_caption_concepts_v32", caption_concept, 10)
+    print("V32.0 CAPTION CONCEPT:", caption_concept, "OVERLAP:", round(caption_score, 3))
+    if caption_fallback:
+        print("V32.0 CAPTION WARNING: caption bank is running low on fresh concepts.")
     tags = pick_unique_rotated([
         "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
         "#discipline #habits #standards #selfcontrol #growth",
