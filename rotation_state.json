@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "mirror",
     "two_stage_payoff",
+    "mirror",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
@@ -31,13 +32,12 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4"
   ],
   "background_cursor": {
-    "global": 7
+    "global": 8
   },
-  "updated_at": "2026-10-20T04:13:45",
+  "updated_at": "2026-10-21T04:47:26",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -578,6 +578,7 @@
     "delay gets expensive."
   ],
   "recent_smart_completion_scripts_v31_2": [
+    "the real problem is quieter. | is not motivation. | motivation comes and goes. | the real problem is the routine. | you keep protecting. | with excuses. | that sound reasonable. | but still cost you.",
     "you keep moving it. | the line. | the rule. | the standard. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "this is the part. | most people avoid. | they want the result. | they want the identity. | they want the respect. | but not the standard. | that creates all of it. | that is the trade.",
@@ -662,6 +663,7 @@
     "structure decides who stays consistent."
   ],
   "recent_smart_covers_v31_2": [
+    "the part that matters",
     "the standard slipped",
     "you felt the warning",
     "this is the part",
@@ -722,6 +724,7 @@
     "the moment you stop"
   ],
   "recent_captions_v31_2": [
+    "most people do not lose discipline suddenly. they lose it quietly, then call it temporary.",
     "you are not lacking information. you are avoiding the moment that demands proof.",
     "the hardest part is rarely starting. it is continuing when there is no emotion left.",
     "the cost usually arrives later. that delay is what makes weak habits dangerous.",
@@ -743,16 +746,16 @@
     "starting can feel powerful. repeating the standard when nobody cares is where the real test begins.",
     "time does not erase repeated choices. it multiplies their effect until the pattern becomes difficult to ignore.",
     "the answer is often obvious. what is difficult is accepting what the answer requires from you.",
-    "some truths do not need more explanation. they need a decision followed by repetition.",
-    "most people do not lose discipline suddenly. they lose it quietly, then call it temporary."
+    "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_2": [
+    "the real problem is quieter.",
     "small weakness compounds.",
     "you felt the shift.",
     "you know what this is."
