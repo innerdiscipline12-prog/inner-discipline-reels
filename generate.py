@@ -1603,6 +1603,82 @@ def merge_trailing_payoff_fragment(lines):
     return lines
 
 
+def cohere_retention_script(lines):
+    """Repair known dependent fragments before adapting a longer script to 12–15s."""
+    source = [clean_text(line) for line in lines if clean_text(line)]
+    result = []
+    i = 0
+    paired_repairs = {
+        ("THE HARD PART STARTS HERE.", "Is not starting."): "THE HARD PART IS NOT STARTING.",
+        ("THE REAL PROBLEM IS QUIETER.", "Is not motivation."): "THE REAL PROBLEM IS NOT MOTIVATION.",
+        ("WHERE IT BREAKS.", "Is not the goal."): "WHERE IT BREAKS IS NOT AT THE GOAL.",
+        ("THE PART YOU AVOID.", "Is the part that changes you."): "THE PART YOU AVOID IS THE PART THAT CHANGES YOU.",
+        ("THE FIRST CRACK.", "Is not failure."): "THE FIRST CRACK IS NOT FAILURE.",
+    }
+    while i < len(source):
+        if i + 1 < len(source):
+            pair = (source[i], source[i + 1])
+            if pair in paired_repairs:
+                result.append(paired_repairs[pair])
+                i += 2
+                continue
+        line = source[i]
+        if line == "You keep protecting." and i + 1 < len(source) and source[i + 1] == "With excuses.":
+            result.append("You keep protecting the routine with excuses.")
+            i += 2
+            continue
+        if line == "Nobody has to see it." and i + 1 < len(source) and source[i + 1] == "For it to matter.":
+            result.append("Nobody has to see it for it to matter.")
+            i += 2
+            continue
+        if line == "Nobody has to clap." and i + 1 < len(source) and source[i + 1] == "For it to count.":
+            result.append("Nobody has to clap for it to count.")
+            i += 2
+            continue
+        if line == "The hardest part is continuing." and i + 1 < len(source) and source[i + 1] == "When nobody is watching.":
+            merged = "The hardest part is continuing when nobody is watching."
+            if i + 2 < len(source) and source[i + 2] == "And no mood is helping.":
+                merged = "The hardest part is continuing when nobody is watching and no mood is helping."
+                i += 1
+            result.append(merged)
+            i += 2
+            continue
+        if line == "YOU KEEP LOWERING IT." and i + 1 < len(source) and source[i + 1] == "With the same standard.":
+            result.append("YOU KEEP LOWERING THE STANDARD.")
+            i += 2
+            continue
+        if line == "One weak decision." and i + 1 < len(source) and source[i + 1] == "At a time.":
+            result.append("One weak decision at a time.")
+            i += 2
+            continue
+        if line == "Most people avoid.":
+            result.append("Most people avoid the standard.")
+            i += 1
+            continue
+        if line == "That sound reasonable.":
+            result.append("Those excuses sound reasonable.")
+            i += 1
+            continue
+        if line == "But still cost you.":
+            result.append("But they still cost you.")
+            i += 1
+            continue
+        if line == "That creates all of it.":
+            result.append("The standard creates all of it.")
+            i += 1
+            continue
+        result.append(line)
+        i += 1
+    # Fold dependent tails into the sentence that gives them meaning.
+    if len(result) >= 2 and clean_text(result[-1]).lower().strip(" .!?") in {
+        "every time", "quietly", "for real", "not forever", "before it hurts",
+        "at a time", "not before", "until it hurts", "then again",
+    }:
+        tail = result.pop().strip().rstrip(".!?").lower()
+        result[-1] = result[-1].rstrip(".!?") + " " + tail + "."
+    return result
+
+
 def build_retention_reel_script():
     """
     v31.2 SMART COMPLETION ENGINE.
@@ -1667,36 +1743,27 @@ def build_retention_reel_script():
         clean_text(line) for line in script_options[selected_index]
         if clean_text(line) and not contains_banned_phrase(line)
     ]
-    lines = merge_trailing_payoff_fragment(lines)
+    lines = cohere_retention_script(lines)
     source_payoff = lines[-1] if lines else ""
     lines = vary_hook_v31_2(lines)
 
-    # Short-form adaptation: preserve the hook and original final payoff, fitting
-    # the strongest middle lines into a strict spoken-word budget before TTS.
+    # Preserve the hook and a contiguous closing arc. The previous approach
+    # cherry-picked non-adjacent lines, creating broken grammar and lost context.
     original_lines = [str(line).strip() for line in lines if str(line).strip()]
     if len(original_lines) > 5:
-        middle_index = max(1, len(original_lines) // 2)
-        original_lines = [
-            original_lines[0], original_lines[1], original_lines[middle_index],
-            original_lines[-2], original_lines[-1],
-        ]
+        original_lines = [original_lines[0]] + original_lines[-4:]
+
+    # Enforce a spoken-word budget without dropping the payoff or reordering the
+    # closing arc. Remove the earliest middle line only when the budget requires it.
     if original_lines:
         first_line = original_lines[0]
         final_line = original_lines[-1] if len(original_lines) > 1 else ""
-        selected_lines = [first_line]
-        word_count = len(first_line.split())
-        final_words = len(final_line.split()) if final_line else 0
+        selected_lines = list(original_lines)
         budget = 27
-        for candidate in original_lines[1:-1]:
-            candidate_words = len(candidate.split())
-            if word_count + candidate_words + final_words <= budget:
-                selected_lines.append(candidate)
-                word_count += candidate_words
-        if final_line and final_line not in selected_lines:
-            if word_count + final_words <= budget:
-                selected_lines.append(final_line)
-            else:
-                selected_lines = [first_line, final_line]
+        while len(selected_lines) > 3 and sum(len(line.split()) for line in selected_lines) > budget:
+            selected_lines.pop(1)
+        if sum(len(line.split()) for line in selected_lines) > budget and len(selected_lines) > 2:
+            selected_lines = [selected_lines[0]] + selected_lines[-2:]
         lines = selected_lines
     if len(lines) > 5:
         lines = lines[:5]
