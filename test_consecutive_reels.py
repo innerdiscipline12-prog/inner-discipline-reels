@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 class ConsecutiveGeneratorTests(unittest.TestCase):
-    def test_five_consecutive_generated_reels_have_distinct_assets_and_valid_duration(self):
+    def test_twenty_consecutive_generated_reels_have_distinct_assets_and_valid_duration(self):
         try:
             import generate as gen
         except Exception as exc:
