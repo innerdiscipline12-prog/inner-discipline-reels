@@ -41,6 +41,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # Use the source branch for PR builds; the default PR merge ref is detached
+          # and cannot safely push updated generator state back to the source branch.
+          ref: ${{ github.head_ref || github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-python@v5
