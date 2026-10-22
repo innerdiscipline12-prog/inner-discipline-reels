@@ -29,6 +29,10 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                 self.assertGreaterEqual(duration, 12.0, f"reel {index + 1} is shorter than 12s")
                 self.assertLessEqual(duration, 15.0, f"reel {index + 1} exceeds 15s")
                 self.assertTrue(script.lines, f"reel {index + 1} has no spoken lines")
+                self.assertEqual(
+                    script.lines[-1], script.source_payoff,
+                    f"reel {index + 1} lost the original payoff during shortening"
+                )
                 self.assertTrue(script.cover.strip(), f"reel {index + 1} has no cover")
                 self.assertTrue(caption.strip(), f"reel {index + 1} has no caption")
 
