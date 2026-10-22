@@ -1,4 +1,4 @@
-"""Integration smoke test: generate five consecutive reel scripts without rendering video."""
+"""Integration smoke test: generate twenty consecutive reel scripts without rendering video."""
 import random
 import tempfile
 import unittest
@@ -20,7 +20,7 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
             gen.random.seed(20261022)
 
             scripts, covers, captions = [], [], []
-            for index in range(5):
+            for index in range(20):
                 script = gen.build_retention_reel_script()
                 caption_full = gen.build_caption(script)
                 caption = caption_full.split("\n\n", 1)[0]
@@ -52,7 +52,7 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                 ("cover", covers, 0.35),
                 ("caption", captions, 0.42),
             ):
-                self.assertEqual(len(set(assets)), 5, f"{asset_name} repeated across the five reels")
+                self.assertEqual(len(set(assets)), 20, f"{asset_name} repeated across the twenty reels")
                 for i in range(len(assets)):
                     for j in range(i):
                         score = similarity(assets[i], assets[j])
