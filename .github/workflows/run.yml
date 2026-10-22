@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       script:
@@ -16,8 +19,21 @@ on:
           - promo
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test originality and consecutive selections
+        run: python -m unittest -v test_originality.py
+
+  build:
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,7 +44,6 @@ jobs:
           python-version: "3.11"
 
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
-
       - run: pip install -r requirements.txt
 
       - name: Run generate.py
