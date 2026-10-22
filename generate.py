@@ -951,7 +951,14 @@ VIRAL_RETENTION_BANK = {
             "YOU WATCHED IT HAPPEN", "YOU CALLED IT TOMORROW", "YOU SAW IT COMING",
             "YOU KEEP EXPLAINING", "YOU FELT THAT DROP", "YOU BROKE IT QUIETLY",
             "YOU LET IT SLIDE", "YOU KNOW THE PATTERN", "YOU'RE AVOIDING IT",
-            "YOU SAID TOMORROW", "YOU KEEP MOVING IT", "YOU KNEW EARLIER"
+            "YOU SAID TOMORROW", "YOU KEEP MOVING IT", "YOU KNEW EARLIER",
+            "STOP CALLING IT CONFUSION", "THE EXCUSE IS FAMILIAR", "YOU KNOW THE TRADE",
+            "YOUR PATTERN IS SHOWING", "WHO BENEFITS FROM DELAY", "THE PROMISE YOU BROKE",
+            "YOU SAW THE SLIDE", "NO ONE HAD TO TELL YOU", "THE TRUTH GOT QUIET",
+            "YOU MADE ROOM FOR IT", "THE CHOICE WAS YOURS", "YOUR ROUTINE ANSWERED",
+            "YOU KEEP PROTECTING IT", "THE WARNING WAS ENOUGH", "YOU ALREADY CHOSE",
+            "WHAT ARE YOU DEFENDING", "THE LIE SOUNDS BETTER", "YOU KNOW THE PRICE",
+            "YOU LEFT THE DOOR OPEN", "YOU MADE IT NORMAL"
         ],
         "scripts": [
             ["YOU KNOW WHAT THIS IS.", "The problem is not information.", "You already saw the habit.", "You already felt the warning.", "You already knew the cost.", "The part you avoid is obedience.", "Especially when comfort gets loud.", "That is where discipline begins."],
@@ -981,7 +988,14 @@ VIRAL_RETENTION_BANK = {
             "THE HARDEST PART", "THE REAL PROBLEM", "THIS IS WHY",
             "THIS IS THE PART", "THE PART YOU AVOID", "WHERE IT BREAKS",
             "THE QUIET TRUTH", "THE FIRST CRACK", "THE REAL TEST",
-            "THE MOMENT YOU STOP", "WHAT MOST PEOPLE MISS", "THE PART THAT MATTERS"
+            "THE MOMENT YOU STOP", "WHAT MOST PEOPLE MISS", "THE PART THAT MATTERS",
+            "AFTER THE MOTIVATION", "WHEN THE NOVELTY DIES", "THE SECOND DECISION",
+            "WHAT HAPPENS NEXT", "THE TEST COMES LATER", "PROVE IT ON TUESDAY",
+            "WHEN NOBODY CHECKS", "THE ROUTINE REVEALS YOU", "THE QUIET SECOND HALF",
+            "THE WORK AFTER YES", "WHEN IT STOPS FEELING NEW", "THE MOMENT AFTER COMMITMENT",
+            "THE UNSEEN REPETITION", "THE PART AFTER PROMISES", "CONSISTENCY HAS A SOUND",
+            "THE DAY YOU DON'T FEEL IT", "WHAT REMAINS AFTER EXCITEMENT",
+            "WHEN THE FIRST WIN FADES", "THE BORING PART COUNTS"
         ],
         "scripts": [
             ["THE HARD PART STARTS HERE.", "Is not starting.", "Starting feels good.", "Starting gives you hope.", "Starting makes you feel changed.", "The hardest part is continuing.", "When nobody is watching.", "And no mood is helping."],
@@ -1005,7 +1019,14 @@ VIRAL_RETENTION_BANK = {
             "LATER GETS EXPENSIVE", "WEAKNESS COMPOUNDS", "THE BILL ARRIVES",
             "YEARS DISAPPEAR", "THE DAMAGE GROWS", "NOTHING STAYS SMALL",
             "EXCUSES HAVE INTEREST", "TIME DOES NOT WAIT", "COMFORT HAS A COST",
-            "THE COST FINDS YOU"
+            "THE COST FINDS YOU",
+            "DELAY TAKES OPTIONS", "SMALL COSTS STACK UP", "THE PRICE OF LATER",
+            "YOUR FUTURE PAYS", "COMFORT SENDS A BILL", "THE INTEREST IS REAL",
+            "TIME COLLECTS QUIETLY", "ONE MORE EXCEPTION", "THE LOSS IS SLOW",
+            "REGRET STARTS HERE", "THE DAMAGE IS QUIET", "YOUR HABITS LEAVE RECEIPTS",
+            "THE COST KEEPS GROWING", "NO DEBT DISAPPEARS", "THE YEARS KEEP MOVING",
+            "YOU PAY IN TIME", "THE PRICE IS HIDDEN", "THE EXIT GETS NARROWER",
+            "EASY CHOICES ADD UP", "WHAT DELAY TAKES"
         ],
         "scripts": [
             ["DELAY GETS EXPENSIVE.", "Most people miss the cost.", "Because it does not arrive immediately.", "It arrives as a pattern.", "Then as a result.", "Then as a life.", "That delay is dangerous.", "That is why today matters."],
