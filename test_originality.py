@@ -2,7 +2,7 @@ import ast
 import random
 import unittest
 from pathlib import Path
-from originality import assert_novel, select_novel_candidate, similarity
+from originality import assert_novel, retention_hook_score, select_novel_candidate, similarity
 
 def _assignment_value(node, name):
     for item in ast.walk(node):
@@ -59,6 +59,13 @@ class OriginalityTests(unittest.TestCase):
                 recent_scripts=[old],
                 max_similarity_threshold=0.42,
             )
+
+    def test_hook_ranker_prefers_direct_tension_over_vague_openers(self):
+        direct = retention_hook_score("YOU KNOW WHAT THIS IS.")
+        consequence = retention_hook_score("DELAY GETS EXPENSIVE.")
+        vague = retention_hook_score("THE QUIET TRUTH.")
+        self.assertGreater(direct, vague)
+        self.assertGreater(consequence, vague)
 
     def test_five_consecutive_selections_are_distinct(self):
         pool = [
