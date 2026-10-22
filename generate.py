@@ -1555,6 +1555,25 @@ def subtitle_opacity_v31_2(script,t):
             return max(0.0,min(1.0,local/fade,rem/fade))
     return 0.0
 
+def merge_trailing_payoff_fragment(lines):
+    """Join short dangling tails to the payoff sentence before them."""
+    if len(lines) < 2:
+        return lines
+    tail = str(lines[-1]).strip()
+    normalized_tail = clean_text(tail).lower().strip(" .!?")
+    fragments = {
+        "every time", "quietly", "for real", "not forever", "before it hurts",
+        "at a time", "not before", "until it hurts", "then again",
+    }
+    if normalized_tail in fragments:
+        previous = str(lines[-2]).strip().rstrip(".!?")
+        if previous:
+            tail = tail[:1].lower() + tail[1:]
+            lines[-2] = previous + " " + tail
+            lines.pop()
+    return lines
+
+
 def build_retention_reel_script():
     """
     v31.2 SMART COMPLETION ENGINE.
@@ -1619,6 +1638,7 @@ def build_retention_reel_script():
         clean_text(line) for line in script_options[selected_index]
         if clean_text(line) and not contains_banned_phrase(line)
     ]
+    lines = merge_trailing_payoff_fragment(lines)
     source_payoff = lines[-1] if lines else ""
     lines = vary_hook_v31_2(lines)
 
