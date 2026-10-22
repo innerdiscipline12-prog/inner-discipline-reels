@@ -379,7 +379,7 @@ AUTO_COMMIT_STATE = True
 # v21:
 # If this cannot save state back to GitHub, the next run has no memory.
 # So the script fails loudly instead of silently repeating Day 2 / same background.
-STRICT_STATE_SEQUENCE = False
+STRICT_STATE_SEQUENCE = True
 
 
 # ================================================================
@@ -593,8 +593,16 @@ def auto_commit_state_files():
             print("STATE ERROR: commit failed.")
             return False
 
+        # GitHub Actions checks out pull requests in detached-HEAD mode unless
+        # the workflow explicitly checks out the source branch. Push state to
+        # that named branch so rotation/originality history survives the next run.
+        target_ref = os.getenv("GITHUB_HEAD_REF", "").strip() or os.getenv("GITHUB_REF_NAME", "").strip()
+        if not target_ref:
+            print("STATE ERROR: no target branch is available for persistence.")
+            return False
+
         push = subprocess.run(
-            ["git", "push"],
+            ["git", "push", "origin", f"HEAD:refs/heads/{target_ref}"],
             cwd=BASE_DIR,
             text=True,
             capture_output=True,
@@ -3532,7 +3540,7 @@ def main():
     save_state()
     state_saved_ok = auto_commit_state_files()
     if STRICT_STATE_SEQUENCE and not state_saved_ok:
-        raise RuntimeError('State was not saved to GitHub. Enable Settings > Actions > General > Workflow permissions > Read and write permissions. Without this, Day 2 and the same background will repeat.')
+        raise RuntimeError('STATE PERSISTENCE FAILED: the generated reel exists locally, but GitHub did not save the updated rotation/originality history. Check workflow write permissions, branch checkout, and branch protection before generating another reel.')
 
     if os.path.exists(TEMP_DIR):
         shutil.rmtree(TEMP_DIR)
