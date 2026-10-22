@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       script:
@@ -16,23 +19,48 @@ on:
           - promo
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
+          python-version: "3.11"
+      - name: Install generator dependencies
+        run: pip install -r requirements.txt
+      - name: Compile generator and originality checks
+        run: python -m py_compile generate.py originality.py test_originality.py test_consecutive_reels.py
+      - name: Test originality and twenty consecutive reel assets
+        run: python -m unittest -v test_originality.py test_consecutive_reels.py
+
+  build:
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Use the source branch for PR builds; the default PR merge ref is detached
+          # and cannot safely push updated generator state back to the source branch.
+          ref: ${{ github.head_ref || github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
-
+      - name: Ensure ffmpeg is available
+        run: |
+          if command -v ffmpeg >/dev/null 2>&1; then
+            ffmpeg -version
+          else
+            sudo apt-get update && sudo apt-get install -y ffmpeg
+          fi
       - run: pip install -r requirements.txt
 
       - name: Run generate.py
-        if: ${{ github.event_name == 'push' || github.event.inputs.script == 'generate' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
         run: python generate.py
 
       - name: Run promo.py
@@ -40,7 +68,7 @@ jobs:
         run: python promo.py
 
       - name: Verify generated video exists
-        if: ${{ github.event_name == 'push' || github.event.inputs.script == 'generate' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
         run: |
           test -d outputs
           test -n "$(find outputs -maxdepth 1 -type f -name '*.mp4' -size +0c -print -quit)" || {
@@ -49,7 +77,7 @@ jobs:
           }
 
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name == 'push' || github.event.inputs.script == 'generate' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
         with:
           name: outputs
           path: outputs/
