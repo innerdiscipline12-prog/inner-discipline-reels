@@ -75,8 +75,30 @@ def assert_novel(candidate, recent=None, label="content", threshold=0.42):
         )
     return score
 
+def retention_hook_score(candidate):
+    """Heuristic ranking for high-retention hooks: direct, specific, tense, open."""
+    first = normalize(str(candidate).split("|", 1)[0])
+    words = first.split()
+    score = 0.0
+    if "you" in words or "your" in words:
+        score += 2.0
+    if first.startswith(("why ", "what ", "when ", "before ", "until ", "the part ", "the moment ", "where it ")):
+        score += 1.5
+    if any(word in words for word in ("cost", "expensive", "regret", "delay", "interest", "warning", "breaks", "crack")):
+        score += 1.8
+    if any(phrase in first for phrase in ("not confused", "keep lowering", "said tomorrow", "avoiding it", "hard part", "first crack")):
+        score += 1.2
+    if "?" in str(candidate).split("|", 1)[0]:
+        score += 2.0
+    if 3 <= len(words) <= 6:
+        score += 1.0
+    if any(phrase in first for phrase in ("the quiet truth", "this is what happens", "this is the part", "the real problem is quieter")):
+        score -= 2.0
+    return score
+
 def select_novel_candidate(candidates, recent_scripts=None, recent_concepts=None,
-                           max_similarity_threshold=0.42, concept_window=3):
+                           max_similarity_threshold=0.42, concept_window=3,
+                           quality_fn=None):
     """Choose only candidates under the similarity threshold; never fall back."""
     candidates = list(candidates or [])
     if not candidates:
@@ -103,6 +125,12 @@ def select_novel_candidate(candidates, recent_scripts=None, recent_concepts=None
     pool.sort(key=lambda item: item[2])
     best_score = pool[0][2]
     best = [item for item in pool if item[2] <= best_score + 0.08]
+    if quality_fn is not None:
+        qualities = [(float(quality_fn(item[0])), item) for item in best]
+        top_quality = max(score for score, _ in qualities)
+        # Keep a small band of strong hooks so variety remains while weak,
+        # vague openings are less likely to win a random draw.
+        best = [item for score, item in qualities if score >= top_quality - 1.0]
     import random
     chosen = random.choice(best)
     return chosen[0], chosen[1], chosen[2], False
