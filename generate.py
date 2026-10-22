@@ -1682,7 +1682,7 @@ def build_retention_reel_script():
     print("V32.0 CATEGORY:", category)
     print("V32.0 COVER STYLE:", bank.get("cover_style", "default"))
     print("V32.0 COVER:", cover)
-    print("V32.0 SCRIPT:", " | ".join(lines)
+    print("V32.0 SCRIPT:", " | ".join(lines))
     script = Script(mode="smart_completion_engine_v31_2", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
     return apply_smart_pacing_v31_2(script)
 
