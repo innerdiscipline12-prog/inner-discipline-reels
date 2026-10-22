@@ -24,7 +24,7 @@ from moviepy.video.fx import all as vfx
 
 import edge_tts
 
-from originality import assert_novel, select_novel_candidate
+from originality import assert_novel, retention_hook_score, select_novel_candidate
 
 
 # ================================================================
@@ -1576,8 +1576,9 @@ def build_retention_reel_script():
     preferred_category = random.choices(categories, weights=weights, k=1)[0]
     # Try the weighted category first, then other categories. A category running
     # short must not force a duplicate while fresh ideas exist elsewhere.
-    category_order = [preferred_category] + [c for c in categories if c != preferred_category]
-    random.shuffle(category_order[1:])
+    remaining_categories = [c for c in categories if c != preferred_category]
+    random.shuffle(remaining_categories)
+    category_order = [preferred_category] + remaining_categories
     rotation = load_rotation_state()
     recent_scripts = (
         rotation.get("recent_smart_scripts_v32", [])[:30]
@@ -1600,6 +1601,7 @@ def build_retention_reel_script():
                 recent_concepts=rotation.get("recent_smart_concepts_v32", [])[:4],
                 max_similarity_threshold=0.42,
                 concept_window=3,
+                quality_fn=retention_hook_score,
             )
             category = candidate_category
             bank = candidate_bank
