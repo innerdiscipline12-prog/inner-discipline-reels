@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
@@ -31,13 +32,13 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg5.mp4"
   ],
   "background_cursor": {
-    "global": 8
+    "global": 8,
+    "scene_broken": 1
   },
-  "updated_at": "2026-10-21T04:47:26",
+  "updated_at": "2026-10-22T08:24:06",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -759,5 +760,23 @@
     "small weakness compounds.",
     "you felt the shift.",
     "you know what this is."
+  ],
+  "recent_smart_scripts_v32": [
+    "where it breaks. | is not the goal. | it is the private choice. | after the emotion fades. | after comfort speaks. | after nobody is watching. | that moment reveals the standard. | every time."
+  ],
+  "recent_smart_final_scripts_v32": [
+    "where it breaks. | is not the goal. | after the emotion fades. | after nobody is watching. | that moment reveals the standard every time."
+  ],
+  "recent_smart_concepts_v32": [
+    "standards"
+  ],
+  "recent_smart_covers_v32": [
+    "the unseen repetition"
+  ],
+  "recent_captions_v32": [
+    "anyone can feel committed on a good day. build a standard that still works when the day gives you no help."
+  ],
+  "recent_caption_concepts_v32": [
+    "standards"
   ]
 }
