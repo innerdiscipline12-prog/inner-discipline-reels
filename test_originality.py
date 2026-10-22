@@ -1,5 +1,26 @@
+import ast
+import random
 import unittest
+from pathlib import Path
 from originality import assert_novel, select_novel_candidate, similarity
+
+def _assignment_value(node, name):
+    for item in ast.walk(node):
+        if isinstance(item, ast.Assign):
+            if any(isinstance(t, ast.Name) and t.id == name for t in item.targets):
+                return ast.literal_eval(item.value)
+    raise AssertionError(f"Could not find literal assignment for {name}")
+
+def _real_candidate_banks():
+    source = Path(__file__).with_name("generate.py").read_text(encoding="utf-8")
+    tree = ast.parse(source, filename="generate.py")
+    viral_bank = _assignment_value(tree, "VIRAL_RETENTION_BANK")
+    caption_fn = next(
+        node for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "build_caption"
+    )
+    caption_bank = _assignment_value(caption_fn, "bank")
+    return viral_bank, caption_bank
 
 class OriginalityTests(unittest.TestCase):
     def test_avoids_recent_exact_script(self):
@@ -49,6 +70,7 @@ class OriginalityTests(unittest.TestCase):
             "The first hour of your day reveals who controls your focus.",
             "Avoidance protects your comfort and quietly taxes your future.",
         ]
+        random.seed(2026)
         recent = []
         selected = []
         for _ in range(5):
@@ -60,6 +82,57 @@ class OriginalityTests(unittest.TestCase):
             selected.append(item)
             recent.insert(0, item)
         self.assertEqual(len(set(selected)), 5)
+
+    def test_five_consecutive_reels_use_distinct_real_bank_assets(self):
+        viral_bank, caption_bank = _real_candidate_banks()
+        script_pool = [
+            " | ".join(lines)
+            for category in viral_bank.values()
+            for lines in category["scripts"]
+        ]
+        cover_pool = [
+            cover
+            for category in viral_bank.values()
+            for cover in category["covers"]
+        ]
+        caption_pool = [
+            caption
+            for captions in caption_bank.values()
+            for caption in captions
+        ]
+        self.assertGreaterEqual(len(script_pool), 30)
+        self.assertGreaterEqual(len(cover_pool), 30)
+        self.assertGreaterEqual(len(caption_pool), 30)
+
+        random.seed(20261022)
+        recent_scripts, recent_covers, recent_captions = [], [], []
+        picked_scripts, picked_covers, picked_captions = [], [], []
+        for _ in range(5):
+            script, _, script_score, _ = select_novel_candidate(
+                script_pool, recent_scripts=recent_scripts,
+                max_similarity_threshold=0.42
+            )
+            cover, _, cover_score, _ = select_novel_candidate(
+                cover_pool, recent_scripts=recent_covers,
+                max_similarity_threshold=0.35
+            )
+            caption, _, caption_score, _ = select_novel_candidate(
+                caption_pool, recent_scripts=recent_captions,
+                max_similarity_threshold=0.42
+            )
+            self.assertLess(script_score, 0.42)
+            self.assertLess(cover_score, 0.35)
+            self.assertLess(caption_score, 0.42)
+            picked_scripts.append(script)
+            picked_covers.append(cover)
+            picked_captions.append(caption)
+            recent_scripts.insert(0, script)
+            recent_covers.insert(0, cover)
+            recent_captions.insert(0, caption)
+
+        self.assertEqual(len(set(picked_scripts)), 5)
+        self.assertEqual(len(set(picked_covers)), 5)
+        self.assertEqual(len(set(picked_captions)), 5)
 
 if __name__ == "__main__":
     unittest.main()
