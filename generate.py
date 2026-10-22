@@ -24,7 +24,7 @@ from moviepy.video.fx import all as vfx
 
 import edge_tts
 
-from originality import select_novel_candidate
+from originality import assert_novel, select_novel_candidate
 
 
 # ================================================================
@@ -1573,24 +1573,44 @@ def build_retention_reel_script():
     weights = [weights_by_category.get(c, 0.0) for c in categories]
     if sum(weights) <= 0:
         weights = [1 for _ in categories]
-    category = random.choices(categories, weights=weights, k=1)[0]
-    bank = VIRAL_RETENTION_BANK[category]
-    script_options = bank["scripts"]
-    script_keys = [" | ".join(x) for x in script_options]
+    preferred_category = random.choices(categories, weights=weights, k=1)[0]
+    # Try the weighted category first, then other categories. A category running
+    # short must not force a duplicate while fresh ideas exist elsewhere.
+    category_order = [preferred_category] + [c for c in categories if c != preferred_category]
+    random.shuffle(category_order[1:])
     rotation = load_rotation_state()
-    selected_key, concept, novelty_score, originality_fallback = select_novel_candidate(
-        script_keys,
-        recent_scripts=rotation.get("recent_smart_scripts_v32", [])[:80],
-        recent_concepts=rotation.get("recent_smart_concepts_v32", [])[:12],
+    recent_scripts = (
+        rotation.get("recent_smart_scripts_v32", [])[:30]
+        + rotation.get("recent_smart_final_scripts_v32", [])[:30]
     )
-    selected_index = script_keys.index(selected_key) if selected_key in script_keys else 0
-    remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 80)
-    if concept and concept != "general":
-        remember_rotation_item("recent_smart_concepts_v32", concept, 12)
-    print("V32.0 ORIGINALITY CONCEPT:", concept)
-    print("V32.0 NOVELTY SCORE:", round(novelty_score, 3))
-    if originality_fallback:
-        print("V32.0 ORIGINALITY WARNING: all available options were close to recent concepts; selected the least-repetitive fallback.")
+    selected_key = None
+    concept = "general"
+    novelty_score = 1.0
+    originality_error = None
+    bank = None
+    script_options = []
+    for candidate_category in category_order:
+        candidate_bank = VIRAL_RETENTION_BANK[candidate_category]
+        candidate_options = candidate_bank["scripts"]
+        candidate_keys = [" | ".join(x) for x in candidate_options]
+        try:
+            selected_key, concept, novelty_score, _ = select_novel_candidate(
+                candidate_keys,
+                recent_scripts=recent_scripts,
+                recent_concepts=rotation.get("recent_smart_concepts_v32", [])[:4],
+                max_similarity_threshold=0.42,
+                concept_window=3,
+            )
+            category = candidate_category
+            bank = candidate_bank
+            script_options = candidate_options
+            break
+        except ValueError as exc:
+            originality_error = exc
+    if selected_key is None:
+        raise ValueError(f"V32 SCRIPT ORIGINALITY BLOCKED GENERATION: {originality_error}")
+    selected_index = script_keys_index = [" | ".join(x) for x in script_options].index(selected_key)
+    print("V32 SCRIPT NOVELTY:", round(novelty_score, 3), "CATEGORY:", category)
     lines = list(script_options[selected_index])
     lines = rhythm_refine(lines)
     lines = vary_hook_v31_2(lines)
@@ -1624,7 +1644,40 @@ def build_retention_reel_script():
         lines = selected_lines
     if len(lines) > 5:
         lines = lines[:5]
-    cover = pick_unique_rotated(bank["covers"], memory_key="recent_smart_covers_v31_2", max_recent=380)
+    # Strict cover gate: prefer category-matched covers, then search the whole
+    # approved pool. Never use the old rotation helper's duplicate fallback.
+    rotation = load_rotation_state()
+    recent_covers = rotation.get("recent_smart_covers_v32", [])[:28]
+    final_script_text = " | ".join(lines)
+    rotation = load_rotation_state()
+    assert_novel(
+        final_script_text,
+        rotation.get("recent_smart_final_scripts_v32", [])[:30],
+        label="spoken script",
+        threshold=0.42,
+    )
+    remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
+    remember_rotation_item("recent_smart_final_scripts_v32", line_key(final_script_text), 30)
+    if concept and concept != "general":
+        remember_rotation_item("recent_smart_concepts_v32", concept, 12)
+    cover = None
+    cover_error = None
+    for cover_pool in (bank["covers"], [
+        item for cat in categories for item in VIRAL_RETENTION_BANK[cat]["covers"]
+    ]):
+        try:
+            cover, cover_concept, cover_score, _ = select_novel_candidate(
+                cover_pool,
+                recent_scripts=recent_covers,
+                max_similarity_threshold=0.35,
+                concept_window=0,
+            )
+            break
+        except ValueError as exc:
+            cover_error = exc
+    if cover is None:
+        raise ValueError(f"V32 COVER ORIGINALITY BLOCKED GENERATION: {cover_error}")
+    remember_rotation_item("recent_smart_covers_v32", line_key(cover), 28)
     remember_rotation_item("recent_categories", category, 220)
     print("V32.0 CATEGORY:", category)
     print("V32.0 COVER STYLE:", bank.get("cover_style", "default"))
@@ -3092,50 +3145,103 @@ def build_caption_v31(script):
 
 
 def build_caption(script):
-    """V31.2 captions: clear, relevant, completion-focused, no engagement bait."""
+    """Retention-minded caption with strict cross-run near-duplicate rejection."""
     category = str(getattr(script, "category", "mirror")).lower()
     bank = {
         "mirror": [
-            "You usually feel the warning before the result changes. The real question is whether you correct it early or explain it away.",
-            "Most patterns do not surprise you. You saw the first sign. You just waited too long to act.",
-            "The standard rarely disappears loudly. It slips through small private choices until weakness feels normal.",
-            "You are not lacking information. You are avoiding the moment that demands proof.",
+            "You usually notice the warning before the consequences arrive. The difficult part is acting while the correction is still small.",
+            "You do not always need another lesson. Sometimes you need to stop ignoring the one your own routine keeps teaching you.",
+            "A pattern becomes dangerous when you can explain it without feeling responsible for changing it.",
+            "Private choices reveal the truth before public results do. Pay attention to what you keep allowing when nobody checks.",
+            "Clarity is not the same as change. You can understand the problem perfectly and still protect the habit that causes it.",
+            "The first compromise rarely looks serious. Its power comes from making the next compromise easier to accept.",
+            "If the same problem keeps returning, look beyond the latest mistake. Study the decision that keeps giving it permission.",
+            "Self-respect is built in moments that offer no applause. Keep the promise when breaking it would be easier.",
+            "The truth is often obvious before it is comfortable. Stop waiting for discomfort to disappear before you act.",
+            "You can make an excuse sound intelligent without making it useful. Judge the explanation by what it allows you to repeat.",
+            "A weak routine does not need a dramatic failure to expose itself. Repeated small choices are already telling the story.",
+            "The question is not whether you know your pattern. It is whether you are willing to interrupt it today.",
+            "What you keep tolerating slowly becomes familiar. Familiarity can make a damaging habit feel normal.",
+            "Your standards are visible in the exceptions you keep making. Watch the rules you abandon whenever your mood changes.",
+            "Stop measuring your intentions. Look at the behaviour that survives a difficult day.",
+            "The moment you notice yourself negotiating is a chance to choose differently. Do not waste it explaining the negotiation.",
         ],
         "two_stage_payoff": [
-            "The hardest part is rarely starting. It is continuing when there is no emotion left.",
-            "The real test is not the beginning. It is the repetition after the mood fades.",
-            "Most people do not lose discipline suddenly. They lose it quietly, then call it temporary.",
-            "The first crack is usually one excuse you stop challenging.",
+            "Starting can feel powerful because the decision is new. Discipline is proven later, when the same task stops feeling special.",
+            "A strong beginning creates momentum, but repetition creates evidence. Keep going after the excitement has done its part.",
+            "The real test arrives after the promise. That is when your routine must carry the weight your motivation cannot.",
+            "You do not become consistent by making a bigger declaration. You become consistent by repeating a smaller action.",
+            "Progress is often quiet enough to be mistaken for nothing. Keep the practice long enough for the evidence to accumulate.",
+            "The plan is only the opening move. The result depends on what you do when the plan becomes ordinary.",
+            "Anyone can feel committed on a good day. Build a standard that still works when the day gives you no help.",
+            "The difference is rarely a secret technique. It is the decision to return to the work without needing a fresh emotional start.",
+            "The first repetition proves you can begin. The next ones show whether you are building a system or chasing a feeling.",
+            "Do not confuse intensity with reliability. A sustainable standard outlasts a dramatic burst of effort.",
+            "You may not feel different after one disciplined choice. Keep collecting proof until your behaviour becomes harder to deny.",
+            "The work becomes meaningful when it no longer needs to feel exciting. That is where consistency starts to separate itself.",
+            "A new plan can make you feel changed before anything has changed. Let repeated action earn that conclusion.",
+            "The routine matters most when it feels ordinary. Keep the commitment after the novelty has left.",
+            "Do not wait for the perfect mood to return. Build a process that can carry you without it.",
+            "A promise is a starting point, not proof. The proof is what you repeat after nobody is asking about it.",
         ],
         "consequence": [
-            "Nothing stays small when repeated. Not excuses. Not comfort. Not avoidance.",
-            "The cost usually arrives later. That delay is what makes weak habits dangerous.",
-            "Weak choices feel small until they compound into a life you did not mean to build.",
-            "Comfort feels harmless until it becomes the standard.",
+            "Small decisions rarely announce their long-term cost. They become expensive when repetition turns them into a way of life.",
+            "Avoidance can feel like relief in the moment. The pressure you postpone often returns with fewer options attached.",
+            "Every repeated choice is building something, even when the result is not visible yet. Make sure it is a future you actually want.",
+            "Comfort is not free when it repeatedly takes the place of necessary effort. Notice what the easy choice keeps costing you.",
+            "Regret often begins as a series of decisions that seemed too small to matter. Take the small decisions seriously.",
+            "Delay borrows from the future. Eventually the work, the opportunity, or the consequence still asks to be paid.",
+            "The cost of a habit is not only what it takes today. It is also what it prevents you from becoming over time.",
+            "A single excuse may change little. A routine built from excuses can quietly change the direction of your life.",
+            "What feels harmless in isolation can become expensive through repetition. Interrupt the pattern before it starts choosing for you.",
+            "The future is shaped by ordinary actions, not only major turning points. Treat today's choices like they count because they do.",
+            "Every time you avoid a necessary action, you train avoidance to feel more natural. Repeated practice works in both directions.",
+            "You do not need to fear every mistake. You do need to notice when the same mistake is becoming your preferred response.",
+            "The damage is often gradual, which makes it easy to dismiss. Measure the pattern, not just the latest incident.",
+            "Easy choices can carry difficult consequences when they become automatic. Choose with the longer view in mind.",
+            "The price of inconsistency is often paid in lost trust, lost time, and unfinished work. Stop treating repetition as harmless.",
+            "What you postpone does not always disappear. Sometimes it grows while you are busy convincing yourself there is still time.",
         ],
     }
-    if category not in bank: category = "mirror"
+    if category not in bank:
+        category = "mirror"
     rotation = load_rotation_state()
-    cap, caption_concept, caption_score, caption_fallback = select_novel_candidate(
-        bank[category],
-        recent_scripts=rotation.get("recent_captions_v32", [])[:60],
-        recent_concepts=rotation.get("recent_caption_concepts_v32", [])[:10],
-    )
+    recent_captions = rotation.get("recent_captions_v32", [])[:60]
+    candidates = bank[category][:]
+    # If the current theme is exhausted, search the other theme banks before
+    # refusing generation. This remains content-led; it does not recycle a caption.
+    category_order = [category] + [c for c in bank if c != category]
+    cap = None
+    caption_concept = "general"
+    caption_score = 1.0
+    caption_error = None
+    for candidate_category in category_order:
+        try:
+            cap, caption_concept, caption_score, _ = select_novel_candidate(
+                bank[candidate_category],
+                recent_scripts=recent_captions,
+                recent_concepts=rotation.get("recent_caption_concepts_v32", [])[:4],
+                max_similarity_threshold=0.42,
+                concept_window=3,
+            )
+            break
+        except ValueError as exc:
+            caption_error = exc
+    if cap is None:
+        raise ValueError(f"V32 CAPTION ORIGINALITY BLOCKED GENERATION: {caption_error}")
     remember_rotation_item("recent_captions_v32", line_key(cap), 60)
     if caption_concept and caption_concept != "general":
-        remember_rotation_item("recent_caption_concepts_v32", caption_concept, 10)
-    print("V32.0 CAPTION CONCEPT:", caption_concept, "OVERLAP:", round(caption_score, 3))
-    if caption_fallback:
-        print("V32.0 CAPTION WARNING: caption bank is running low on fresh concepts.")
+        remember_rotation_item("recent_caption_concepts_v32", caption_concept, 12)
+    print("V32 CAPTION CONCEPT:", caption_concept, "SIMILARITY:", round(caption_score, 3))
     tags = pick_unique_rotated([
         "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
         "#discipline #habits #standards #selfcontrol #growth",
         "#discipline #routine #focus #mindset #selfrespect",
         "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    ], memory_key="recent_hashtags_v31_2", max_recent=120)
-    print("CAPTION TYPE V31.2:", category)
-    print("CAPTION V31.2:", cap)
-    print("HASHTAGS V31.2:", tags)
+    ], memory_key="recent_hashtags_v31_2", max_recent=4)
+    print("CAPTION TYPE:", category)
+    print("CAPTION:", cap)
+    print("HASHTAGS:", tags)
     return cap + "\n\n" + tags
 
 
