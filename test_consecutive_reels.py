@@ -39,6 +39,18 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                      "at a time", "not before", "until it hurts", "then again"},
                     f"reel {index + 1} ends on a dangling fragment"
                 )
+                broken_fragments = {
+                    "is not starting", "is not motivation", "is not the goal",
+                    "is the part that changes you", "with excuses",
+                    "that sound reasonable", "but still cost you", "at a time",
+                    "and no mood is helping", "for it to matter", "for it to count",
+                }
+                spoken = " | ".join(script.lines).lower()
+                for fragment in broken_fragments:
+                    self.assertNotIn(
+                        fragment, spoken,
+                        f"reel {index + 1} contains a broken fragment: {fragment}"
+                    )
                 self.assertTrue(script.cover.strip(), f"reel {index + 1} has no cover")
                 self.assertTrue(caption.strip(), f"reel {index + 1} has no caption")
 
