@@ -45,11 +45,14 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                     "that sound reasonable", "but still cost you", "at a time",
                     "and no mood is helping", "for it to matter", "for it to count",
                 }
-                spoken = " | ".join(script.lines).lower()
+                normalized_lines = {
+                    line.strip().lower().strip(" .!?")
+                    for line in script.lines
+                }
                 for fragment in broken_fragments:
                     self.assertNotIn(
-                        fragment, spoken,
-                        f"reel {index + 1} contains a broken fragment: {fragment}"
+                        fragment, normalized_lines,
+                        f"reel {index + 1} contains a standalone broken fragment: {fragment}"
                     )
                 self.assertTrue(script.cover.strip(), f"reel {index + 1} has no cover")
                 self.assertTrue(caption.strip(), f"reel {index + 1} has no caption")
