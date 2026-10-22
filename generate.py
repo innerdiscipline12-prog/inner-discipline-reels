@@ -1669,7 +1669,24 @@ def cohere_retention_script(lines):
             continue
         result.append(line)
         i += 1
-    # Fold dependent tails into the sentence that gives them meaning.
+    # Attach dependent clauses to the sentence that completes their meaning.
+    dependent_prefixes = (
+        "after ", "before ", "when ", "because ", "especially ",
+        "for it ", "until ", "while ", "without ", "and no mood ",
+    )
+    i = 0
+    while i < len(result) - 1:
+        normalized = clean_text(result[i]).lower().strip(" .!?")
+        if normalized.startswith(dependent_prefixes):
+            left = result[i].strip().rstrip(".!?")
+            right = result[i + 1].strip().rstrip(".!?")
+            if right:
+                result[i] = left + ", " + right[:1].lower() + right[1:] + "."
+                result.pop(i + 1)
+                continue
+        i += 1
+
+    # Fold short dangling tails into the sentence that gives them meaning.
     if len(result) >= 2 and clean_text(result[-1]).lower().strip(" .!?") in {
         "every time", "quietly", "for real", "not forever", "before it hurts",
         "at a time", "not before", "until it hurts", "then again",
