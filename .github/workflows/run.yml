@@ -26,10 +26,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install generator dependencies
+        run: pip install -r requirements.txt
       - name: Compile generator and originality checks
-        run: python -m py_compile generate.py originality.py test_originality.py
+        run: python -m py_compile generate.py originality.py test_originality.py test_consecutive_reels.py
       - name: Test originality and five consecutive reel assets
-        run: python -m unittest -v test_originality.py
+        run: python -m unittest -v test_originality.py test_consecutive_reels.py
 
   build:
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
