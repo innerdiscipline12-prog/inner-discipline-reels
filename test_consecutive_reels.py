@@ -33,6 +33,12 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                     script.lines[-1], script.source_payoff,
                     f"reel {index + 1} lost the original payoff during shortening"
                 )
+                self.assertNotIn(
+                    script.lines[-1].strip().lower().strip(" .!?"),
+                    {"every time", "quietly", "for real", "not forever", "before it hurts",
+                     "at a time", "not before", "until it hurts", "then again"},
+                    f"reel {index + 1} ends on a dangling fragment"
+                )
                 self.assertTrue(script.cover.strip(), f"reel {index + 1} has no cover")
                 self.assertTrue(caption.strip(), f"reel {index + 1} has no caption")
 
