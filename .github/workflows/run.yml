@@ -26,7 +26,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Test originality and consecutive selections
+      - name: Compile generator and originality checks
+        run: python -m py_compile generate.py originality.py test_originality.py
+      - name: Test originality and five consecutive reel assets
         run: python -m unittest -v test_originality.py
 
   build:
