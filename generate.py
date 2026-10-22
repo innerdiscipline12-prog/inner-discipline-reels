@@ -1613,12 +1613,17 @@ def build_retention_reel_script():
         raise ValueError(f"V32 SCRIPT ORIGINALITY BLOCKED GENERATION: {originality_error}")
     selected_index = script_keys_index = [" | ".join(x) for x in script_options].index(selected_key)
     print("V32 SCRIPT NOVELTY:", round(novelty_score, 3), "CATEGORY:", category)
-    lines = list(script_options[selected_index])
-    lines = rhythm_refine(lines)
+    # Keep the complete source script until we have selected the short cut.
+    # rhythm_refine() truncates to five lines and can discard the original payoff.
+    lines = [
+        clean_text(line) for line in script_options[selected_index]
+        if clean_text(line) and not contains_banned_phrase(line)
+    ]
+    source_payoff = lines[-1] if lines else ""
     lines = vary_hook_v31_2(lines)
 
-    # Short-form adaptation: preserve the hook and final payoff, fitting the
-    # strongest middle lines into a strict spoken-word budget before TTS.
+    # Short-form adaptation: preserve the hook and original final payoff, fitting
+    # the strongest middle lines into a strict spoken-word budget before TTS.
     original_lines = [str(line).strip() for line in lines if str(line).strip()]
     if len(original_lines) > 5:
         middle_index = max(1, len(original_lines) // 2)
@@ -1686,6 +1691,9 @@ def build_retention_reel_script():
     print("V32.0 COVER:", cover)
     print("V32.0 SCRIPT:", " | ".join(lines))
     script = Script(mode="smart_completion_engine_v31_2", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
+    script.source_payoff = source_payoff
+    if not script.lines or script.lines[-1] != source_payoff:
+        raise ValueError("V32 PAYOFF PRESERVATION FAILED: shortened script lost its original ending.")
     return apply_smart_pacing_v31_2(script)
 
 
