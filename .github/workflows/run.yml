@@ -30,7 +30,7 @@ jobs:
         run: pip install -r requirements.txt
       - name: Compile generator and originality checks
         run: python -m py_compile generate.py originality.py test_originality.py test_consecutive_reels.py
-      - name: Test originality and five consecutive reel assets
+      - name: Test originality and twenty consecutive reel assets
         run: python -m unittest -v test_originality.py test_consecutive_reels.py
 
   build:
