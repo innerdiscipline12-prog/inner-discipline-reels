@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "two_stage_payoff",
     "mirror",
     "consequence",
-    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,20 +24,21 @@
     "series"
   ],
   "recent_backgrounds": [
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4"
   ],
   "background_cursor": {
-    "global": 2
+    "global": 2,
+    "scene_broken": 1,
+    "scene_dangerous": 2
   },
-  "updated_at": "2026-10-23T05:20:31",
+  "updated_at": "2026-10-23T13:55:19",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -760,10 +761,10 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
-    "#discipline #habits #standards #selfcontrol #growth"
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_2": [
     "you keep lowering it.",
@@ -771,5 +772,60 @@
     "small weakness compounds.",
     "you felt the shift.",
     "you know what this is."
+  ],
+  "recent_smart_scripts_v32": [
+    "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
+    "the hard part starts here. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping.",
+    "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
+    "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
+    "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
+    "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
+    "the quiet truth. | nobody has to see it. | for it to matter. | nobody has to clap. | for it to count. | your future still records it. | your identity still feels it. | every time.",
+    "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
+  ],
+  "recent_smart_final_scripts_v32": [
+    "what most people miss. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
+    "the hard part is not starting. | starting makes you feel changed. | the hardest part is continuing when nobody is watching and no mood is helping.",
+    "the part you avoid is the part that changes you. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
+    "the first crack is not failure. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
+    "you're not confused. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back, that moment decides everything, not the speech.",
+    "you know the pattern. | another explanation. | another restart. | same routine. | different week.",
+    "the quiet truth. | nobody has to clap for it to count. | your future still records it. | your identity still feels it every time.",
+    "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
+  ],
+  "recent_smart_concepts_v32": [
+    "recovery",
+    "emotional_control",
+    "consistency",
+    "standards",
+    "comfort",
+    "procrastination"
+  ],
+  "recent_smart_covers_v32": [
+    "when it stops feeling new",
+    "when the first win fades",
+    "the real test",
+    "the part you avoid",
+    "you know what to do",
+    "you keep explaining",
+    "consistency has a sound",
+    "after the motivation"
+  ],
+  "recent_captions_v32": [
+    "the difference is rarely a secret technique. it is the decision to return to the work without needing a fresh emotional start.",
+    "the routine matters most when it feels ordinary. keep the commitment after the novelty has left.",
+    "anyone can feel committed on a good day. build a standard that still works when the day gives you no help.",
+    "do not wait for the perfect mood to return. build a process that can carry you without it.",
+    "the moment you notice yourself negotiating is a chance to choose differently. do not waste it explaining the negotiation.",
+    "the truth is often obvious before it is comfortable. stop waiting for discomfort to disappear before you act.",
+    "a promise is a starting point, not proof. the proof is what you repeat after nobody is asking about it.",
+    "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
+  ],
+  "recent_caption_concepts_v32": [
+    "consistency",
+    "standards",
+    "emotional_control",
+    "excuses",
+    "comfort"
   ]
 }
