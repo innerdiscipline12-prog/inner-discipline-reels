@@ -2710,11 +2710,16 @@ def draw_cover_text_on_image(img, cover_text):
 
     draw = ImageDraw.Draw(img_rgba)
     accent = lead_color if treatment != 1 else support_color
-    bar_y = int(H * (0.315 if treatment == 0 else 0.705 if treatment == 1 else 0.325))
     bar_h = 7 if treatment == 2 else 5
-    draw.rounded_rectangle(
-        (int(W * 0.32), bar_y, int(W * 0.68), bar_y + bar_h),
-        radius=bar_h // 2,
+    bar_y = int(H * (0.315 if treatment == 0 else 0.705 if treatment == 1 else 0.325))
+    # Clamp coordinates to the actual image and use a plain rectangle.
+    # Pillow's rounded_rectangle raised "y1 must be greater than or equal to y0"
+    # in the GitHub Actions renderer, so keep this accent deliberately robust.
+    bar_y = max(0, min(bar_y, img_rgba.height - bar_h))
+    bar_x0 = max(0, min(int(W * 0.32), img_rgba.width - 1))
+    bar_x1 = max(bar_x0 + 1, min(int(W * 0.68), img_rgba.width))
+    draw.rectangle(
+        (bar_x0, bar_y, bar_x1, bar_y + bar_h - 1),
         fill=accent + (225,),
     )
 
