@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "two_stage_payoff",
     "consequence",
     "mirror",
-    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4"
   ],
   "background_cursor": {
     "global": 8,
-    "scene_broken": 2,
+    "scene_broken": 3,
     "scene_dangerous": 1
   },
-  "updated_at": "2026-10-22T08:36:46",
+  "updated_at": "2026-10-23T05:10:18",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -763,31 +763,37 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "comfort has a cost. | it feels safe now. | it feels easy now. | it feels harmless now. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
     "you keep explaining. | the same pattern. | with better words. | you can make the excuse sound intelligent. | you can make delay sound strategic. | but the routine still knows. | what really happened. | so do you.",
     "where it breaks. | is not the goal. | it is the private choice. | after the emotion fades. | after comfort speaks. | after nobody is watching. | that moment reveals the standard. | every time."
   ],
   "recent_smart_final_scripts_v32": [
+    "the part you avoid is the part that changes you. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "comfort has a cost. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
     "you keep explaining. | you can make delay sound strategic. | but the routine still knows. | what really happened. | so do you.",
     "where it breaks. | is not the goal. | after the emotion fades. | after nobody is watching. | that moment reveals the standard every time."
   ],
   "recent_smart_concepts_v32": [
+    "consistency",
     "comfort",
     "excuses",
     "standards"
   ],
   "recent_smart_covers_v32": [
+    "the part that matters",
     "time collects quietly",
     "you said tomorrow",
     "the unseen repetition"
   ],
   "recent_captions_v32": [
+    "you do not become consistent by making a bigger declaration. you become consistent by repeating a smaller action.",
     "delay borrows from the future. eventually the work, the opportunity, or the consequence still asks to be paid.",
     "what you keep tolerating slowly becomes familiar. familiarity can make a damaging habit feel normal.",
     "anyone can feel committed on a good day. build a standard that still works when the day gives you no help."
   ],
   "recent_caption_concepts_v32": [
+    "identity",
     "procrastination",
     "consistency",
     "standards"
