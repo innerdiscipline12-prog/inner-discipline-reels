@@ -24,22 +24,21 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 0,
+    "scene_broken": 1,
     "scene_dangerous": 2
   },
-  "updated_at": "2026-10-23T13:52:02",
+  "updated_at": "2026-10-23T13:55:19",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -775,6 +774,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
     "the hard part starts here. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping.",
     "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
@@ -784,6 +784,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "what most people miss. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
     "the hard part is not starting. | starting makes you feel changed. | the hardest part is continuing when nobody is watching and no mood is helping.",
     "the part you avoid is the part that changes you. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "the first crack is not failure. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
@@ -793,14 +794,15 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "recovery",
     "emotional_control",
     "consistency",
     "standards",
     "comfort",
-    "recovery",
     "procrastination"
   ],
   "recent_smart_covers_v32": [
+    "when it stops feeling new",
     "when the first win fades",
     "the real test",
     "the part you avoid",
@@ -810,6 +812,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "the difference is rarely a secret technique. it is the decision to return to the work without needing a fresh emotional start.",
     "the routine matters most when it feels ordinary. keep the commitment after the novelty has left.",
     "anyone can feel committed on a good day. build a standard that still works when the day gives you no help.",
     "do not wait for the perfect mood to return. build a process that can carry you without it.",
