@@ -1651,6 +1651,13 @@ def cohere_retention_script(lines):
             result.append("One weak decision at a time.")
             i += 2
             continue
+        if line == "At a time." and result:
+            # Attach this dependent phrase to the immediately preceding thought,
+            # including cases such as "One comfortable lie. At a time."
+            previous = result.pop().strip().rstrip(".!?")
+            result.append(previous + " at a time.")
+            i += 1
+            continue
         if line == "Most people avoid.":
             result.append("Most people avoid the standard.")
             i += 1
