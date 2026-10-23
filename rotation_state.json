@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "two_stage_payoff",
     "mirror",
     "consequence",
-    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 2,
+    "scene_broken": 3,
     "scene_dangerous": 0
   },
-  "updated_at": "2026-10-23T17:38:56",
+  "updated_at": "2026-10-23T17:48:08",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -775,6 +775,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "where it breaks. | is not the goal. | it is the private choice. | after the emotion fades. | after comfort speaks. | after nobody is watching. | that moment reveals the standard. | every time.",
     "you saw it coming. | the warning was there. | the drop was there. | the old habit was there. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
     "you said tomorrow. | again. | then again. | the problem is not time. | the problem is not knowledge. | the problem is the standard. | that keeps moving. | stop moving it.",
     "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
@@ -789,6 +790,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "where it breaks is not at the goal. | it is the private choice. | after the emotion fades, after comfort speaks, after nobody is watching, that moment reveals the standard, every time.",
     "you saw it coming. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
     "you said tomorrow. | the problem is not knowledge. | the problem is the standard. | that keeps moving. | stop moving it.",
     "the cost finds you. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters before it hurts.",
@@ -803,15 +805,16 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "standards",
     "consistency",
     "procrastination",
     "excuses",
-    "standards",
     "recovery",
     "emotional_control",
     "comfort"
   ],
   "recent_smart_covers_v32": [
+    "when nobody watches",
     "no more hiding",
     "the moment before",
     "small costs stack up",
@@ -826,6 +829,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "you do not become consistent by making a bigger declaration. you become consistent by repeating a smaller action.",
     "you usually notice the warning before the consequences arrive. the difficult part is acting while the correction is still small.",
     "private choices reveal the truth before public results do. pay attention to what you keep allowing when nobody checks.",
     "a single excuse may change little. a routine built from excuses can quietly change the direction of your life.",
@@ -840,6 +844,7 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "identity",
     "boundaries",
     "excuses",
     "consistency",
