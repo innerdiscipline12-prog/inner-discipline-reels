@@ -141,5 +141,22 @@ class OriginalityTests(unittest.TestCase):
         self.assertEqual(len(set(picked_covers)), 5)
         self.assertEqual(len(set(picked_captions)), 5)
 
+
+    def test_all_thumbnail_hooks_are_two_or_three_words(self):
+        viral_bank, _ = _real_candidate_banks()
+        covers = [
+            cover
+            for category in viral_bank.values()
+            for cover in category["covers"]
+        ]
+        self.assertGreaterEqual(len(covers), 60)
+        for cover in covers:
+            with self.subTest(cover=cover):
+                words = cover.split()
+                self.assertGreaterEqual(len(words), 2)
+                self.assertLessEqual(len(words), 3)
+        self.assertEqual(len(covers), len(set(covers)), "Thumbnail hooks must be unique across banks")
+
+
 if __name__ == "__main__":
     unittest.main()
