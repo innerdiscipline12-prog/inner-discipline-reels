@@ -2686,14 +2686,38 @@ def make_cinematic_cover_background(bg_path):
         return Image.new("RGB", (W, H), BLACK)
 
 
+def cover_palette_for_text(cover_text):
+    """Stable palette rotation so neighboring covers do not all look identical."""
+    palettes = [
+        (ORANGE, WHITE),  # signature orange / white
+        (RED, WHITE),     # danger red / white
+        (RED, ORANGE),    # high-contrast red / orange
+        (WHITE, RED),     # white lead / red payoff
+        (ORANGE, RED),    # orange lead / red payoff
+    ]
+    import hashlib
+    digest = hashlib.sha256(clean_text(cover_text).upper().encode("utf-8")).digest()
+    return palettes[digest[0] % len(palettes)], digest[1] % 3
+
+
 def draw_cover_text_on_image(img, cover_text):
     img_rgba = img.convert("RGBA")
+    (lead_color, support_color), treatment = cover_palette_for_text(cover_text)
     band = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     band_draw = ImageDraw.Draw(band)
     band_draw.rectangle((0, int(H * 0.34), W, int(H * 0.70)), fill=(0, 0, 0, 92))
     img_rgba.alpha_composite(band)
 
     draw = ImageDraw.Draw(img_rgba)
+    accent = lead_color if treatment != 1 else support_color
+    bar_y = int(H * (0.315 if treatment == 0 else 0.705 if treatment == 1 else 0.325))
+    bar_h = 7 if treatment == 2 else 5
+    draw.rounded_rectangle(
+        (int(W * 0.32), bar_y, int(W * 0.68), bar_y + bar_h),
+        radius=bar_h // 2,
+        fill=accent + (225,),
+    )
+
     wc = len(clean_text(cover_text).split())
     font = load_font(178 if wc <= 2 else 136)
     lines = wrap_words(draw, cover_text, font, 940)
@@ -2711,9 +2735,12 @@ def draw_cover_text_on_image(img, cover_text):
 
         for wi, word in enumerate(words):
             raw = word.strip(".,?!:;\"'").upper()
-            color = RED if raw in DANGER_WORDS else (ORANGE if wi == 0 else WHITE)
+            if raw in DANGER_WORDS:
+                color = RED
+            else:
+                color = lead_color if wi == 0 else support_color
 
-            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0, 210))
+            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0, 210), stroke_width=8, stroke_fill=(0, 0, 0, 255))
             draw.text((x, y), word, font=font, fill=color + (255,), stroke_width=8, stroke_fill=(0, 0, 0, 255))
             x += int(widths[wi] + space)
 
@@ -2727,7 +2754,6 @@ def draw_cover_text_on_image(img, cover_text):
         img_rgba.paste(logo, ((W - new_w) // 2, H - new_h - LOGO_BOTTOM_MARGIN), logo)
 
     return img_rgba.convert("RGB")
-
 
 def export_cover(script, out_path, bg_path=None):
     base = os.path.splitext(out_path)[0]
