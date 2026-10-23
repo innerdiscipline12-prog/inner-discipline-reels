@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/rebuild/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg2.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/challenge/bg3.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 3,
-    "scene_dangerous": 1
+    "scene_dangerous": 2
   },
-  "updated_at": "2026-10-23T05:49:29",
+  "updated_at": "2026-10-23T05:53:07",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,9 +762,9 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth"
   ],
   "recent_hook_variants_v31_2": [
@@ -775,31 +775,37 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
     "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
     "the quiet truth. | nobody has to see it. | for it to matter. | nobody has to clap. | for it to count. | your future still records it. | your identity still feels it. | every time.",
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "you're not confused. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back, that moment decides everything, not the speech.",
     "you know the pattern. | another explanation. | another restart. | same routine. | different week.",
     "the quiet truth. | nobody has to clap for it to count. | your future still records it. | your identity still feels it every time.",
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "comfort",
     "recovery",
     "procrastination",
     "standards"
   ],
   "recent_smart_covers_v32": [
+    "you know what to do",
     "you keep explaining",
     "consistency has a sound",
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "the moment you notice yourself negotiating is a chance to choose differently. do not waste it explaining the negotiation.",
     "the truth is often obvious before it is comfortable. stop waiting for discomfort to disappear before you act.",
     "a promise is a starting point, not proof. the proof is what you repeat after nobody is asking about it.",
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "excuses",
     "comfort",
     "consistency",
     "standards"
