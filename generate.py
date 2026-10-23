@@ -3428,8 +3428,11 @@ def build_video(script, bg_path, out_path):
 
         voice_data = []
         short_retention_mode = getattr(script, "mode", "") == "smart_completion_engine_v31_2"
-        cursor = 0.35 if short_retention_mode else 0.95
-        gap = 0.12 if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
+        # Keep short-form voiceover safely inside the 12–15s window. TTS
+        # duration varies slightly by line, so use compact but audible pauses
+        # rather than relying on the visual timing estimate alone.
+        cursor = 0.20 if short_retention_mode else 0.95
+        gap = 0.06 if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
 
         print("Generating voice lines...")
         for i, line in enumerate(script.lines):
@@ -3450,7 +3453,7 @@ def build_video(script, bg_path, out_path):
                 "chunk_size": PACING.get(script.pacing, PACING.get('cold', list(PACING.values())[0]))["chunk_size"],
             })
 
-            cursor += dur + (gap if i < len(script.lines) - 1 else (0.12 if short_retention_mode else 0.24))
+            cursor += dur + (gap if i < len(script.lines) - 1 else (0.08 if short_retention_mode else 0.24))
 
         # Never truncate speech to satisfy a target duration. A too-long voiceover
         # must fail visibly so the script can be corrected instead of clipping audio.
