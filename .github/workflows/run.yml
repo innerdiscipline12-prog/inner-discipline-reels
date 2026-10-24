@@ -60,6 +60,20 @@ jobs:
           fi
       - run: pip install -r requirements.txt
 
+      - name: Restore persistent generator state
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
+        run: |
+          if git fetch origin generator-state; then
+            for state_file in series_state.json rotation_state.json used_lines_v3.json engine_state_v3.json hook_state.json; do
+              if git cat-file -e "origin/generator-state:$state_file" 2>/dev/null; then
+                git show "origin/generator-state:$state_file" > "$state_file"
+              fi
+            done
+            echo "Restored persistent generator state."
+          else
+            echo "No generator-state branch exists yet; using checked-in defaults."
+          fi
+
       - name: Run generate.py
         if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
         run: python generate.py
