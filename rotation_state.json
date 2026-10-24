@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "mirror",
     "consequence",
     "two_stage_payoff",
-    "mirror",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 4,
+    "scene_broken": 5,
     "scene_dangerous": 0
   },
-  "updated_at": "2026-10-24T04:31:32",
+  "updated_at": "2026-10-24T04:47:01",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,8 +762,8 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth"
   ],
@@ -775,6 +775,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it.",
     "comfort has a cost. | it feels safe now. | it feels easy now. | it feels harmless now. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
     "where it breaks. | is not the goal. | it is the private choice. | after the emotion fades. | after comfort speaks. | after nobody is watching. | that moment reveals the standard. | every time.",
     "you saw it coming. | the warning was there. | the drop was there. | the old habit was there. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
@@ -791,6 +792,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "you're avoiding it. | not because it is impossible. | because it demands proof, and proof removes excuses, that is why it feels heavy, but that is also why it works, start with the truth, then repeat it.",
     "comfort has a cost. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
     "where it breaks is not at the goal. | it is the private choice. | after the emotion fades, after comfort speaks, after nobody is watching, that moment reveals the standard, every time.",
     "you saw it coming. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
@@ -807,15 +809,16 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "excuses",
     "comfort",
     "standards",
     "consistency",
     "procrastination",
-    "excuses",
     "recovery",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "the costly habit",
     "delay leaves marks",
     "when nobody watches",
     "no more hiding",
@@ -832,6 +835,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "the first compromise rarely looks serious. its power comes from making the next compromise easier to accept.",
     "regret often begins as a series of decisions that seemed too small to matter. take the small decisions seriously.",
     "you do not become consistent by making a bigger declaration. you become consistent by repeating a smaller action.",
     "you usually notice the warning before the consequences arrive. the difficult part is acting while the correction is still small.",
@@ -848,12 +852,12 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "comfort",
     "identity",
     "boundaries",
     "excuses",
     "consistency",
     "standards",
-    "emotional_control",
-    "comfort"
+    "emotional_control"
   ]
 }
