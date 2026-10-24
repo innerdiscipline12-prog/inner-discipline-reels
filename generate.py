@@ -533,11 +533,7 @@ def save_rotation_state(data):
 
 
 def auto_commit_state_files():
-    """
-    Commits state memory files back to GitHub.
-
-    If this fails, the next workflow run cannot know the next day or next background.
-    """
+    """Persist generator memory on a dedicated branch; never push state to protected main."""
     if not AUTO_COMMIT_STATE:
         print("STATE COMMIT DISABLED.")
         return False
@@ -549,79 +545,61 @@ def auto_commit_state_files():
         "engine_state_v3.json",
         "hook_state.json",
     ]
-
     existing = [f for f in files if os.path.exists(os.path.join(BASE_DIR, f))]
     if not existing:
         print("STATE COMMIT: no state files found.")
         return False
 
+    snapshot = os.path.join(BASE_DIR, ".generator-state-snapshot")
+    worktree = os.path.join(BASE_DIR, ".generator-state-worktree")
     try:
+        os.makedirs(snapshot, exist_ok=True)
+        for name in existing:
+            shutil.copy2(os.path.join(BASE_DIR, name), os.path.join(snapshot, name))
+
         subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=BASE_DIR, check=False)
         subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=BASE_DIR, check=False)
+        fetch = subprocess.run(["git", "fetch", "origin", "generator-state"], cwd=BASE_DIR, text=True, capture_output=True, check=False)
+        if os.path.exists(worktree):
+            subprocess.run(["git", "worktree", "remove", "--force", worktree], cwd=BASE_DIR, text=True, capture_output=True, check=False)
 
-        add = subprocess.run(
-            ["git", "add"] + existing,
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        print("STATE ADD:", add.stdout.strip() or add.stderr.strip() or "ok")
+        if fetch.returncode == 0:
+            setup = subprocess.run(["git", "worktree", "add", worktree, "origin/generator-state"], cwd=BASE_DIR, text=True, capture_output=True, check=False)
+        else:
+            setup = subprocess.run(["git", "worktree", "add", "-b", "generator-state", worktree, "HEAD"], cwd=BASE_DIR, text=True, capture_output=True, check=False)
+        if setup.returncode != 0:
+            print("STATE ERROR: could not prepare generator-state worktree:", setup.stderr.strip())
+            return False
 
-        status = subprocess.run(
-            ["git", "status", "--porcelain"] + existing,
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-
+        for name in existing:
+            shutil.copy2(os.path.join(snapshot, name), os.path.join(worktree, name))
+        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=worktree, check=False)
+        subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=worktree, check=False)
+        subprocess.run(["git", "add"] + existing, cwd=worktree, check=False)
+        status = subprocess.run(["git", "status", "--porcelain"], cwd=worktree, text=True, capture_output=True, check=False)
         if not status.stdout.strip():
             print("STATE COMMIT: no changes.")
             return True
 
-        commit = subprocess.run(
-            ["git", "commit", "-m", "Update generator state"],
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+        commit = subprocess.run(["git", "commit", "-m", "Update generator state"], cwd=worktree, text=True, capture_output=True, check=False)
         print("STATE COMMIT:", commit.stdout.strip() or commit.stderr.strip())
-
         if commit.returncode != 0:
             print("STATE ERROR: commit failed.")
             return False
 
-        # GitHub Actions checks out pull requests in detached-HEAD mode unless
-        # the workflow explicitly checks out the source branch. Push state to
-        # that named branch so rotation/originality history survives the next run.
-        target_ref = os.getenv("GITHUB_HEAD_REF", "").strip() or os.getenv("GITHUB_REF_NAME", "").strip()
-        if not target_ref:
-            print("STATE ERROR: no target branch is available for persistence.")
-            return False
-
-        push = subprocess.run(
-            ["git", "push", "origin", f"HEAD:refs/heads/{target_ref}"],
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-
+        push = subprocess.run(["git", "push", "origin", "HEAD:refs/heads/generator-state"], cwd=worktree, text=True, capture_output=True, check=False)
         print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
-        print("STATE PUSH RETURN CODE:", push.returncode)
-
         if push.returncode != 0:
-            print("STATE ERROR: GitHub did not save series_state.json or rotation_state.json.")
-            print("FIX: Settings > Actions > General > Workflow permissions > Read and write permissions.")
+            print("STATE ERROR: failed to persist state to generator-state.")
             return False
-
         return True
-
     except Exception as e:
         print(f"STATE AUTO-COMMIT FAILED: {e}")
         return False
+    finally:
+        if os.path.exists(worktree):
+            subprocess.run(["git", "worktree", "remove", "--force", worktree], cwd=BASE_DIR, text=True, capture_output=True, check=False)
+        shutil.rmtree(snapshot, ignore_errors=True)
 
 
 # ================================================================
