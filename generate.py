@@ -1670,6 +1670,23 @@ def cohere_retention_script(lines):
     return result
 
 
+# INNER Discipline delivery guardrails: write for a calm voice, never for rushed playback.
+RETENTION_MAX_WORDS_PER_LINE = 8
+RETENTION_MAX_SCRIPT_WORDS = 27
+RETENTION_MAX_LINE_AUDIO_SECONDS = 3.25
+
+def retention_script_fits_delivery(lines):
+    """Return True only for scripts that can be delivered deliberately."""
+    clean_lines = [clean_text(line) for line in lines if clean_text(line)]
+    if not RETENTION_LINE_COUNT_MIN <= len(clean_lines) <= RETENTION_LINE_COUNT_MAX:
+        return False
+    if sum(len(line.split()) for line in clean_lines) > RETENTION_MAX_SCRIPT_WORDS:
+        return False
+    if any(len(line.split()) > RETENTION_MAX_WORDS_PER_LINE for line in clean_lines):
+        return False
+    return True
+
+
 def build_retention_reel_script():
     """
     v31.2 SMART COMPLETION ENGINE.
@@ -1707,7 +1724,13 @@ def build_retention_reel_script():
     script_options = []
     for candidate_category in category_order:
         candidate_bank = VIRAL_RETENTION_BANK[candidate_category]
-        candidate_options = candidate_bank["scripts"]
+        # Reject long lines at selection time; never rely on fast narration to fit.
+        candidate_options = [
+            option for option in candidate_bank["scripts"]
+            if retention_script_fits_delivery(option)
+        ]
+        if not candidate_options:
+            continue
         candidate_keys = [" | ".join(x) for x in candidate_options]
         try:
             selected_key, concept, novelty_score, _ = select_novel_candidate(
@@ -3442,6 +3465,13 @@ def build_video(script, bg_path, out_path):
             audio_probe = AudioFileClip(vf)
             dur = float(audio_probe.duration)
             audio_probe.close()
+
+                if short_retention_mode and dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
+                raise RuntimeError(
+                    f"Spoken line {i + 1} takes {dur:.2f}s (limit "
+                    f"{RETENTION_MAX_LINE_AUDIO_SECONDS:.2f}s). Rewrite it shorter; "
+                    "voice speed will not be increased."
+                )
 
             voice_data.append({
                 "file": vf,
