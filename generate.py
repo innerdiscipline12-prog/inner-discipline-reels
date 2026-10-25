@@ -3466,7 +3466,7 @@ def build_video(script, bg_path, out_path):
             dur = float(audio_probe.duration)
             audio_probe.close()
 
-                if short_retention_mode and dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
+            if short_retention_mode and dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
                 raise RuntimeError(
                     f"Spoken line {i + 1} takes {dur:.2f}s (limit "
                     f"{RETENTION_MAX_LINE_AUDIO_SECONDS:.2f}s). Rewrite it shorter; "
