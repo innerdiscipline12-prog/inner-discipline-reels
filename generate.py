@@ -1671,8 +1671,8 @@ def cohere_retention_script(lines):
 
 
 # INNER Discipline delivery guardrails: write for a calm voice, never for rushed playback.
-RETENTION_MAX_WORDS_PER_LINE = 8
-RETENTION_MAX_SCRIPT_WORDS = 27
+RETENTION_MAX_WORDS_PER_LINE = 12
+RETENTION_MAX_SCRIPT_WORDS = 36
 RETENTION_MAX_LINE_AUDIO_SECONDS = 3.25
 
 def retention_script_fits_delivery(lines):
@@ -1748,7 +1748,10 @@ def build_retention_reel_script():
         except ValueError as exc:
             originality_error = exc
     if selected_key is None:
-        raise ValueError(f"V32 SCRIPT ORIGINALITY BLOCKED GENERATION: {originality_error}")
+        raise ValueError(
+            "V32 SCRIPT SELECTION BLOCKED GENERATION: no candidate passed delivery limits "
+            f"and originality checks. Last originality error: {originality_error}"
+        )
     selected_index = script_keys_index = [" | ".join(x) for x in script_options].index(selected_key)
     print("V32 SCRIPT NOVELTY:", round(novelty_score, 3), "CATEGORY:", category)
     # Keep the complete source script until we have selected the short cut.
