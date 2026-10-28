@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "mirror",
     "consequence",
+    "mirror",
     "two_stage_payoff",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 5,
+    "scene_broken": 0,
     "scene_dangerous": 1
   },
-  "updated_at": "2026-10-25T08:47:48",
+  "updated_at": "2026-10-28T03:41:12",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,12 +762,13 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth"
   ],
   "recent_hook_variants_v31_2": [
+    "the result catches up.",
     "you keep lowering it.",
     "the real problem is quieter.",
     "small weakness compounds.",
@@ -775,6 +776,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "the cost eventually arrives. | for every habit you ignored. | for every standard you lowered. | for every promise you delayed. | nothing stays free. | not even comfort. | not forever. | the bill always comes.",
     "you felt that drop. | that small loss of respect. | after you broke your word. | after you chose comfort. | after you said tomorrow again. | that feeling was feedback. | not weakness. | listen to it.",
     "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it.",
     "comfort has a cost. | it feels safe now. | it feels easy now. | it feels harmless now. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
@@ -793,6 +795,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "the result catches up. | nothing stays free. | not even comfort. | not forever. | the bill always comes.",
     "you felt that drop. | that small loss of respect. | after you broke your word, after you chose comfort, after you said tomorrow again, that feeling was feedback, not weakness, listen to it.",
     "you're avoiding it. | not because it is impossible. | because it demands proof, and proof removes excuses, that is why it feels heavy, but that is also why it works, start with the truth, then repeat it.",
     "comfort has a cost. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
@@ -811,15 +814,16 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "standards",
     "procrastination",
     "excuses",
     "comfort",
-    "standards",
     "consistency",
     "recovery",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "comfort sends invoices",
     "the standard dropped",
     "the costly habit",
     "delay leaves marks",
@@ -838,6 +842,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "the cost of a habit is not only what it takes today. it is also what it prevents you from becoming over time.",
     "what you keep tolerating slowly becomes familiar. familiarity can make a damaging habit feel normal.",
     "the first compromise rarely looks serious. its power comes from making the next compromise easier to accept.",
     "regret often begins as a series of decisions that seemed too small to matter. take the small decisions seriously.",
@@ -856,6 +861,7 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "procrastination",
     "consistency",
     "comfort",
     "identity",
