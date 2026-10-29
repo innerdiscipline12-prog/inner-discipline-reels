@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "two_stage_payoff",
     "consequence",
     "mirror",
-    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
@@ -36,9 +37,9 @@
   "background_cursor": {
     "global": 2,
     "scene_broken": 3,
-    "scene_dangerous": 1
+    "scene_dangerous": 2
   },
-  "updated_at": "2026-10-29T11:09:01",
+  "updated_at": "2026-10-29T15:29:16",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -761,8 +762,8 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
@@ -777,6 +778,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "the part that matters. | is not what you say. | it is what you repeat. | when pressure returns. | when comfort calls. | when nobody checks. | that is the real standard. | that is the proof.",
     "delay gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
     "small weakness compounds. | first in private. | then in routine. | then in identity. | then in results. | then in regret. | that is the sequence. | stop it early.",
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
@@ -799,6 +801,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "the part that matters. | it is what you repeat. | when pressure returns, when comfort calls, when nobody checks, that is the real standard, that is the proof.",
     "delay gets expensive. | most people miss the cost. | because it does not arrive immediately, it arrives as a pattern, then as a result, then as a life, that delay is dangerous, that is why today matters.",
     "small choices add up. | then in results. | then in regret. | that is the sequence. | stop it early.",
     "the damage grows. | when you keep excusing it, small habits become normal, normal becomes identity, identity becomes results, then you call it life, that is the danger, correct it early.",
@@ -821,16 +824,17 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "standards",
     "procrastination",
     "consistency",
     "identity",
-    "standards",
     "excuses",
     "comfort",
     "recovery",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "what comes next",
     "years go missing",
     "options disappear",
     "the consequence grows",
@@ -853,6 +857,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "progress is often quiet enough to be mistaken for nothing. keep the practice long enough for the evidence to accumulate.",
     "the future is shaped by ordinary actions, not only major turning points. treat today's choices like they count because they do.",
     "comfort is not free when it repeatedly takes the place of necessary effort. notice what the easy choice keeps costing you.",
     "easy choices can carry difficult consequences when they become automatic. choose with the longer view in mind.",
