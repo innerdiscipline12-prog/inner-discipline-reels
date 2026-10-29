@@ -1725,13 +1725,8 @@ def build_retention_reel_script():
     script_options = []
     for candidate_category in category_order:
         candidate_bank = VIRAL_RETENTION_BANK[candidate_category]
-        # Reject long lines at selection time; never rely on fast narration to fit.
-        candidate_options = [
-            option for option in candidate_bank["scripts"]
-            if retention_script_fits_delivery(option)
-        ]
-        if not candidate_options:
-            continue
+        # Select from the full bank first. Long source lines are shortened after
+        # selection; filtering raw bank entries here can exhaust every category.
         candidate_keys = [" | ".join(x) for x in candidate_options]
         try:
             selected_key, concept, novelty_score, _ = select_novel_candidate(
