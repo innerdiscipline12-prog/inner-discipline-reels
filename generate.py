@@ -619,8 +619,9 @@ PACING = {
     "attack": {"rate": "-4%", "pitch": "-35Hz", "chunk_size": 2, "gap": 0.16},
     "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
     "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
-    # Retention engine needs a controlled but faster delivery to fit the short format.
-    "smart_cold": {"rate": "-2%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.12},
+    # INNER Discipline signature delivery: slower, low, and deliberate.
+    # Duration is managed by writing fewer words and preserving pauses, never by rushing.
+    "smart_cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 2, "gap": 0.34},
 }
 
 
@@ -1671,9 +1672,9 @@ def cohere_retention_script(lines):
 
 
 # INNER Discipline delivery guardrails: write for a calm voice, never for rushed playback.
-RETENTION_MAX_WORDS_PER_LINE = 12
-RETENTION_MAX_SCRIPT_WORDS = 36
-RETENTION_MAX_LINE_AUDIO_SECONDS = 3.25
+RETENTION_MAX_WORDS_PER_LINE = 9
+RETENTION_MAX_SCRIPT_WORDS = 28
+RETENTION_MAX_LINE_AUDIO_SECONDS = 3.8
 
 def retention_script_fits_delivery(lines):
     """Return True only for scripts that can be delivered deliberately."""
@@ -3452,11 +3453,10 @@ def build_video(script, bg_path, out_path):
 
         voice_data = []
         short_retention_mode = getattr(script, "mode", "") == "smart_completion_engine_v31_2"
-        # Keep short-form voiceover safely inside the 12–15s window. TTS
-        # duration varies slightly by line, so use compact but audible pauses
-        # rather than relying on the visual timing estimate alone.
-        cursor = 0.20 if short_retention_mode else 0.95
-        gap = 0.06 if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
+        # Deliberate brand pacing: begin cleanly, then leave real space between thoughts.
+        # Do not compress the gaps to rescue an overlong script.
+        cursor = 0.35 if short_retention_mode else 0.95
+        gap = PACING.get(script.pacing, {}).get("gap", 0.34) if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
 
         print("Generating voice lines...")
         for i, line in enumerate(script.lines):
@@ -3484,7 +3484,7 @@ def build_video(script, bg_path, out_path):
                 "chunk_size": PACING.get(script.pacing, PACING.get('cold', list(PACING.values())[0]))["chunk_size"],
             })
 
-            cursor += dur + (gap if i < len(script.lines) - 1 else (0.08 if short_retention_mode else 0.24))
+            cursor += dur + (gap if i < len(script.lines) - 1 else (0.32 if short_retention_mode else 0.24))
 
         # Never truncate speech to satisfy a target duration. A too-long voiceover
         # must fail visibly so the script can be corrected instead of clipping audio.
