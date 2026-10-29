@@ -1673,8 +1673,8 @@ def cohere_retention_script(lines):
 
 # INNER Discipline delivery guardrails: write for a calm voice, never for rushed playback.
 RETENTION_MAX_WORDS_PER_LINE = 9
-RETENTION_MAX_SCRIPT_WORDS = 28
-RETENTION_MAX_LINE_AUDIO_SECONDS = 3.8
+RETENTION_MAX_SCRIPT_WORDS = 18
+RETENTION_MAX_LINE_AUDIO_SECONDS = 4.3
 
 def retention_script_fits_delivery(lines):
     """Return True only for scripts that can be delivered deliberately."""
@@ -1775,7 +1775,8 @@ def build_retention_reel_script():
         first_line = original_lines[0]
         final_line = original_lines[-1] if len(original_lines) > 1 else ""
         selected_lines = list(original_lines)
-        budget = 27
+        # Keep the voiceover short enough for deliberate delivery; preserve hook and payoff.
+        budget = RETENTION_MAX_SCRIPT_WORDS
         while len(selected_lines) > 3 and sum(len(line.split()) for line in selected_lines) > budget:
             selected_lines.pop(1)
         if sum(len(line.split()) for line in selected_lines) > budget and len(selected_lines) > 2:
