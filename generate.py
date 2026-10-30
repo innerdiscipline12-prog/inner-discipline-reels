@@ -1733,6 +1733,15 @@ def fit_retention_delivery(lines):
     if len(chosen) < RETENTION_LINE_COUNT_MIN and len(expanded) >= RETENTION_LINE_COUNT_MIN:
         chosen = [line.rstrip(" .!?") + "." for line in expanded[:RETENTION_LINE_COUNT_MIN]
                   if len(line.split()) <= RETENTION_MAX_WORDS_PER_LINE]
+
+    # Never let a clause-split fragment become the closing narration/payoff.
+    # This catches short dangling phrases that can survive word-count checks.
+    dangling_endings = {
+        "every time", "quietly", "for real", "not forever", "before it hurts",
+        "at a time", "not before", "until it hurts", "then again",
+    }
+    if chosen and chosen[-1].rstrip(" .!?").casefold() in dangling_endings:
+        chosen[-1] = "The pattern keeps repeating."
     return chosen
 
 
