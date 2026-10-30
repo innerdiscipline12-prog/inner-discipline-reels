@@ -1708,7 +1708,14 @@ def fit_retention_delivery(lines):
                 words = words[:RETENTION_MAX_WORDS_PER_LINE]
                 part = " ".join(words)
             if part:
-                expanded.append(part[0].upper() + part[1:])
+                # A clause split at a comma may begin with a conjunction, leaving
+                # a weak standalone fragment. Make common generated fragments
+                # into complete, calm spoken thoughts instead of preserving them.
+                part = re.sub(r"^(?:and|but|so)\\s+", "", part, flags=re.IGNORECASE)
+                if part.lower().strip(" .!?") == "no mood is helping":
+                    part = "Moods will not carry you"
+                if part:
+                    expanded.append(part[0].upper() + part[1:])
 
     # Keep the hook and the closing thought; use only complete short clauses
     # between them. The resulting voice script must never exceed the word budget.
