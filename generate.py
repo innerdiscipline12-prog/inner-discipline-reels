@@ -1711,7 +1711,7 @@ def fit_retention_delivery(lines):
                 # A clause split at a comma may begin with a conjunction, leaving
                 # a weak standalone fragment. Make common generated fragments
                 # into complete, calm spoken thoughts instead of preserving them.
-                part = re.sub(r"^(?:and|but|so)\\s+", "", part, flags=re.IGNORECASE)
+                part = re.sub(r"^(?:and|but|so)\s+", "", part, flags=re.IGNORECASE)
                 if part.lower().strip(" .!?") == "no mood is helping":
                     part = "Moods will not carry you"
                 if part:
