@@ -1688,6 +1688,47 @@ def retention_script_fits_delivery(lines):
     return True
 
 
+def fit_retention_delivery(lines):
+    """Split overlong comma-linked lines into short spoken thoughts before TTS."""
+    import re
+
+    expanded = []
+    for raw_line in lines:
+        line = clean_text(raw_line)
+        if not line:
+            continue
+        parts = [part.strip(" .!?;") for part in re.split(r"[,;]+", line) if part.strip(" .!?;")]
+        if len(parts) <= 1 and len(line.split()) > RETENTION_MAX_WORDS_PER_LINE:
+            words = line.split()
+            parts = [" ".join(words[i:i + RETENTION_MAX_WORDS_PER_LINE])
+                     for i in range(0, len(words), RETENTION_MAX_WORDS_PER_LINE)]
+        for part in parts:
+            words = part.split()
+            if len(words) > RETENTION_MAX_WORDS_PER_LINE:
+                words = words[:RETENTION_MAX_WORDS_PER_LINE]
+                part = " ".join(words)
+            if part:
+                expanded.append(part[0].upper() + part[1:])
+
+    # Keep the hook and the closing thought; use only complete short clauses
+    # between them. The resulting voice script must never exceed the word budget.
+    if not expanded:
+        return []
+    if len(expanded) > RETENTION_LINE_COUNT_MAX:
+        expanded = [expanded[0]] + expanded[1:RETENTION_LINE_COUNT_MAX - 1] + [expanded[-1]]
+    chosen = []
+    for i, line in enumerate(expanded):
+        if len(chosen) >= RETENTION_LINE_COUNT_MAX:
+            break
+        if sum(len(x.split()) for x in chosen) + len(line.split()) > RETENTION_MAX_SCRIPT_WORDS:
+            continue
+        chosen.append(line.rstrip(" .!?") + ".")
+    if len(chosen) < RETENTION_LINE_COUNT_MIN and len(expanded) >= RETENTION_LINE_COUNT_MIN:
+        chosen = [line.rstrip(" .!?") + "." for line in expanded[:RETENTION_LINE_COUNT_MIN]
+                  if len(line.split()) <= RETENTION_MAX_WORDS_PER_LINE]
+    return chosen
+
+
 def build_retention_reel_script():
     """
     v31.2 SMART COMPLETION ENGINE.
@@ -1784,6 +1825,17 @@ def build_retention_reel_script():
         lines = selected_lines
     if len(lines) > 5:
         lines = lines[:5]
+
+    # Enforce spoken-line limits after all hook/coherence rewrites, because those
+    # transformations can merge clauses back into an overlong line.
+    lines = fit_retention_delivery(lines)
+    if not retention_script_fits_delivery(lines):
+        raise ValueError(
+            "V32 DELIVERY GATE: could not produce short, coherent lines within "
+            "the spoken-word budget; refusing to render rushed narration."
+        )
+    source_payoff = lines[-1]
+
     # Strict cover gate: prefer category-matched covers, then search the whole
     # approved pool. Never use the old rotation helper's duplicate fallback.
     rotation = load_rotation_state()
