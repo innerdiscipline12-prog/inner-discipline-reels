@@ -5,6 +5,15 @@ import unittest
 from pathlib import Path
 
 class ConsecutiveGeneratorTests(unittest.TestCase):
+    def test_inner_discipline_delivery_is_slow_and_lines_are_short(self):
+        import generate as gen
+
+        pacing = gen.PACING["smart_cold"]
+        self.assertEqual(pacing["rate"], "-15%", "signature voice must not be near-normal speed")
+        self.assertGreaterEqual(pacing["gap"], 0.30, "leave a deliberate pause between thoughts")
+        self.assertLessEqual(gen.RETENTION_MAX_WORDS_PER_LINE, 9)
+        self.assertLessEqual(gen.RETENTION_MAX_SCRIPT_WORDS, 28)
+
     def test_twenty_consecutive_generated_reels_have_distinct_assets_and_valid_duration(self):
         try:
             import generate as gen

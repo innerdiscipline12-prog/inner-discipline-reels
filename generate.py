@@ -619,8 +619,9 @@ PACING = {
     "attack": {"rate": "-4%", "pitch": "-35Hz", "chunk_size": 2, "gap": 0.16},
     "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
     "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
-    # Retention engine needs a controlled but faster delivery to fit the short format.
-    "smart_cold": {"rate": "-2%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.12},
+    # INNER Discipline signature delivery: slower, low, and deliberate.
+    # Duration is managed by writing fewer words and preserving pauses, never by rushing.
+    "smart_cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 2, "gap": 0.34},
 }
 
 
@@ -1670,6 +1671,80 @@ def cohere_retention_script(lines):
     return result
 
 
+# INNER Discipline delivery guardrails: write for a calm voice, never for rushed playback.
+RETENTION_MAX_WORDS_PER_LINE = 9
+RETENTION_MAX_SCRIPT_WORDS = 18
+RETENTION_MAX_LINE_AUDIO_SECONDS = 4.3
+
+def retention_script_fits_delivery(lines):
+    """Return True only for scripts that can be delivered deliberately."""
+    clean_lines = [clean_text(line) for line in lines if clean_text(line)]
+    if not RETENTION_LINE_COUNT_MIN <= len(clean_lines) <= RETENTION_LINE_COUNT_MAX:
+        return False
+    if sum(len(line.split()) for line in clean_lines) > RETENTION_MAX_SCRIPT_WORDS:
+        return False
+    if any(len(line.split()) > RETENTION_MAX_WORDS_PER_LINE for line in clean_lines):
+        return False
+    return True
+
+
+def fit_retention_delivery(lines):
+    """Split overlong comma-linked lines into short spoken thoughts before TTS."""
+    import re
+
+    expanded = []
+    for raw_line in lines:
+        line = clean_text(raw_line)
+        if not line:
+            continue
+        parts = [part.strip(" .!?;") for part in re.split(r"[,;]+", line) if part.strip(" .!?;")]
+        if len(parts) <= 1 and len(line.split()) > RETENTION_MAX_WORDS_PER_LINE:
+            words = line.split()
+            parts = [" ".join(words[i:i + RETENTION_MAX_WORDS_PER_LINE])
+                     for i in range(0, len(words), RETENTION_MAX_WORDS_PER_LINE)]
+        for part in parts:
+            words = part.split()
+            if len(words) > RETENTION_MAX_WORDS_PER_LINE:
+                words = words[:RETENTION_MAX_WORDS_PER_LINE]
+                part = " ".join(words)
+            if part:
+                # A clause split at a comma may begin with a conjunction, leaving
+                # a weak standalone fragment. Make common generated fragments
+                # into complete, calm spoken thoughts instead of preserving them.
+                part = re.sub(r"^(?:and|but|so)\s+", "", part, flags=re.IGNORECASE)
+                if part.lower().strip(" .!?") == "no mood is helping":
+                    part = "Moods will not carry you"
+                if part:
+                    expanded.append(part[0].upper() + part[1:])
+
+    # Keep the hook and the closing thought; use only complete short clauses
+    # between them. The resulting voice script must never exceed the word budget.
+    if not expanded:
+        return []
+    if len(expanded) > RETENTION_LINE_COUNT_MAX:
+        expanded = [expanded[0]] + expanded[1:RETENTION_LINE_COUNT_MAX - 1] + [expanded[-1]]
+    chosen = []
+    for i, line in enumerate(expanded):
+        if len(chosen) >= RETENTION_LINE_COUNT_MAX:
+            break
+        if sum(len(x.split()) for x in chosen) + len(line.split()) > RETENTION_MAX_SCRIPT_WORDS:
+            continue
+        chosen.append(line.rstrip(" .!?") + ".")
+    if len(chosen) < RETENTION_LINE_COUNT_MIN and len(expanded) >= RETENTION_LINE_COUNT_MIN:
+        chosen = [line.rstrip(" .!?") + "." for line in expanded[:RETENTION_LINE_COUNT_MIN]
+                  if len(line.split()) <= RETENTION_MAX_WORDS_PER_LINE]
+
+    # Never let a clause-split fragment become the closing narration/payoff.
+    # This catches short dangling phrases that can survive word-count checks.
+    dangling_endings = {
+        "every time", "quietly", "for real", "not forever", "before it hurts",
+        "at a time", "not before", "until it hurts", "then again",
+    }
+    if chosen and chosen[-1].rstrip(" .!?").casefold() in dangling_endings:
+        chosen[-1] = "The pattern keeps repeating."
+    return chosen
+
+
 def build_retention_reel_script():
     """
     v31.2 SMART COMPLETION ENGINE.
@@ -1707,7 +1782,11 @@ def build_retention_reel_script():
     script_options = []
     for candidate_category in category_order:
         candidate_bank = VIRAL_RETENTION_BANK[candidate_category]
+        # Select from the full bank first. Long source lines are shortened after
+        # selection; filtering raw bank entries here can exhaust every category.
         candidate_options = candidate_bank["scripts"]
+        if not candidate_options:
+            continue
         candidate_keys = [" | ".join(x) for x in candidate_options]
         try:
             selected_key, concept, novelty_score, _ = select_novel_candidate(
@@ -1725,7 +1804,10 @@ def build_retention_reel_script():
         except ValueError as exc:
             originality_error = exc
     if selected_key is None:
-        raise ValueError(f"V32 SCRIPT ORIGINALITY BLOCKED GENERATION: {originality_error}")
+        raise ValueError(
+            "V32 SCRIPT SELECTION BLOCKED GENERATION: no candidate passed delivery limits "
+            f"and originality checks. Last originality error: {originality_error}"
+        )
     selected_index = script_keys_index = [" | ".join(x) for x in script_options].index(selected_key)
     print("V32 SCRIPT NOVELTY:", round(novelty_score, 3), "CATEGORY:", category)
     # Keep the complete source script until we have selected the short cut.
@@ -1750,7 +1832,8 @@ def build_retention_reel_script():
         first_line = original_lines[0]
         final_line = original_lines[-1] if len(original_lines) > 1 else ""
         selected_lines = list(original_lines)
-        budget = 27
+        # Keep the voiceover short enough for deliberate delivery; preserve hook and payoff.
+        budget = RETENTION_MAX_SCRIPT_WORDS
         while len(selected_lines) > 3 and sum(len(line.split()) for line in selected_lines) > budget:
             selected_lines.pop(1)
         if sum(len(line.split()) for line in selected_lines) > budget and len(selected_lines) > 2:
@@ -1758,6 +1841,17 @@ def build_retention_reel_script():
         lines = selected_lines
     if len(lines) > 5:
         lines = lines[:5]
+
+    # Enforce spoken-line limits after all hook/coherence rewrites, because those
+    # transformations can merge clauses back into an overlong line.
+    lines = fit_retention_delivery(lines)
+    if not retention_script_fits_delivery(lines):
+        raise ValueError(
+            "V32 DELIVERY GATE: could not produce short, coherent lines within "
+            "the spoken-word budget; refusing to render rushed narration."
+        )
+    source_payoff = lines[-1]
+
     # Strict cover gate: prefer category-matched covers, then search the whole
     # approved pool. Never use the old rotation helper's duplicate fallback.
     rotation = load_rotation_state()
@@ -3426,11 +3520,10 @@ def build_video(script, bg_path, out_path):
 
         voice_data = []
         short_retention_mode = getattr(script, "mode", "") == "smart_completion_engine_v31_2"
-        # Keep short-form voiceover safely inside the 12–15s window. TTS
-        # duration varies slightly by line, so use compact but audible pauses
-        # rather than relying on the visual timing estimate alone.
-        cursor = 0.20 if short_retention_mode else 0.95
-        gap = 0.06 if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
+        # Deliberate brand pacing: begin cleanly, then leave real space between thoughts.
+        # Do not compress the gaps to rescue an overlong script.
+        cursor = 0.35 if short_retention_mode else 0.95
+        gap = PACING.get(script.pacing, {}).get("gap", 0.34) if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
 
         print("Generating voice lines...")
         for i, line in enumerate(script.lines):
@@ -3443,6 +3536,13 @@ def build_video(script, bg_path, out_path):
             dur = float(audio_probe.duration)
             audio_probe.close()
 
+            if short_retention_mode and dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
+                raise RuntimeError(
+                    f"Spoken line {i + 1} takes {dur:.2f}s (limit "
+                    f"{RETENTION_MAX_LINE_AUDIO_SECONDS:.2f}s). Rewrite it shorter; "
+                    "voice speed will not be increased."
+                )
+
             voice_data.append({
                 "file": vf,
                 "line": line,
@@ -3451,7 +3551,7 @@ def build_video(script, bg_path, out_path):
                 "chunk_size": PACING.get(script.pacing, PACING.get('cold', list(PACING.values())[0]))["chunk_size"],
             })
 
-            cursor += dur + (gap if i < len(script.lines) - 1 else (0.08 if short_retention_mode else 0.24))
+            cursor += dur + (gap if i < len(script.lines) - 1 else (0.32 if short_retention_mode else 0.24))
 
         # Never truncate speech to satisfy a target duration. A too-long voiceover
         # must fail visibly so the script can be corrected instead of clipping audio.
