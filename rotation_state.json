@@ -24,22 +24,21 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 5,
+    "scene_broken": 0,
     "scene_dangerous": 3
   },
-  "updated_at": "2026-10-30T04:51:28",
+  "updated_at": "2026-11-02T05:21:35",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,8 +761,8 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
+    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #routine #focus #mindset #selfrespect"
   ],
@@ -779,6 +778,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "nothing stays small. | not the excuse. | not the delay. | not the habit. | not the compromise. | if you keep feeding it. | it grows. | quietly.",
     "excuses have interest. | they feel harmless now. | then they charge your future. | one repeated delay. | one weak decision. | one comfortable lie. | at a time. | that is the trap.",
     "you know what this is. | the problem is not information. | you already saw the habit. | you already felt the warning. | you already knew the cost. | the part you avoid is obedience. | especially when comfort gets loud. | that is where discipline begins.",
     "the real problem is quieter. | is not motivation. | motivation comes and goes. | the real problem is the routine. | you keep protecting. | with excuses. | that sound reasonable. | but still cost you.",
@@ -805,6 +805,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "nothing stays small. | not the habit. | not the compromise. | if you keep feeding it. | it grows quietly.",
     "excuses have interest. | one weak decision. | one comfortable lie at a time. | that is the trap.",
     "you knew before it hurt. | the part you avoid is obedience. | especially when comfort gets loud.",
     "the real problem is not motivation. | those excuses sound reasonable. | but they still cost you.",
@@ -841,6 +842,7 @@
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "regret compounds",
     "slow damage wins",
     "before it breaks",
     "still not done",
@@ -867,6 +869,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "what feels harmless in isolation can become expensive through repetition. interrupt the pattern before it starts choosing for you.",
     "avoidance can feel like relief in the moment. the pressure you postpone often returns with fewer options attached.",
     "you can make an excuse sound intelligent without making it useful. judge the explanation by what it allows you to repeat.",
     "the work becomes meaningful when it no longer needs to feel exciting. that is where consistency starts to separate itself.",
@@ -893,11 +896,11 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "identity",
     "procrastination",
     "excuses",
     "consistency",
     "comfort",
-    "identity",
     "boundaries",
     "standards",
     "emotional_control"
