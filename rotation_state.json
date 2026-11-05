@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 0,
-    "scene_dangerous": 4
+    "scene_dangerous": 5
   },
-  "updated_at": "2026-11-03T04:25:34",
+  "updated_at": "2026-11-05T04:53:40",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,8 +762,8 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect"
   ],
@@ -779,6 +779,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you keep explaining. | the same pattern. | with better words. | you can make the excuse sound intelligent. | you can make delay sound strategic. | but the routine still knows. | what really happened. | so do you.",
     "this is the part. | most people avoid. | they want the result. | they want the identity. | they want the respect. | but not the standard. | that creates all of it. | that is the trade.",
     "you let it slide. | once. | then again. | then it stopped feeling wrong. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
     "excuses have interest. | they feel harmless now. | then they charge your future. | one repeated delay. | one weak decision. | one comfortable lie. | at a time. | that is the trap.",
@@ -807,6 +808,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "you keep explaining. | the routine still knows. | what really happened. | do you.",
     "this is the part. | not the standard. | the standard creates all of it. | that is the trade.",
     "you let it slide. | then the result made sense. | that is how it happens.",
     "excuses have interest. | one weak decision. | one comfortable lie at a time. | that is the trap.",
@@ -835,16 +837,17 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "excuses",
     "standards",
     "procrastination",
     "consistency",
-    "excuses",
     "identity",
     "comfort",
     "recovery",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "regret compounds",
     "time keeps score",
     "you let it",
     "slow damage wins",
@@ -873,6 +876,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "self-respect is built in moments that offer no applause. keep the promise when breaking it would be easier.",
     "the plan is only the opening move. the result depends on what you do when the plan becomes ordinary.",
     "if the same problem keeps returning, look beyond the latest mistake. study the decision that keeps giving it permission.",
     "avoidance can feel like relief in the moment. the pressure you postpone often returns with fewer options attached.",
@@ -901,11 +905,11 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "identity",
     "procrastination",
     "excuses",
     "consistency",
     "comfort",
-    "identity",
     "boundaries",
     "standards",
     "emotional_control"
