@@ -51,6 +51,17 @@ class OriginalityTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             assert_novel(near, [old], label="cover", threshold=0.35)
 
+    def test_short_covers_do_not_conflict_on_shared_structure_words(self):
+        old = "THE REAL TEST"
+        fresh = "THE FUTURE PAYS"
+        self.assertLess(similarity(old, fresh), 0.35)
+        chosen, _, score, fallback = select_novel_candidate(
+            [fresh], recent_scripts=[old], max_similarity_threshold=0.35
+        )
+        self.assertEqual(chosen, fresh)
+        self.assertLess(score, 0.35)
+        self.assertFalse(fallback)
+
     def test_does_not_fallback_when_pool_is_exhausted(self):
         old = "Your phone steals your attention every morning."
         with self.assertRaises(ValueError):
