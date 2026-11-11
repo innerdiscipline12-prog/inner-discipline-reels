@@ -60,7 +60,12 @@ def similarity(left, right):
     overlap = len(a & b)
     jaccard = overlap / len(a | b)
     containment = overlap / min(len(a), len(b))
-    sequence = difflib.SequenceMatcher(None, a_norm, b_norm).ratio()
+    # Compare sequence using meaningful tokens rather than raw wording. Short
+    # covers often share structural words such as "THE", "YOU", or "WHEN";
+    # treating those as semantic similarity falsely exhausts the cover pool.
+    a_meaningful = " ".join(sorted(a))
+    b_meaningful = " ".join(sorted(b))
+    sequence = difflib.SequenceMatcher(None, a_meaningful, b_meaningful).ratio()
     return max(jaccard, containment * 0.72, sequence * 0.72)
 
 def max_similarity(candidate, recent):
