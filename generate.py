@@ -25,6 +25,12 @@ from moviepy.video.fx import all as vfx
 import edge_tts
 
 from originality import assert_novel, retention_hook_score, select_novel_candidate
+from retention_engine import (
+    build_performance_profile,
+    hook_family,
+    is_swipe_risk_hook,
+    retention_candidate_score,
+)
 
 
 # ================================================================
@@ -66,6 +72,7 @@ STATE_FILE = os.path.join(BASE_DIR, "engine_state_v3.json")
 SERIES_STATE_FILE = os.path.join(BASE_DIR, "series_state.json")
 ROTATION_STATE_FILE = os.path.join(BASE_DIR, "rotation_state.json")
 HOOK_STATE_FILE = os.path.join(BASE_DIR, "hook_state.json")
+PERFORMANCE_HISTORY_FILE = os.path.join(BASE_DIR, "performance_history_v33.json")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
@@ -381,6 +388,15 @@ AUTO_COMMIT_STATE = True
 # So the script fails loudly instead of silently repeating Day 2 / same background.
 STRICT_STATE_SEQUENCE = True
 
+# V33 RETENTION ENGINE
+RETENTION_V33_ENABLED = True
+RETENTION_SCORE_MIN = 5.0
+RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 13.25
+RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS = 5
+PERFORMANCE_PROFILE_V33 = build_performance_profile(
+    safe_load_json(PERFORMANCE_HISTORY_FILE, [])
+)
+
 
 # ================================================================
 # STATE
@@ -548,6 +564,7 @@ def auto_commit_state_files():
         "used_lines_v3.json",
         "engine_state_v3.json",
         "hook_state.json",
+        "performance_history_v33.json",
     ]
 
     existing = [f for f in files if os.path.exists(os.path.join(BASE_DIR, f))]
@@ -1741,7 +1758,16 @@ def build_retention_reel_script():
     for candidate_category in category_order:
         candidate_bank = VIRAL_RETENTION_BANK[candidate_category]
         candidate_options = candidate_bank["scripts"]
-        candidate_keys = [" | ".join(x) for x in candidate_options]
+
+        # V33: remove predictable swipe-risk openings before originality ranking.
+        candidate_keys = [
+            " | ".join(x)
+            for x in candidate_options
+            if x and not is_swipe_risk_hook(x[0])
+        ]
+        if not candidate_keys:
+            continue
+
         try:
             selected_key, concept, novelty_score, _ = select_novel_candidate(
                 candidate_keys,
@@ -1749,7 +1775,11 @@ def build_retention_reel_script():
                 recent_concepts=rotation.get("recent_smart_concepts_v32", [])[:4],
                 max_similarity_threshold=0.42,
                 concept_window=3,
-                quality_fn=retention_hook_score,
+                quality_fn=lambda candidate: retention_candidate_score(
+                    candidate,
+                    candidate_category,
+                    PERFORMANCE_PROFILE_V33,
+                ),
             )
             category = candidate_category
             bank = candidate_bank
@@ -1758,7 +1788,7 @@ def build_retention_reel_script():
         except ValueError as exc:
             originality_error = exc
     if selected_key is None:
-        raise ValueError(f"V32 SCRIPT ORIGINALITY BLOCKED GENERATION: {originality_error}")
+        raise ValueError(f"V33 SCRIPT RETENTION/ORIGINALITY BLOCKED GENERATION: {originality_error}")
     selected_index = script_keys_index = [" | ".join(x) for x in script_options].index(selected_key)
     print("V32 SCRIPT NOVELTY:", round(novelty_score, 3), "CATEGORY:", category)
     # Keep the complete source script until we have selected the short cut.
@@ -1791,6 +1821,21 @@ def build_retention_reel_script():
         lines = selected_lines
     if len(lines) > 5:
         lines = lines[:5]
+
+    v33_score = retention_candidate_score(
+        lines,
+        category,
+        PERFORMANCE_PROFILE_V33,
+    )
+    v33_hook_family = hook_family(lines[0] if lines else "")
+    print("V33 RETENTION SCORE:", round(v33_score, 3))
+    print("V33 HOOK FAMILY:", v33_hook_family)
+    if v33_score < RETENTION_SCORE_MIN:
+        raise ValueError(
+            f"V33 RETENTION SCORE TOO LOW: {v33_score:.2f} < "
+            f"{RETENTION_SCORE_MIN:.2f}"
+        )
+
     # Strict cover gate: prefer category-matched covers, then search the whole
     # approved pool. Never use the old rotation helper's duplicate fallback.
     rotation = load_rotation_state()
@@ -1832,6 +1877,9 @@ def build_retention_reel_script():
     print("V32.0 SCRIPT:", " | ".join(lines))
     script = Script(mode="smart_completion_engine_v31_2", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
     script.source_payoff = source_payoff
+    script.v33_retention_score = v33_score
+    script.v33_hook_family = v33_hook_family
+    script.v33_performance_samples = PERFORMANCE_PROFILE_V33.get("samples", 0)
     if not script.lines or script.lines[-1] != source_payoff:
         raise ValueError("V32 PAYOFF PRESERVATION FAILED: shortened script lost its original ending.")
     return apply_smart_pacing_v31_2(script)
@@ -3407,6 +3455,19 @@ def write_metadata(script, out_path, bg_path=None):
     with open(f"{base}_script.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(script.lines))
 
+    retention_meta = {
+        "version": "V33",
+        "run_id": RUN_ID,
+        "category": getattr(script, "category", ""),
+        "hook_family": getattr(script, "v33_hook_family", hook_family(getattr(script, "lines", [""])[0])),
+        "retention_score": getattr(script, "v33_retention_score", None),
+        "predicted_duration": getattr(script, "smart_duration", None),
+        "performance_samples": getattr(script, "v33_performance_samples", 0),
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+    }
+    with open(f"{base}_retention.json", "w", encoding="utf-8") as f:
+        json.dump(retention_meta, f, ensure_ascii=False, indent=2)
+
     return export_cover(script, out_path, bg_path)
 
 
@@ -3610,7 +3671,7 @@ def build_video(script, bg_path, out_path):
 # ================================================================
 
 def main():
-    print("\nINNER DISCIPLINE — SMART COMPLETION ENGINE v32.0")
+    print("\nINNER DISCIPLINE — SMART COMPLETION ENGINE v33 RETENTION ENGINE")
     print("=" * 64)
     print("RUN ID:", RUN_ID)
     print("SERIES STATE FILE:", SERIES_STATE_FILE)
@@ -3623,16 +3684,84 @@ def main():
     print("EBOOK ROOT:", EBOOK_ROOT)
     print("EBOOK SCREENSHOTS FOUND:", get_ebook_screenshot_pool())
 
-    script = build_script()
+    script = None
+
+    # V33.1: actual Edge TTS is the timing source of truth before rendering.
+    # Reject overlong candidates and ask the generator for a fresh original one.
+    # Never speed up, clip, or remove deliberate pacing.
+    for attempt in range(1, RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS + 1):
+        candidate = build_script()
+        candidate_files = []
+        try:
+            if getattr(candidate, "mode", "") == "smart_completion_engine_v31_2":
+                cursor = 0.20
+                gap = PACING.get(candidate.pacing, {}).get("gap", 0.12)
+
+                for i, line in enumerate(candidate.lines):
+                    vf = os.path.join(
+                        TEMP_DIR,
+                        f"preflight_{datetime.now().strftime('%H%M%S')}_"
+                        f"{i}_{random.randint(1000,9999)}.mp3"
+                    )
+                    candidate_files.append(vf)
+                    generate_voice(line, vf, candidate.pacing)
+
+                    probe = AudioFileClip(vf)
+                    dur = float(probe.duration)
+                    probe.close()
+
+                    if dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
+                        raise RuntimeError(
+                            f"line {i + 1} actual TTS is {dur:.2f}s; "
+                            f"line limit is {RETENTION_MAX_LINE_AUDIO_SECONDS:.2f}s"
+                        )
+
+                    cursor += dur + (gap if i < len(candidate.lines) - 1 else 0.08)
+
+                print(
+                    f"V33 ACTUAL TTS PREFLIGHT: {cursor:.2f}s "
+                    f"(attempt {attempt}/{RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS})"
+                )
+
+                if cursor > RETENTION_TTS_PREFLIGHT_MAX_SECONDS:
+                    raise RuntimeError(
+                        f"actual TTS duration {cursor:.2f}s exceeds the "
+                        f"{RETENTION_TTS_PREFLIGHT_MAX_SECONDS:.2f}s safety target"
+                    )
+
+            script = candidate
+            break
+
+        except RuntimeError as exc:
+            print(f"V33 TTS CANDIDATE REJECTED: {exc}")
+            if attempt == RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS:
+                raise RuntimeError(
+                    "V33 TTS PREFLIGHT FAILED: no candidate fit the "
+                    f"{RETENTION_TTS_PREFLIGHT_MAX_SECONDS:.2f}s safety target "
+                    f"after {RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS} attempts."
+                )
+            continue
+        finally:
+            for vf in candidate_files:
+                try:
+                    if os.path.exists(vf):
+                        os.remove(vf)
+                except OSError:
+                    pass
+
+    if script is None:
+        raise RuntimeError("V33 generation failed: no script survived retention/TTS preflight.")
 
     print("SELECTED MODE:", script.mode)
     print("SELECTED CATEGORY:", script.category)
     print("SELECTED MOOD:", script.mood)
+    print("V33 RETENTION SCORE:", getattr(script, "v33_retention_score", None))
+    print("V33 HOOK FAMILY:", getattr(script, "v33_hook_family", None))
 
     bg = choose_background_for_script(script)
 
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(OUTPUT_DIR, f"reel_v32_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
+    out_path = os.path.join(OUTPUT_DIR, f"reel_v33_{script.mode}_{script.category}_{date_str}_{RUN_ID}.mp4")
 
     ok = build_video(script, bg, out_path)
 
