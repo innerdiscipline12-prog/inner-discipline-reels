@@ -1676,6 +1676,20 @@ RETENTION_MAX_WORDS_PER_LINE = 9
 RETENTION_MAX_SCRIPT_WORDS = 18
 RETENTION_MAX_LINE_AUDIO_SECONDS = 4.3
 
+# V32.1: actual Edge TTS duration is the source of truth for short-form timing.
+# Keep a safety buffer below the hard 15s ceiling so timing differences cannot
+# turn a script that looked safe on paper into an over-limit render.
+RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 13.25
+RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS = 5
+
+
+class RetentionDurationRejected(Exception):
+    """Candidate script is structurally valid but too long after real TTS."""
+
+
+def retention_tts_duration_is_safe(duration):
+    return float(duration) <= RETENTION_TTS_PREFLIGHT_MAX_SECONDS
+
 def retention_script_fits_delivery(lines):
     """Return True only for scripts that can be delivered deliberately."""
     clean_lines = [clean_text(line) for line in lines if clean_text(line)]
@@ -3721,7 +3735,86 @@ def main():
     print("EBOOK ROOT:", EBOOK_ROOT)
     print("EBOOK SCREENSHOTS FOUND:", get_ebook_screenshot_pool())
 
-    script = build_script()
+    script = None
+    bg = None
+    out_path = None
+    ok = False
+
+    # V32.1: validate the actual generated TTS before paying the cost of rendering.
+    # If a candidate is too long, select a fresh original candidate instead of
+    # speeding up, clipping, or weakening the deliberate INNER Discipline pacing.
+    for attempt in range(1, RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS + 1):
+        candidate = build_script()
+
+        if getattr(candidate, "mode", "") == "smart_completion_engine_v31_2":
+            print(
+                f"V32.1 TTS PREFLIGHT: attempt {attempt}/"
+                f"{RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS}"
+            )
+            preflight_files = []
+            try:
+                cursor = 0.35
+                gap = PACING.get(candidate.pacing, {}).get("gap", 0.34)
+
+                for i, line in enumerate(candidate.lines):
+                    vf = os.path.join(
+                        TEMP_DIR,
+                        f"preflight_{datetime.now().strftime('%H%M%S')}_"
+                        f"{i}_{random.randint(1000,9999)}.mp3"
+                    )
+                    preflight_files.append(vf)
+                    generate_voice(line, vf, candidate.pacing)
+
+                    probe = AudioFileClip(vf)
+                    dur = float(probe.duration)
+                    probe.close()
+
+                    if dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
+                        raise RetentionDurationRejected(
+                            f"line {i + 1} is {dur:.2f}s "
+                            f"(line limit {RETENTION_MAX_LINE_AUDIO_SECONDS:.2f}s)"
+                        )
+
+                    cursor += dur + (
+                        gap if i < len(candidate.lines) - 1 else 0.32
+                    )
+
+                print(f"V32.1 ACTUAL TTS PREFLIGHT: {cursor:.2f}s")
+
+                if not retention_tts_duration_is_safe(cursor):
+                    raise RetentionDurationRejected(
+                        f"actual TTS duration {cursor:.2f}s exceeds the "
+                        f"preflight safety target of "
+                        f"{RETENTION_TTS_PREFLIGHT_MAX_SECONDS:.2f}s"
+                    )
+
+                script = candidate
+                break
+
+            except RetentionDurationRejected as exc:
+                print(f"V32.1 TTS REJECTED: {exc}")
+                if attempt == RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS:
+                    raise RuntimeError(
+                        "V32.1 TTS PREFLIGHT FAILED: "
+                        f"no candidate fit the {RETENTION_TTS_PREFLIGHT_MAX_SECONDS:.2f}s "
+                        "safe actual-audio target after "
+                        f"{RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS} attempts."
+                    )
+                continue
+
+            finally:
+                for vf in preflight_files:
+                    try:
+                        if os.path.exists(vf):
+                            os.remove(vf)
+                    except OSError:
+                        pass
+        else:
+            script = candidate
+            break
+
+    if script is None:
+        raise RuntimeError("REEL GENERATION FAILED: no script candidate survived TTS preflight.")
 
     print("SELECTED MODE:", script.mode)
     print("SELECTED CATEGORY:", script.category)
