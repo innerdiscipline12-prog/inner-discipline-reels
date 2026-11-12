@@ -533,7 +533,11 @@ def save_rotation_state(data):
 
 
 def auto_commit_state_files():
-    """Persist generator memory on a dedicated branch; never push state to protected main."""
+    """
+    Commits state memory files back to GitHub.
+
+    If this fails, the next workflow run cannot know the next day or next background.
+    """
     if not AUTO_COMMIT_STATE:
         print("STATE COMMIT DISABLED.")
         return False
@@ -545,61 +549,79 @@ def auto_commit_state_files():
         "engine_state_v3.json",
         "hook_state.json",
     ]
+
     existing = [f for f in files if os.path.exists(os.path.join(BASE_DIR, f))]
     if not existing:
         print("STATE COMMIT: no state files found.")
         return False
 
-    snapshot = os.path.join(BASE_DIR, ".generator-state-snapshot")
-    worktree = os.path.join(BASE_DIR, ".generator-state-worktree")
     try:
-        os.makedirs(snapshot, exist_ok=True)
-        for name in existing:
-            shutil.copy2(os.path.join(BASE_DIR, name), os.path.join(snapshot, name))
-
         subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=BASE_DIR, check=False)
         subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=BASE_DIR, check=False)
-        fetch = subprocess.run(["git", "fetch", "origin", "generator-state"], cwd=BASE_DIR, text=True, capture_output=True, check=False)
-        if os.path.exists(worktree):
-            subprocess.run(["git", "worktree", "remove", "--force", worktree], cwd=BASE_DIR, text=True, capture_output=True, check=False)
 
-        if fetch.returncode == 0:
-            setup = subprocess.run(["git", "worktree", "add", worktree, "origin/generator-state"], cwd=BASE_DIR, text=True, capture_output=True, check=False)
-        else:
-            setup = subprocess.run(["git", "worktree", "add", "-b", "generator-state", worktree, "HEAD"], cwd=BASE_DIR, text=True, capture_output=True, check=False)
-        if setup.returncode != 0:
-            print("STATE ERROR: could not prepare generator-state worktree:", setup.stderr.strip())
-            return False
+        add = subprocess.run(
+            ["git", "add"] + existing,
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        print("STATE ADD:", add.stdout.strip() or add.stderr.strip() or "ok")
 
-        for name in existing:
-            shutil.copy2(os.path.join(snapshot, name), os.path.join(worktree, name))
-        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=worktree, check=False)
-        subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], cwd=worktree, check=False)
-        subprocess.run(["git", "add"] + existing, cwd=worktree, check=False)
-        status = subprocess.run(["git", "status", "--porcelain"], cwd=worktree, text=True, capture_output=True, check=False)
+        status = subprocess.run(
+            ["git", "status", "--porcelain"] + existing,
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
         if not status.stdout.strip():
             print("STATE COMMIT: no changes.")
             return True
 
-        commit = subprocess.run(["git", "commit", "-m", "Update generator state"], cwd=worktree, text=True, capture_output=True, check=False)
+        commit = subprocess.run(
+            ["git", "commit", "-m", "Update generator state"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
         print("STATE COMMIT:", commit.stdout.strip() or commit.stderr.strip())
+
         if commit.returncode != 0:
             print("STATE ERROR: commit failed.")
             return False
 
-        push = subprocess.run(["git", "push", "origin", "HEAD:refs/heads/generator-state"], cwd=worktree, text=True, capture_output=True, check=False)
-        print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
-        if push.returncode != 0:
-            print("STATE ERROR: failed to persist state to generator-state.")
+        # GitHub Actions checks out pull requests in detached-HEAD mode unless
+        # the workflow explicitly checks out the source branch. Push state to
+        # that named branch so rotation/originality history survives the next run.
+        target_ref = os.getenv("GITHUB_HEAD_REF", "").strip() or os.getenv("GITHUB_REF_NAME", "").strip()
+        if not target_ref:
+            print("STATE ERROR: no target branch is available for persistence.")
             return False
+
+        push = subprocess.run(
+            ["git", "push", "origin", f"HEAD:refs/heads/{target_ref}"],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+        print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
+        print("STATE PUSH RETURN CODE:", push.returncode)
+
+        if push.returncode != 0:
+            print("STATE ERROR: GitHub did not save series_state.json or rotation_state.json.")
+            print("FIX: Settings > Actions > General > Workflow permissions > Read and write permissions.")
+            return False
+
         return True
+
     except Exception as e:
         print(f"STATE AUTO-COMMIT FAILED: {e}")
         return False
-    finally:
-        if os.path.exists(worktree):
-            subprocess.run(["git", "worktree", "remove", "--force", worktree], cwd=BASE_DIR, text=True, capture_output=True, check=False)
-        shutil.rmtree(snapshot, ignore_errors=True)
 
 
 # ================================================================
@@ -619,9 +641,8 @@ PACING = {
     "attack": {"rate": "-4%", "pitch": "-35Hz", "chunk_size": 2, "gap": 0.16},
     "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
     "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
-    # INNER Discipline signature delivery: slower, low, and deliberate.
-    # Duration is managed by writing fewer words and preserving pauses, never by rushing.
-    "smart_cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 2, "gap": 0.34},
+    # Retention engine needs a controlled but faster delivery to fit the short format.
+    "smart_cold": {"rate": "-2%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.12},
 }
 
 
@@ -925,14 +946,19 @@ VIRAL_RETENTION_BANK = {
         "mood": "dangerous",
         "cover_style": "mirror",
         "covers": [
-            "THE REAL REASON", "YOU ALREADY KNOW", "THE PRIVATE SLIP",
-            "WHAT YOU AVOID", "THE QUIET LIE", "YOU SAW IT",
-            "THE SAME PATTERN", "BEFORE IT BREAKS", "YOUR FIRST WARNING",
-            "THE HIDDEN CHOICE", "WHAT YOU PROTECT", "THE EXCUSE LOOP",
-            "YOU LET IT", "THE STANDARD DROPPED", "NO MORE HIDING",
-            "THE TRUTH STINGS", "YOUR NEXT MOVE", "STILL NEGOTIATING",
-            "THE REAL TRADE", "YOU KNOW WHY", "ONE SMALL CRACK",
-            "THE MOMENT BEFORE", "THE COSTLY HABIT", "THE WARNING SIGNS"
+            "YOU KNOW THIS ALREADY", "YOU FELT THE WARNING", "YOU KEEP NEGOTIATING",
+            "YOU'RE NOT CONFUSED", "YOU KNOW WHAT TO DO", "THE STANDARD SLIPPED",
+            "YOU WATCHED IT HAPPEN", "YOU CALLED IT TOMORROW", "YOU SAW IT COMING",
+            "YOU KEEP EXPLAINING", "YOU FELT THAT DROP", "YOU BROKE IT QUIETLY",
+            "YOU LET IT SLIDE", "YOU KNOW THE PATTERN", "YOU'RE AVOIDING IT",
+            "YOU SAID TOMORROW", "YOU KEEP MOVING IT", "YOU KNEW EARLIER",
+            "STOP CALLING IT CONFUSION", "THE EXCUSE IS FAMILIAR", "YOU KNOW THE TRADE",
+            "YOUR PATTERN IS SHOWING", "WHO BENEFITS FROM DELAY", "THE PROMISE YOU BROKE",
+            "YOU SAW THE SLIDE", "NO ONE HAD TO TELL YOU", "THE TRUTH GOT QUIET",
+            "YOU MADE ROOM FOR IT", "THE CHOICE WAS YOURS", "YOUR ROUTINE ANSWERED",
+            "YOU KEEP PROTECTING IT", "THE WARNING WAS ENOUGH", "YOU ALREADY CHOSE",
+            "WHAT ARE YOU DEFENDING", "THE LIE SOUNDS BETTER", "YOU KNOW THE PRICE",
+            "YOU LEFT THE DOOR OPEN", "YOU MADE IT NORMAL"
         ],
         "scripts": [
             ["YOU KNOW WHAT THIS IS.", "The problem is not information.", "You already saw the habit.", "You already felt the warning.", "You already knew the cost.", "The part you avoid is obedience.", "Especially when comfort gets loud.", "That is where discipline begins."],
@@ -959,14 +985,17 @@ VIRAL_RETENTION_BANK = {
         "mood": "broken",
         "cover_style": "two_stage",
         "covers": [
-            "AND THEN?", "THE SECOND TEST", "AFTER THE PROMISE",
-            "WHEN IT FADES", "THE REAL TEST", "THE QUIET PART",
-            "NOT THE START", "WHERE IT BREAKS", "WHAT COMES NEXT",
-            "THE EMPTY WIN", "WHEN NOBODY WATCHES", "THE HARD RETURN",
-            "AFTER THE HIGH", "THE LAST EXCUSE", "THE NEXT REP",
-            "THE MOMENT AFTER", "WHEN IT'S BORING", "THE HIDDEN TEST",
-            "THE PART LEFT", "THE REPEAT TRAP", "THE REAL WORK",
-            "WHEN MOOD LEAVES", "THE PRIVATE PROOF", "STILL NOT DONE"
+            "THE HARDEST PART", "THE REAL PROBLEM", "THIS IS WHY",
+            "THIS IS THE PART", "THE PART YOU AVOID", "WHERE IT BREAKS",
+            "THE QUIET TRUTH", "THE FIRST CRACK", "THE REAL TEST",
+            "THE MOMENT YOU STOP", "WHAT MOST PEOPLE MISS", "THE PART THAT MATTERS",
+            "AFTER THE MOTIVATION", "WHEN THE NOVELTY DIES", "THE SECOND DECISION",
+            "WHAT HAPPENS NEXT", "THE TEST COMES LATER", "PROVE IT ON TUESDAY",
+            "WHEN NOBODY CHECKS", "THE ROUTINE REVEALS YOU", "THE QUIET SECOND HALF",
+            "THE WORK AFTER YES", "WHEN IT STOPS FEELING NEW", "THE MOMENT AFTER COMMITMENT",
+            "THE UNSEEN REPETITION", "THE PART AFTER PROMISES", "CONSISTENCY HAS A SOUND",
+            "THE DAY YOU DON'T FEEL IT", "WHAT REMAINS AFTER EXCITEMENT",
+            "WHEN THE FIRST WIN FADES", "THE BORING PART COUNTS"
         ],
         "scripts": [
             ["THE HARD PART STARTS HERE.", "Is not starting.", "Starting feels good.", "Starting gives you hope.", "Starting makes you feel changed.", "The hardest part is continuing.", "When nobody is watching.", "And no mood is helping."],
@@ -987,14 +1016,17 @@ VIRAL_RETENTION_BANK = {
         "mood": "broken",
         "cover_style": "consequence",
         "covers": [
-            "THE BILL COMES", "LATER COSTS MORE", "TIME TAKES BACK",
-            "THE PRICE RISES", "REGRET COMPOUNDS", "OPTIONS DISAPPEAR",
-            "THE COST WAITS", "YEARS GO MISSING", "SMALL THINGS SPREAD",
-            "THE DAMAGE GROWS", "COMFORT SENDS INVOICES", "DELAY LEAVES MARKS",
-            "THE EXIT SHRINKS", "THE FUTURE PAYS", "NOTHING STAYS FREE",
-            "THE LOSS ADDS", "THE PRICE HIDES", "ONE MORE DAY",
-            "SLOW DAMAGE WINS", "THE BILL ARRIVES", "YOU PAY LATER",
-            "TIME KEEPS SCORE", "THE YEARS LEAK", "THE CONSEQUENCE GROWS"
+            "LATER GETS EXPENSIVE", "WEAKNESS COMPOUNDS", "THE BILL ARRIVES",
+            "YEARS DISAPPEAR", "THE DAMAGE GROWS", "NOTHING STAYS SMALL",
+            "EXCUSES HAVE INTEREST", "TIME DOES NOT WAIT", "COMFORT HAS A COST",
+            "THE COST FINDS YOU",
+            "DELAY TAKES OPTIONS", "SMALL COSTS STACK UP", "THE PRICE OF LATER",
+            "YOUR FUTURE PAYS", "COMFORT SENDS A BILL", "THE INTEREST IS REAL",
+            "TIME COLLECTS QUIETLY", "ONE MORE EXCEPTION", "THE LOSS IS SLOW",
+            "REGRET STARTS HERE", "THE DAMAGE IS QUIET", "YOUR HABITS LEAVE RECEIPTS",
+            "THE COST KEEPS GROWING", "NO DEBT DISAPPEARS", "THE YEARS KEEP MOVING",
+            "YOU PAY IN TIME", "THE PRICE IS HIDDEN", "THE EXIT GETS NARROWER",
+            "EASY CHOICES ADD UP", "WHAT DELAY TAKES"
         ],
         "scripts": [
             ["DELAY GETS EXPENSIVE.", "Most people miss the cost.", "Because it does not arrive immediately.", "It arrives as a pattern.", "Then as a result.", "Then as a life.", "That delay is dangerous.", "That is why today matters."],
@@ -1671,80 +1703,6 @@ def cohere_retention_script(lines):
     return result
 
 
-# INNER Discipline delivery guardrails: write for a calm voice, never for rushed playback.
-RETENTION_MAX_WORDS_PER_LINE = 9
-RETENTION_MAX_SCRIPT_WORDS = 18
-RETENTION_MAX_LINE_AUDIO_SECONDS = 4.3
-
-def retention_script_fits_delivery(lines):
-    """Return True only for scripts that can be delivered deliberately."""
-    clean_lines = [clean_text(line) for line in lines if clean_text(line)]
-    if not RETENTION_LINE_COUNT_MIN <= len(clean_lines) <= RETENTION_LINE_COUNT_MAX:
-        return False
-    if sum(len(line.split()) for line in clean_lines) > RETENTION_MAX_SCRIPT_WORDS:
-        return False
-    if any(len(line.split()) > RETENTION_MAX_WORDS_PER_LINE for line in clean_lines):
-        return False
-    return True
-
-
-def fit_retention_delivery(lines):
-    """Split overlong comma-linked lines into short spoken thoughts before TTS."""
-    import re
-
-    expanded = []
-    for raw_line in lines:
-        line = clean_text(raw_line)
-        if not line:
-            continue
-        parts = [part.strip(" .!?;") for part in re.split(r"[,;]+", line) if part.strip(" .!?;")]
-        if len(parts) <= 1 and len(line.split()) > RETENTION_MAX_WORDS_PER_LINE:
-            words = line.split()
-            parts = [" ".join(words[i:i + RETENTION_MAX_WORDS_PER_LINE])
-                     for i in range(0, len(words), RETENTION_MAX_WORDS_PER_LINE)]
-        for part in parts:
-            words = part.split()
-            if len(words) > RETENTION_MAX_WORDS_PER_LINE:
-                words = words[:RETENTION_MAX_WORDS_PER_LINE]
-                part = " ".join(words)
-            if part:
-                # A clause split at a comma may begin with a conjunction, leaving
-                # a weak standalone fragment. Make common generated fragments
-                # into complete, calm spoken thoughts instead of preserving them.
-                part = re.sub(r"^(?:and|but|so)\s+", "", part, flags=re.IGNORECASE)
-                if part.lower().strip(" .!?") == "no mood is helping":
-                    part = "Moods will not carry you"
-                if part:
-                    expanded.append(part[0].upper() + part[1:])
-
-    # Keep the hook and the closing thought; use only complete short clauses
-    # between them. The resulting voice script must never exceed the word budget.
-    if not expanded:
-        return []
-    if len(expanded) > RETENTION_LINE_COUNT_MAX:
-        expanded = [expanded[0]] + expanded[1:RETENTION_LINE_COUNT_MAX - 1] + [expanded[-1]]
-    chosen = []
-    for i, line in enumerate(expanded):
-        if len(chosen) >= RETENTION_LINE_COUNT_MAX:
-            break
-        if sum(len(x.split()) for x in chosen) + len(line.split()) > RETENTION_MAX_SCRIPT_WORDS:
-            continue
-        chosen.append(line.rstrip(" .!?") + ".")
-    if len(chosen) < RETENTION_LINE_COUNT_MIN and len(expanded) >= RETENTION_LINE_COUNT_MIN:
-        chosen = [line.rstrip(" .!?") + "." for line in expanded[:RETENTION_LINE_COUNT_MIN]
-                  if len(line.split()) <= RETENTION_MAX_WORDS_PER_LINE]
-
-    # Never let a clause-split fragment become the closing narration/payoff.
-    # This catches short dangling phrases that can survive word-count checks.
-    dangling_endings = {
-        "every time", "quietly", "for real", "not forever", "before it hurts",
-        "at a time", "not before", "until it hurts", "then again",
-    }
-    if chosen and chosen[-1].rstrip(" .!?").casefold() in dangling_endings:
-        chosen[-1] = "The pattern keeps repeating."
-    return chosen
-
-
 def build_retention_reel_script():
     """
     v31.2 SMART COMPLETION ENGINE.
@@ -1782,11 +1740,7 @@ def build_retention_reel_script():
     script_options = []
     for candidate_category in category_order:
         candidate_bank = VIRAL_RETENTION_BANK[candidate_category]
-        # Select from the full bank first. Long source lines are shortened after
-        # selection; filtering raw bank entries here can exhaust every category.
         candidate_options = candidate_bank["scripts"]
-        if not candidate_options:
-            continue
         candidate_keys = [" | ".join(x) for x in candidate_options]
         try:
             selected_key, concept, novelty_score, _ = select_novel_candidate(
@@ -1804,10 +1758,7 @@ def build_retention_reel_script():
         except ValueError as exc:
             originality_error = exc
     if selected_key is None:
-        raise ValueError(
-            "V32 SCRIPT SELECTION BLOCKED GENERATION: no candidate passed delivery limits "
-            f"and originality checks. Last originality error: {originality_error}"
-        )
+        raise ValueError(f"V32 SCRIPT ORIGINALITY BLOCKED GENERATION: {originality_error}")
     selected_index = script_keys_index = [" | ".join(x) for x in script_options].index(selected_key)
     print("V32 SCRIPT NOVELTY:", round(novelty_score, 3), "CATEGORY:", category)
     # Keep the complete source script until we have selected the short cut.
@@ -1832,8 +1783,7 @@ def build_retention_reel_script():
         first_line = original_lines[0]
         final_line = original_lines[-1] if len(original_lines) > 1 else ""
         selected_lines = list(original_lines)
-        # Keep the voiceover short enough for deliberate delivery; preserve hook and payoff.
-        budget = RETENTION_MAX_SCRIPT_WORDS
+        budget = 27
         while len(selected_lines) > 3 and sum(len(line.split()) for line in selected_lines) > budget:
             selected_lines.pop(1)
         if sum(len(line.split()) for line in selected_lines) > budget and len(selected_lines) > 2:
@@ -1841,17 +1791,6 @@ def build_retention_reel_script():
         lines = selected_lines
     if len(lines) > 5:
         lines = lines[:5]
-
-    # Enforce spoken-line limits after all hook/coherence rewrites, because those
-    # transformations can merge clauses back into an overlong line.
-    lines = fit_retention_delivery(lines)
-    if not retention_script_fits_delivery(lines):
-        raise ValueError(
-            "V32 DELIVERY GATE: could not produce short, coherent lines within "
-            "the spoken-word budget; refusing to render rushed narration."
-        )
-    source_payoff = lines[-1]
-
     # Strict cover gate: prefer category-matched covers, then search the whole
     # approved pool. Never use the old rotation helper's duplicate fallback.
     rotation = load_rotation_state()
@@ -2758,43 +2697,14 @@ def make_cinematic_cover_background(bg_path):
         return Image.new("RGB", (W, H), BLACK)
 
 
-def cover_palette_for_text(cover_text):
-    """Stable palette rotation so neighboring covers do not all look identical."""
-    palettes = [
-        (ORANGE, WHITE),  # signature orange / white
-        (RED, WHITE),     # danger red / white
-        (RED, ORANGE),    # high-contrast red / orange
-        (WHITE, RED),     # white lead / red payoff
-        (ORANGE, RED),    # orange lead / red payoff
-    ]
-    import hashlib
-    digest = hashlib.sha256(clean_text(cover_text).upper().encode("utf-8")).digest()
-    return palettes[digest[0] % len(palettes)], digest[1] % 3
-
-
 def draw_cover_text_on_image(img, cover_text):
     img_rgba = img.convert("RGBA")
-    (lead_color, support_color), treatment = cover_palette_for_text(cover_text)
     band = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     band_draw = ImageDraw.Draw(band)
     band_draw.rectangle((0, int(H * 0.34), W, int(H * 0.70)), fill=(0, 0, 0, 92))
     img_rgba.alpha_composite(band)
 
     draw = ImageDraw.Draw(img_rgba)
-    accent = lead_color if treatment != 1 else support_color
-    bar_h = 7 if treatment == 2 else 5
-    bar_y = int(H * (0.315 if treatment == 0 else 0.705 if treatment == 1 else 0.325))
-    # Clamp coordinates to the actual image and use a plain rectangle.
-    # Pillow's rounded_rectangle raised "y1 must be greater than or equal to y0"
-    # in the GitHub Actions renderer, so keep this accent deliberately robust.
-    bar_y = max(0, min(bar_y, img_rgba.height - bar_h))
-    bar_x0 = max(0, min(int(W * 0.32), img_rgba.width - 1))
-    bar_x1 = max(bar_x0 + 1, min(int(W * 0.68), img_rgba.width))
-    draw.rectangle(
-        (bar_x0, bar_y, bar_x1, bar_y + bar_h - 1),
-        fill=accent + (225,),
-    )
-
     wc = len(clean_text(cover_text).split())
     font = load_font(178 if wc <= 2 else 136)
     lines = wrap_words(draw, cover_text, font, 940)
@@ -2812,12 +2722,9 @@ def draw_cover_text_on_image(img, cover_text):
 
         for wi, word in enumerate(words):
             raw = word.strip(".,?!:;\"'").upper()
-            if raw in DANGER_WORDS:
-                color = RED
-            else:
-                color = lead_color if wi == 0 else support_color
+            color = RED if raw in DANGER_WORDS else (ORANGE if wi == 0 else WHITE)
 
-            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0, 210), stroke_width=8, stroke_fill=(0, 0, 0, 255))
+            draw.text((x + 5, y + 6), word, font=font, fill=(0, 0, 0, 210))
             draw.text((x, y), word, font=font, fill=color + (255,), stroke_width=8, stroke_fill=(0, 0, 0, 255))
             x += int(widths[wi] + space)
 
@@ -2831,6 +2738,7 @@ def draw_cover_text_on_image(img, cover_text):
         img_rgba.paste(logo, ((W - new_w) // 2, H - new_h - LOGO_BOTTOM_MARGIN), logo)
 
     return img_rgba.convert("RGB")
+
 
 def export_cover(script, out_path, bg_path=None):
     base = os.path.splitext(out_path)[0]
@@ -3520,10 +3428,11 @@ def build_video(script, bg_path, out_path):
 
         voice_data = []
         short_retention_mode = getattr(script, "mode", "") == "smart_completion_engine_v31_2"
-        # Deliberate brand pacing: begin cleanly, then leave real space between thoughts.
-        # Do not compress the gaps to rescue an overlong script.
-        cursor = 0.35 if short_retention_mode else 0.95
-        gap = PACING.get(script.pacing, {}).get("gap", 0.34) if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
+        # Keep short-form voiceover safely inside the 12–15s window. TTS
+        # duration varies slightly by line, so use compact but audible pauses
+        # rather than relying on the visual timing estimate alone.
+        cursor = 0.20 if short_retention_mode else 0.95
+        gap = 0.06 if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
 
         print("Generating voice lines...")
         for i, line in enumerate(script.lines):
@@ -3536,13 +3445,6 @@ def build_video(script, bg_path, out_path):
             dur = float(audio_probe.duration)
             audio_probe.close()
 
-            if short_retention_mode and dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
-                raise RuntimeError(
-                    f"Spoken line {i + 1} takes {dur:.2f}s (limit "
-                    f"{RETENTION_MAX_LINE_AUDIO_SECONDS:.2f}s). Rewrite it shorter; "
-                    "voice speed will not be increased."
-                )
-
             voice_data.append({
                 "file": vf,
                 "line": line,
@@ -3551,7 +3453,7 @@ def build_video(script, bg_path, out_path):
                 "chunk_size": PACING.get(script.pacing, PACING.get('cold', list(PACING.values())[0]))["chunk_size"],
             })
 
-            cursor += dur + (gap if i < len(script.lines) - 1 else (0.32 if short_retention_mode else 0.24))
+            cursor += dur + (gap if i < len(script.lines) - 1 else (0.08 if short_retention_mode else 0.24))
 
         # Never truncate speech to satisfy a target duration. A too-long voiceover
         # must fail visibly so the script can be corrected instead of clipping audio.
