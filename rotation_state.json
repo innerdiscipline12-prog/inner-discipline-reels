@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "mirror",
     "two_stage_payoff",
     "consequence",
-    "mirror",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 2,
-    "scene_dangerous": 5
+    "scene_dangerous": 0
   },
-  "updated_at": "2026-11-11T04:33:56",
+  "updated_at": "2026-11-12T04:40:24",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,12 +762,13 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_2": [
+    "you noticed it early.",
     "this is what happens.",
     "you knew before it hurt.",
     "delay gets expensive.",
@@ -780,6 +781,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you felt the shift. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
     "this is what happens. | you keep restarting. | the emotion returns. | the plan looks new. | the promise sounds serious. | but the system stays the same. | so the pattern returns. | every time.",
     "time does not wait. | your mood can change tomorrow. | your plan can improve tomorrow. | but today still counts. | so does every excuse. | so does every choice. | that is the truth. | act like it.",
     "you keep explaining. | the same pattern. | with better words. | you can make the excuse sound intelligent. | you can make delay sound strategic. | but the routine still knows. | what really happened. | so do you.",
@@ -811,6 +813,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "you noticed it early. | before the result changed. | before anyone noticed. | before the habit looked serious.",
     "this is what happens. | the system stays the same. | the pattern returns every time.",
     "time does not wait. | does every choice. | that is the truth. | act like it.",
     "you keep explaining. | the routine still knows. | what really happened. | do you.",
@@ -842,6 +845,7 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "environment",
     "procrastination",
     "excuses",
     "standards",
@@ -852,6 +856,7 @@
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "the same pattern",
     "the hard return",
     "the exit shrinks",
     "regret compounds",
@@ -878,10 +883,10 @@
     "the real test",
     "the part you avoid",
     "you know what to do",
-    "you keep explaining",
-    "consistency has a sound"
+    "you keep explaining"
   ],
   "recent_captions_v32": [
+    "the question is not whether you know your pattern. it is whether you are willing to interrupt it today.",
     "a new plan can make you feel changed before anything has changed. let repeated action earn that conclusion.",
     "the damage is often gradual, which makes it easy to dismiss. measure the pattern, not just the latest incident.",
     "self-respect is built in moments that offer no applause. keep the promise when breaking it would be easier.",
