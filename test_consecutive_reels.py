@@ -14,6 +14,21 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
         self.assertLessEqual(gen.RETENTION_MAX_WORDS_PER_LINE, 9)
         self.assertLessEqual(gen.RETENTION_MAX_SCRIPT_WORDS, 28)
 
+    def test_tts_preflight_has_a_real_safety_buffer(self):
+        import generate as gen
+
+        self.assertLess(
+            gen.RETENTION_TTS_PREFLIGHT_MAX_SECONDS,
+            gen.RETENTION_MAX_SECONDS,
+            "TTS preflight must leave headroom below the hard 15s ceiling",
+        )
+        self.assertTrue(gen.retention_tts_duration_is_safe(13.25))
+        self.assertFalse(gen.retention_tts_duration_is_safe(13.26))
+        self.assertFalse(
+            gen.retention_tts_duration_is_safe(gen.RETENTION_MAX_SECONDS),
+            "The preflight gate should reject the hard ceiling and leave render headroom",
+        )
+
     def test_twenty_consecutive_generated_reels_have_distinct_assets_and_valid_duration(self):
         try:
             import generate as gen
