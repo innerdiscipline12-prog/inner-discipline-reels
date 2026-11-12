@@ -561,6 +561,13 @@ def auto_commit_state_files():
         print("STATE COMMIT DISABLED.")
         return False
 
+    # PR builds are validation runs. Do not mutate the source branch with
+    # generated state, otherwise the state commit moves the PR head after
+    # checks finish and leaves the PR with stale/missing checks.
+    if os.getenv("GITHUB_EVENT_NAME", "").strip() == "pull_request":
+        print("STATE COMMIT SKIPPED: pull request validation run.")
+        return True
+
     files = [
         "series_state.json",
         "rotation_state.json",
