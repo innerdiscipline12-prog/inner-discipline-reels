@@ -393,9 +393,6 @@ RETENTION_V33_ENABLED = True
 RETENTION_SCORE_MIN = 5.0
 RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 13.25
 RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS = 5
-PERFORMANCE_PROFILE_V33 = build_performance_profile(
-    safe_load_json(PERFORMANCE_HISTORY_FILE, [])
-)
 
 
 # ================================================================
@@ -546,6 +543,11 @@ def load_rotation_state():
 def save_rotation_state(data):
     data["updated_at"] = datetime.now().isoformat(timespec="seconds")
     save_json(ROTATION_STATE_FILE, data)
+
+
+PERFORMANCE_PROFILE_V33 = build_performance_profile(
+    safe_load_json(PERFORMANCE_HISTORY_FILE, [])
+)
 
 
 def auto_commit_state_files():
