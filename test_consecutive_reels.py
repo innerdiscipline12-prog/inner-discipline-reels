@@ -57,6 +57,17 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                 self.assertTrue(script.cover.strip(), f"reel {index + 1} has no cover")
                 self.assertTrue(caption.strip(), f"reel {index + 1} has no caption")
 
+                self.assertGreaterEqual(
+                    float(getattr(script, "v33_retention_score", 0)),
+                    gen.RETENTION_SCORE_MIN,
+                    f"reel {index + 1} failed the V33 retention score gate",
+                )
+                from retention_engine import is_swipe_risk_hook
+                self.assertFalse(
+                    is_swipe_risk_hook(script.lines[0]),
+                    f"reel {index + 1} starts with a swipe-risk hook",
+                )
+
                 scripts.append(" | ".join(script.lines))
                 covers.append(script.cover)
                 captions.append(caption)
