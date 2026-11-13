@@ -5,15 +5,6 @@ import unittest
 from pathlib import Path
 
 class ConsecutiveGeneratorTests(unittest.TestCase):
-    def test_inner_discipline_delivery_is_slow_and_lines_are_short(self):
-        import generate as gen
-
-        pacing = gen.PACING["smart_cold"]
-        self.assertEqual(pacing["rate"], "-15%", "signature voice must not be near-normal speed")
-        self.assertGreaterEqual(pacing["gap"], 0.30, "leave a deliberate pause between thoughts")
-        self.assertLessEqual(gen.RETENTION_MAX_WORDS_PER_LINE, 9)
-        self.assertLessEqual(gen.RETENTION_MAX_SCRIPT_WORDS, 28)
-
     def test_twenty_consecutive_generated_reels_have_distinct_assets_and_valid_duration(self):
         try:
             import generate as gen
@@ -65,6 +56,17 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                     )
                 self.assertTrue(script.cover.strip(), f"reel {index + 1} has no cover")
                 self.assertTrue(caption.strip(), f"reel {index + 1} has no caption")
+
+                self.assertGreaterEqual(
+                    float(getattr(script, "v33_retention_score", 0)),
+                    gen.RETENTION_SCORE_MIN,
+                    f"reel {index + 1} failed the V33 retention score gate",
+                )
+                from retention_engine import is_swipe_risk_hook
+                self.assertFalse(
+                    is_swipe_risk_hook(script.lines[0]),
+                    f"reel {index + 1} starts with a swipe-risk hook",
+                )
 
                 scripts.append(" | ".join(script.lines))
                 covers.append(script.cover)

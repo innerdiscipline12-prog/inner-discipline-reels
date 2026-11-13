@@ -29,10 +29,10 @@ jobs:
       - name: Install generator dependencies
         run: pip install -r requirements.txt
       - name: Compile generator and originality checks
-        run: python -m py_compile generate.py originality.py test_originality.py test_consecutive_reels.py
+        run: python -m py_compile generate.py originality.py retention_engine.py test_originality.py test_consecutive_reels.py test_retention_engine.py
       # Includes similarity, sentence-coherence, duration, and twenty-reel sequence checks.
       - name: Test originality and twenty consecutive reel assets
-        run: python -m unittest -v test_originality.py test_consecutive_reels.py
+        run: python -m unittest -v test_originality.py test_consecutive_reels.py test_retention_engine.py
 
   build:
     if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
@@ -59,20 +59,6 @@ jobs:
             sudo apt-get update && sudo apt-get install -y ffmpeg
           fi
       - run: pip install -r requirements.txt
-
-      - name: Restore persistent generator state
-        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
-        run: |
-          if git fetch origin generator-state; then
-            for state_file in series_state.json rotation_state.json used_lines_v3.json engine_state_v3.json hook_state.json; do
-              if git cat-file -e "origin/generator-state:$state_file" 2>/dev/null; then
-                git show "origin/generator-state:$state_file" > "$state_file"
-              fi
-            done
-            echo "Restored persistent generator state."
-          else
-            echo "No generator-state branch exists yet; using checked-in defaults."
-          fi
 
       - name: Run generate.py
         if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
