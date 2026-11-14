@@ -1,5 +1,10 @@
 name: Inner Discipline
 
+# Serialize all generator runs so scheduled builds cannot race while saving state.
+concurrency:
+  group: inner-discipline-generator-${{ github.repository }}
+  cancel-in-progress: false
+
 on:
   push:
     branches:
