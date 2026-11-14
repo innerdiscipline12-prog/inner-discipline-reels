@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "video_id": "1450383743223355",
+    "post_id": "122156586561163183",
+    "output_base": "outputs/reel_v33_smart_completion_engine_v31_2_two_stage_payoff_20261114_103230_20261114_103228_a92644e8",
+    "published_at": "2026-11-14T10:34:44+00:00",
+    "category": "two_stage_payoff",
+    "hook_family": "contrast",
+    "retention_score": 6.5,
+    "predicted_duration": 13.5
+  }
+]
