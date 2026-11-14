@@ -35,6 +35,31 @@ class PublisherTests(unittest.TestCase):
             good.write_bytes(b"video")
             self.assertEqual(publisher.find_latest_video(root), good)
 
+    def test_publish_reel_runs_start_upload_finish(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            video = Path(tmp) / "sample.mp4"
+            video.write_bytes(b"video-bytes")
+            metadata = {
+                "title": "OWN TODAY",
+                "description": "Keep your word.",
+                "category": "discipline",
+                "hook_family": "mirror",
+                "retention_score": 8.0,
+                "predicted_duration": 12.0,
+            }
+            start = {"video_id": "12345", "upload_url": "https://rupload.facebook.com/upload/12345"}
+            finish = {"success": True, "video_id": "12345", "post_id": "67890"}
+            with patch.object(publisher, "_request_json", side_effect=[start, finish]) as request_json, \\
+                 patch.object(publisher, "_upload_binary") as upload:
+                result = publisher.publish_reel(video, "page-1", "secret-token", metadata)
+            self.assertEqual(result["video_id"], "12345")
+            self.assertEqual(result["post_id"], "67890")
+            self.assertEqual(request_json.call_count, 2)
+            self.assertEqual(request_json.call_args_list[0].args[1]["upload_phase"], "START")
+            self.assertEqual(request_json.call_args_list[1].args[1]["upload_phase"], "FINISH")
+            self.assertEqual(request_json.call_args_list[1].args[1]["video_state"], "PUBLISHED")
+            upload.assert_called_once_with(start["upload_url"], video, "secret-token")
+
     def test_register_publication_writes_feedback_contract(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
