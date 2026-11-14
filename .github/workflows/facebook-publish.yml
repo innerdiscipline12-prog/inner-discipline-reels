@@ -1,4 +1,4 @@
-name: INNER Discipline Facebook Publisher V35
+name: INNER Discipline Facebook Publisher V36
 
 on:
   workflow_run:
@@ -6,7 +6,9 @@ on:
     types: [completed]
     branches: [main]
   push:
-    branches: [feature/facebook-reels-publisher-v35]
+    branches:
+      - feature/facebook-reels-publisher-v35
+      - feature/v36-daily-publishing-schedule
   workflow_dispatch:
     inputs:
       video_path:
@@ -20,7 +22,10 @@ concurrency:
 
 jobs:
   publisher-tests:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/facebook-reels-publisher-v35'
+    if: >-
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/feature/facebook-reels-publisher-v35' ||
+       github.ref == 'refs/heads/feature/v36-daily-publishing-schedule')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +41,8 @@ jobs:
     if: >-
       (github.event_name == 'workflow_run' &&
        github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
+       (github.event.workflow_run.event == 'push' ||
+        github.event.workflow_run.event == 'schedule') &&
        github.event.workflow_run.head_branch == 'main') ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -99,6 +105,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No new publication record to commit."
           else
-            git commit -m "V35: register Facebook Reel publication"
+            git commit -m "V36: register scheduled Facebook Reel publication"
             git push origin main
           fi
