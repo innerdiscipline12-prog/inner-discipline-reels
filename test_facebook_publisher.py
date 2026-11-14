@@ -49,8 +49,10 @@ class PublisherTests(unittest.TestCase):
             }
             start = {"video_id": "12345", "upload_url": "https://rupload.facebook.com/upload/12345"}
             finish = {"success": True, "video_id": "12345", "post_id": "67890"}
-            with patch.object(publisher, "_request_json", side_effect=[start, finish]) as request_json, \\
-                 patch.object(publisher, "_upload_binary") as upload:
+            with (
+                patch.object(publisher, "_request_json", side_effect=[start, finish]) as request_json,
+                patch.object(publisher, "_upload_binary") as upload,
+            ):
                 result = publisher.publish_reel(video, "page-1", "secret-token", metadata)
             self.assertEqual(result["video_id"], "12345")
             self.assertEqual(result["post_id"], "67890")
