@@ -5,6 +5,8 @@ on:
     workflows: ["Inner Discipline"]
     types: [completed]
     branches: [main]
+  push:
+    branches: [feature/facebook-reels-publisher-v35]
   workflow_dispatch:
     inputs:
       video_path:
@@ -17,6 +19,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  publisher-tests:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/facebook-reels-publisher-v35'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run isolated publisher tests
+        run: |
+          python -m py_compile facebook_publisher.py test_facebook_publisher.py
+          python -m unittest -v test_facebook_publisher.py
+
   publish:
     if: >-
       (github.event_name == 'workflow_run' &&
