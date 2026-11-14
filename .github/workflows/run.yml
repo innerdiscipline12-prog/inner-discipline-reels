@@ -10,6 +10,10 @@ on:
   pull_request:
     branches:
       - main
+  schedule:
+    # 04:30 and 07:30 East Africa Time (UTC+3).
+    - cron: "30 1 * * *"
+    - cron: "30 4 * * *"
   workflow_dispatch:
     inputs:
       script:
@@ -38,7 +42,7 @@ jobs:
         run: python -m unittest -v test_originality.py test_consecutive_reels.py test_retention_engine.py test_facebook_feedback.py
 
   build:
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -64,7 +68,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Run generate.py
-        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'schedule' || github.event.inputs.script == 'generate' }}
         run: python generate.py
 
       - name: Run promo.py
@@ -72,7 +76,7 @@ jobs:
         run: python promo.py
 
       - name: Verify generated video exists
-        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'schedule' || github.event.inputs.script == 'generate' }}
         run: |
           test -d outputs
           test -n "$(find outputs -maxdepth 1 -type f -name '*.mp4' -size +0c -print -quit)" || {
@@ -81,7 +85,7 @@ jobs:
           }
 
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.script == 'generate' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'schedule' || github.event.inputs.script == 'generate' }}
         with:
           name: outputs
           path: outputs/
