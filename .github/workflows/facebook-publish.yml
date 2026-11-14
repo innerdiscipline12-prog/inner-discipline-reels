@@ -11,9 +11,10 @@ on:
       - feature/v36-daily-publishing-schedule
   workflow_dispatch:
     inputs:
-      video_path:
-        description: "Optional repository-relative MP4 path (normally use automatic generator trigger)"
-        required: false
+      source_run_id:
+        description: "Successful Inner Discipline generator run ID containing the Reel artifact"
+        required: true
+        default: "43619801668"
         type: string
 
 concurrency:
@@ -41,8 +42,7 @@ jobs:
     if: >-
       (github.event_name == 'workflow_run' &&
        github.event.workflow_run.conclusion == 'success' &&
-       (github.event.workflow_run.event == 'push' ||
-        github.event.workflow_run.event == 'schedule') &&
+       github.event.workflow_run.event == 'schedule' &&
        github.event.workflow_run.head_branch == 'main') ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -57,14 +57,14 @@ jobs:
           token: \${{ secrets.GITHUB_TOKEN }}
 
       - name: Download generated Reel artifact
-        if: github.event_name == 'workflow_run'
+        if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
         uses: actions/download-artifact@v4
         with:
           name: outputs
           path: outputs
           github-token: \${{ secrets.GITHUB_TOKEN }}
           repository: \${{ github.repository }}
-          run-id: \${{ github.event.workflow_run.id }}
+          run-id: \${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || inputs.source_run_id }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -91,17 +91,11 @@ jobs:
           FACEBOOK_PAGE_ID: \${{ secrets.FACEBOOK_PAGE_ID }}
           FACEBOOK_PAGE_ACCESS_TOKEN: \${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
           META_GRAPH_API_VERSION: v27.0
-          VIDEO_PATH: \${{ inputs.video_path }}
-        run: |
-          if [ -n "$VIDEO_PATH" ]; then
-            python facebook_publisher.py --video "$VIDEO_PATH"
-          else
-            python facebook_publisher.py
-          fi
+          VIDEO_PATH: ""
+        run: python facebook_publisher.py
 
       - name: Publish Reel to Instagram
         id: publish_instagram
-        if: github.event_name == 'workflow_run'
         continue-on-error: true
         env:
           INSTAGRAM_ACCESS_TOKEN: \${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
@@ -120,11 +114,19 @@ jobs:
             echo "No new publication records to commit."
           else
             git commit -m "V37: register Facebook and Instagram Reel publications"
-            git push origin main
+            for attempt in 1 2 3; do
+              git pull --rebase origin main || { git rebase --abort || true; exit 1; }
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              sleep 3
+            done
+            echo "Could not push publication registry after three attempts."
+            exit 1
           fi
 
       - name: Mark run failed if either platform failed
-        if: always() && (steps.publish_facebook.outcome != 'success' || (github.event_name == 'workflow_run' && steps.publish_instagram.outcome != 'success'))
+        if: always() && (steps.publish_facebook.outcome != 'success' || steps.publish_instagram.outcome != 'success')
         run: |
           echo "At least one platform did not confirm Reel publication."
           echo "Facebook outcome: \${{ steps.publish_facebook.outcome }}"
