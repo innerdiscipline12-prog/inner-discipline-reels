@@ -7,6 +7,13 @@ on:
     paths-ignore:
       - "performance_history_v33.json"
       - "published_reels.json"
+      - "published_instagram_reels.json"
+      - "facebook_publisher.py"
+      - "instagram_publisher.py"
+      - "test_facebook_publisher.py"
+      - "test_instagram_publisher.py"
+      - ".github/workflows/facebook-publish.yml"
+      - ".github/workflows/run.yml"
   pull_request:
     branches:
       - main
