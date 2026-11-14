@@ -391,7 +391,9 @@ STRICT_STATE_SEQUENCE = True
 # V33 RETENTION ENGINE
 RETENTION_V33_ENABLED = True
 RETENTION_SCORE_MIN = 4.0
-RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 13.25
+# Keep a margin under the existing 15s hard ceiling while allowing
+# natural controlled narration to breathe.
+RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 14.5
 RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS = 5
 # No hard per-line audio cap: deliberate INNER Discipline pacing can contain
 # one longer sentence. The total Reel duration is the authoritative retention gate.
