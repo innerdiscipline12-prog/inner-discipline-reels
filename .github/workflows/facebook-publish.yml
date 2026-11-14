@@ -1,0 +1,104 @@
+name: INNER Discipline Facebook Publisher V35
+
+on:
+  workflow_run:
+    workflows: ["Inner Discipline"]
+    types: [completed]
+    branches: [main]
+  push:
+    branches: [feature/facebook-reels-publisher-v35]
+  workflow_dispatch:
+    inputs:
+      video_path:
+        description: "Optional repository-relative MP4 path (normally use automatic generator trigger)"
+        required: false
+        type: string
+
+concurrency:
+  group: inner-discipline-facebook-publisher
+  cancel-in-progress: false
+
+jobs:
+  publisher-tests:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/facebook-reels-publisher-v35'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run isolated publisher tests
+        run: |
+          python -m py_compile facebook_publisher.py test_facebook_publisher.py
+          python -m unittest -v test_facebook_publisher.py
+
+  publish:
+    if: >-
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download generated Reel artifact
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: outputs
+          path: outputs
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Test Facebook publisher
+        run: |
+          python -m py_compile facebook_publisher.py test_facebook_publisher.py
+          python -m unittest -v test_facebook_publisher.py
+
+      - name: Validate publishing credentials
+        env:
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+        run: |
+          test -n "$FACEBOOK_PAGE_ID" || { echo "FACEBOOK_PAGE_ID secret is missing"; exit 1; }
+          test -n "$FACEBOOK_PAGE_ACCESS_TOKEN" || { echo "FACEBOOK_PAGE_ACCESS_TOKEN secret is missing"; exit 1; }
+
+      - name: Publish Reel and register Facebook video ID
+        env:
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          META_GRAPH_API_VERSION: v27.0
+          VIDEO_PATH: ${{ inputs.video_path }}
+        run: |
+          if [ -n "$VIDEO_PATH" ]; then
+            python facebook_publisher.py --video "$VIDEO_PATH"
+          else
+            python facebook_publisher.py
+          fi
+
+      - name: Commit published Reel registry
+        run: |
+          git config user.name "inner-discipline-publisher[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add published_reels.json
+          if git diff --cached --quiet; then
+            echo "No new publication record to commit."
+          else
+            git commit -m "V35: register Facebook Reel publication"
+            git push origin main
+          fi
