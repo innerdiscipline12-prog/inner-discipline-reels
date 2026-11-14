@@ -1,0 +1,70 @@
+name: Verify Instagram API Access
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify linked Instagram account
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.parse
+          import urllib.request
+          import sys
+
+          token = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "")
+          if not token:
+              print("ERROR: INSTAGRAM_ACCESS_TOKEN secret is missing.")
+              sys.exit(1)
+
+          print("::add-mask::" + token)
+          params = urllib.parse.urlencode({
+              "fields": "id,name,instagram_business_account{id,username}",
+              "access_token": token,
+          })
+          url = "https://graph.facebook.com/v24.0/me/accounts?" + params
+          request = urllib.request.Request(url, headers={"User-Agent": "INNER-Discipline-Instagram-Check"})
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  data = json.loads(response.read().decode("utf-8"))
+          except Exception:
+              print("ERROR: Could not complete the Meta API request. Check the workflow details without sharing any token.")
+              sys.exit(1)
+
+          if "error" in data:
+              error = data["error"]
+              print("META API ERROR: " + str(error.get("message", "Unknown API error")))
+              print("Error code: " + str(error.get("code", "unknown")))
+              sys.exit(1)
+
+          pages = data.get("data", [])
+          matches = []
+          for page in pages:
+              account = page.get("instagram_business_account")
+              if account and account.get("id"):
+                  matches.append({
+                      "page_name": page.get("name", "Unknown Page"),
+                      "instagram_id": account["id"],
+                      "username": account.get("username", "username unavailable"),
+                  })
+
+          if not matches:
+              print("No linked Instagram professional account was returned for the assigned Facebook Pages.")
+              print("Pages returned by Meta: " + str(len(pages)))
+              sys.exit(1)
+
+          print("SUCCESS: Meta returned the linked Instagram professional account.")
+          for item in matches:
+              print("Facebook Page: " + item["page_name"])
+              print("Instagram username: @" + item["username"])
+              print("Instagram account ID: " + item["instagram_id"])
+          PY
