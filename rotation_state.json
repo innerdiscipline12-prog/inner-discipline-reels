@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence",
     "mirror",
     "two_stage_payoff",
-    "consequence",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 1,
+    "scene_broken": 2,
     "scene_dangerous": 4
   },
-  "updated_at": "2026-11-13T17:01:41",
+  "updated_at": "2026-11-14T06:20:58",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -775,6 +775,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
     "you watched it happen. | the routine got weaker. | the excuses got easier. | the standard moved lower. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
     "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
@@ -787,6 +788,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "the damage grows. | when you keep excusing it, small habits become normal, normal becomes identity, identity becomes results, then you call it life, that is the danger, correct it early.",
     "you watched it happen. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you called it tomorrow. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
     "what most people miss. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
@@ -799,6 +801,7 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "identity",
     "standards",
     "procrastination",
     "recovery",
@@ -807,6 +810,7 @@
     "comfort"
   ],
   "recent_smart_covers_v32": [
+    "easy choices add up",
     "stop calling it confusion",
     "the excuse is familiar",
     "when it stops feeling new",
@@ -819,6 +823,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "you do not need to fear every mistake. you do need to notice when the same mistake is becoming your preferred response.",
     "you usually notice the warning before the consequences arrive. the difficult part is acting while the correction is still small.",
     "private choices reveal the truth before public results do. pay attention to what you keep allowing when nobody checks.",
     "the difference is rarely a secret technique. it is the decision to return to the work without needing a fresh emotional start.",
@@ -831,6 +836,7 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "identity",
     "boundaries",
     "consistency",
     "standards",
