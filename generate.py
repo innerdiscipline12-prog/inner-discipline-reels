@@ -632,23 +632,42 @@ def auto_commit_state_files():
             print("STATE ERROR: no target branch is available for persistence.")
             return False
 
-        push = subprocess.run(
-            ["git", "push", "origin", f"HEAD:refs/heads/{target_ref}"],
-            cwd=BASE_DIR,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+        # A concurrent repository update may advance the branch after checkout.
+        # Rebase the state commit and retry instead of failing on a non-fast-forward push.
+        for attempt in range(1, 4):
+            pull = subprocess.run(
+                ["git", "pull", "--rebase", "origin", target_ref],
+                cwd=BASE_DIR,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            print(f"STATE REBASE ATTEMPT {attempt}:", pull.stdout.strip() or pull.stderr.strip() or "ok")
+            if pull.returncode != 0:
+                subprocess.run(["git", "rebase", "--abort"], cwd=BASE_DIR, check=False)
+                if attempt == 3:
+                    print("STATE ERROR: could not rebase generator state after three attempts.")
+                    return False
+                time.sleep(2)
+                continue
 
-        print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
-        print("STATE PUSH RETURN CODE:", push.returncode)
+            push = subprocess.run(
+                ["git", "push", "origin", f"HEAD:refs/heads/{target_ref}"],
+                cwd=BASE_DIR,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            print("STATE PUSH:", push.stdout.strip() or push.stderr.strip())
+            print("STATE PUSH RETURN CODE:", push.returncode)
+            if push.returncode == 0:
+                return True
+            if attempt < 3:
+                time.sleep(2)
 
-        if push.returncode != 0:
-            print("STATE ERROR: GitHub did not save series_state.json or rotation_state.json.")
-            print("FIX: Settings > Actions > General > Workflow permissions > Read and write permissions.")
-            return False
-
-        return True
+        print("STATE ERROR: GitHub did not save series_state.json or rotation_state.json.")
+        print("FIX: Check workflow write permissions, branch protection, and concurrent updates.")
+        return False
 
     except Exception as e:
         print(f"STATE AUTO-COMMIT FAILED: {e}")
@@ -673,7 +692,7 @@ PACING = {
     "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
     "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
     # Retention engine needs a controlled but faster delivery to fit the short format.
-    "smart_cold": {"rate": "-2%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.12},
+    "smart_cold": {"rate": "-12%", "pitch": "-45Hz", "chunk_size": 2, "gap": 0.28},
 }
 
 
