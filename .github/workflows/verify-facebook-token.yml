@@ -1,0 +1,67 @@
+name: Verify Facebook Page Token
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Facebook Page token status
+        env:
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.parse
+          import urllib.request
+          import urllib.error
+          import sys
+
+          token = os.environ.get("FACEBOOK_PAGE_ACCESS_TOKEN", "")
+          if not token:
+              print("ERROR: FACEBOOK_PAGE_ACCESS_TOKEN secret is missing.")
+              sys.exit(1)
+
+          print("::add-mask::" + token)
+          params = urllib.parse.urlencode({
+              "fields": "id,name",
+              "access_token": token,
+          })
+          url = "https://graph.facebook.com/v27.0/me?" + params
+          request = urllib.request.Request(url, headers={"User-Agent": "INNER-Discipline-Facebook-Token-Check"})
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  data = json.loads(response.read().decode("utf-8"))
+          except urllib.error.HTTPError as exc:
+              try:
+                  data = json.loads(exc.read().decode("utf-8"))
+              except Exception:
+                  print("ERROR: Meta returned an unreadable response.")
+                  sys.exit(1)
+              error = data.get("error", {})
+              print("TOKEN CHECK: REJECTED")
+              print("Meta error: " + str(error.get("message", "Unknown error")))
+              print("Error code: " + str(error.get("code", "unknown")))
+              print("Error subcode: " + str(error.get("error_subcode", "unknown")))
+              sys.exit(1)
+          except Exception:
+              print("ERROR: Could not complete the Meta API request.")
+              sys.exit(1)
+
+          if "error" in data:
+              error = data["error"]
+              print("TOKEN CHECK: REJECTED")
+              print("Meta error: " + str(error.get("message", "Unknown error")))
+              print("Error code: " + str(error.get("code", "unknown")))
+              print("Error subcode: " + str(error.get("error_subcode", "unknown")))
+              sys.exit(1)
+
+          print("TOKEN CHECK: ACCEPTED")
+          print("Account/Page ID: " + str(data.get("id", "not returned")))
+          print("Name: " + str(data.get("name", "not returned")))
+          PY
