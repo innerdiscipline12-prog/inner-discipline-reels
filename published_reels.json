@@ -1,0 +1,12 @@
+[
+  {
+    "_comment": "The Facebook publisher appends one record here after a successful Reel publish.",
+    "video_id": "",
+    "output_base": "",
+    "published_at": "",
+    "category": "",
+    "hook_family": "",
+    "retention_score": null,
+    "predicted_duration": null
+  }
+]
