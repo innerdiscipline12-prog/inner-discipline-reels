@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-          token: \${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download generated Reel artifact
         if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
@@ -62,9 +62,9 @@ jobs:
         with:
           name: outputs
           path: outputs
-          github-token: \${{ secrets.GITHUB_TOKEN }}
-          repository: \${{ github.repository }}
-          run-id: \${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || inputs.source_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || inputs.source_run_id }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -78,8 +78,8 @@ jobs:
 
       - name: Validate Facebook publishing credentials
         env:
-          FACEBOOK_PAGE_ID: \${{ secrets.FACEBOOK_PAGE_ID }}
-          FACEBOOK_PAGE_ACCESS_TOKEN: \${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
         run: |
           test -n "$FACEBOOK_PAGE_ID" || { echo "FACEBOOK_PAGE_ID secret is missing"; exit 1; }
           test -n "$FACEBOOK_PAGE_ACCESS_TOKEN" || { echo "FACEBOOK_PAGE_ACCESS_TOKEN secret is missing"; exit 1; }
@@ -88,8 +88,8 @@ jobs:
         id: publish_facebook
         continue-on-error: true
         env:
-          FACEBOOK_PAGE_ID: \${{ secrets.FACEBOOK_PAGE_ID }}
-          FACEBOOK_PAGE_ACCESS_TOKEN: \${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
           META_GRAPH_API_VERSION: v27.0
           VIDEO_PATH: ""
         run: python facebook_publisher.py
@@ -98,7 +98,7 @@ jobs:
         id: publish_instagram
         continue-on-error: true
         env:
-          INSTAGRAM_ACCESS_TOKEN: \${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: "17841480472742248"
           META_GRAPH_API_VERSION: v27.0
         run: python instagram_publisher.py
@@ -129,6 +129,6 @@ jobs:
         if: always() && (steps.publish_facebook.outcome != 'success' || steps.publish_instagram.outcome != 'success')
         run: |
           echo "At least one platform did not confirm Reel publication."
-          echo "Facebook outcome: \${{ steps.publish_facebook.outcome }}"
-          echo "Instagram outcome: \${{ steps.publish_instagram.outcome }}"
+          echo "Facebook outcome: ${{ steps.publish_facebook.outcome }}"
+          echo "Instagram outcome: ${{ steps.publish_instagram.outcome }}"
           exit 1
