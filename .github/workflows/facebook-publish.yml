@@ -14,7 +14,7 @@ on:
       source_run_id:
         description: "Successful Inner Discipline generator run ID containing the Reel artifact"
         required: true
-        default: "43619801668"
+        default: "43613748582"
         type: string
 
 concurrency:
