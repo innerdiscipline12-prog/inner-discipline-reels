@@ -185,7 +185,7 @@ def build_performance_profile(history):
     The profile remains neutral until there are enough observations.
     """
     rows = [row for row in (history or []) if isinstance(row, dict)]
-    if len(rows) < 3:
+    if len(rows) < 5:
         return {"category_boosts": {}, "hook_family_boosts": {}, "samples": len(rows)}
 
     category_values = defaultdict(list)
@@ -193,10 +193,21 @@ def build_performance_profile(history):
 
     for row in rows:
         try:
-            watch = float(row.get("average_watch_time", 0))
-            retention = float(row.get("retention_rate", 0))
-            # Prefer watch time but use retention when supplied.
-            signal = watch + (retention * 10.0 if retention else 0.0)
+            watch = float(row.get("average_watch_time", 0) or 0)
+            watch_pct = float(row.get("average_watch_pct", 0) or 0)
+            completion = float(row.get("completion_rate", row.get("retention_rate", 0)) or 0)
+            engagement = (
+                float(row.get("share_comment_rate", 0) or 0) * 100.0
+                + float(row.get("follow_rate", 0) or 0) * 100.0
+            )
+            # Normalize the mixed signals so no single Facebook metric
+            # overwhelms the learning profile.
+            signal = (
+                min(watch, 15.0) * 0.45
+                + min(watch_pct, 1.5) * 4.0
+                + min(max(completion, 0.0), 100.0) / 20.0
+                + min(max(engagement, 0.0), 20.0) * 0.10
+            )
         except (TypeError, ValueError):
             continue
 

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "performance_history_v33.json"
+      - "published_reels.json"
   pull_request:
     branches:
       - main
@@ -29,10 +32,10 @@ jobs:
       - name: Install generator dependencies
         run: pip install -r requirements.txt
       - name: Compile generator and originality checks
-        run: python -m py_compile generate.py originality.py retention_engine.py test_originality.py test_consecutive_reels.py test_retention_engine.py
+        run: python -m py_compile generate.py originality.py retention_engine.py facebook_feedback.py test_originality.py test_consecutive_reels.py test_retention_engine.py test_facebook_feedback.py
       # Includes similarity, sentence-coherence, duration, and twenty-reel sequence checks.
       - name: Test originality and twenty consecutive reel assets
-        run: python -m unittest -v test_originality.py test_consecutive_reels.py test_retention_engine.py
+        run: python -m unittest -v test_originality.py test_consecutive_reels.py test_retention_engine.py test_facebook_feedback.py
 
   build:
     if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}

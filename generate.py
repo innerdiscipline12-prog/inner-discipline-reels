@@ -391,9 +391,13 @@ STRICT_STATE_SEQUENCE = True
 # V33 RETENTION ENGINE
 RETENTION_V33_ENABLED = True
 RETENTION_SCORE_MIN = 4.0
-RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 13.25
+# Keep a margin under the existing 15s hard ceiling while allowing
+# natural controlled narration to breathe.
+RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 14.5
 RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS = 5
-RETENTION_MAX_LINE_AUDIO_SECONDS = 4.3
+# No hard per-line audio cap: deliberate INNER Discipline pacing can contain
+# one longer sentence. The total Reel duration is the authoritative retention gate.
+RETENTION_MAX_LINE_AUDIO_SECONDS = None
 
 
 # ================================================================
@@ -3710,7 +3714,7 @@ def main():
                     probe = AudioFileClip(vf)
                     dur = float(probe.duration)
                     probe.close()
-                    if dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
+                    if RETENTION_MAX_LINE_AUDIO_SECONDS is not None and dur > RETENTION_MAX_LINE_AUDIO_SECONDS:
                         raise RuntimeError(
                             f"line {i + 1} actual TTS is {dur:.2f}s; "
                             f"line limit is {RETENTION_MAX_LINE_AUDIO_SECONDS:.2f}s"

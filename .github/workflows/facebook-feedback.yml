@@ -1,0 +1,54 @@
+name: INNER Discipline Facebook Feedback
+
+on:
+  schedule:
+    # Meta says most insights update about once every 24 hours.
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check Facebook token
+        id: token
+        env:
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$FACEBOOK_PAGE_ACCESS_TOKEN" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "FACEBOOK_PAGE_ACCESS_TOKEN is not configured; feedback collection skipped."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Collect Facebook Reel insights
+        if: steps.token.outputs.configured == 'true'
+        env:
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          META_GRAPH_API_VERSION: ${{ vars.META_GRAPH_API_VERSION || 'v27.0' }}
+        run: python facebook_feedback.py
+
+      - name: Commit learned performance history
+        if: steps.token.outputs.configured == 'true'
+        run: |
+          git config user.name "inner-discipline-feedback[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add performance_history_v33.json
+          if git diff --cached --quiet; then
+            echo "No performance-history changes to commit."
+          else
+            git commit -m "V34: update Facebook Reel performance history"
+            git push origin main
+          fi
