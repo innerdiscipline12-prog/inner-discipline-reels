@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "two_stage_payoff",
     "consequence",
     "mirror",
-    "two_stage_payoff",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 2,
+    "scene_broken": 3,
     "scene_dangerous": 4
   },
-  "updated_at": "2026-11-14T06:20:58",
+  "updated_at": "2026-11-14T10:34:00",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,9 +762,9 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth",
-    "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_2": [
@@ -775,6 +775,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "the real problem is quieter. | is not motivation. | motivation comes and goes. | the real problem is the routine. | you keep protecting. | with excuses. | that sound reasonable. | but still cost you.",
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
     "you watched it happen. | the routine got weaker. | the excuses got easier. | the standard moved lower. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
@@ -788,6 +789,7 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "the real problem is not motivation. | you keep protecting the routine with excuses. | those excuses sound reasonable. | but they still cost you.",
     "the damage grows. | when you keep excusing it, small habits become normal, normal becomes identity, identity becomes results, then you call it life, that is the danger, correct it early.",
     "you watched it happen. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you called it tomorrow. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
@@ -801,6 +803,7 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
+    "excuses",
     "identity",
     "standards",
     "procrastination",
@@ -810,6 +813,7 @@
     "comfort"
   ],
   "recent_smart_covers_v32": [
+    "what most people miss",
     "easy choices add up",
     "stop calling it confusion",
     "the excuse is familiar",
@@ -823,6 +827,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "the first repetition proves you can begin. the next ones show whether you are building a system or chasing a feeling.",
     "you do not need to fear every mistake. you do need to notice when the same mistake is becoming your preferred response.",
     "you usually notice the warning before the consequences arrive. the difficult part is acting while the correction is still small.",
     "private choices reveal the truth before public results do. pay attention to what you keep allowing when nobody checks.",
@@ -836,11 +841,11 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "emotional_control",
     "identity",
     "boundaries",
     "consistency",
     "standards",
-    "emotional_control",
     "excuses",
     "comfort"
   ]
