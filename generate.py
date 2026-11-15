@@ -1857,6 +1857,11 @@ def build_retention_reel_script():
     print("V33 RETENTION SCORE:", round(v33_score, 3))
     print("V33 HOOK FAMILY:", v33_hook_family)
     if v33_score < RETENTION_SCORE_MIN:
+        # Remember this rejected source candidate in the in-run rotation state.
+        # The next bounded retry must explore a different candidate instead of
+        # selecting the same low-scoring script repeatedly. State is persisted
+        # to GitHub only if a complete Reel is successfully generated.
+        remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
         raise ValueError(
             f"V33 RETENTION SCORE TOO LOW: {v33_score:.2f} < "
             f"{RETENTION_SCORE_MIN:.2f}"
