@@ -1857,6 +1857,11 @@ def build_retention_reel_script():
     print("V33 RETENTION SCORE:", round(v33_score, 3))
     print("V33 HOOK FAMILY:", v33_hook_family)
     if v33_score < RETENTION_SCORE_MIN:
+        # Remember this rejected source candidate in the in-run rotation state.
+        # The next bounded retry must explore a different candidate instead of
+        # selecting the same low-scoring script repeatedly. State is persisted
+        # to GitHub only if a complete Reel is successfully generated.
+        remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
         raise ValueError(
             f"V33 RETENTION SCORE TOO LOW: {v33_score:.2f} < "
             f"{RETENTION_SCORE_MIN:.2f}"
@@ -1980,6 +1985,28 @@ def build_script():
     - fullscreen no-border reels
     """
     return build_retention_reel_script()
+
+
+def build_script_with_quality_retries(max_attempts=None):
+    """
+    Retry fresh script selection when post-processing causes a candidate to
+    fall below the retention/originality gates. Failed candidates are not
+    rendered and do not advance persisted rotation state.
+    """
+    attempts = max_attempts or RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS
+    last_error = None
+    for attempt in range(1, attempts + 1):
+        try:
+            candidate = build_script()
+            print(f"V33 SCRIPT QUALITY PREFLIGHT PASSED (attempt {attempt}/{attempts})")
+            return candidate
+        except ValueError as exc:
+            last_error = exc
+            print(f"V33 SCRIPT CANDIDATE REJECTED (attempt {attempt}/{attempts}): {exc}")
+    raise RuntimeError(
+        "V33 SCRIPT QUALITY PREFLIGHT FAILED: no candidate survived "
+        f"retention/originality checks after {attempts} attempts. Last error: {last_error}"
+    )
 
 
 # ================================================================
@@ -3716,7 +3743,7 @@ def main():
     # Reject overlong candidates and ask the generator for a fresh original one.
     # Never speed up, clip, or remove deliberate pacing.
     for attempt in range(1, RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS + 1):
-        candidate = build_script()
+        candidate = build_script_with_quality_retries()
         candidate_files = []
         try:
             if getattr(candidate, "mode", "") == "smart_completion_engine_v31_2":
