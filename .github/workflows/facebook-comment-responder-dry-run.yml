@@ -1,0 +1,47 @@
+name: INNER Discipline Facebook Comment Responder (Dry Run)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inner-discipline-facebook-comment-dry-run
+  cancel-in-progress: false
+
+jobs:
+  draft-replies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out selected branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile responder
+        run: python -m py_compile facebook_comment_reader.py facebook_comment_responder.py
+
+      - name: Read Facebook comments (read-only)
+        env:
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          META_GRAPH_API_VERSION: v27.0
+          COMMENT_TEST_MAX_POSTS: "25"
+          COMMENT_TEST_MAX_REELS: "100"
+          COMMENT_TEST_MAX_COMMENTS: "100"
+          COMMENT_TEST_MAX_REPLIES: "20"
+        run: python facebook_comment_reader.py
+
+      - name: Draft replies for review (never publishes)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4.1-mini
+          COMMENT_EXPORT_FILE: comment_read_test.json
+          COMMENT_RESPONDER_MAX_DRAFTS: "10"
+          GITHUB_STEP_SUMMARY: ${{ github.step_summary }}
+        run: python facebook_comment_responder.py
