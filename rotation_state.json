@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 0,
-    "scene_dangerous": 3
+    "scene_dangerous": 4
   },
-  "updated_at": "2026-11-15T11:24:18",
+  "updated_at": "2026-11-15T12:12:44",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -780,6 +780,9 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
+    "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it.",
+    "comfort has a cost. | it feels safe now. | it feels easy now. | it feels harmless now. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
     "you broke it quietly. | not your life. | not all at once. | you broke your word first. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
     "you felt that drop. | that small loss of respect. | after you broke your word. | after you chose comfort. | after you said tomorrow again. | that feeling was feedback. | not weakness. | listen to it.",
     "you know what this is. | the problem is not information. | you already saw the habit. | you already felt the warning. | you already knew the cost. | the part you avoid is obedience. | especially when comfort gets loud. | that is where discipline begins.",
@@ -807,6 +810,8 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "the standard slipped. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
+    "comfort has a cost. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
     "you broke it quietly. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
     "you felt that drop. | that small loss of respect. | after you broke your word, after you chose comfort, after you said tomorrow again, that feeling was feedback, not weakness, listen to it.",
     "you saw this coming. | you already knew the cost. | the part you avoid is obedience. | especially when comfort gets loud, that is where discipline begins.",
@@ -835,16 +840,18 @@
   ],
   "recent_smart_concepts_v32": [
     "standards",
+    "comfort",
     "procrastination",
     "consistency",
     "environment",
     "excuses",
     "identity",
     "recovery",
-    "emotional_control",
-    "comfort"
+    "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "later gets expensive",
+    "comfort sends a bill",
     "regret starts here",
     "nothing stays small",
     "your habits leave receipts",
@@ -872,6 +879,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "stop measuring your intentions. look at the behaviour that survives a difficult day.",
     "a weak routine does not need a dramatic failure to expose itself. repeated small choices are already telling the story.",
     "the question is not whether you know your pattern. it is whether you are willing to interrupt it today.",
     "self-respect is built in moments that offer no applause. keep the promise when breaking it would be easier.",
