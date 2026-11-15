@@ -145,9 +145,25 @@ def read_comments(object_id: str, source_type: str, source_text: str,
 
 
 def main() -> int:
+    global TOKEN
     if not PAGE_ID or not TOKEN:
         raise MetaReadError("FACEBOOK_PAGE_ID and FACEBOOK_PAGE_ACCESS_TOKEN must be configured")
-    # First verify the token can see the configured Page.
+    # Resolve the Page token from the System User token via /me/accounts.
+    accounts = get_json("me/accounts", {"fields": "id,name,access_token", "limit": 5000})
+    matching_page = next(
+        (row for row in accounts.get("data", [])
+         if str(row.get("id") or "") == PAGE_ID and row.get("access_token")),
+        None,
+    )
+    if not matching_page:
+        raise MetaReadError(
+            f"System User token is valid, but /me/accounts did not return Page "
+            f"{PAGE_ID}. Confirm InnerDisciplineBot has this Page assigned "
+            f"with the required Page tasks."
+        )
+    TOKEN = str(matching_page["access_token"]).strip()
+
+    # Verify the derived Page token can see the configured Page.
     page = get_json(PAGE_ID, {"fields": "id,name"})
     if str(page.get("id")) != PAGE_ID:
         raise MetaReadError("The token did not return the configured Page ID")
