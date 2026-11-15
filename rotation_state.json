@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "consequence",
+    "two_stage_payoff",
     "mirror",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 5,
+    "scene_broken": 0,
     "scene_dangerous": 0
   },
-  "updated_at": "2026-11-14T17:39:16",
+  "updated_at": "2026-11-15T09:00:55",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -768,6 +768,8 @@
     "#discipline #routine #focus #mindset #selfrespect"
   ],
   "recent_hook_variants_v31_2": [
+    "small choices add up.",
+    "this is what happens.",
     "delay gets expensive.",
     "you keep lowering it.",
     "the real problem is quieter.",
@@ -776,6 +778,8 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "small weakness compounds. | first in private. | then in routine. | then in identity. | then in results. | then in regret. | that is the sequence. | stop it early.",
+    "this is what happens. | you keep restarting. | the emotion returns. | the plan looks new. | the promise sounds serious. | but the system stays the same. | so the pattern returns. | every time.",
     "this is the part. | most people avoid. | they want the result. | they want the identity. | they want the respect. | but not the standard. | that creates all of it. | that is the trade.",
     "delay gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
     "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before.",
@@ -795,6 +799,8 @@
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
   ],
   "recent_smart_final_scripts_v32": [
+    "small choices add up. | then in results. | then in regret. | that is the sequence. | stop it early.",
+    "this is what happens. | the plan looks new. | the promise sounds serious. | but the system stays the same. | so the pattern returns every time.",
     "this is the part. | they want the respect. | but not the standard. | the standard creates all of it. | that is the trade.",
     "delay gets expensive. | most people miss the cost. | because it does not arrive immediately, it arrives as a pattern, then as a result, then as a life, that delay is dangerous, that is why today matters.",
     "the real test. | it is the repetition. | after the mood fades, after comfort speaks, after nobody is watching, that is where identity forms, not before.",
@@ -814,16 +820,18 @@
     "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
   ],
   "recent_smart_concepts_v32": [
-    "standards",
-    "procrastination",
-    "identity",
     "consistency",
+    "procrastination",
+    "standards",
+    "identity",
     "excuses",
     "recovery",
     "emotional_control",
     "comfort"
   ],
   "recent_smart_covers_v32": [
+    "your future pays",
+    "when nobody checks",
     "prove it on tuesday",
     "no debt disappears",
     "the quiet second half",
@@ -843,6 +851,7 @@
     "after the motivation"
   ],
   "recent_captions_v32": [
+    "the damage is often gradual, which makes it easy to dismiss. measure the pattern, not just the latest incident.",
     "starting can feel powerful because the decision is new. discipline is proven later, when the same task stops feeling special.",
     "the plan is only the opening move. the result depends on what you do when the plan becomes ordinary.",
     "progress is often quiet enough to be mistaken for nothing. keep the practice long enough for the evidence to accumulate.",
@@ -861,13 +870,13 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "comfort",
     "procrastination",
     "consistency",
     "emotional_control",
     "identity",
     "boundaries",
     "standards",
-    "excuses",
-    "comfort"
+    "excuses"
   ]
 }
