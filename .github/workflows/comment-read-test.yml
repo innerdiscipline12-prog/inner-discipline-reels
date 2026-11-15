@@ -1,0 +1,44 @@
+name: INNER Discipline Comment Read Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-comment-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile and validate reader
+        run: python -m py_compile facebook_comment_reader.py
+
+      - name: Read Facebook Page posts and comments (read-only)
+        env:
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          META_GRAPH_API_VERSION: v27.0
+          COMMENT_TEST_MAX_POSTS: "25"
+          COMMENT_TEST_MAX_REELS: "100"
+          COMMENT_TEST_MAX_COMMENTS: "100"
+          COMMENT_TEST_MAX_REPLIES: "20"
+        run: python facebook_comment_reader.py
+
+      - name: Upload private diagnostic result
+        if: always() && hashFiles('comment_read_test.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: inner-discipline-comment-read-test
+          path: comment_read_test.json
+          retention-days: 7
