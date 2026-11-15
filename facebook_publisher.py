@@ -133,6 +133,41 @@ def load_registry() -> list[dict[str, Any]]:
     return value
 
 
+def get_page_access_token(system_user_token: str, page_id: str) -> str:
+    """Resolve a Page access token from a System User token using /me/accounts."""
+    query = urllib.parse.urlencode({
+        "fields": "id,name,access_token",
+        "limit": "5000",
+        "access_token": system_user_token,
+    })
+    url = f"{GRAPH_BASE}/me/accounts?{query}"
+    request = urllib.request.Request(
+        url, headers={"User-Agent": "inner-discipline-facebook-publisher/37"}
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=45) as response:
+            payload = _read_json_response(response)
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise FacebookPublishError(
+            f"Could not resolve Page access token from System User token "
+            f"(HTTP {exc.code}): {detail[:1000]}"
+        ) from exc
+    except urllib.error.URLError as exc:
+        raise FacebookPublishError(
+            f"Could not reach Meta while resolving Page access: {exc.reason}"
+        ) from exc
+
+    for page in payload.get("data", []):
+        if str(page.get("id") or "") == str(page_id) and page.get("access_token"):
+            return str(page["access_token"]).strip()
+    raise FacebookPublishError(
+        f"System User token was accepted, but /me/accounts did not return "
+        f"Page {page_id}. Assign InnerDisciplineBot to that Page with "
+        f"the required Page tasks in Meta Business Settings."
+    )
+
+
 def publish_reel(video_path: Path, page_id: str, token: str, metadata: dict[str, Any]) -> dict[str, Any]:
     if video_path.suffix.lower() != ".mp4" or not video_path.is_file() or video_path.stat().st_size <= 0:
         raise FacebookPublishError("The selected video must be a non-empty MP4 file.")
@@ -199,6 +234,8 @@ def main() -> int:
     if any(row.get("output_base") == relative_base for row in load_registry()):
         print(f"SKIPPED: {video_path.name} is already registered as published.")
         return 0
+    print("Resolving the Facebook Page access token from the System User token...")
+    token = get_page_access_token(token, page_id)
     print(f"Publishing {video_path.name} to the configured Facebook Page...")
     result = publish_reel(video_path, page_id, token, metadata)
     register_publication(video_path, result, metadata)
