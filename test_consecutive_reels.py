@@ -5,6 +5,41 @@ import unittest
 from pathlib import Path
 
 class ConsecutiveGeneratorTests(unittest.TestCase):
+    def test_quality_preflight_retries_after_a_low_score_candidate(self):
+        try:
+            import generate as gen
+        except Exception as exc:
+            self.fail(f"Could not import the actual reel generator: {exc}")
+
+        from unittest.mock import patch
+        accepted = object()
+        with patch.object(
+            gen,
+            "build_script",
+            side_effect=[ValueError("V33 RETENTION SCORE TOO LOW"), accepted],
+        ) as mocked:
+            result = gen.build_script_with_quality_retries(max_attempts=3)
+
+        self.assertIs(result, accepted)
+        self.assertEqual(mocked.call_count, 2)
+
+    def test_quality_preflight_fails_clearly_after_exhausting_retries(self):
+        try:
+            import generate as gen
+        except Exception as exc:
+            self.fail(f"Could not import the actual reel generator: {exc}")
+
+        from unittest.mock import patch
+        with patch.object(
+            gen,
+            "build_script",
+            side_effect=ValueError("V33 RETENTION SCORE TOO LOW"),
+        ) as mocked:
+            with self.assertRaisesRegex(RuntimeError, "SCRIPT QUALITY PREFLIGHT FAILED"):
+                gen.build_script_with_quality_retries(max_attempts=3)
+
+        self.assertEqual(mocked.call_count, 3)
+
     def test_twenty_consecutive_generated_reels_have_distinct_assets_and_valid_duration(self):
         try:
             import generate as gen
