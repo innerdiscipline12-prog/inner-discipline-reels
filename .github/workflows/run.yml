@@ -1,5 +1,7 @@
 name: Inner Discipline
 
+run-name: INNER Discipline scheduled build (${{ github.event.schedule || github.event_name }})
+
 # Serialize all generator runs so scheduled builds cannot race while saving state.
 concurrency:
   group: inner-discipline-generator-${{ github.repository }}
@@ -23,9 +25,11 @@ on:
     branches:
       - main
   schedule:
-    # 04:30 and 07:30 East Africa Time (UTC+3).
-    - cron: "30 1 * * *"
-    - cron: "30 4 * * *"
+    # Start generation 73 minutes before each target publish time.
+    # 03:17 and 06:17 EAT = 00:17 and 03:17 UTC.
+    # The :17 minute avoids the busiest top-of-hour scheduling window.
+    - cron: "17 0 * * *"
+    - cron: "17 3 * * *"
   workflow_dispatch:
     inputs:
       script:
