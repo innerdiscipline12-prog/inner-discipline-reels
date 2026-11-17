@@ -24,22 +24,21 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 1,
-    "scene_dangerous": 0
+    "scene_dangerous": 1
   },
-  "updated_at": "2026-11-17T08:02:24",
+  "updated_at": "2026-11-17T08:55:58",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,8 +761,8 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#discipline #routine #focus #mindset #selfrespect",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
+    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth"
   ],
@@ -780,6 +779,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
     "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
     "excuses have interest. | they feel harmless now. | then they charge your future. | one repeated delay. | one weak decision. | one comfortable lie. | at a time. | that is the trap.",
     "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
@@ -808,10 +808,10 @@
     "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
     "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
     "the hard part starts here. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping.",
-    "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
-    "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
+    "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps."
   ],
   "recent_smart_final_scripts_v32": [
+    "you know the pattern. | another restart. | same routine. | different week.",
     "you knew earlier. | before the fall, before the result, before the excuse became normal, you knew when the first standard slipped, that is the place to return to, that is where you rebuild, quietly.",
     "excuses have interest. | one repeated delay. | one weak decision. | one comfortable lie at a time. | that is the trap.",
     "the cost finds you. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters before it hurts.",
@@ -840,10 +840,10 @@
     "what most people miss. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
     "the hard part is not starting. | starting makes you feel changed. | the hardest part is continuing when nobody is watching and no mood is helping.",
     "the part you avoid is the part that changes you. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
-    "the first crack is not failure. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
-    "you're not confused. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back, that moment decides everything, not the speech."
+    "the first crack is not failure. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_concepts_v32": [
+    "recovery",
     "standards",
     "procrastination",
     "excuses",
@@ -851,10 +851,10 @@
     "consistency",
     "environment",
     "identity",
-    "recovery",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "what are you defending",
     "you knew earlier",
     "one more exception",
     "the damage grows",
@@ -881,10 +881,10 @@
     "stop calling it confusion",
     "the excuse is familiar",
     "when it stops feeling new",
-    "when the first win fades",
-    "the real test"
+    "when the first win fades"
   ],
   "recent_captions_v32": [
+    "if the same problem keeps returning, look beyond the latest mistake. study the decision that keeps giving it permission.",
     "the first compromise rarely looks serious. its power comes from making the next compromise easier to accept.",
     "what you postpone does not always disappear. sometimes it grows while you are busy convincing yourself there is still time.",
     "a pattern becomes dangerous when you can explain it without feeling responsible for changing it.",
