@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "mirror",
     "consequence",
+    "mirror",
     "two_stage_payoff",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 0,
+    "scene_broken": 1,
     "scene_dangerous": 5
   },
-  "updated_at": "2026-11-16T08:10:24",
+  "updated_at": "2026-11-17T06:24:45",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -780,6 +780,9 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "excuses have interest. | they feel harmless now. | then they charge your future. | one repeated delay. | one weak decision. | one comfortable lie. | at a time. | that is the trap.",
+    "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
+    "you keep moving it. | the line. | the rule. | the standard. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
     "you know what to do. | that is why it bothers you. | not because life is unclear. | not because the answer is hidden. | because the standard is obvious. | and you keep letting mood vote. | that is the weakness. | correct it.",
     "you let it slide. | once. | then again. | then it stopped feeling wrong. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
@@ -806,12 +809,12 @@
     "the hard part starts here. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping.",
     "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
-    "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
-    "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
-    "the quiet truth. | nobody has to see it. | for it to matter. | nobody has to clap. | for it to count. | your future still records it. | your identity still feels it. | every time.",
-    "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real."
+    "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech."
   ],
   "recent_smart_final_scripts_v32": [
+    "excuses have interest. | one repeated delay. | one weak decision. | one comfortable lie at a time. | that is the trap.",
+    "the cost finds you. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters before it hurts.",
+    "you keep moving it. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
     "you know what to do. | not because the answer is hidden. | because the standard is obvious, and you keep letting mood vote, that is the weakness, correct it.",
     "you let it slide. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
     "the standard slipped. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
@@ -838,22 +841,23 @@
     "the part you avoid is the part that changes you. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "the first crack is not failure. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
     "you're not confused. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back, that moment decides everything, not the speech.",
-    "you know the pattern. | another explanation. | another restart. | same routine. | different week.",
-    "the quiet truth. | nobody has to clap for it to count. | your future still records it. | your identity still feels it every time.",
-    "the moment you stop. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins for real."
+    "you know the pattern. | another explanation. | another restart. | same routine. | different week."
   ],
   "recent_smart_concepts_v32": [
+    "procrastination",
+    "excuses",
     "standards",
     "comfort",
-    "procrastination",
     "consistency",
     "environment",
-    "excuses",
     "identity",
     "recovery",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "one more exception",
+    "the damage grows",
+    "the unseen repetition",
     "time collects quietly",
     "weakness compounds",
     "later gets expensive",
@@ -878,12 +882,10 @@
     "when it stops feeling new",
     "when the first win fades",
     "the real test",
-    "the part you avoid",
-    "you know what to do",
-    "you keep explaining",
-    "consistency has a sound"
+    "the part you avoid"
   ],
   "recent_captions_v32": [
+    "what you postpone does not always disappear. sometimes it grows while you are busy convincing yourself there is still time.",
     "a pattern becomes dangerous when you can explain it without feeling responsible for changing it.",
     "stop measuring your intentions. look at the behaviour that survives a difficult day.",
     "a weak routine does not need a dramatic failure to expose itself. repeated small choices are already telling the story.",
@@ -908,11 +910,11 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "procrastination",
     "excuses",
     "consistency",
     "identity",
     "comfort",
-    "procrastination",
     "emotional_control",
     "boundaries",
     "standards"
