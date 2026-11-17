@@ -64,6 +64,17 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                 self.assertGreaterEqual(duration, 12.0, f"reel {index + 1} is shorter than 12s")
                 self.assertLessEqual(duration, 15.0, f"reel {index + 1} exceeds 15s")
                 self.assertTrue(script.lines, f"reel {index + 1} has no spoken lines")
+                self.assertGreaterEqual(len(script.lines), 3, f"reel {index + 1} has fewer than three voice lines")
+                self.assertLessEqual(len(script.lines), 4, f"reel {index + 1} has more than four voice lines")
+                self.assertLessEqual(
+                    sum(len(line.split()) for line in script.lines), 21,
+                    f"reel {index + 1} exceeds the 21-word narration budget"
+                )
+                for line_number, line in enumerate(script.lines, start=1):
+                    self.assertLessEqual(
+                        len(line.split()), 9,
+                        f"reel {index + 1}, line {line_number} exceeds nine words"
+                    )
                 self.assertEqual(
                     script.lines[-1], script.source_payoff,
                     f"reel {index + 1} lost the original payoff during shortening"
