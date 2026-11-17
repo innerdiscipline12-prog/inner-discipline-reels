@@ -692,7 +692,8 @@ PACING = {
     "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
     "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
     # Retention engine needs a controlled but faster delivery to fit the short format.
-    "smart_cold": {"rate": "-12%", "pitch": "-45Hz", "chunk_size": 2, "gap": 0.28},
+    # Calm, deliberate delivery: shorter scripts plus real pauses between lines.
+    "smart_cold": {"rate": "-18%", "pitch": "-45Hz", "chunk_size": 2, "gap": 0.32},
 }
 
 
@@ -1753,6 +1754,35 @@ def cohere_retention_script(lines):
     return result
 
 
+def fit_inner_discipline_voice_lines(lines, max_words=21, max_lines=4, max_line_words=9):
+    """Keep the hook and payoff while enforcing short, speakable narration lines."""
+    selected = [str(line).strip() for line in lines if str(line).strip()]
+    if len(selected) > max_lines:
+        selected = [selected[0]] + selected[-(max_lines - 1):]
+
+    # Drop middle thoughts first; never discard or reorder the hook/payoff arc.
+    while len(selected) > 3 and sum(len(line.split()) for line in selected) > max_words:
+        selected.pop(1)
+
+    if sum(len(line.split()) for line in selected) > max_words and len(selected) > 2:
+        selected = [selected[0]] + selected[-2:]
+
+    if len(selected) < 3:
+        raise ValueError("VOICE PACING REJECTED: script needs at least three complete lines.")
+    if len(selected) > max_lines:
+        raise ValueError("VOICE PACING REJECTED: script exceeds four narration lines.")
+    if any(len(line.split()) > max_line_words for line in selected):
+        raise ValueError(
+            f"VOICE PACING REJECTED: a narration line exceeds {max_line_words} words."
+        )
+    word_count = sum(len(line.split()) for line in selected)
+    if word_count > max_words:
+        raise ValueError(
+            f"VOICE PACING REJECTED: {word_count} words exceeds the {max_words}-word limit."
+        )
+    return selected
+
+
 def build_retention_reel_script():
     """
     v31.2 SMART COMPLETION ENGINE.
@@ -1831,26 +1861,10 @@ def build_retention_reel_script():
     source_payoff = lines[-1] if lines else ""
     lines = vary_hook_v31_2(lines)
 
-    # Preserve the hook and a contiguous closing arc. The previous approach
-    # cherry-picked non-adjacent lines, creating broken grammar and lost context.
+    # Preserve the hook and a contiguous closing arc, but keep narration concise.
+    # Four short lines / 21 words leave room for a deliberate voice and pauses.
     original_lines = [str(line).strip() for line in lines if str(line).strip()]
-    if len(original_lines) > 5:
-        original_lines = [original_lines[0]] + original_lines[-4:]
-
-    # Enforce a spoken-word budget without dropping the payoff or reordering the
-    # closing arc. Remove the earliest middle line only when the budget requires it.
-    if original_lines:
-        first_line = original_lines[0]
-        final_line = original_lines[-1] if len(original_lines) > 1 else ""
-        selected_lines = list(original_lines)
-        budget = 27
-        while len(selected_lines) > 3 and sum(len(line.split()) for line in selected_lines) > budget:
-            selected_lines.pop(1)
-        if sum(len(line.split()) for line in selected_lines) > budget and len(selected_lines) > 2:
-            selected_lines = [selected_lines[0]] + selected_lines[-2:]
-        lines = selected_lines
-    if len(lines) > 5:
-        lines = lines[:5]
+    lines = fit_inner_discipline_voice_lines(original_lines)
 
     v33_score = retention_candidate_score(lines, category, PERFORMANCE_PROFILE_V33)
     v33_hook_family = hook_family(lines[0] if lines else "")
@@ -3546,7 +3560,11 @@ def build_video(script, bg_path, out_path):
         # duration varies slightly by line, so use compact but audible pauses
         # rather than relying on the visual timing estimate alone.
         cursor = 0.20 if short_retention_mode else 0.95
-        gap = 0.06 if short_retention_mode else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
+        gap = (
+            PACING.get(script.pacing, {}).get("gap", 0.32)
+            if short_retention_mode
+            else random.uniform(SILENCE_GAP_MIN, SILENCE_GAP_MAX)
+        )
 
         print("Generating voice lines...")
         for i, line in enumerate(script.lines):
