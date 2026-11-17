@@ -1754,7 +1754,7 @@ def cohere_retention_script(lines):
     return result
 
 
-def fit_inner_discipline_voice_lines(lines, max_words=21, max_lines=4, max_line_words=9):
+def fit_inner_discipline_voice_lines(lines, max_words=21, max_lines=4, max_line_words=11):
     """Keep the hook and payoff while enforcing short, speakable narration lines."""
     selected = [str(line).strip() for line in lines if str(line).strip()]
     if len(selected) > max_lines:
