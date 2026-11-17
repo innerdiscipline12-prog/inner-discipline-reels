@@ -691,7 +691,7 @@ PACING = {
     "attack": {"rate": "-4%", "pitch": "-35Hz", "chunk_size": 2, "gap": 0.16},
     "story": {"rate": "-11%", "pitch": "-40Hz", "chunk_size": 3, "gap": 0.22},
     "cold": {"rate": "-15%", "pitch": "-45Hz", "chunk_size": 3, "gap": 0.25},
-    # Retention engine needs a controlled but faster delivery to fit the short format.
+    # Short-form narration uses a deliberately slower, more controlled delivery.
     # Calm, deliberate delivery: shorter scripts plus real pauses between lines.
     "smart_cold": {"rate": "-18%", "pitch": "-45Hz", "chunk_size": 2, "gap": 0.32},
 }
@@ -1864,7 +1864,13 @@ def build_retention_reel_script():
     # Preserve the hook and a contiguous closing arc, but keep narration concise.
     # Four short lines / 21 words leave room for a deliberate voice and pauses.
     original_lines = [str(line).strip() for line in lines if str(line).strip()]
-    lines = fit_inner_discipline_voice_lines(original_lines)
+    try:
+        lines = fit_inner_discipline_voice_lines(original_lines)
+    except ValueError:
+        # Mark this candidate within the current run so a bounded retry explores
+        # a different script instead of selecting the same overlong candidate.
+        remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
+        raise
 
     v33_score = retention_candidate_score(lines, category, PERFORMANCE_PROFILE_V33)
     v33_hook_family = hook_family(lines[0] if lines else "")
