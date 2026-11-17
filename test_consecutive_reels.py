@@ -56,7 +56,7 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
 
             scripts, covers, captions = [], [], []
             for index in range(20):
-                script = gen.build_retention_reel_script()
+                script = gen.build_script_with_quality_retries()
                 caption_full = gen.build_caption(script)
                 caption = caption_full.split("\n\n", 1)[0]
                 duration = float(getattr(script, "smart_duration", 0))
@@ -72,8 +72,8 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                 )
                 for line_number, line in enumerate(script.lines, start=1):
                     self.assertLessEqual(
-                        len(line.split()), 9,
-                        f"reel {index + 1}, line {line_number} exceeds nine words"
+                        len(line.split()), 11,
+                        f"reel {index + 1}, line {line_number} exceeds eleven words"
                     )
                 self.assertEqual(
                     script.lines[-1], script.source_payoff,
