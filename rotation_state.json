@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "mirror",
     "two_stage_payoff",
+    "mirror",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
@@ -35,10 +36,10 @@
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 2,
+    "scene_broken": 3,
     "scene_dangerous": 2
   },
-  "updated_at": "2026-11-18T07:34:08",
+  "updated_at": "2026-11-18T11:55:24",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -761,9 +762,9 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #habits #standards #selfcontrol #growth"
   ],
   "recent_hook_variants_v31_2": [
@@ -779,6 +780,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real.",
     "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
@@ -807,10 +809,10 @@
     "the real problem is quieter. | is not motivation. | motivation comes and goes. | the real problem is the routine. | you keep protecting. | with excuses. | that sound reasonable. | but still cost you.",
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
     "you watched it happen. | the routine got weaker. | the excuses got easier. | the standard moved lower. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
-    "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
-    "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts."
+    "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving."
   ],
   "recent_smart_final_scripts_v32": [
+    "the part you avoid is the part that changes you. | the proof. | repeated quietly. | when nobody claps.",
     "you're not confused. | it is obeying the truth. | when comfort argues back, that moment decides everything, not the speech.",
     "the moment you stop. | and the standard becomes visible. | that is where control begins for real.",
     "you know the pattern. | another restart. | same routine. | different week.",
@@ -839,21 +841,21 @@
     "the damage grows. | when you keep excusing it, small habits become normal, normal becomes identity, identity becomes results, then you call it life, that is the danger, correct it early.",
     "you watched it happen. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you called it tomorrow. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
-    "what most people miss. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
-    "the hard part is not starting. | starting makes you feel changed. | the hardest part is continuing when nobody is watching and no mood is helping."
+    "what most people miss. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts."
   ],
   "recent_smart_concepts_v32": [
+    "consistency",
     "comfort",
     "standards",
     "recovery",
     "procrastination",
     "excuses",
-    "consistency",
     "environment",
     "identity",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "the moment after commitment",
     "you felt that drop",
     "the real test",
     "what are you defending",
@@ -880,10 +882,10 @@
     "you made room for it",
     "what most people miss",
     "easy choices add up",
-    "stop calling it confusion",
-    "the excuse is familiar"
+    "stop calling it confusion"
   ],
   "recent_captions_v32": [
+    "you do not become consistent by making a bigger declaration. you become consistent by repeating a smaller action.",
     "you can make an excuse sound intelligent without making it useful. judge the explanation by what it allows you to repeat.",
     "the work becomes meaningful when it no longer needs to feel exciting. that is where consistency starts to separate itself.",
     "if the same problem keeps returning, look beyond the latest mistake. study the decision that keeps giving it permission.",
@@ -913,11 +915,11 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "identity",
     "excuses",
     "consistency",
     "comfort",
     "procrastination",
-    "identity",
     "emotional_control",
     "boundaries",
     "standards"
