@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "two_stage_payoff",
     "mirror",
+    "two_stage_payoff",
     "consequence",
     "mirror_two_stage",
     "identity",
@@ -24,22 +24,21 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 2,
-    "scene_dangerous": 1
+    "scene_dangerous": 2
   },
-  "updated_at": "2026-11-17T12:02:09",
+  "updated_at": "2026-11-18T07:34:08",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,9 +761,9 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
-    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth"
   ],
   "recent_hook_variants_v31_2": [
@@ -780,6 +779,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real.",
     "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
     "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
@@ -808,10 +808,10 @@
     "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
     "you watched it happen. | the routine got weaker. | the excuses got easier. | the standard moved lower. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
-    "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
-    "the hard part starts here. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping."
+    "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts."
   ],
   "recent_smart_final_scripts_v32": [
+    "you're not confused. | it is obeying the truth. | when comfort argues back, that moment decides everything, not the speech.",
     "the moment you stop. | and the standard becomes visible. | that is where control begins for real.",
     "you know the pattern. | another restart. | same routine. | different week.",
     "you knew earlier. | before the fall, before the result, before the excuse became normal, you knew when the first standard slipped, that is the place to return to, that is where you rebuild, quietly.",
@@ -840,21 +840,21 @@
     "you watched it happen. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "you called it tomorrow. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
     "what most people miss. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
-    "the hard part is not starting. | starting makes you feel changed. | the hardest part is continuing when nobody is watching and no mood is helping.",
-    "the part you avoid is the part that changes you. | not the announcement. | the proof. | repeated quietly. | when nobody claps."
+    "the hard part is not starting. | starting makes you feel changed. | the hardest part is continuing when nobody is watching and no mood is helping."
   ],
   "recent_smart_concepts_v32": [
+    "comfort",
     "standards",
     "recovery",
     "procrastination",
     "excuses",
-    "comfort",
     "consistency",
     "environment",
     "identity",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "you felt that drop",
     "the real test",
     "what are you defending",
     "you knew earlier",
@@ -881,10 +881,10 @@
     "what most people miss",
     "easy choices add up",
     "stop calling it confusion",
-    "the excuse is familiar",
-    "when it stops feeling new"
+    "the excuse is familiar"
   ],
   "recent_captions_v32": [
+    "you can make an excuse sound intelligent without making it useful. judge the explanation by what it allows you to repeat.",
     "the work becomes meaningful when it no longer needs to feel exciting. that is where consistency starts to separate itself.",
     "if the same problem keeps returning, look beyond the latest mistake. study the decision that keeps giving it permission.",
     "the first compromise rarely looks serious. its power comes from making the next compromise easier to accept.",
@@ -913,10 +913,10 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "excuses",
     "consistency",
     "comfort",
     "procrastination",
-    "excuses",
     "identity",
     "emotional_control",
     "boundaries",
