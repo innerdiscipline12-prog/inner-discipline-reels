@@ -1815,10 +1815,11 @@ def build_retention_reel_script():
     random.shuffle(remaining_categories)
     category_order = [preferred_category] + remaining_categories
     rotation = load_rotation_state()
-    recent_scripts = (
-        rotation.get("recent_smart_scripts_v32", [])[:30]
-        + rotation.get("recent_smart_final_scripts_v32", [])[:30]
-    )
+    # Keep source-candidate and final spoken-script histories separate.
+    # Comparing a long source against its shortened spoken form creates
+    # false near-duplicate hits from containment scoring and prematurely
+    # exhausts the candidate bank during consecutive generation.
+    recent_scripts = rotation.get("recent_smart_scripts_v32", [])[:30]
     selected_key = None
     concept = "general"
     novelty_score = 1.0
