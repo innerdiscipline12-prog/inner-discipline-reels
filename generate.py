@@ -1908,13 +1908,16 @@ def build_retention_reel_script():
     recent_covers = rotation.get("recent_smart_covers_v32", [])[:28]
     final_script_text = " | ".join(lines)
     rotation = load_rotation_state()
+    # Record the selected source candidate before validating its shortened,
+    # spoken form. If the final form is rejected as a near-duplicate, the next
+    # quality retry must not select this same source candidate again.
+    remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
     assert_novel(
         final_script_text,
         rotation.get("recent_smart_final_scripts_v32", [])[:30],
         label="spoken script",
         threshold=0.42,
     )
-    remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
     remember_rotation_item("recent_smart_final_scripts_v32", line_key(final_script_text), 30)
     if concept and concept != "general":
         remember_rotation_item("recent_smart_concepts_v32", concept, 12)
