@@ -29,6 +29,8 @@ from retention_engine import (
     build_performance_profile,
     hook_family,
     is_swipe_risk_hook,
+    opening_score,
+    OPENING_SCORE_MIN,
     retention_candidate_score,
 )
 
@@ -1874,8 +1876,16 @@ def build_retention_reel_script():
 
     v33_score = retention_candidate_score(lines, category, PERFORMANCE_PROFILE_V33)
     v33_hook_family = hook_family(lines[0] if lines else "")
+    v33_opening_score = opening_score(lines)
     print("V33 RETENTION SCORE:", round(v33_score, 3))
+    print("V33 OPENING SCORE:", round(v33_opening_score, 3))
     print("V33 HOOK FAMILY:", v33_hook_family)
+    if v33_opening_score < OPENING_SCORE_MIN:
+        remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
+        raise ValueError(
+            f"V33 OPENING SCORE TOO LOW: {v33_opening_score:.2f} < "
+            f"{OPENING_SCORE_MIN:.2f}"
+        )
     if v33_score < RETENTION_SCORE_MIN:
         # Remember this rejected source candidate in the in-run rotation state.
         # The next bounded retry must explore a different candidate instead of
@@ -1929,6 +1939,7 @@ def build_retention_reel_script():
     script = Script(mode="smart_completion_engine_v31_2", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
     script.source_payoff = source_payoff
     script.v33_retention_score = v33_score
+    script.v33_opening_score = v33_opening_score
     script.v33_hook_family = v33_hook_family
     script.v33_performance_samples = PERFORMANCE_PROFILE_V33.get("samples", 0)
     if not script.lines or script.lines[-1] != source_payoff:
