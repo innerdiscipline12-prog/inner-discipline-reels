@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "consequence",
     "two_stage_payoff",
     "mirror",
-    "consequence",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 3,
+    "scene_broken": 4,
     "scene_dangerous": 2
   },
-  "updated_at": "2026-11-18T11:55:24",
+  "updated_at": "2026-11-19T07:35:07",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,8 +762,8 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #routine #focus #mindset #selfrespect",
+    "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
     "#discipline #habits #standards #selfcontrol #growth"
   ],
@@ -780,6 +780,10 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "nothing stays small. | not the excuse. | not the delay. | not the habit. | not the compromise. | if you keep feeding it. | it grows. | quietly.",
+    "time does not wait. | your mood can change tomorrow. | your plan can improve tomorrow. | but today still counts. | so does every excuse. | so does every choice. | that is the truth. | act like it.",
+    "the quiet truth. | nobody has to see it. | for it to matter. | nobody has to clap. | for it to count. | your future still records it. | your identity still feels it. | every time.",
+    "the hard part starts here. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping.",
     "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
     "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
     "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real.",
@@ -805,13 +809,10 @@
     "delay gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
     "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before.",
     "the part that matters. | is not what you say. | it is what you repeat. | when pressure returns. | when comfort calls. | when nobody checks. | that is the real standard. | that is the proof.",
-    "you saw it coming. | the warning was there. | the drop was there. | the old habit was there. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
-    "the real problem is quieter. | is not motivation. | motivation comes and goes. | the real problem is the routine. | you keep protecting. | with excuses. | that sound reasonable. | but still cost you.",
-    "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
-    "you watched it happen. | the routine got weaker. | the excuses got easier. | the standard moved lower. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
-    "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving."
+    "you saw it coming. | the warning was there. | the drop was there. | the old habit was there. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson."
   ],
   "recent_smart_final_scripts_v32": [
+    "nothing stays small. | not the compromise. | if you keep feeding it. | it grows quietly.",
     "the part you avoid is the part that changes you. | the proof. | repeated quietly. | when nobody claps.",
     "you're not confused. | it is obeying the truth. | when comfort argues back, that moment decides everything, not the speech.",
     "the moment you stop. | and the standard becomes visible. | that is where control begins for real.",
@@ -840,21 +841,21 @@
     "the real problem is not motivation. | you keep protecting the routine with excuses. | those excuses sound reasonable. | but they still cost you.",
     "the damage grows. | when you keep excusing it, small habits become normal, normal becomes identity, identity becomes results, then you call it life, that is the danger, correct it early.",
     "you watched it happen. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
-    "you called it tomorrow. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
-    "what most people miss. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts."
+    "you called it tomorrow. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving."
   ],
   "recent_smart_concepts_v32": [
+    "procrastination",
     "consistency",
     "comfort",
     "standards",
     "recovery",
-    "procrastination",
     "excuses",
     "environment",
     "identity",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "excuses have interest",
     "the moment after commitment",
     "you felt that drop",
     "the real test",
@@ -881,10 +882,10 @@
     "what happens next",
     "you made room for it",
     "what most people miss",
-    "easy choices add up",
-    "stop calling it confusion"
+    "easy choices add up"
   ],
   "recent_captions_v32": [
+    "avoidance can feel like relief in the moment. the pressure you postpone often returns with fewer options attached.",
     "you do not become consistent by making a bigger declaration. you become consistent by repeating a smaller action.",
     "you can make an excuse sound intelligent without making it useful. judge the explanation by what it allows you to repeat.",
     "the work becomes meaningful when it no longer needs to feel exciting. that is where consistency starts to separate itself.",
@@ -915,11 +916,11 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "procrastination",
     "identity",
     "excuses",
     "consistency",
     "comfort",
-    "procrastination",
     "emotional_control",
     "boundaries",
     "standards"
