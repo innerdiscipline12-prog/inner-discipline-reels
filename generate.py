@@ -397,6 +397,11 @@ RETENTION_SCORE_MIN = 4.0
 # natural controlled narration to breathe.
 RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 15.0
 RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS = 5
+# Script selection has several independent hard gates (opening, originality,
+# retention and narration pacing). Give the selector enough fresh candidates
+# to satisfy all gates without weakening any threshold. TTS keeps its own
+# smaller retry budget because each attempt synthesizes audio.
+RETENTION_SCRIPT_QUALITY_MAX_ATTEMPTS = 20
 # No hard per-line audio cap: deliberate INNER Discipline pacing can contain
 # one longer sentence. The total Reel duration is the authoritative retention gate.
 RETENTION_MAX_LINE_AUDIO_SECONDS = None
@@ -2024,7 +2029,7 @@ def build_script_with_quality_retries(max_attempts=None):
     fall below the retention/originality gates. Failed candidates are not
     rendered and do not advance persisted rotation state.
     """
-    attempts = max_attempts or RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS
+    attempts = max_attempts or RETENTION_SCRIPT_QUALITY_MAX_ATTEMPTS
     last_error = None
     for attempt in range(1, attempts + 1):
         try:
