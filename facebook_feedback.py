@@ -3,26 +3,15 @@
 Reads published_reels.json, fetches lifetime Reel insights from Meta Graph API,
 updates performance_history_v33.json in-place, and emits a compact summary.
 
-The publisher is responsible for registering each successful Facebook publish:
-{
-  "video_id": "...",
-  "output_base": "outputs/reel_v33_...",
-  "published_at": "...",
-  "category": "dangerous",
-  "hook_family": "mirror",
-  "retention_score": 8.5,
-  "predicted_duration": 12.4
-}
-
-Meta currently documents Reel video insights on:
-GET /v27.0/{video-id}/video_insights
-with metrics including average watch time, replay count, retention graph,
-followers, likes, social actions and play counts.
+The collector is deliberately resilient: a single unavailable Reel or metric
+must not erase previously learned history or fail the scheduled workflow.
+Meta's error payload is preserved in diagnostics so API problems are actionable.
 """
 
 import json
 import os
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
@@ -47,6 +36,35 @@ REEL_METRICS = [
 ]
 
 
+class MetaAPIError(RuntimeError):
+    """Graph API failure with the HTTP status and structured Meta error."""
+
+    def __init__(self, message, *, status=None, payload=None):
+        super().__init__(message)
+        self.status = status
+        self.payload = payload if isinstance(payload, dict) else None
+
+    @property
+    def code(self):
+        error = self.payload.get("error", {}) if self.payload else {}
+        return error.get("code")
+
+    @property
+    def subcode(self):
+        error = self.payload.get("error", {}) if self.payload else {}
+        return error.get("error_subcode")
+
+    def as_dict(self):
+        return {
+            "type": "meta_api_error",
+            "status": self.status,
+            "code": self.code,
+            "subcode": self.subcode,
+            "message": str(self),
+            "payload": self.payload,
+        }
+
+
 def load_json(path, default):
     if not os.path.exists(path):
         return default
@@ -60,6 +78,21 @@ def save_json(path, value):
         json.dump(value, handle, ensure_ascii=False, indent=2)
 
 
+def _decode_http_error(exc):
+    try:
+        raw = exc.read().decode("utf-8", errors="replace")
+        payload = json.loads(raw)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        payload = None
+
+    if isinstance(payload, dict) and isinstance(payload.get("error"), dict):
+        error = payload["error"]
+        message = error.get("message") or str(exc)
+        return payload, message
+
+    return payload, str(exc)
+
+
 def api_get(path, params):
     query = urllib.parse.urlencode(params)
     url = f"{GRAPH_BASE}/{path.lstrip('/')}?{query}"
@@ -67,8 +100,23 @@ def api_get(path, params):
         url,
         headers={"User-Agent": "inner-discipline-retention-engine/34"},
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
-        return json.load(response)
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            payload = json.load(response)
+    except urllib.error.HTTPError as exc:
+        payload, message = _decode_http_error(exc)
+        raise MetaAPIError(
+            message,
+            status=exc.code,
+            payload=payload,
+        ) from exc
+
+    if isinstance(payload, dict) and payload.get("error"):
+        raise MetaAPIError(
+            payload["error"].get("message") or "Meta Graph API returned an error.",
+            payload=payload,
+        )
+    return payload
 
 
 def extract_metric(data, name):
@@ -144,11 +192,7 @@ def build_record(item, metrics):
     except (TypeError, ValueError):
         avg_watch = None
 
-    completion_rate = None
-    if curve:
-        # Meta's Reel retention graph contains 40 timestamp segments.
-        # The last segment is our completion proxy.
-        completion_rate = curve[-1]
+    completion_rate = curve[-1] if curve else None
 
     avg_watch_pct = None
     if avg_watch is not None and duration and duration > 0:
@@ -202,8 +246,6 @@ def fetch_reel(video_id):
             "access_token": os.environ[TOKEN_ENV],
         },
     )
-    if "error" in response:
-        raise RuntimeError(response["error"])
     return response
 
 
@@ -237,7 +279,10 @@ def collect():
             by_video[str(video_id)] = build_record(item, metrics)
             collected += 1
         except Exception as exc:
-            failures.append({"video_id": str(video_id), "error": str(exc)})
+            failure = {"video_id": str(video_id), "error": str(exc)}
+            if isinstance(exc, MetaAPIError):
+                failure.update(exc.as_dict())
+            failures.append(failure)
 
     updated = sorted(
         by_video.values(),
@@ -256,7 +301,11 @@ def collect():
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
     if failures:
-        raise RuntimeError(f"{len(failures)} Reel insight request(s) failed.")
+        print(
+            f"WARNING: {len(failures)} Reel insight request(s) failed; "
+            "successful history was preserved and the scheduled feedback run will continue.",
+            file=sys.stderr,
+        )
 
 
 if __name__ == "__main__":
