@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4"
   ],
   "background_cursor": {
     "global": 2,
-    "scene_broken": 5,
+    "scene_broken": 0,
     "scene_dangerous": 2
   },
-  "updated_at": "2026-11-19T11:57:35",
+  "updated_at": "2026-11-20T07:31:45",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,8 +762,8 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
-    "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #routine #focus #mindset #selfrespect",
+    "#discipline #habits #standards #selfcontrol #growth",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength"
   ],
@@ -780,6 +780,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
     "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
     "nothing stays small. | not the excuse. | not the delay. | not the habit. | not the compromise. | if you keep feeding it. | it grows. | quietly.",
     "time does not wait. | your mood can change tomorrow. | your plan can improve tomorrow. | but today still counts. | so does every excuse. | so does every choice. | that is the truth. | act like it.",
@@ -808,10 +809,10 @@
     "this is what happens. | you keep restarting. | the emotion returns. | the plan looks new. | the promise sounds serious. | but the system stays the same. | so the pattern returns. | every time.",
     "this is the part. | most people avoid. | they want the result. | they want the identity. | they want the respect. | but not the standard. | that creates all of it. | that is the trade.",
     "delay gets expensive. | most people miss the cost. | because it does not arrive immediately. | it arrives as a pattern. | then as a result. | then as a life. | that delay is dangerous. | that is why today matters.",
-    "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before.",
-    "the part that matters. | is not what you say. | it is what you repeat. | when pressure returns. | when comfort calls. | when nobody checks. | that is the real standard. | that is the proof."
+    "the real test. | is not the beginning. | it is the repetition. | after the mood fades. | after comfort speaks. | after nobody is watching. | that is where identity forms. | not before."
   ],
   "recent_smart_final_scripts_v32": [
+    "what most people miss. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
     "the first crack is not failure. | one compromise. | you stop challenging. | then it gets normal.",
     "nothing stays small. | not the compromise. | if you keep feeding it. | it grows quietly.",
     "the part you avoid is the part that changes you. | the proof. | repeated quietly. | when nobody claps.",
@@ -840,21 +841,21 @@
     "the part that matters. | it is what you repeat. | when pressure returns, when comfort calls, when nobody checks, that is the real standard, that is the proof.",
     "you saw it coming. | you did not lack clarity. | you delayed the truth. | then the result spoke. | that is the lesson.",
     "the real problem is not motivation. | you keep protecting the routine with excuses. | those excuses sound reasonable. | but they still cost you.",
-    "the damage grows. | when you keep excusing it, small habits become normal, normal becomes identity, identity becomes results, then you call it life, that is the danger, correct it early.",
-    "you watched it happen. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins."
+    "the damage grows. | when you keep excusing it, small habits become normal, normal becomes identity, identity becomes results, then you call it life, that is the danger, correct it early."
   ],
   "recent_smart_concepts_v32": [
+    "recovery",
     "standards",
     "procrastination",
     "consistency",
     "comfort",
-    "recovery",
     "excuses",
     "environment",
     "identity",
     "emotional_control"
   ],
   "recent_smart_covers_v32": [
+    "consistency has a sound",
     "when it stops feeling new",
     "excuses have interest",
     "the moment after commitment",
@@ -881,10 +882,10 @@
     "no debt disappears",
     "the quiet second half",
     "what happens next",
-    "you made room for it",
-    "what most people miss"
+    "you made room for it"
   ],
   "recent_captions_v32": [
+    "you may not feel different after one disciplined choice. keep collecting proof until your behaviour becomes harder to deny.",
     "the real test arrives after the promise. that is when your routine must carry the weight your motivation cannot.",
     "avoidance can feel like relief in the moment. the pressure you postpone often returns with fewer options attached.",
     "you do not become consistent by making a bigger declaration. you become consistent by repeating a smaller action.",
@@ -917,11 +918,11 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "comfort",
     "consistency",
     "procrastination",
     "identity",
     "excuses",
-    "comfort",
     "emotional_control",
     "boundaries",
     "standards"
