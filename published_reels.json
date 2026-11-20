@@ -108,5 +108,15 @@
     "hook_family": "curiosity",
     "retention_score": 9.5,
     "predicted_duration": 13.5
+  },
+  {
+    "video_id": "1179725831299324",
+    "post_id": "122157253467163183",
+    "output_base": "outputs/reel_v33_smart_completion_engine_v31_2_mirror_20261120_115013_20261120_115011_cf9a0df1",
+    "published_at": "2026-11-20T11:53:34+00:00",
+    "category": "mirror",
+    "hook_family": "mirror",
+    "retention_score": 10.0,
+    "predicted_duration": 13.5
   }
 ]
