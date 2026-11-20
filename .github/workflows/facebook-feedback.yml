@@ -21,6 +21,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Run Facebook feedback collector tests
+        run: python -m unittest -v test_facebook_feedback.py
+
       - name: Check Facebook token
         id: token
         env:
