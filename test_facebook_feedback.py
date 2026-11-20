@@ -1,7 +1,7 @@
-import json
 import os
 import tempfile
 import unittest
+import urllib.error
 from unittest.mock import patch
 
 import facebook_feedback as fb
@@ -43,6 +43,57 @@ class FeedbackTests(unittest.TestCase):
             self.assertEqual(args[0], "123/video_insights")
             self.assertEqual(kwargs["period"], "lifetime")
             self.assertIn("post_video_avg_time_watched", kwargs["metric"])
+
+    def test_api_get_preserves_meta_http_error_details(self):
+        payload = (
+            b'{"error":{"message":"Invalid parameter","type":"OAuthException",'
+            b'"code":100,"error_subcode":12345}}'
+        )
+        error = urllib.error.HTTPError(
+            "https://graph.facebook.com/v27.0/123/video_insights",
+            400,
+            "Bad Request",
+            {},
+            None,
+        )
+        error.read = lambda: payload
+        with patch("facebook_feedback.urllib.request.urlopen", side_effect=error):
+            with self.assertRaises(fb.MetaAPIError) as raised:
+                fb.api_get("123/video_insights", {"metric": "x", "period": "lifetime"})
+        self.assertEqual(raised.exception.status, 400)
+        self.assertEqual(raised.exception.code, 100)
+        self.assertEqual(raised.exception.subcode, 12345)
+        self.assertIn("Invalid parameter", str(raised.exception))
+
+    def test_collect_preserves_history_when_reel_insight_fails(self):
+        registry = [
+            {"video_id": "bad", "published_at": "2026-11-20T00:00:00Z"},
+            {"video_id": "good", "published_at": "2026-11-19T00:00:00Z"},
+        ]
+        history = [
+            {"video_id": "old", "published_at": "2026-11-18T00:00:00Z"}
+        ]
+        metrics = {"data": [{"name": "fb_reels_total_plays", "value": 5}]}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            registry_path = os.path.join(tmp, "published.json")
+            history_path = os.path.join(tmp, "history.json")
+            fb.save_json(registry_path, registry)
+            fb.save_json(history_path, history)
+
+            def fake_fetch(video_id):
+                if video_id == "bad":
+                    raise fb.MetaAPIError(
+                        "Permission denied", status=400,
+                        payload={"error": {"message": "Permission denied", "code": 200}},
+                    )
+                return metrics
+
+            with patch.object(fb, "REGISTRY_FILE", registry_path),                  patch.object(fb, "HISTORY_FILE", history_path),                  patch.dict(fb.os.environ, {fb.TOKEN_ENV: "test"}, clear=False),                  patch.object(fb, "fetch_reel", side_effect=fake_fetch):
+                fb.collect()
+
+            saved = fb.load_json(history_path, [])
+            self.assertEqual({row["video_id"] for row in saved}, {"old", "good"})
 
 
 if __name__ == "__main__":
