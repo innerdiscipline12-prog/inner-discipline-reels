@@ -1762,32 +1762,106 @@ def cohere_retention_script(lines):
 
 
 def fit_inner_discipline_voice_lines(lines, max_words=21, max_lines=4, max_line_words=11):
-    """Keep the hook and payoff while enforcing short, speakable narration lines."""
+    """Compress a retention script without collapsing every candidate into the same three lines.
+
+    The old implementation repeatedly kept the hook plus the final two lines.
+    That made different source candidates converge on identical spoken scripts,
+    which then correctly triggered the originality gate. This selector keeps the
+    hook and payoff but chooses the most informative middle lines under the
+    narration budget.
+    """
     selected = [str(line).strip() for line in lines if str(line).strip()]
     if len(selected) > max_lines:
         selected = [selected[0]] + selected[-(max_lines - 1):]
 
-    # Drop middle thoughts first; never discard or reorder the hook/payoff arc.
-    while len(selected) > 3 and sum(len(line.split()) for line in selected) > max_words:
-        selected.pop(1)
-
-    if sum(len(line.split()) for line in selected) > max_words and len(selected) > 2:
-        selected = [selected[0]] + selected[-2:]
-
     if len(selected) < 3:
         raise ValueError("VOICE PACING REJECTED: script needs at least three complete lines.")
-    if len(selected) > max_lines:
-        raise ValueError("VOICE PACING REJECTED: script exceeds four narration lines.")
-    if any(len(line.split()) > max_line_words for line in selected):
+
+    hook = selected[0]
+    payoff = selected[-1]
+    middle = selected[1:-1]
+
+    # Prefer complete, substantive middle thoughts. Short fragments are useful
+    # only when they carry a clear tension word or concrete meaning.
+    tension_terms = {
+        "cost", "warning", "standard", "comfort", "habit", "routine", "identity",
+        "pressure", "discipline", "truth", "proof", "result", "regret", "choice",
+        "excuse", "delay", "control", "future", "consequence", "respect", "drift",
+    }
+
+    def middle_score(line):
+        words = line.split()
+        low = line.lower()
+        score = 0.0
+        if len(words) >= 4:
+            score += 2.0
+        if len(words) >= 6:
+            score += 1.0
+        score += min(3.0, sum(1.0 for term in tension_terms if term in low))
+        # Reward language that adds information not already repeated by the hook
+        # or payoff.
+        anchor = set(clean_text(hook).lower().split()) | set(clean_text(payoff).lower().split())
+        unique = [w for w in words if w.lower().strip(".,!?") not in anchor]
+        score += min(2.0, len(unique) * 0.25)
+        return score
+
+    # Evaluate one- and two-middle-line combinations. This preserves more of
+    # the source's psychological arc than blindly dropping the second line.
+    candidates = []
+    for i, line in enumerate(middle):
+        combo = [hook, line, payoff]
+        candidates.append(combo)
+        for j in range(i + 1, len(middle)):
+            combo4 = [hook, line, middle[j], payoff]
+            candidates.append(combo4)
+
+    valid = []
+    for combo in candidates:
+        word_count = sum(len(line.split()) for line in combo)
+        if word_count > max_words or any(len(line.split()) > max_line_words for line in combo):
+            continue
+        # Reject standalone fragments that cannot carry the psychological arc.
+        if any(len(line.split()) <= 2 for line in combo[1:-1]):
+            continue
+        score = sum(middle_score(line) for line in combo[1:-1])
+        # Reward a four-line arc when it still fits the budget.
+        if len(combo) == 4:
+            score += 0.75
+        valid.append((score, word_count, combo))
+
+    if not valid:
+        # Fall back to the strongest three-line candidate, but still enforce
+        # the hard pacing limits.
+        best_middle = max(middle, key=middle_score)
+        combo = [hook, best_middle, payoff]
+        if sum(len(line.split()) for line in combo) > max_words:
+            raise ValueError(
+                f"VOICE PACING REJECTED: no complete 3-line form fits the {max_words}-word limit."
+            )
+        if any(len(line.split()) > max_line_words for line in combo):
+            raise ValueError(
+                f"VOICE PACING REJECTED: a narration line exceeds {max_line_words} words."
+            )
+        valid = [(middle_score(best_middle), sum(len(line.split()) for line in combo), combo)]
+
+    # Prefer the richest arc, then the version that uses more of the budget
+    # without exceeding it. This avoids systematically producing the shortest
+    # and most similar-looking scripts.
+    valid.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    result = valid[0][2]
+
+    if len(result) < 3 or len(result) > max_lines:
+        raise ValueError("VOICE PACING REJECTED: invalid narration line count.")
+    if any(len(line.split()) > max_line_words for line in result):
         raise ValueError(
             f"VOICE PACING REJECTED: a narration line exceeds {max_line_words} words."
         )
-    word_count = sum(len(line.split()) for line in selected)
+    word_count = sum(len(line.split()) for line in result)
     if word_count > max_words:
         raise ValueError(
             f"VOICE PACING REJECTED: {word_count} words exceeds the {max_words}-word limit."
         )
-    return selected
+    return result
 
 
 def build_retention_reel_script():
