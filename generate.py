@@ -1101,6 +1101,52 @@ VIRAL_RETENTION_BANK = {
     }
 }
 
+# V33 compact retention reserve: pre-compressed candidates that preserve a
+# complete psychological arc. These prevent the long-form source bank from
+# collapsing into repeated three-line endings during consecutive generation.
+V33_COMPACT_RETENTION_ADDONS = {
+    "mirror": [
+        ["YOU KNOW THE COST.", "The habit keeps asking.", "You keep saying later.", "Later is becoming your life."],
+        ["YOUR STANDARD MOVED.", "Nobody forced the change.", "Comfort made the argument.", "You accepted it."],
+        ["YOU FELT THE WARNING.", "The pattern was visible.", "You delayed the correction.", "Now the habit feels normal."],
+        ["YOU KEEP PROTECTING IT.", "The excuse sounds reasonable.", "The result keeps exposing it.", "That is the pattern."],
+        ["YOU SAW THE SLIDE.", "One exception became easier.", "Then another followed.", "That is how standards fall."],
+        ["YOU KNOW THE ROUTINE.", "The same choice returns.", "The same result follows.", "Nothing changes without interruption."],
+        ["YOUR EXCUSE GOT BETTER.", "Your discipline did not.", "The words became convincing.", "The pattern stayed the same."],
+        ["YOU MADE ROOM FOR IT.", "First it was temporary.", "Then it became familiar.", "Familiar can still destroy standards."],
+        ["YOU BROKE YOUR WORD.", "Nobody else needed to know.", "You still recorded the choice.", "Trust starts there."],
+        ["YOU KNEW EARLIER.", "The first compromise was small.", "The second felt easier.", "That is what repetition does."],
+    ],
+    "two_stage_payoff": [
+        ["THE REAL TEST COMES LATER.", "Starting creates emotion.", "Repetition removes it.", "That is where proof begins."],
+        ["THE BORING PART COUNTS.", "Excitement cannot carry you.", "Systems have to.", "That is what discipline proves."],
+        ["THE SECOND DECISION MATTERS.", "The first one feels powerful.", "The next one feels ordinary.", "Ordinary is where standards live."],
+        ["WHEN NOBODY CHECKS.", "Your standard becomes visible.", "No applause can hide it.", "The choice still counts."],
+        ["THE FIRST WIN FADES.", "The routine remains.", "That is the real test.", "Keep the standard anyway."],
+        ["THE NOVELTY DIES.", "The goal is still there.", "The feeling is not.", "Now the work becomes real."],
+        ["THE PART AFTER YES.", "Promises feel powerful.", "Repetition makes them expensive.", "Proof is what remains."],
+        ["THE MOMENT AFTER COMMITMENT.", "Comfort starts negotiating.", "The standard must answer.", "That decision shapes identity."],
+        ["WHAT REMAINS AFTER EXCITEMENT.", "Your system.", "Your choices.", "Your repeated standard."],
+        ["THE DAY YOU DON'T FEEL IT.", "Nothing is wrong.", "The mood simply left.", "Discipline continues anyway."],
+    ],
+    "consequence": [
+        ["DELAY TAKES OPTIONS.", "One day feels harmless.", "Repeated delay narrows choices.", "That is the hidden cost."],
+        ["COMFORT LEAVES A BILL.", "The payment is delayed.", "The habit still charges you.", "Eventually you notice."],
+        ["REGRET STARTS SMALL.", "One avoided decision.", "One repeated excuse.", "Then the years look different."],
+        ["TIME COLLECTS QUIETLY.", "You can ignore the pattern.", "You cannot stop the clock.", "Choose accordingly."],
+        ["THE COST KEEPS GROWING.", "Small compromises stack.", "Stacked compromises become routine.", "Routine becomes direction."],
+        ["YOUR FUTURE PAYS.", "Every repeated delay borrows.", "Eventually the debt returns.", "Usually with fewer options."],
+        ["NOTHING STAYS HIDDEN.", "The habit leaves evidence.", "The result reveals it.", "Time makes the pattern obvious."],
+        ["EASY CHOICES ADD UP.", "One is rarely the danger.", "Repetition is.", "That is where weakness compounds."],
+        ["THE LOSS IS SLOW.", "That makes it easy to dismiss.", "But slow damage still accumulates.", "Notice the pattern early."],
+        ["WHAT DELAY TAKES.", "It takes time first.", "Then options.", "Eventually it takes trust."],
+    ],
+}
+
+for _category, _scripts in V33_COMPACT_RETENTION_ADDONS.items():
+    VIRAL_RETENTION_BANK[_category]["scripts"].extend(_scripts)
+
+
 
 SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
 
