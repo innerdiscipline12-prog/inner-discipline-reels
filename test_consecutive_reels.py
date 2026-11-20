@@ -108,10 +108,15 @@ class ConsecutiveGeneratorTests(unittest.TestCase):
                     gen.RETENTION_SCORE_MIN,
                     f"reel {index + 1} failed the V33 retention score gate",
                 )
-                from retention_engine import is_swipe_risk_hook
+                from retention_engine import is_swipe_risk_hook, opening_score, OPENING_SCORE_MIN
                 self.assertFalse(
                     is_swipe_risk_hook(script.lines[0]),
                     f"reel {index + 1} starts with a swipe-risk hook",
+                )
+                self.assertGreaterEqual(
+                    opening_score(script.lines),
+                    OPENING_SCORE_MIN,
+                    f"reel {index + 1} does not have a strong psychological/emotional opening",
                 )
 
                 scripts.append(" | ".join(script.lines))

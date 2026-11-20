@@ -48,6 +48,25 @@ TENSION_TERMS = {
     "consequence", "trade", "signal", "pattern", "compromise", "exception",
 }
 
+# The opening must create an immediate psychological/emotional reason to keep watching.
+# This is stricter than the generic swipe-risk filter: a hook can be original
+# and still be too emotionally flat for the first seconds of a Reel.
+OPENING_TENSION_TERMS = {
+    "cost", "price", "warning", "regret", "delay", "tomorrow", "break",
+    "crack", "slip", "drift", "normal", "quietly", "familiar", "proof",
+    "consequence", "trade", "signal", "pattern", "compromise", "exception",
+    "waste", "wasted", "lose", "losing", "lost", "disappear", "danger",
+    "dangerous", "shame", "embarrassing", "weak", "failure", "excuse",
+    "excuses", "comfortable", "comfort", "stuck", "leaking", "ignored",
+}
+
+OPENING_CONTRAST_TERMS = {
+    "but", "not", "instead", "still", "already", "same", "lower", "higher",
+    "different", "yet", "without", "before", "after", "until",
+}
+
+OPENING_SCORE_MIN = 4.5
+
 PAYOFF_TERMS = {
     "that is", "this is", "the cost", "the lesson", "the truth", "correct",
     "discipline begins", "standard", "proof", "nothing changed", "that is why",
@@ -87,6 +106,35 @@ def is_swipe_risk_hook(text):
     if len(words) < 3:
         return True
     return False
+
+
+def opening_score(lines):
+    """Score the first seconds for emotional/psychological stopping power."""
+    values = [normalize(x) for x in (lines or []) if normalize(x)]
+    if not values:
+        return -100.0
+
+    first = values[0]
+    first_words = first.replace("?", "").replace("!", "").split()
+    first_two = " ".join(values[:2])
+    score = hook_score(first)
+
+    if any(word in first_words for word in ("you", "your", "men", "man")):
+        score += 1.0
+
+    if any(term in first for term in OPENING_TENSION_TERMS):
+        score += 1.5
+    if any(term in first_two for term in OPENING_CONTRAST_TERMS):
+        score += 1.0
+    if "?" in first:
+        score += 1.0
+
+    if 3 <= len(first_words) <= 8:
+        score += 1.0
+    elif len(first_words) > 11:
+        score -= 2.0
+
+    return round(score, 4)
 
 
 def hook_score(text):

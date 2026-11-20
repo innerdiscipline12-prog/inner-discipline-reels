@@ -29,6 +29,8 @@ from retention_engine import (
     build_performance_profile,
     hook_family,
     is_swipe_risk_hook,
+    opening_score,
+    OPENING_SCORE_MIN,
     retention_candidate_score,
 )
 
@@ -395,6 +397,11 @@ RETENTION_SCORE_MIN = 4.0
 # natural controlled narration to breathe.
 RETENTION_TTS_PREFLIGHT_MAX_SECONDS = 15.0
 RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS = 5
+# Script selection has several independent hard gates (opening, originality,
+# retention and narration pacing). Give the selector enough fresh candidates
+# to satisfy all gates without weakening any threshold. TTS keeps its own
+# smaller retry budget because each attempt synthesizes audio.
+RETENTION_SCRIPT_QUALITY_MAX_ATTEMPTS = 20
 # No hard per-line audio cap: deliberate INNER Discipline pacing can contain
 # one longer sentence. The total Reel duration is the authoritative retention gate.
 RETENTION_MAX_LINE_AUDIO_SECONDS = None
@@ -1094,6 +1101,52 @@ VIRAL_RETENTION_BANK = {
     }
 }
 
+# V33 compact retention reserve: pre-compressed candidates that preserve a
+# complete psychological arc. These prevent the long-form source bank from
+# collapsing into repeated three-line endings during consecutive generation.
+V33_COMPACT_RETENTION_ADDONS = {
+    "mirror": [
+        ["YOU KNOW THE COST.", "The habit keeps asking.", "You keep saying later.", "Later is becoming your life."],
+        ["YOUR STANDARD MOVED.", "Nobody forced the change.", "Comfort made the argument.", "You accepted it."],
+        ["YOU FELT THE WARNING.", "The pattern was visible.", "You delayed the correction.", "Now the habit feels normal."],
+        ["YOU KEEP PROTECTING IT.", "The excuse sounds reasonable.", "The result keeps exposing it.", "That is the pattern."],
+        ["YOU SAW THE SLIDE.", "One exception became easier.", "Then another followed.", "That is how standards fall."],
+        ["YOU KNOW THE ROUTINE.", "The same choice returns.", "The same result follows.", "Nothing changes without interruption."],
+        ["YOUR EXCUSE GOT BETTER.", "Your discipline did not.", "The words became convincing.", "The pattern stayed the same."],
+        ["YOU MADE ROOM FOR IT.", "First it was temporary.", "Then it became familiar.", "Familiar can still destroy standards."],
+        ["YOU BROKE YOUR WORD.", "Nobody else needed to know.", "You still recorded the choice.", "Trust starts there."],
+        ["YOU KNEW EARLIER.", "The first compromise was small.", "The second felt easier.", "That is what repetition does."],
+    ],
+    "two_stage_payoff": [
+        ["THE REAL TEST COMES LATER.", "Starting creates emotion.", "Repetition removes it.", "That is where proof begins."],
+        ["THE BORING PART COUNTS.", "Excitement cannot carry you.", "Systems have to.", "That is what discipline proves."],
+        ["THE SECOND DECISION MATTERS.", "The first one feels powerful.", "The next one feels ordinary.", "Ordinary is where standards live."],
+        ["WHEN NOBODY CHECKS.", "Your standard becomes visible.", "No applause can hide it.", "The choice still counts."],
+        ["THE FIRST WIN FADES.", "The routine remains.", "That is the real test.", "Keep the standard anyway."],
+        ["THE NOVELTY DIES.", "The goal is still there.", "The feeling is not.", "Now the work becomes real."],
+        ["THE PART AFTER YES.", "Promises feel powerful.", "Repetition makes them expensive.", "Proof is what remains."],
+        ["THE MOMENT AFTER COMMITMENT.", "Comfort starts negotiating.", "The standard must answer.", "That decision shapes identity."],
+        ["WHAT REMAINS AFTER EXCITEMENT.", "Your system.", "Your choices.", "Your repeated standard."],
+        ["THE DAY YOU DON'T FEEL IT.", "Nothing is wrong.", "The mood simply left.", "Discipline continues anyway."],
+    ],
+    "consequence": [
+        ["DELAY TAKES OPTIONS.", "One day feels harmless.", "Repeated delay narrows choices.", "That is the hidden cost."],
+        ["COMFORT LEAVES A BILL.", "The payment is delayed.", "The habit still charges you.", "Eventually you notice."],
+        ["REGRET STARTS SMALL.", "One avoided decision.", "One repeated excuse.", "Then the years look different."],
+        ["TIME COLLECTS QUIETLY.", "You can ignore the pattern.", "You cannot stop the clock.", "Choose accordingly."],
+        ["THE COST KEEPS GROWING.", "Small compromises stack.", "Stacked compromises become routine.", "Routine becomes direction."],
+        ["YOUR FUTURE PAYS.", "Every repeated delay borrows.", "Eventually the debt returns.", "Usually with fewer options."],
+        ["NOTHING STAYS HIDDEN.", "The habit leaves evidence.", "The result reveals it.", "Time makes the pattern obvious."],
+        ["EASY CHOICES ADD UP.", "One is rarely the danger.", "Repetition is.", "That is where weakness compounds."],
+        ["THE LOSS IS SLOW.", "That makes it easy to dismiss.", "But slow damage still accumulates.", "Notice the pattern early."],
+        ["WHAT DELAY TAKES.", "It takes time first.", "Then options.", "Eventually it takes trust."],
+    ],
+}
+
+for _category, _scripts in V33_COMPACT_RETENTION_ADDONS.items():
+    VIRAL_RETENTION_BANK[_category]["scripts"].extend(_scripts)
+
+
 
 SERIES_NAME = "30 DAYS OF INNER DISCIPLINE"
 
@@ -1755,32 +1808,106 @@ def cohere_retention_script(lines):
 
 
 def fit_inner_discipline_voice_lines(lines, max_words=21, max_lines=4, max_line_words=11):
-    """Keep the hook and payoff while enforcing short, speakable narration lines."""
+    """Compress a retention script without collapsing every candidate into the same three lines.
+
+    The old implementation repeatedly kept the hook plus the final two lines.
+    That made different source candidates converge on identical spoken scripts,
+    which then correctly triggered the originality gate. This selector keeps the
+    hook and payoff but chooses the most informative middle lines under the
+    narration budget.
+    """
     selected = [str(line).strip() for line in lines if str(line).strip()]
     if len(selected) > max_lines:
         selected = [selected[0]] + selected[-(max_lines - 1):]
 
-    # Drop middle thoughts first; never discard or reorder the hook/payoff arc.
-    while len(selected) > 3 and sum(len(line.split()) for line in selected) > max_words:
-        selected.pop(1)
-
-    if sum(len(line.split()) for line in selected) > max_words and len(selected) > 2:
-        selected = [selected[0]] + selected[-2:]
-
     if len(selected) < 3:
         raise ValueError("VOICE PACING REJECTED: script needs at least three complete lines.")
-    if len(selected) > max_lines:
-        raise ValueError("VOICE PACING REJECTED: script exceeds four narration lines.")
-    if any(len(line.split()) > max_line_words for line in selected):
+
+    hook = selected[0]
+    payoff = selected[-1]
+    middle = selected[1:-1]
+
+    # Prefer complete, substantive middle thoughts. Short fragments are useful
+    # only when they carry a clear tension word or concrete meaning.
+    tension_terms = {
+        "cost", "warning", "standard", "comfort", "habit", "routine", "identity",
+        "pressure", "discipline", "truth", "proof", "result", "regret", "choice",
+        "excuse", "delay", "control", "future", "consequence", "respect", "drift",
+    }
+
+    def middle_score(line):
+        words = line.split()
+        low = line.lower()
+        score = 0.0
+        if len(words) >= 4:
+            score += 2.0
+        if len(words) >= 6:
+            score += 1.0
+        score += min(3.0, sum(1.0 for term in tension_terms if term in low))
+        # Reward language that adds information not already repeated by the hook
+        # or payoff.
+        anchor = set(clean_text(hook).lower().split()) | set(clean_text(payoff).lower().split())
+        unique = [w for w in words if w.lower().strip(".,!?") not in anchor]
+        score += min(2.0, len(unique) * 0.25)
+        return score
+
+    # Evaluate one- and two-middle-line combinations. This preserves more of
+    # the source's psychological arc than blindly dropping the second line.
+    candidates = []
+    for i, line in enumerate(middle):
+        combo = [hook, line, payoff]
+        candidates.append(combo)
+        for j in range(i + 1, len(middle)):
+            combo4 = [hook, line, middle[j], payoff]
+            candidates.append(combo4)
+
+    valid = []
+    for combo in candidates:
+        word_count = sum(len(line.split()) for line in combo)
+        if word_count > max_words or any(len(line.split()) > max_line_words for line in combo):
+            continue
+        # Reject standalone fragments that cannot carry the psychological arc.
+        if any(len(line.split()) <= 2 for line in combo[1:-1]):
+            continue
+        score = sum(middle_score(line) for line in combo[1:-1])
+        # Reward a four-line arc when it still fits the budget.
+        if len(combo) == 4:
+            score += 0.75
+        valid.append((score, word_count, combo))
+
+    if not valid:
+        # Fall back to the strongest three-line candidate, but still enforce
+        # the hard pacing limits.
+        best_middle = max(middle, key=middle_score)
+        combo = [hook, best_middle, payoff]
+        if sum(len(line.split()) for line in combo) > max_words:
+            raise ValueError(
+                f"VOICE PACING REJECTED: no complete 3-line form fits the {max_words}-word limit."
+            )
+        if any(len(line.split()) > max_line_words for line in combo):
+            raise ValueError(
+                f"VOICE PACING REJECTED: a narration line exceeds {max_line_words} words."
+            )
+        valid = [(middle_score(best_middle), sum(len(line.split()) for line in combo), combo)]
+
+    # Prefer the richest arc, then the version that uses more of the budget
+    # without exceeding it. This avoids systematically producing the shortest
+    # and most similar-looking scripts.
+    valid.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    result = valid[0][2]
+
+    if len(result) < 3 or len(result) > max_lines:
+        raise ValueError("VOICE PACING REJECTED: invalid narration line count.")
+    if any(len(line.split()) > max_line_words for line in result):
         raise ValueError(
             f"VOICE PACING REJECTED: a narration line exceeds {max_line_words} words."
         )
-    word_count = sum(len(line.split()) for line in selected)
+    word_count = sum(len(line.split()) for line in result)
     if word_count > max_words:
         raise ValueError(
             f"VOICE PACING REJECTED: {word_count} words exceeds the {max_words}-word limit."
         )
-    return selected
+    return result
 
 
 def build_retention_reel_script():
@@ -1808,10 +1935,11 @@ def build_retention_reel_script():
     random.shuffle(remaining_categories)
     category_order = [preferred_category] + remaining_categories
     rotation = load_rotation_state()
-    recent_scripts = (
-        rotation.get("recent_smart_scripts_v32", [])[:30]
-        + rotation.get("recent_smart_final_scripts_v32", [])[:30]
-    )
+    # Keep source-candidate and final spoken-script histories separate.
+    # Comparing a long source against its shortened spoken form creates
+    # false near-duplicate hits from containment scoring and prematurely
+    # exhausts the candidate bank during consecutive generation.
+    recent_scripts = rotation.get("recent_smart_scripts_v32", [])[:30]
     selected_key = None
     concept = "general"
     novelty_score = 1.0
@@ -1874,8 +2002,16 @@ def build_retention_reel_script():
 
     v33_score = retention_candidate_score(lines, category, PERFORMANCE_PROFILE_V33)
     v33_hook_family = hook_family(lines[0] if lines else "")
+    v33_opening_score = opening_score(lines)
     print("V33 RETENTION SCORE:", round(v33_score, 3))
+    print("V33 OPENING SCORE:", round(v33_opening_score, 3))
     print("V33 HOOK FAMILY:", v33_hook_family)
+    if v33_opening_score < OPENING_SCORE_MIN:
+        remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
+        raise ValueError(
+            f"V33 OPENING SCORE TOO LOW: {v33_opening_score:.2f} < "
+            f"{OPENING_SCORE_MIN:.2f}"
+        )
     if v33_score < RETENTION_SCORE_MIN:
         # Remember this rejected source candidate in the in-run rotation state.
         # The next bounded retry must explore a different candidate instead of
@@ -1893,13 +2029,16 @@ def build_retention_reel_script():
     recent_covers = rotation.get("recent_smart_covers_v32", [])[:28]
     final_script_text = " | ".join(lines)
     rotation = load_rotation_state()
+    # Record the selected source candidate before validating its shortened,
+    # spoken form. If the final form is rejected as a near-duplicate, the next
+    # quality retry must not select this same source candidate again.
+    remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
     assert_novel(
         final_script_text,
         rotation.get("recent_smart_final_scripts_v32", [])[:30],
         label="spoken script",
         threshold=0.42,
     )
-    remember_rotation_item("recent_smart_scripts_v32", line_key(selected_key), 30)
     remember_rotation_item("recent_smart_final_scripts_v32", line_key(final_script_text), 30)
     if concept and concept != "general":
         remember_rotation_item("recent_smart_concepts_v32", concept, 12)
@@ -1929,6 +2068,7 @@ def build_retention_reel_script():
     script = Script(mode="smart_completion_engine_v31_2", category=category, mood=bank["mood"], cover=cover, title=f"{cover} | INNER DISCIPLINE", pacing="smart_cold", lines=lines)
     script.source_payoff = source_payoff
     script.v33_retention_score = v33_score
+    script.v33_opening_score = v33_opening_score
     script.v33_hook_family = v33_hook_family
     script.v33_performance_samples = PERFORMANCE_PROFILE_V33.get("samples", 0)
     if not script.lines or script.lines[-1] != source_payoff:
@@ -2013,7 +2153,7 @@ def build_script_with_quality_retries(max_attempts=None):
     fall below the retention/originality gates. Failed candidates are not
     rendered and do not advance persisted rotation state.
     """
-    attempts = max_attempts or RETENTION_TTS_PREFLIGHT_MAX_ATTEMPTS
+    attempts = max_attempts or RETENTION_SCRIPT_QUALITY_MAX_ATTEMPTS
     last_error = None
     for attempt in range(1, attempts + 1):
         try:
