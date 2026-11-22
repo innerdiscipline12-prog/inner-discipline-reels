@@ -193,6 +193,77 @@ def payoff_score(lines):
     return min(score, 4.0)
 
 
+"""V34 impact/completion layer: reward narrative movement without changing the restrained voice."""
+
+PROGRESSION_TERMS = {
+    "because", "but", "until", "before", "after", "then", "which means",
+    "that means", "so", "instead", "yet", "therefore", "eventually",
+}
+OPEN_LOOP_TERMS = {
+    "why", "what", "until", "before", "after", "the moment", "the part",
+    "the cost", "the reason", "what happens", "what changed", "eventually",
+}
+PAYOFF_SPECIFIC_TERMS = {
+    "standard", "routine", "choice", "decision", "habit", "proof", "control",
+    "discipline", "consequence", "respect", "time", "future", "identity",
+}
+FLAT_ENDINGS = {
+    "keep going", "stay strong", "you can do it", "never quit",
+    "believe in yourself", "just start", "make it happen",
+}
+
+
+def completion_structure_score(lines):
+    """Score HOOK -> TENSION -> OPEN LOOP -> ESCALATION -> PAYOFF movement."""
+    values = [normalize(x) for x in (lines or []) if normalize(x)]
+    if len(values) < 3:
+        return -4.0
+    first, middle, final = values[0], " ".join(values[1:-1]), values[-1]
+    score = 0.0
+    if "?" in first:
+        score += 1.5
+    if any(term in first for term in OPENING_TENSION_TERMS):
+        score += 1.0
+    if any(term in first for term in OPEN_LOOP_TERMS):
+        score += 0.7
+    transitions = sum(1 for term in PROGRESSION_TERMS if term in middle)
+    score += min(1.5, transitions * 0.5)
+    if any(term in middle for term in TENSION_TERMS):
+        score += 1.0
+    if any(term in middle for term in ("cost", "consequence", "regret", "years", "identity", "respect")):
+        score += 0.8
+    if any(term in final for term in PAYOFF_SPECIFIC_TERMS):
+        score += 1.2
+    if len(final.split()) >= 4:
+        score += 0.5
+    if final in FLAT_ENDINGS:
+        score -= 2.5
+    first_tokens = set(first.split())
+    middle_tokens = set(middle.split())
+    if first_tokens and len(first_tokens & middle_tokens) / max(1, len(first_tokens)) > 0.70:
+        score -= 1.0
+    return round(max(-4.0, min(6.0, score)), 4)
+
+
+def line_rhythm_score(lines):
+    """Reward a readable short/medium/short rhythm for controlled narration."""
+    lengths = [len(normalize(x).split()) for x in (lines or []) if normalize(x)]
+    if len(lengths) < 3:
+        return -2.0
+    score = 0.0
+    if 3 <= lengths[0] <= 8:
+        score += 0.7
+    if any(4 <= n <= 9 for n in lengths[1:-1]):
+        score += 0.5
+    if 3 <= lengths[-1] <= 10:
+        score += 0.7
+    if max(lengths) - min(lengths) >= 2:
+        score += 0.4
+    if any(n > 12 for n in lengths):
+        score -= 1.0
+    return round(score, 4)
+
+
 def retention_candidate_score(lines_or_text, category="general", performance_profile=None):
     if isinstance(lines_or_text, str):
         lines = [x.strip() for x in lines_or_text.split("|") if x.strip()]
@@ -205,6 +276,8 @@ def retention_candidate_score(lines_or_text, category="general", performance_pro
     score = hook_score(lines[0])
     score += tension_score(lines)
     score += payoff_score(lines)
+    score += completion_structure_score(lines)
+    score += line_rhythm_score(lines)
 
     word_count = sum(len(x.split()) for x in lines)
     if 16 <= word_count <= 27:
