@@ -2,9 +2,9 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
+    "mirror",
     "two_stage_payoff",
     "consequence",
-    "mirror",
     "mirror_two_stage",
     "identity",
     "open_loop_identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 3,
-    "scene_dangerous": 3
+    "scene_dangerous": 4
   },
-  "updated_at": "2026-11-23T07:45:46",
+  "updated_at": "2026-11-23T13:02:58",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -780,6 +780,7 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you felt the warning. | the pattern was visible. | you delayed the correction. | now the habit feels normal.",
     "the day you don't feel it. | nothing is wrong. | the mood simply left. | discipline continues anyway.",
     "the boring part counts. | excitement cannot carry you. | systems have to. | that is what discipline proves.",
     "the cost keeps growing. | small compromises stack. | stacked compromises become routine. | routine becomes direction.",
@@ -808,10 +809,10 @@
     "you keep moving it. | the line. | the rule. | the standard. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
     "you know what to do. | that is why it bothers you. | not because life is unclear. | not because the answer is hidden. | because the standard is obvious. | and you keep letting mood vote. | that is the weakness. | correct it.",
     "you let it slide. | once. | then again. | then it stopped feeling wrong. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
-    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
-    "you're avoiding it. | not because it is impossible. | because it demands proof. | and proof removes excuses. | that is why it feels heavy. | but that is also why it works. | start with the truth. | then repeat it."
+    "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens."
   ],
   "recent_smart_final_scripts_v32": [
+    "you felt the warning. | the pattern was visible. | you delayed the correction. | now the habit feels normal.",
     "the day you don't feel it. | nothing is wrong. | the mood simply left. | discipline continues anyway.",
     "the cost keeps growing. | small compromises stack. | stacked compromises become routine. | routine becomes direction.",
     "your excuse got better. | your discipline did not. | the words became convincing. | the pattern stayed the same.",
@@ -840,21 +841,21 @@
     "you broke it quietly. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
     "you felt that drop. | that small loss of respect. | after you broke your word, after you chose comfort, after you said tomorrow again, that feeling was feedback, not weakness, listen to it.",
     "you saw this coming. | you already knew the cost. | the part you avoid is obedience. | especially when comfort gets loud, that is where discipline begins.",
-    "you noticed it early. | before the result changed, before anyone noticed, before the habit looked serious, something in you already knew, that was not random, that was the first signal, most people ignore it.",
-    "you keep lowering the standard. | then the excuse sounded reasonable. | then the standard moved again. | that is why the result looks familiar. | nothing changed at the root."
+    "you noticed it early. | before the result changed, before anyone noticed, before the habit looked serious, something in you already knew, that was not random, that was the first signal, most people ignore it."
   ],
   "recent_smart_concepts_v32": [
+    "consistency",
     "emotional_control",
     "identity",
     "excuses",
     "standards",
-    "consistency",
     "procrastination",
     "recovery",
     "comfort",
     "environment"
   ],
   "recent_smart_covers_v32": [
+    "the warning was enough",
     "when nobody checks",
     "small costs stack up",
     "you already chose",
@@ -881,10 +882,10 @@
     "later gets expensive",
     "comfort sends a bill",
     "regret starts here",
-    "nothing stays small",
-    "your habits leave receipts"
+    "nothing stays small"
   ],
   "recent_captions_v32": [
+    "every repeated choice is building something, even when the result is not visible yet. make sure it is a future you actually want.",
     "delay borrows from the future. eventually the work, the opportunity, or the consequence still asks to be paid.",
     "regret often begins as a series of decisions that seemed too small to matter. take the small decisions seriously.",
     "the future is shaped by ordinary actions, not only major turning points. treat today's choices like they count because they do.",
@@ -928,10 +929,10 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "consistency",
     "procrastination",
     "identity",
     "excuses",
-    "consistency",
     "standards",
     "comfort",
     "emotional_control",
