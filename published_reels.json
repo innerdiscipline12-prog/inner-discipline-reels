@@ -158,5 +158,15 @@
     "hook_family": "consequence",
     "retention_score": 12.3,
     "predicted_duration": 13.5
+  },
+  {
+    "video_id": "1142202755199140",
+    "post_id": "122157723021163183",
+    "output_base": "outputs/reel_v33_smart_completion_engine_v31_2_two_stage_payoff_20261123_074337_20261123_074334_2e1f44ee",
+    "published_at": "2026-11-23T07:46:25+00:00",
+    "category": "two_stage_payoff",
+    "hook_family": "mirror",
+    "retention_score": 10.5,
+    "predicted_duration": 13.5
   }
 ]
