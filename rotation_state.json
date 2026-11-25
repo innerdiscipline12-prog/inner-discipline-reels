@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg1.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 4,
-    "scene_dangerous": 5
+    "scene_dangerous": 0
   },
-  "updated_at": "2026-11-24T13:55:01",
+  "updated_at": "2026-11-25T08:43:19",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -768,6 +768,7 @@
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_2": [
+    "the signal was there.",
     "you saw this coming.",
     "you noticed it early.",
     "small choices add up.",
@@ -780,6 +781,11 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you broke your word. | nobody else needed to know. | you still recorded the choice. | trust starts there.",
+    "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
+    "the cost finds you. | even when nobody sees the choice. | even when the excuse sounds valid. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters. | before it hurts.",
+    "you felt the shift. | before the result changed. | before anyone noticed. | before the habit looked serious. | something in you already knew. | that was not random. | that was the first signal. | most people ignore it.",
+    "the damage grows. | when you keep excusing it. | small habits become normal. | normal becomes identity. | identity becomes results. | then you call it life. | that is the danger. | correct it early.",
     "you watched it happen. | the routine got weaker. | the excuses got easier. | the standard moved lower. | you noticed it early. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "the standard slipped. | not in one big failure. | not where people could see it. | it slipped in small private choices. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "the second decision matters. | the first one feels powerful. | the next one feels ordinary. | ordinary is where standards live.",
@@ -804,14 +810,10 @@
     "time does not wait. | your mood can change tomorrow. | your plan can improve tomorrow. | but today still counts. | so does every excuse. | so does every choice. | that is the truth. | act like it.",
     "the quiet truth. | nobody has to see it. | for it to matter. | nobody has to clap. | for it to count. | your future still records it. | your identity still feels it. | every time.",
     "the hard part starts here. | is not starting. | starting feels good. | starting gives you hope. | starting makes you feel changed. | the hardest part is continuing. | when nobody is watching. | and no mood is helping.",
-    "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps.",
-    "you're not confused. | you know what needs to change. | you know what keeps costing you. | the hard part is not knowing. | it is obeying the truth. | when comfort argues back. | that moment decides everything. | not the speech.",
-    "the moment you stop. | lying to yourself. | is the moment things change. | not because life gets easier. | but because the excuse loses power. | and the standard becomes visible. | that is where control begins. | for real.",
-    "you know the pattern. | strong start. | private compromise. | silent guilt. | another explanation. | another restart. | same routine. | different week.",
-    "you knew earlier. | before the fall. | before the result. | before the excuse became normal. | you knew when the first standard slipped. | that is the place to return to. | that is where you rebuild. | quietly.",
-    "excuses have interest. | they feel harmless now. | then they charge your future. | one repeated delay. | one weak decision. | one comfortable lie. | at a time. | that is the trap."
+    "the part you avoid. | is the part that changes you. | not the plan. | not the quote. | not the announcement. | the proof. | repeated quietly. | when nobody claps."
   ],
   "recent_smart_final_scripts_v32": [
+    "you broke your word. | nobody else needed to know. | you still recorded the choice. | trust starts there.",
     "you watched it happen. | then you called it temporary. | temporary became normal. | that is how drift wins.",
     "what delay takes. | it takes time first. | eventually it takes trust.",
     "you felt the warning. | the pattern was visible. | you delayed the correction. | now the habit feels normal.",
@@ -840,10 +842,10 @@
     "you let it slide. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
     "the standard slipped. | one exception became two. | two became normal. | normal became identity. | that is how it happens.",
     "comfort has a cost. | but repeated comfort becomes weakness. | repeated weakness becomes regret. | that is the price. | pay attention.",
-    "you broke it quietly. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
-    "you felt that drop. | that small loss of respect. | after you broke your word, after you chose comfort, after you said tomorrow again, that feeling was feedback, not weakness, listen to it."
+    "you broke it quietly. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost."
   ],
   "recent_smart_concepts_v32": [
+    "leadership",
     "standards",
     "procrastination",
     "consistency",
@@ -855,6 +857,7 @@
     "environment"
   ],
   "recent_smart_covers_v32": [
+    "you're avoiding it",
     "the standard slipped",
     "your future pays",
     "the warning was enough",
@@ -881,10 +884,10 @@
     "the unseen repetition",
     "time collects quietly",
     "weakness compounds",
-    "later gets expensive",
-    "comfort sends a bill"
+    "later gets expensive"
   ],
   "recent_captions_v32": [
+    "every time you avoid a necessary action, you train avoidance to feel more natural. repeated practice works in both directions.",
     "easy choices can carry difficult consequences when they become automatic. choose with the longer view in mind.",
     "comfort is not free when it repeatedly takes the place of necessary effort. notice what the easy choice keeps costing you.",
     "every repeated choice is building something, even when the result is not visible yet. make sure it is a future you actually want.",
@@ -931,10 +934,10 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
+    "procrastination",
     "identity",
     "comfort",
     "consistency",
-    "procrastination",
     "excuses",
     "standards",
     "emotional_control",
