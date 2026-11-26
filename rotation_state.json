@@ -2,8 +2,8 @@
   "recent_line_keys": [],
   "recent_covers": [],
   "recent_categories": [
-    "consequence",
     "mirror",
+    "consequence",
     "two_stage_payoff",
     "mirror_two_stage",
     "identity",
@@ -24,6 +24,7 @@
     "series"
   ],
   "recent_backgrounds": [
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg2.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg5.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg1.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg6.mp4",
@@ -31,15 +32,14 @@
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg4.mp4",
     "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg3.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4",
-    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/dangerous/bg3.mp4"
+    "/home/runner/work/inner-discipline-reels/inner-discipline-reels/backgrounds/broken/bg2.mp4"
   ],
   "background_cursor": {
     "global": 2,
     "scene_broken": 5,
-    "scene_dangerous": 1
+    "scene_dangerous": 2
   },
-  "updated_at": "2026-11-26T08:25:57",
+  "updated_at": "2026-11-26T12:48:00",
   "recent_series_intros": [
     "the work is simple.",
     "do this without negotiation."
@@ -762,9 +762,9 @@
     "some truths do not need more explanation. they need a decision followed by repetition."
   ],
   "recent_hashtags_v31_2": [
+    "#discipline #routine #focus #mindset #selfrespect",
     "#discipline #habits #standards #selfcontrol #growth",
     "#discipline #selfdiscipline #consistency #innerdiscipline #mentalstrength",
-    "#discipline #routine #focus #mindset #selfrespect",
     "#innerdiscipline #consistency #selfmastery #habits #growthmindset"
   ],
   "recent_hook_variants_v31_2": [
@@ -782,6 +782,8 @@
     "you know what this is."
   ],
   "recent_smart_scripts_v32": [
+    "you broke it quietly. | not your life. | not all at once. | you broke your word first. | then the standard moved. | then trust got weaker. | then discipline felt harder. | that is the cost.",
+    "when nobody checks. | your standard becomes visible. | no applause can hide it. | the choice still counts.",
     "delay takes options. | one day feels harmless. | repeated delay narrows choices. | that is the hidden cost.",
     "the real test comes later. | starting creates emotion. | repetition removes it. | that is where proof begins.",
     "you know what this is. | the problem is not information. | you already saw the habit. | you already felt the warning. | you already knew the cost. | the part you avoid is obedience. | especially when comfort gets loud. | that is where discipline begins.",
@@ -809,11 +811,10 @@
     "you knew earlier. | the first compromise was small. | the second felt easier. | that is what repetition does.",
     "you called it tomorrow. | again. | then again. | then tomorrow became a pattern. | then the pattern became proof. | the problem is not time. | it is the standard. | that keeps moving.",
     "what most people miss. | is the first warning. | not the final failure. | not the public result. | the small private slip. | that stopped bothering them. | that is where the damage starts.",
-    "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal.",
-    "nothing stays small. | not the excuse. | not the delay. | not the habit. | not the compromise. | if you keep feeding it. | it grows. | quietly.",
-    "time does not wait. | your mood can change tomorrow. | your plan can improve tomorrow. | but today still counts. | so does every excuse. | so does every choice. | that is the truth. | act like it."
+    "the first crack. | is not failure. | it is permission. | one excuse. | one lowered standard. | one compromise. | you stop challenging. | then it gets normal."
   ],
   "recent_smart_final_scripts_v32": [
+    "you broke it quietly. | then trust got weaker. | then discipline felt harder. | that is the cost.",
     "delay takes options. | one day feels harmless. | repeated delay narrows choices. | that is the hidden cost.",
     "you knew before it hurt. | the part you avoid is obedience. | especially when comfort gets loud, that is where discipline begins.",
     "you broke your word. | nobody else needed to know. | you still recorded the choice. | trust starts there.",
@@ -842,14 +843,13 @@
     "the cost finds you. | even when you call it temporary. | the pattern still records it. | the result still follows. | that is why discipline matters before it hurts.",
     "you keep moving it. | every time the mood changes. | then you wonder why discipline feels unstable. | it is unstable because you made it negotiable. | decide again.",
     "you know what to do. | not because the answer is hidden. | because the standard is obvious, and you keep letting mood vote, that is the weakness, correct it.",
-    "you let it slide. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens.",
-    "the standard slipped. | one exception became two. | two became normal. | normal became identity. | that is how it happens."
+    "you let it slide. | then the habit got stronger. | then the standard got weaker. | then the result made sense. | that is how it happens."
   ],
   "recent_smart_concepts_v32": [
+    "standards",
     "procrastination",
     "consistency",
     "leadership",
-    "standards",
     "emotional_control",
     "identity",
     "excuses",
@@ -858,6 +858,7 @@
     "environment"
   ],
   "recent_smart_covers_v32": [
+    "weakness compounds",
     "later gets expensive",
     "prove it on tuesday",
     "you're avoiding it",
@@ -884,10 +885,10 @@
     "you knew earlier",
     "one more exception",
     "the damage grows",
-    "the unseen repetition",
-    "time collects quietly"
+    "the unseen repetition"
   ],
   "recent_captions_v32": [
+    "small decisions rarely announce their long-term cost. they become expensive when repetition turns them into a way of life.",
     "the cost of a habit is not only what it takes today. it is also what it prevents you from becoming over time.",
     "the price of inconsistency is often paid in lost trust, lost time, and unfinished work. stop treating repetition as harmless.",
     "every time you avoid a necessary action, you train avoidance to feel more natural. repeated practice works in both directions.",
@@ -937,8 +938,8 @@
     "do not confuse intensity with reliability. a sustainable standard outlasts a dramatic burst of effort."
   ],
   "recent_caption_concepts_v32": [
-    "procrastination",
     "identity",
+    "procrastination",
     "comfort",
     "consistency",
     "excuses",
